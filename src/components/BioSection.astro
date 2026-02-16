@@ -45,54 +45,8 @@ const { bio, aboutCTA } = Astro.props
 </style>
 
 <script>
-  import gsap from 'gsap'
-  import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-  gsap.registerPlugin(ScrollTrigger)
-
-  function splitIntoLines(el: HTMLElement, className: string): HTMLSpanElement[] {
-    const text = el.textContent || ''
-    const words = text.split(/\s+/).filter(Boolean)
-    if (!words.length) return []
-
-    el.style.opacity = '0'
-    el.innerHTML = ''
-
-    const wordSpans: HTMLSpanElement[] = []
-    words.forEach((word, i) => {
-      if (i > 0) el.appendChild(document.createTextNode(' '))
-      const span = document.createElement('span')
-      span.style.display = 'inline'
-      span.textContent = word
-      el.appendChild(span)
-      wordSpans.push(span)
-    })
-
-    const lineGroups: string[][] = [[]]
-    let prevTop = Math.round(wordSpans[0].getBoundingClientRect().top)
-
-    wordSpans.forEach((span, i) => {
-      const top = Math.round(span.getBoundingClientRect().top)
-      if (top > prevTop + 2 && i > 0) {
-        lineGroups.push([])
-        prevTop = top
-      }
-      lineGroups[lineGroups.length - 1].push(words[i])
-    })
-
-    el.innerHTML = ''
-    el.style.opacity = ''
-    const lineEls: HTMLSpanElement[] = []
-    lineGroups.forEach(lineWords => {
-      const lineSpan = document.createElement('span')
-      lineSpan.className = className
-      lineSpan.textContent = lineWords.join(' ')
-      el.appendChild(lineSpan)
-      lineEls.push(lineSpan)
-    })
-
-    return lineEls
-  }
+  import { gsap, ScrollTrigger, prefersReducedMotion, chromaticShadow, SHADOW_CLEAR } from '../utils/animation'
+  import { splitIntoLines } from '../utils/split-into-lines'
 
   let bioTrigger: globalThis.ScrollTrigger | null = null
 
@@ -112,16 +66,14 @@ const { bio, aboutCTA } = Astro.props
       el.textContent = el.dataset.originalText
     }
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const lines = splitIntoLines(el, 'bio-line')
 
-    if (prefersReduced) {
+    if (prefersReducedMotion()) {
       gsap.set(lines, { opacity: 1, y: 0, filter: 'blur(0px)', textShadow: 'none' })
       return
     }
 
-    const d1 = 30, d2 = d1 * 1.5, d3 = d1 * 2, op = 0.5
-    const shadowFrom = `0 ${d1}px rgba(0,255,255,${op}), 0 ${d2}px rgba(255,0,255,${op}), 0 ${d3}px rgba(255,255,0,${op})`
+    const shadowFrom = chromaticShadow(30, 0.5)
 
     gsap.set(lines, {
       opacity: 0, y: 30, filter: 'blur(14px)', textShadow: shadowFrom,
@@ -133,14 +85,12 @@ const { bio, aboutCTA } = Astro.props
       once: true,
       onEnter: () => {
         gsap.to(lines, {
-          opacity: 1, y: 0, filter: 'blur(0px)',
-          textShadow: '0 0px transparent, 0 0px transparent, 0 0px transparent',
+          opacity: 1, y: 0, filter: 'blur(0px)', textShadow: SHADOW_CLEAR,
           duration: 1.2, stagger: 0.12, ease: 'power3.out',
         })
       },
     })
   }
 
-  // Use only astro:page-load (fires on initial load + navigations)
   document.addEventListener('astro:page-load', animateBioLines)
 </script>

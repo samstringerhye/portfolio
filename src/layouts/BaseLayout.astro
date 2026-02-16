@@ -33,19 +33,14 @@ const { title, description, ogImage, hideFooter = false } = Astro.props
 
     <script>
       import Lenis from 'lenis'
-      import gsap from 'gsap'
-      import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-      gsap.registerPlugin(ScrollTrigger)
+      import { gsap, ScrollTrigger, prefersReducedMotion } from '../utils/animation'
 
       let lenis: InstanceType<typeof Lenis> | null = null
 
       function initLenis() {
         lenis?.destroy()
 
-        // Respect reduced motion
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        if (prefersReduced) return
+        if (prefersReducedMotion()) return
 
         lenis = new Lenis({ lerp: 0.15, smoothWheel: true, wheelMultiplier: 1.2 })
 

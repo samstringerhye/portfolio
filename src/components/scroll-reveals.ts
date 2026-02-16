@@ -1,13 +1,6 @@
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap, ScrollTrigger, prefersReducedMotion, chromaticShadow, SHADOW_CLEAR } from '../utils/animation'
 
-gsap.registerPlugin(ScrollTrigger)
-
-const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-const D1 = 12, D2 = D1 * 1.5, D3 = D1 * 2, OP = 0.45
-const SHADOW_FROM = `0 ${D1}px rgba(0,255,255,${OP}), 0 ${D2}px rgba(255,0,255,${OP}), 0 ${D3}px rgba(255,255,0,${OP})`
-const SHADOW_TO = '0 0px transparent, 0 0px transparent, 0 0px transparent'
+const SHADOW_FROM = chromaticShadow(12, 0.45)
 
 export function initScrollReveals() {
   const elements = document.querySelectorAll<HTMLElement>('[data-reveal]')
@@ -19,7 +12,7 @@ export function initScrollReveals() {
   })
 
   elements.forEach(el => {
-    if (prefersReduced()) {
+    if (prefersReducedMotion()) {
       gsap.set(el, { opacity: 1, y: 0, filter: 'none', textShadow: 'none' })
       return
     }
@@ -30,7 +23,7 @@ export function initScrollReveals() {
 
     gsap.to(el, {
       opacity: 1, y: 0, filter: 'blur(0px)',
-      textShadow: SHADOW_TO,
+      textShadow: SHADOW_CLEAR,
       duration: 0.9, ease: 'power3.out',
       scrollTrigger: {
         trigger: el,

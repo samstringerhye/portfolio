@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect, useState, lazy, Suspense } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Color, Vector3, Object3D, WebGLRenderTarget, LinearFilter, RGBAFormat } from 'three'
+import { Color, Object3D, WebGLRenderTarget, LinearFilter, RGBAFormat } from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
@@ -9,97 +9,14 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js'
 import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js'
 import { useShallow } from 'zustand/react/shallow'
 import { useTuningStore } from './store.js'
+import { generators, sizeTaper } from '../utils/particle-generators'
 
 const TuningPanel = import.meta.env.DEV
   ? lazy(() => import('./TuningPanel.jsx'))
   : null
 
-const TWO_PI = Math.PI * 2
-const PHI = (1 + Math.sqrt(5)) / 2
-
 const roundedSquareWave = (t, delta, a, f) =>
   ((2 * a) / Math.PI) * Math.atan(Math.sin(2 * Math.PI * t * f) / delta)
-
-/* -- Arrangement generators -- */
-function generateSpiral(numRays, dotsPerRay, spacing, _innerRadius) {
-  const positions = []
-  const distances = []
-  const total = numRays * dotsPerRay
-  const goldenAngle = TWO_PI / (PHI * PHI)
-  for (let i = 0; i < total; i++) {
-    const angle = i * goldenAngle
-    const r = spacing * Math.sqrt(i)
-    const v = new Vector3(Math.cos(angle) * r, Math.sin(angle) * r, 0)
-    positions.push(v)
-    distances.push(v.length())
-  }
-  return { positions, distances }
-}
-
-function generateConcentric(numRays, dotsPerRay, spacing, innerRadius) {
-  const positions = []
-  const distances = []
-  for (let ring = 0; ring < dotsPerRay; ring++) {
-    const r = innerRadius + ring * spacing
-    for (let i = 0; i < numRays; i++) {
-      const angle = (i / numRays) * TWO_PI
-      const v = new Vector3(Math.cos(angle) * r, Math.sin(angle) * r, 0)
-      positions.push(v)
-      distances.push(v.length())
-    }
-  }
-  return { positions, distances }
-}
-
-function generateHexagonal(numRays, dotsPerRay, spacing, _innerRadius) {
-  const positions = []
-  const distances = []
-  const maxR = dotsPerRay * spacing
-  const rowH = spacing * Math.sqrt(3) / 2
-  const rows = Math.ceil(maxR * 2 / rowH)
-  for (let row = -rows; row <= rows; row++) {
-    const y = row * rowH
-    const offset = (row % 2) * spacing * 0.5
-    const cols = Math.ceil(maxR * 2 / spacing)
-    for (let col = -cols; col <= cols; col++) {
-      const x = col * spacing + offset
-      if (x * x + y * y > maxR * maxR) continue
-      const v = new Vector3(x, y, 0)
-      positions.push(v)
-      distances.push(v.length())
-    }
-  }
-  return { positions, distances }
-}
-
-function generateRose(numRays, dotsPerRay, spacing, _innerRadius) {
-  const positions = []
-  const distances = []
-  const k = Math.max(2, Math.round(numRays / 20))
-  const total = numRays * dotsPerRay
-  for (let i = 0; i < total; i++) {
-    const theta = (i / total) * TWO_PI * k
-    const r = Math.cos(k * theta) * dotsPerRay * spacing * 0.3
-    const absR = Math.abs(r)
-    const sign = r >= 0 ? 1 : -1
-    const v = new Vector3(
-      Math.cos(theta) * absR * sign,
-      Math.sin(theta) * absR * sign,
-      0,
-    )
-    positions.push(v)
-    distances.push(v.length())
-  }
-  return { positions, distances }
-}
-
-const generators = { spiral: generateSpiral, concentric: generateConcentric, hexagonal: generateHexagonal, rose: generateRose }
-
-/* -- Size taper -- */
-function sizeTaper(n, sizeStart, sizeMid, sizeEnd) {
-  const inv = 1 - n
-  return inv * inv * sizeStart + 2 * inv * n * sizeMid + n * n * sizeEnd
-}
 
 /* -- Temporal RGB split shader -- */
 const triColorMix = {
@@ -138,7 +55,6 @@ const triColorMix = {
 function SunburstDots() {
   const ref = useRef()
 
-  // Structural params: re-render when these change to rebuild geometry
   const {
     arrangement, numRays, dotsPerRay, spacing, innerRadius,
     dotRadius, dotSegments, dotColor,
@@ -226,8 +142,6 @@ function Effects() {
   }, [ringSize])
 
   useEffect(() => {
-    // Render background color into WebGL so RGB channels have contrast
-    // against black dots — required for temporal RGB split to be visible
     gl.setClearColor(new Color(bgColor), 1)
 
     const comp = new EffectComposer(gl)

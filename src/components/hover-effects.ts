@@ -1,9 +1,7 @@
-import gsap from 'gsap'
-
-const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+import { gsap, prefersReducedMotion } from '../utils/animation'
 
 export function initHoverEffects() {
-  if (prefersReduced()) return
+  if (prefersReducedMotion()) return
 
   // Caustic cards — tilt + CMY box-shadow
   document.querySelectorAll<HTMLElement>('[data-hover="caustic-card"]').forEach(initCausticCard)

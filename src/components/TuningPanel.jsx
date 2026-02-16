@@ -1,9 +1,218 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo, startTransition } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useTuningStore } from './store.js'
 import heroSchema, { presets } from './heroSchema.js'
 
 const PANEL_WIDTH = 280
+
+/* -- Reusable input components for each schema type -- */
+
+function Tooltip({ itemKey, info, hoveredTooltip, setHoveredTooltip }) {
+  if (!info) return null
+  return (
+    <span
+      style={{ position: 'relative', display: 'inline-flex', marginLeft: 4 }}
+      onMouseEnter={() => setHoveredTooltip(itemKey)}
+      onMouseLeave={() => setHoveredTooltip(null)}
+    >
+      <span style={{
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        width: 13, height: 13, borderRadius: '50%',
+        background: 'rgba(255,255,255,0.1)', color: '#666',
+        fontSize: 9, fontWeight: 600, cursor: 'default', lineHeight: 1,
+      }}>?</span>
+      {hoveredTooltip === itemKey && (
+        <span style={{
+          position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)',
+          marginBottom: 6, padding: '5px 8px', borderRadius: 4,
+          background: 'rgba(0,0,0,0.9)', color: '#ddd',
+          fontSize: 10, lineHeight: '1.35', whiteSpace: 'nowrap',
+          pointerEvents: 'none', zIndex: 10001,
+        }}>{info}</span>
+      )}
+    </span>
+  )
+}
+
+function GroupHeader({ item, idx }) {
+  return (
+    <div style={{
+      marginTop: idx > 0 ? 14 : 0,
+      marginBottom: 8,
+      paddingTop: idx > 0 ? 10 : 0,
+      borderTop: idx > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none',
+      fontSize: 10,
+      fontWeight: 600,
+      color: '#777',
+      textTransform: 'uppercase',
+      letterSpacing: '0.05em',
+    }}>
+      {item.label}
+    </div>
+  )
+}
+
+function ActionInput({ item, value, setVal }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <button
+        onClick={() => setVal(item.key, (value ?? 0) + 1)}
+        style={{
+          width: '100%',
+          padding: '6px 0',
+          borderRadius: 4,
+          border: '1px solid rgba(255,255,255,0.15)',
+          background: 'rgba(100,200,255,0.12)',
+          color: '#aadcff',
+          fontSize: 11,
+          fontFamily: 'inherit',
+          cursor: 'pointer',
+        }}
+      >
+        {item.label}
+      </button>
+    </div>
+  )
+}
+
+function SelectInput({ item, value, setVal, tooltip }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
+        <span style={{ color: '#999' }}>{item.label}</span>
+        {tooltip}
+      </div>
+      <select
+        value={value}
+        onChange={e => setVal(item.key, e.target.value)}
+        style={{
+          width: '100%',
+          padding: '4px 6px',
+          borderRadius: 4,
+          border: '1px solid rgba(255,255,255,0.15)',
+          background: 'rgba(255,255,255,0.06)',
+          color: '#ccc',
+          fontSize: 11,
+          fontFamily: 'inherit',
+          outline: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        {item.options.map(opt => (
+          <option key={opt} value={opt} style={{ background: '#222' }}>{opt}</option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
+function ToggleInput({ item, value, setVal, tooltip }) {
+  return (
+    <div style={{ marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <span style={{ display: 'flex', alignItems: 'center', color: '#999' }}>
+        {item.label}
+        {tooltip}
+      </span>
+      <button
+        onClick={() => setVal(item.key, !value)}
+        style={{
+          width: 36,
+          height: 20,
+          borderRadius: 10,
+          border: '1px solid rgba(255,255,255,0.15)',
+          background: value ? 'rgba(100,200,255,0.35)' : 'rgba(255,255,255,0.06)',
+          cursor: 'pointer',
+          position: 'relative',
+          transition: 'background 0.15s',
+          padding: 0,
+          flexShrink: 0,
+        }}
+      >
+        <span style={{
+          position: 'absolute',
+          top: 2,
+          left: value ? 18 : 2,
+          width: 14,
+          height: 14,
+          borderRadius: '50%',
+          background: value ? '#fff' : '#666',
+          transition: 'left 0.15s, background 0.15s',
+        }} />
+      </button>
+    </div>
+  )
+}
+
+function ColorInput({ item, value, setVal, tooltip }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
+        <span style={{ display: 'flex', alignItems: 'center', color: '#999' }}>
+          {item.label}
+          {tooltip}
+        </span>
+        <span style={{ color: '#fff', fontVariantNumeric: 'tabular-nums', fontSize: 10 }}>{value}</span>
+      </div>
+      <input
+        type="color"
+        value={value}
+        onChange={e => setVal(item.key, e.target.value)}
+        style={{
+          width: '100%',
+          height: 24,
+          padding: 0,
+          border: '1px solid rgba(255,255,255,0.15)',
+          borderRadius: 4,
+          background: 'none',
+          cursor: 'pointer',
+        }}
+      />
+    </div>
+  )
+}
+
+function RangeInput({ item, value, setVal, tooltip }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
+        <span style={{ display: 'flex', alignItems: 'center', color: '#999' }}>
+          {item.label}
+          {tooltip}
+        </span>
+        <span style={{ color: '#fff', fontVariantNumeric: 'tabular-nums' }}>
+          {typeof value === 'number' ? value.toFixed(3) : value}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={item.min}
+        max={item.max}
+        step={item.step}
+        value={value}
+        onChange={e => setVal(item.key, parseFloat(e.target.value))}
+        style={{
+          width: '100%',
+          height: 4,
+          appearance: 'none',
+          background: 'rgba(255,255,255,0.12)',
+          borderRadius: 2,
+          outline: 'none',
+          cursor: 'pointer',
+        }}
+      />
+    </div>
+  )
+}
+
+const INPUT_COMPONENTS = {
+  action: ActionInput,
+  select: SelectInput,
+  toggle: ToggleInput,
+  color: ColorInput,
+  range: RangeInput,
+}
+
+/* -- Main panel -- */
 
 export default function TuningPanel() {
   const [visible, setVisible] = useState(false)
@@ -22,7 +231,6 @@ export default function TuningPanel() {
     }))
   )
 
-  // Resolve current values from store
   const resolved = useMemo(() => {
     const vals = {}
     for (const item of heroSchema) {
@@ -31,7 +239,6 @@ export default function TuningPanel() {
     return vals
   }, [storeState])
 
-  // Keyboard shortcut: Ctrl+Shift+T
   useEffect(() => {
     const handler = (e) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'T') {
@@ -152,210 +359,34 @@ export default function TuningPanel() {
           {heroSchema.map((item, idx) => {
             const type = item.type || 'range'
 
-            // -- Group header --
             if (type === 'group') {
-              return (
-                <div key={`group-${idx}`} style={{
-                  marginTop: idx > 0 ? 14 : 0,
-                  marginBottom: 8,
-                  paddingTop: idx > 0 ? 10 : 0,
-                  borderTop: idx > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none',
-                  fontSize: 10,
-                  fontWeight: 600,
-                  color: '#777',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                }}>
-                  {item.label}
-                </div>
-              )
+              return <GroupHeader key={`group-${idx}`} item={item} idx={idx} />
             }
 
-            // -- Conditional visibility --
             if (item.visibleWhen) {
               const dep = resolved[item.visibleWhen.key]
               if (!item.visibleWhen.values.includes(dep)) return null
             }
 
             const value = resolved[item.key] ?? item.default
+            const tooltip = (
+              <Tooltip
+                itemKey={item.key}
+                info={item.info}
+                hoveredTooltip={hoveredTooltip}
+                setHoveredTooltip={setHoveredTooltip}
+              />
+            )
 
-            const tooltip = item.info ? (
-              <span
-                style={{ position: 'relative', display: 'inline-flex', marginLeft: 4 }}
-                onMouseEnter={() => setHoveredTooltip(item.key)}
-                onMouseLeave={() => setHoveredTooltip(null)}
-              >
-                <span style={{
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  width: 13, height: 13, borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.1)', color: '#666',
-                  fontSize: 9, fontWeight: 600, cursor: 'default', lineHeight: 1,
-                }}>?</span>
-                {hoveredTooltip === item.key && (
-                  <span style={{
-                    position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)',
-                    marginBottom: 6, padding: '5px 8px', borderRadius: 4,
-                    background: 'rgba(0,0,0,0.9)', color: '#ddd',
-                    fontSize: 10, lineHeight: '1.35', whiteSpace: 'nowrap',
-                    pointerEvents: 'none', zIndex: 10001,
-                  }}>{item.info}</span>
-                )}
-              </span>
-            ) : null
-
-            // -- Action button --
-            if (type === 'action') {
-              return (
-                <div key={item.key} style={{ marginBottom: 10 }}>
-                  <button
-                    onClick={() => setVal(item.key, (value ?? 0) + 1)}
-                    style={{
-                      width: '100%',
-                      padding: '6px 0',
-                      borderRadius: 4,
-                      border: '1px solid rgba(255,255,255,0.15)',
-                      background: 'rgba(100,200,255,0.12)',
-                      color: '#aadcff',
-                      fontSize: 11,
-                      fontFamily: 'inherit',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {item.label}
-                  </button>
-                </div>
-              )
-            }
-
-            // -- Select dropdown --
-            if (type === 'select') {
-              return (
-                <div key={item.key} style={{ marginBottom: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-                    <span style={{ color: '#999' }}>{item.label}</span>
-                    {tooltip}
-                  </div>
-                  <select
-                    value={value}
-                    onChange={e => setVal(item.key, e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '4px 6px',
-                      borderRadius: 4,
-                      border: '1px solid rgba(255,255,255,0.15)',
-                      background: 'rgba(255,255,255,0.06)',
-                      color: '#ccc',
-                      fontSize: 11,
-                      fontFamily: 'inherit',
-                      outline: 'none',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {item.options.map(opt => (
-                      <option key={opt} value={opt} style={{ background: '#222' }}>{opt}</option>
-                    ))}
-                  </select>
-                </div>
-              )
-            }
-
-            // -- Toggle --
-            if (type === 'toggle') {
-              return (
-                <div key={item.key} style={{ marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', color: '#999' }}>
-                    {item.label}
-                    {tooltip}
-                  </span>
-                  <button
-                    onClick={() => setVal(item.key, !value)}
-                    style={{
-                      width: 36,
-                      height: 20,
-                      borderRadius: 10,
-                      border: '1px solid rgba(255,255,255,0.15)',
-                      background: value ? 'rgba(100,200,255,0.35)' : 'rgba(255,255,255,0.06)',
-                      cursor: 'pointer',
-                      position: 'relative',
-                      transition: 'background 0.15s',
-                      padding: 0,
-                      flexShrink: 0,
-                    }}
-                  >
-                    <span style={{
-                      position: 'absolute',
-                      top: 2,
-                      left: value ? 18 : 2,
-                      width: 14,
-                      height: 14,
-                      borderRadius: '50%',
-                      background: value ? '#fff' : '#666',
-                      transition: 'left 0.15s, background 0.15s',
-                    }} />
-                  </button>
-                </div>
-              )
-            }
-
-            // -- Color picker --
-            if (type === 'color') {
-              return (
-                <div key={item.key} style={{ marginBottom: 10 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', color: '#999' }}>
-                      {item.label}
-                      {tooltip}
-                    </span>
-                    <span style={{ color: '#fff', fontVariantNumeric: 'tabular-nums', fontSize: 10 }}>{value}</span>
-                  </div>
-                  <input
-                    type="color"
-                    value={value}
-                    onChange={e => setVal(item.key, e.target.value)}
-                    style={{
-                      width: '100%',
-                      height: 24,
-                      padding: 0,
-                      border: '1px solid rgba(255,255,255,0.15)',
-                      borderRadius: 4,
-                      background: 'none',
-                      cursor: 'pointer',
-                    }}
-                  />
-                </div>
-              )
-            }
-
-            // -- Range slider (default) --
+            const InputComponent = INPUT_COMPONENTS[type] || RangeInput
             return (
-              <div key={item.key} style={{ marginBottom: 10 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', color: '#999' }}>
-                    {item.label}
-                    {tooltip}
-                  </span>
-                  <span style={{ color: '#fff', fontVariantNumeric: 'tabular-nums' }}>
-                    {typeof value === 'number' ? value.toFixed(3) : value}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={item.min}
-                  max={item.max}
-                  step={item.step}
-                  value={value}
-                  onChange={e => setVal(item.key, parseFloat(e.target.value))}
-                  style={{
-                    width: '100%',
-                    height: 4,
-                    appearance: 'none',
-                    background: 'rgba(255,255,255,0.12)',
-                    borderRadius: 2,
-                    outline: 'none',
-                    cursor: 'pointer',
-                  }}
-                />
-              </div>
+              <InputComponent
+                key={item.key}
+                item={item}
+                value={value}
+                setVal={setVal}
+                tooltip={tooltip}
+              />
             )
           })}
 

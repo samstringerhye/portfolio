@@ -84,56 +84,9 @@ const { headline, subhead } = Astro.props
 </style>
 
 <script>
-  import gsap from 'gsap'
+  import { gsap, prefersReducedMotion, chromaticShadow, SHADOW_CLEAR } from '../utils/animation'
+  import { splitIntoLines } from '../utils/split-into-lines'
   import { useTuningStore } from './store.js'
-
-  function splitIntoLines(el: HTMLElement): HTMLSpanElement[] {
-    const text = el.textContent || ''
-    const words = text.split(/\s+/).filter(Boolean)
-    if (!words.length) return []
-
-    // Clear and insert word spans for measurement (inline, visible)
-    el.style.opacity = '0'
-    el.innerHTML = ''
-
-    // Insert words separated by text-node spaces so the browser wraps naturally
-    const wordSpans: HTMLSpanElement[] = []
-    words.forEach((word, i) => {
-      if (i > 0) el.appendChild(document.createTextNode(' '))
-      const span = document.createElement('span')
-      span.style.display = 'inline'
-      span.textContent = word
-      el.appendChild(span)
-      wordSpans.push(span)
-    })
-
-    // Group words by their vertical position (top of each word span)
-    const lineGroups: string[][] = [[]]
-    let prevTop = Math.round(wordSpans[0].getBoundingClientRect().top)
-
-    wordSpans.forEach((span, i) => {
-      const top = Math.round(span.getBoundingClientRect().top)
-      if (top > prevTop + 2 && i > 0) {
-        lineGroups.push([])
-        prevTop = top
-      }
-      lineGroups[lineGroups.length - 1].push(words[i])
-    })
-
-    // Replace with line spans
-    el.innerHTML = ''
-    el.style.opacity = ''
-    const lineEls: HTMLSpanElement[] = []
-    lineGroups.forEach(lineWords => {
-      const lineSpan = document.createElement('span')
-      lineSpan.className = 'hero-line'
-      lineSpan.textContent = lineWords.join(' ')
-      el.appendChild(lineSpan)
-      lineEls.push(lineSpan)
-    })
-
-    return lineEls
-  }
 
   function animateHeroLines() {
     const el = document.querySelector<HTMLElement>('[data-hero-text]')
@@ -143,33 +96,25 @@ const { headline, subhead } = Astro.props
     if (!el.dataset.originalText) {
       el.dataset.originalText = el.textContent || ''
     } else {
-      // Restore original text before re-splitting (e.g. on astro:page-load)
       el.textContent = el.dataset.originalText
     }
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const lines = splitIntoLines(el)
+    const lines = splitIntoLines(el, 'hero-line')
 
-    if (prefersReduced) {
+    if (prefersReducedMotion()) {
       gsap.set(lines, { opacity: 1, y: 0, filter: 'blur(0px)', textShadow: 'none' })
       return
     }
 
-    // Read title animation params from tuning store
     const cfg = useTuningStore.getState()
-    const d1 = cfg.titleAberration
-    const d2 = d1 * 1.5
-    const d3 = d1 * 2
-    const op = cfg.titleAberrationOpacity
-    const shadowFrom = `0 ${d1}px rgba(0,255,255,${op}), 0 ${d2}px rgba(255,0,255,${op}), 0 ${d3}px rgba(255,255,0,${op})`
+    const shadowFrom = chromaticShadow(cfg.titleAberration, cfg.titleAberrationOpacity)
 
     gsap.set(lines, {
       opacity: 0, y: cfg.titleY, filter: `blur(${cfg.titleBlur}px)`, textShadow: shadowFrom,
     })
 
     gsap.to(lines, {
-      opacity: 1, y: 0, filter: 'blur(0px)',
-      textShadow: '0 0px transparent, 0 0px transparent, 0 0px transparent',
+      opacity: 1, y: 0, filter: 'blur(0px)', textShadow: SHADOW_CLEAR,
       duration: cfg.titleDuration, stagger: cfg.titleStagger, ease: 'power3.out', delay: cfg.titleDelay,
     })
   }
