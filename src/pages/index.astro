@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import HeroSection from '../components/HeroSection.astro'
+import BioSection from '../components/BioSection.astro'
+import WorkCarousel from '../components/WorkCarousel.astro'
+import Timeline from '../components/Timeline.astro'
+import ScrollingInterests from '../components/ScrollingInterests.astro'
+
+// Read home.md frontmatter
+const homeFile = await import('../content/home.md')
+const home = homeFile.frontmatter
+---
+
+<BaseLayout>
+  <HeroSection
+    headline={home.heroHeadline}
+    subhead={home.heroSubhead}
+  />
+  <BioSection
+    bio={home.bio}
+    aboutCTA={home.aboutCTA}
+  />
+  <WorkCarousel />
+  <Timeline />
+  <ScrollingInterests interests={home.interests} />
+</BaseLayout>

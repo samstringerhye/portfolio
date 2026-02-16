@@ -1,0 +1,84 @@
+---
+import { ViewTransitions } from 'astro:transitions'
+import SEO from '../components/SEO.astro'
+import Nav from '../components/Nav.astro'
+import Footer from '../components/Footer.astro'
+import AboutModal from '../components/AboutModal.astro'
+import '../styles/global.css'
+
+interface Props {
+  title?: string
+  description?: string
+  ogImage?: string
+  hideFooter?: boolean
+}
+
+const { title, description, ogImage, hideFooter = false } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <SEO title={title} description={description} ogImage={ogImage} />
+    <ViewTransitions />
+  </head>
+  <body>
+    <a href="#main" class="skip-to-content">Skip to content</a>
+    <Nav />
+    <main id="main" style="padding-top: 64px;">
+      <slot />
+    </main>
+    {!hideFooter && <Footer />}
+    <AboutModal />
+
+    <script>
+      import Lenis from 'lenis'
+      import gsap from 'gsap'
+      import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+      gsap.registerPlugin(ScrollTrigger)
+
+      let lenis: InstanceType<typeof Lenis> | null = null
+
+      function initLenis() {
+        lenis?.destroy()
+
+        // Respect reduced motion
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (prefersReduced) return
+
+        lenis = new Lenis({ lerp: 0.15, smoothWheel: true, wheelMultiplier: 1.2 })
+
+        lenis.on('scroll', ScrollTrigger.update)
+        gsap.ticker.add((time) => lenis?.raf(time * 1000))
+        gsap.ticker.lagSmoothing(0)
+      }
+
+      function initScrollReveals() {
+        // Dynamically import scroll reveals
+        import('../components/scroll-reveals.ts')
+      }
+
+      function initHoverEffects() {
+        // Dynamically import hover effects
+        import('../components/hover-effects.ts')
+      }
+
+      initLenis()
+      initScrollReveals()
+      initHoverEffects()
+
+      document.addEventListener('astro:after-swap', () => {
+        initLenis()
+        ScrollTrigger.refresh()
+      })
+
+      document.addEventListener('astro:page-load', () => {
+        initScrollReveals()
+        initHoverEffects()
+      })
+    </script>
+
+    <script src="../components/about-modal.ts"></script>
+  </body>
+</html>

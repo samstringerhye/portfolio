@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const allWork = await getCollection('work')
+const sorted = allWork.sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+---
+
+<BaseLayout title="Work — Sam Stringer-Hye" description="Selected design work across Samsung, Frontier, and CVS.">
+  <section class="work-index">
+    <div class="work-header">
+      <p class="text-label">Selected Work</p>
+      <h1>Case Studies</h1>
+    </div>
+
+    <div class="work-grid">
+      {sorted.map(w => (
+        <a href={`/work/${w.id}`} class="work-card" data-hover="caustic-card" data-reveal="stagger">
+          <div class="work-card-image">
+            <img
+              src={w.data.thumbnail}
+              alt={w.data.title}
+              loading="lazy"
+              transition:name={`hero-${w.data.title.toLowerCase().replace(/\s+/g, '-')}`}
+            />
+          </div>
+          <div class="work-card-info">
+            <h2 class="work-card-title" transition:name={`title-${w.data.title.toLowerCase().replace(/\s+/g, '-')}`}>
+              {w.data.title}
+            </h2>
+            <p class="work-card-meta">{w.data.year} — {w.data.role}</p>
+            <p class="work-card-tagline">{w.data.tagline}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .work-index {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-xl);
+  }
+
+  .work-header {
+    margin-bottom: var(--space-3xl);
+  }
+
+  .work-header h1 {
+    margin-top: var(--space-sm);
+  }
+
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: var(--space-2xl);
+  }
+
+  .work-card {
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: box-shadow 0.35s ease;
+  }
+
+  .work-card:hover {
+    box-shadow: 0 4px 24px -4px rgba(0,255,255,0.4), 0 8px 48px -8px rgba(255,0,255,0.3), 0 12px 64px -12px rgba(255,255,0,0.2);
+  }
+
+  .work-card-image {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+  }
+
+  .work-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .work-card:hover .work-card-image img {
+    transform: scale(1.03);
+  }
+
+  .work-card-info {
+    padding: var(--space-lg) var(--space-sm) var(--space-sm);
+  }
+
+  .work-card-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-regular);
+    margin-bottom: var(--space-xs);
+  }
+
+  .work-card-meta {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-sm);
+  }
+
+  .work-card-tagline {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+  }
+
+  @media (max-width: 768px) {
+    .work-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

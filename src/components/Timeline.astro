@@ -1,0 +1,84 @@
+---
+import experience from '../experience.json'
+
+function formatDate(dateStr: string | null) {
+  if (!dateStr) return 'Present'
+  const [year, month] = dateStr.split('-')
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return `${months[parseInt(month) - 1]} ${year}`
+}
+---
+
+<section class="timeline-section" aria-label="Experience">
+  <div class="timeline-inner">
+    <p class="text-label" style="margin-bottom: var(--space-2xl);">Experience</p>
+    <div class="timeline">
+      {experience.map((job, i) => (
+        <div class="timeline-item" data-reveal="stagger">
+          <div class="timeline-dot" />
+          {i < experience.length - 1 && <div class="timeline-line" />}
+          <div class="timeline-content">
+            <h3 class="timeline-title">{job.title}</h3>
+            <p class="timeline-company">
+              {job.company} &middot; {formatDate(job.startDate)} — {formatDate(job.endDate)}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .timeline-section {
+    padding: var(--space-4xl) var(--space-xl);
+  }
+
+  .timeline-inner {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+  }
+
+  .timeline {
+    position: relative;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-left: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 3.5px;
+    top: 18px;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-border);
+  }
+
+  .timeline-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    margin-bottom: 2px;
+  }
+
+  .timeline-company {
+    font-size: var(--font-size-sm);
+  }
+</style>

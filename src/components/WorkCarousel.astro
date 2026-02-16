@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content'
+import WorkCarouselIsland from './WorkCarouselIsland.jsx'
+
+const allWork = await getCollection('work')
+const featured = allWork
+  .filter(w => w.data.featured)
+  .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+  .map(w => ({
+    title: w.data.title,
+    role: w.data.role,
+    year: w.data.year,
+    thumbnail: w.data.thumbnail,
+    slug: w.id,
+  }))
+---
+
+<section class="work-carousel-section" id="selected-work" aria-label="Selected work">
+  <div class="work-carousel-header">
+    <h3 class="text-label">Selected Work</h3>
+  </div>
+  <WorkCarouselIsland cards={featured} client:visible />
+</section>
+
+<style>
+  .work-carousel-section {
+    padding: var(--space-4xl) 0;
+    overflow: hidden;
+  }
+
+  .work-carousel-header {
+    padding: 0 var(--space-xl);
+    margin-bottom: var(--space-2xl);
+  }
+</style>

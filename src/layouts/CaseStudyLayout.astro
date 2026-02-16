@@ -1,0 +1,98 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import CaseStudyHero from '../components/CaseStudyHero.astro'
+import CaseStudyNav from '../components/CaseStudyNav.astro'
+
+interface Props {
+  title: string
+  client: string
+  year: number
+  role: string
+  agency: string
+  tagline: string
+  heroImage: string
+  metrics?: { value: string; label: string }[]
+  prevSlug?: string
+  prevTitle?: string
+  nextSlug?: string
+  nextTitle?: string
+}
+
+const {
+  title, client, year, role, agency, tagline, heroImage, metrics,
+  prevSlug, prevTitle, nextSlug, nextTitle,
+} = Astro.props
+---
+
+<BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline}>
+  <CaseStudyHero
+    title={title}
+    client={client}
+    year={year}
+    role={role}
+    agency={agency}
+    tagline={tagline}
+    heroImage={heroImage}
+    metrics={metrics}
+  />
+
+  <article class="case-study-body">
+    <slot />
+  </article>
+
+  <CaseStudyNav
+    prevSlug={prevSlug}
+    prevTitle={prevTitle}
+    nextSlug={nextSlug}
+    nextTitle={nextTitle}
+  />
+</BaseLayout>
+
+<style is:global>
+  .case-study-body {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-xl) var(--space-5xl);
+  }
+
+  .case-study-body h2 {
+    font-size: clamp(var(--font-size-xl), 2.5vw, var(--font-size-3xl));
+    font-weight: var(--font-weight-regular);
+    margin-top: var(--space-4xl);
+    margin-bottom: var(--space-lg);
+  }
+
+  .case-study-body h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-regular);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .case-study-body p {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-lg);
+    max-width: 65ch;
+  }
+
+  .case-study-body img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    margin: var(--space-xl) 0;
+  }
+
+  .case-study-body ul {
+    list-style: disc;
+    padding-left: var(--space-lg);
+    margin-bottom: var(--space-lg);
+  }
+
+  .case-study-body li {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-sm);
+  }
+</style>

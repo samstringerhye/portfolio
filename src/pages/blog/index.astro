@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const allPosts = await getCollection('blog')
+const published = allPosts
+  .filter(p => p.data.published)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+---
+
+<BaseLayout title="Blog — Sam Stringer-Hye" description="Thoughts on design systems, motion design, and creative process.">
+  <section class="blog-index">
+    <div class="blog-header">
+      <p class="text-label">Writing</p>
+      <h1>Blog</h1>
+    </div>
+
+    {published.length === 0 ? (
+      <p class="blog-empty">Posts coming soon.</p>
+    ) : (
+      <div class="blog-list">
+        {published.map(post => (
+          <a href={`/blog/${post.id}`} class="blog-item" data-reveal="fade-up">
+            <time>{post.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}</time>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-index {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-xl);
+  }
+
+  .blog-header {
+    margin-bottom: var(--space-3xl);
+  }
+
+  .blog-header h1 {
+    margin-top: var(--space-sm);
+  }
+
+  .blog-empty {
+    font-size: var(--font-size-lg);
+  }
+
+  .blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+  }
+
+  .blog-item {
+    text-decoration: none;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    transition: background 0.2s ease;
+  }
+
+  .blog-item:hover {
+    background: var(--color-surface);
+  }
+
+  .blog-item time {
+    font-size: var(--font-size-sm);
+    display: block;
+    margin-bottom: var(--space-xs);
+  }
+
+  .blog-item h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-regular);
+    margin-bottom: var(--space-xs);
+  }
+
+  .blog-item p {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+  }
+</style>

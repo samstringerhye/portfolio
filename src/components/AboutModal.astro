@@ -1,0 +1,109 @@
+---
+
+---
+
+<div class="about-modal" id="about-modal" role="dialog" aria-modal="true" aria-label="About Sam Stringer-Hye" hidden>
+  <div class="about-backdrop" data-about-close></div>
+  <div class="about-content" tabindex="-1">
+    <button class="about-close" data-about-close aria-label="Close about panel">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M18 6L6 18M6 6l12 12" />
+      </svg>
+    </button>
+
+    <div class="about-body">
+      <p class="text-label" style="margin-bottom: var(--space-lg);">About</p>
+
+      <h2 style="margin-bottom: var(--space-lg);">Sam Stringer-Hye</h2>
+
+      <p class="about-bio" style="margin-bottom: var(--space-xl);">
+        Experienced Product and UX/UI designer with 10+ years of crafting intuitive, high-performing digital experiences for top brands. Skilled in designing scalable systems, motion design, and seamless user interactions that bridge creativity and functionality.
+      </p>
+
+      <p class="about-bio" style="margin-bottom: var(--space-2xl);">
+        Adept at collaborating with cross-functional teams and stakeholders to bring user-centered solutions to life. Passionate about refining and elevating digital experiences through thoughtful design and problem-solving.
+      </p>
+
+      <div class="about-links">
+        <a href="mailto:sam@samstringerhye.com" class="about-link">sam@samstringerhye.com</a>
+        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link">LinkedIn</a>
+        <a href="/assets/resume.pdf" download class="about-link">Download Resume</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .about-modal {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .about-modal[hidden] {
+    display: none;
+  }
+
+  .about-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .about-content {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    max-height: 85vh;
+    background: var(--color-background);
+    padding: var(--space-3xl) var(--space-2xl);
+    overflow-y: auto;
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .about-close {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+  }
+
+  .about-close:hover {
+    color: var(--color-text-primary);
+  }
+
+  .about-body {
+    padding-top: var(--space-2xl);
+  }
+
+  .about-bio {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+  }
+
+  .about-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .about-link {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    .about-content {
+      max-width: 100%;
+    }
+  }
+</style>

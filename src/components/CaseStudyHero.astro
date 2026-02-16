@@ -1,0 +1,138 @@
+---
+interface Props {
+  title: string
+  client: string
+  year: number
+  role: string
+  agency: string
+  tagline: string
+  heroImage: string
+  metrics?: { value: string; label: string }[]
+}
+
+const { title, client, year, role, agency, tagline, heroImage, metrics } = Astro.props
+---
+
+<header class="cs-hero" data-reveal="fade-up">
+  <div class="cs-hero-image">
+    <img src={heroImage} alt={title} transition:name={`hero-${title.toLowerCase().replace(/\s+/g, '-')}`} />
+  </div>
+
+  <div class="cs-hero-content">
+    <h1 class="cs-hero-title" transition:name={`title-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+      {title}
+    </h1>
+    <p class="cs-hero-tagline">{tagline}</p>
+
+    <div class="cs-hero-meta">
+      <div class="cs-meta-item">
+        <span class="cs-meta-label text-label">Client</span>
+        <span class="cs-meta-value">{client}</span>
+      </div>
+      <div class="cs-meta-item">
+        <span class="cs-meta-label text-label">Role</span>
+        <span class="cs-meta-value">{role}</span>
+      </div>
+      <div class="cs-meta-item">
+        <span class="cs-meta-label text-label">Agency</span>
+        <span class="cs-meta-value">{agency}</span>
+      </div>
+      <div class="cs-meta-item">
+        <span class="cs-meta-label text-label">Year</span>
+        <span class="cs-meta-value">{year}</span>
+      </div>
+    </div>
+
+    {metrics && metrics.length > 0 && (
+      <div class="cs-hero-metrics">
+        {metrics.map(m => (
+          <div class="cs-metric">
+            <span class="cs-metric-value">{m.value}</span>
+            <span class="cs-metric-label">{m.label}</span>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</header>
+
+<style>
+  .cs-hero {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-xl) 0;
+  }
+
+  .cs-hero-image {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .cs-hero-image img {
+    width: 100%;
+    display: block;
+  }
+
+  .cs-hero-content {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+  }
+
+  .cs-hero-title {
+    font-size: clamp(var(--font-size-3xl), 4vw, var(--font-size-5xl));
+    font-weight: var(--font-weight-regular);
+    margin-bottom: var(--space-md);
+  }
+
+  .cs-hero-tagline {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-2xl);
+    max-width: 55ch;
+  }
+
+  .cs-hero-meta {
+    display: flex;
+    gap: var(--space-2xl);
+    flex-wrap: wrap;
+    padding: var(--space-lg) 0;
+    border-top: var(--border-light);
+    border-bottom: var(--border-light);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .cs-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .cs-meta-value {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+  }
+
+  .cs-hero-metrics {
+    display: flex;
+    gap: var(--space-3xl);
+    flex-wrap: wrap;
+  }
+
+  .cs-metric {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .cs-metric-value {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-regular);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+  }
+
+  .cs-metric-label {
+    font-size: var(--font-size-sm);
+  }
+</style>

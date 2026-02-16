@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="Colophon — Sam Stringer-Hye" description="How this site was built.">
+  <section class="colophon-page">
+    <div class="colophon-header">
+      <p class="text-label">About this site</p>
+      <h1>Colophon</h1>
+    </div>
+
+    <div class="colophon-body" data-reveal="fade-up">
+      <h2>Tech Stack</h2>
+      <p>
+        Built with <strong>Astro</strong> for static-first delivery with selective React hydration for interactive components.
+        3D hero animation rendered with <strong>React Three Fiber</strong>.
+        Animations powered by <strong>GSAP</strong> (ScrollTrigger, Draggable).
+        Smooth scrolling via <strong>Lenis</strong>. Deployed on <strong>Vercel</strong>.
+      </p>
+
+      <h2>Typography</h2>
+      <p>
+        <strong>Inter</strong> by Rasmus Andersson — a typeface designed for computer screens with a tall x-height for legibility at small sizes.
+        All text uses regular weight (400); hierarchy is expressed through size alone.
+      </p>
+
+      <h2>Design Language</h2>
+      <p>
+        The prismatic/CMY (cyan, magenta, yellow) chromatic separation is used throughout as a unifying visual language.
+        It appears in scroll reveals, hover effects, the hero animation's temporal RGB split, and the carousel's velocity-driven shadows.
+        This references how white light splits through a prism — a metaphor for breaking a design system into its constituent parts.
+      </p>
+
+      <h2>Accessibility</h2>
+      <p>
+        This site respects <code>prefers-reduced-motion</code> — all animations are disabled or minimized when the user has requested reduced motion.
+        Navigation is fully keyboard-accessible, the about modal includes a focus trap, and all images include alt text.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .colophon-page {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-xl);
+  }
+
+  .colophon-header {
+    margin-bottom: var(--space-3xl);
+  }
+
+  .colophon-header h1 {
+    margin-top: var(--space-sm);
+  }
+
+  .colophon-body h2 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-regular);
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-sm);
+  }
+
+  .colophon-body h2:first-child {
+    margin-top: 0;
+  }
+
+  .colophon-body p {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-lg);
+  }
+
+  .colophon-body strong {
+    font-weight: var(--font-weight-regular);
+    color: var(--color-text-primary);
+  }
+
+  .colophon-body code {
+    font-size: var(--font-size-sm);
+    background: var(--color-surface);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+  }
+</style>

@@ -1,0 +1,146 @@
+---
+interface Props {
+  bio: string
+  aboutCTA: string
+}
+
+const { bio, aboutCTA } = Astro.props
+---
+
+<section class="bio-section">
+  <div class="bio-inner">
+    <p class="bio-text" data-bio-text>{bio}</p>
+  </div>
+</section>
+
+<style>
+  .bio-section {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: var(--space-4xl) var(--space-xl);
+  }
+
+  .bio-inner {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  .bio-text {
+    font-size: clamp(var(--font-size-xl), 3vw, var(--font-size-3xl));
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+    max-width: 60ch;
+  }
+
+  .bio-text :global(.bio-line) {
+    display: block;
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(14px);
+  }
+</style>
+
+<script>
+  import gsap from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+  gsap.registerPlugin(ScrollTrigger)
+
+  function splitIntoLines(el: HTMLElement, className: string): HTMLSpanElement[] {
+    const text = el.textContent || ''
+    const words = text.split(/\s+/).filter(Boolean)
+    if (!words.length) return []
+
+    el.style.opacity = '0'
+    el.innerHTML = ''
+
+    const wordSpans: HTMLSpanElement[] = []
+    words.forEach((word, i) => {
+      if (i > 0) el.appendChild(document.createTextNode(' '))
+      const span = document.createElement('span')
+      span.style.display = 'inline'
+      span.textContent = word
+      el.appendChild(span)
+      wordSpans.push(span)
+    })
+
+    const lineGroups: string[][] = [[]]
+    let prevTop = Math.round(wordSpans[0].getBoundingClientRect().top)
+
+    wordSpans.forEach((span, i) => {
+      const top = Math.round(span.getBoundingClientRect().top)
+      if (top > prevTop + 2 && i > 0) {
+        lineGroups.push([])
+        prevTop = top
+      }
+      lineGroups[lineGroups.length - 1].push(words[i])
+    })
+
+    el.innerHTML = ''
+    el.style.opacity = ''
+    const lineEls: HTMLSpanElement[] = []
+    lineGroups.forEach(lineWords => {
+      const lineSpan = document.createElement('span')
+      lineSpan.className = className
+      lineSpan.textContent = lineWords.join(' ')
+      el.appendChild(lineSpan)
+      lineEls.push(lineSpan)
+    })
+
+    return lineEls
+  }
+
+  let bioTrigger: globalThis.ScrollTrigger | null = null
+
+  function animateBioLines() {
+    const el = document.querySelector<HTMLElement>('[data-bio-text]')
+    if (!el) return
+
+    // Kill previous trigger to avoid duplicates on re-navigation
+    if (bioTrigger) {
+      bioTrigger.kill()
+      bioTrigger = null
+    }
+
+    if (!el.dataset.originalText) {
+      el.dataset.originalText = el.textContent || ''
+    } else {
+      el.textContent = el.dataset.originalText
+    }
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const lines = splitIntoLines(el, 'bio-line')
+
+    if (prefersReduced) {
+      gsap.set(lines, { opacity: 1, y: 0, filter: 'blur(0px)', textShadow: 'none' })
+      return
+    }
+
+    const d1 = 30, d2 = d1 * 1.5, d3 = d1 * 2, op = 0.5
+    const shadowFrom = `0 ${d1}px rgba(0,255,255,${op}), 0 ${d2}px rgba(255,0,255,${op}), 0 ${d3}px rgba(255,255,0,${op})`
+
+    gsap.set(lines, {
+      opacity: 0, y: 30, filter: 'blur(14px)', textShadow: shadowFrom,
+    })
+
+    bioTrigger = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 60%',
+      once: true,
+      onEnter: () => {
+        gsap.to(lines, {
+          opacity: 1, y: 0, filter: 'blur(0px)',
+          textShadow: '0 0px transparent, 0 0px transparent, 0 0px transparent',
+          duration: 1.2, stagger: 0.12, ease: 'power3.out',
+        })
+      },
+    })
+  }
+
+  // Use only astro:page-load (fires on initial load + navigations)
+  document.addEventListener('astro:page-load', animateBioLines)
+</script>

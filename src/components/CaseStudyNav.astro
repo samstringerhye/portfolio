@@ -1,0 +1,67 @@
+---
+interface Props {
+  prevSlug?: string
+  prevTitle?: string
+  nextSlug?: string
+  nextTitle?: string
+}
+
+const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
+---
+
+{(prevSlug || nextSlug) && (
+  <nav class="cs-nav" aria-label="Case study navigation">
+    <div class="cs-nav-inner">
+      {prevSlug ? (
+        <a href={`/work/${prevSlug}`} class="cs-nav-link cs-nav-prev" data-hover="spectral-link">
+          <span class="cs-nav-label text-label">Previous</span>
+          <span class="cs-nav-title">{prevTitle}</span>
+        </a>
+      ) : <div />}
+
+      {nextSlug ? (
+        <a href={`/work/${nextSlug}`} class="cs-nav-link cs-nav-next" data-hover="spectral-link">
+          <span class="cs-nav-label text-label">Next</span>
+          <span class="cs-nav-title">{nextTitle}</span>
+        </a>
+      ) : <div />}
+    </div>
+  </nav>
+)}
+
+<style>
+  .cs-nav {
+    border-top: var(--border-light);
+    padding: var(--space-3xl) var(--space-xl);
+  }
+
+  .cs-nav-inner {
+    display: flex;
+    justify-content: space-between;
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+  }
+
+  .cs-nav-link {
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .cs-nav-next {
+    text-align: right;
+  }
+
+  .cs-nav-label {
+    display: block;
+    margin-bottom: var(--space-xs);
+  }
+
+  .cs-nav-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-regular);
+  }
+
+  .cs-nav-link:hover .cs-nav-title {
+    color: var(--color-text-primary);
+  }
+</style>

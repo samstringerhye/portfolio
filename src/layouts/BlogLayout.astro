@@ -1,0 +1,80 @@
+---
+import BaseLayout from './BaseLayout.astro'
+
+interface Props {
+  title: string
+  description: string
+  date: Date
+  tags?: string[]
+}
+
+const { title, description, date, tags } = Astro.props
+const formatted = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+---
+
+<BaseLayout title={`${title} — Sam Stringer-Hye`} description={description}>
+  <article class="blog-post">
+    <header class="blog-header" data-reveal="fade-up">
+      <p class="text-label">{formatted}</p>
+      <h1>{title}</h1>
+      {tags && tags.length > 0 && (
+        <div class="blog-tags">
+          {tags.map(t => <span class="blog-tag">{t}</span>)}
+        </div>
+      )}
+    </header>
+    <div class="blog-body">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-post {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    padding: var(--space-3xl) var(--space-xl);
+  }
+
+  .blog-header {
+    margin-bottom: var(--space-3xl);
+  }
+
+  .blog-header h1 {
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .blog-tags {
+    display: flex;
+    gap: var(--space-sm);
+  }
+
+  .blog-tag {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-surface);
+    border-radius: var(--radius-full);
+    color: var(--color-text-primary);
+  }
+
+  .blog-body :global(p) {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .blog-body :global(h2) {
+    font-size: var(--font-size-xl);
+    margin-top: var(--space-3xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .blog-body :global(img) {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    margin: var(--space-xl) 0;
+  }
+</style>

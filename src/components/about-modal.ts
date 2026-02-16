@@ -1,0 +1,54 @@
+function initAboutModal() {
+  const modal = document.getElementById('about-modal') as HTMLElement | null
+  if (!modal) return
+
+  const content = modal.querySelector('.about-content') as HTMLElement | null
+  const triggers = document.querySelectorAll('[data-about-trigger]')
+  const closers = modal.querySelectorAll('[data-about-close]')
+
+  let previousFocus: HTMLElement | null = null
+
+  function open() {
+    previousFocus = document.activeElement as HTMLElement
+    modal!.hidden = false
+    document.body.style.overflow = 'hidden'
+    content?.focus()
+  }
+
+  function close() {
+    modal!.hidden = true
+    document.body.style.overflow = ''
+    previousFocus?.focus()
+  }
+
+  triggers.forEach(t => t.addEventListener('click', open))
+  closers.forEach(c => c.addEventListener('click', close))
+
+  // Escape key
+  modal.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      close()
+      return
+    }
+
+    // Focus trap
+    if (e.key === 'Tab') {
+      const focusable = modal!.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last?.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first?.focus()
+      }
+    }
+  })
+}
+
+initAboutModal()
+document.addEventListener('astro:after-swap', initAboutModal)
