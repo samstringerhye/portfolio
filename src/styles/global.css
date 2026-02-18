@@ -1,16 +1,3 @@
-@import './tokens.css';
-@import './typography.css';
-@import './interactions.css';
-
-/* Self-hosted Inter variable font */
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter-variable.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-display: swap;
-  font-style: normal;
-}
-
 /* Reset */
 *,
 *::before,
@@ -30,14 +17,27 @@ html {
 body {
   font-family: var(--font-primary);
   font-size: var(--text-base);
-  font-weight: var(--font-weight-body);
-  line-height: var(--line-height-body);
+  font-weight: var(--font-weight-sans-serif);
+  line-height: var(--line-height-normal);
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-serif);
+}
+
+p {
+  font-size: var(--text-base);
+  line-height: var(--line-height-normal);
+  text-wrap: pretty;
+}
+
 
 img,
 picture,
@@ -91,7 +91,7 @@ ol {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: var(--scrollbar-width);
 }
 
 ::-webkit-scrollbar-track {
@@ -100,7 +100,7 @@ ol {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
-  border-radius: 9999px;
+  border-radius: var(--radius-pill);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -116,8 +116,8 @@ ol {
   background: var(--color-text-primary);
   color: var(--color-bg-primary);
   border-radius: var(--radius-md);
-  z-index: 300;
-  transition: top 0.2s ease;
+  z-index: var(--z-skip-link);
+  transition: top var(--transition-fast) ease;
 }
 
 .skip-to-content:focus {

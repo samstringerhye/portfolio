@@ -1,19 +1,19 @@
 ---
-import typo from '../data/typography.json'
-
 interface Props {
   interests: string[]
+  headingTag?: string
+  headingRole?: string
+  textRole?: string
 }
 
-const { interests } = Astro.props
-const ihCfg = typo.tags.interestsHeading
-const HeadingTag = ihCfg.tag as any
+const { interests, headingTag = 'h2', headingRole = 'headline', textRole = 'title' } = Astro.props
+const HeadingTag = headingTag as any
 const text = interests.join(' \u00b7 ') + ' \u00b7 '
 const copies = 4
 ---
 
 <section class="interests-section" aria-label="Interests">
-  <HeadingTag class:list={["visually-hidden", `typo-${ihCfg.role}`]}>Interests</HeadingTag>
+  <HeadingTag class:list={["visually-hidden", `typo-${headingRole}`]}>Interests</HeadingTag>
   <div class="interests-row" data-direction="left">
     <svg class="interests-svg-defs" aria-hidden="true">
       <defs>
@@ -25,7 +25,7 @@ const copies = 4
     </svg>
     <div class="interests-track" aria-hidden="true">
       {Array.from({ length: copies }, () => (
-        <span class="interests-text">{text}</span>
+        <span class:list={["interests-text", `typo-${textRole}`]}>{text}</span>
       ))}
     </div>
   </div>
@@ -41,7 +41,7 @@ const copies = 4
     </svg>
     <div class="interests-track" aria-hidden="true">
       {Array.from({ length: copies }, () => (
-        <span class="interests-text">{text}</span>
+        <span class:list={["interests-text", `typo-${textRole}`]}>{text}</span>
       ))}
     </div>
   </div>
@@ -80,7 +80,6 @@ const copies = 4
 
   .interests-text {
     color: var(--color-text-primary);
-    line-height: 1.2;
     padding: 0 0.1em;
     max-width: none;
   }
@@ -88,9 +87,9 @@ const copies = 4
 
 <script>
   import gsap from 'gsap'
-  import animConfig from '../data/animations.json'
+  import tokens from '../data/tokens.json'
 
-  const scrollDuration = animConfig.interests.scrollDuration
+  const scrollDuration = tokens.animations.interests.scrollDuration
   let interestsTweens: gsap.core.Tween[] = []
 
   function cleanupScrollingInterests() {

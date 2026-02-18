@@ -5,8 +5,8 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 <BaseLayout title="Colophon — Sam Stringer-Hye" description="How this site was built.">
   <section class="colophon-page">
     <div class="colophon-header">
-      <p class="text-label">About this site</p>
-      <h1>Colophon</h1>
+      <p class="typo-caption" style="color: var(--color-text-secondary);">About this site</p>
+      <h1 class="typo-headline">Colophon</h1>
     </div>
 
     <div class="colophon-body" data-reveal="fade-up">
@@ -56,6 +56,11 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   }
 
   .colophon-body h2 {
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-serif);
+    font-size: var(--text-3xl);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--tracking-normal);
     margin-top: var(--space-6);
     margin-bottom: var(--space-1);
   }
@@ -65,17 +70,21 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   }
 
   .colophon-body p {
+    font-family: var(--font-sans-serif);
+    font-weight: var(--font-weight-sans-serif);
+    font-size: var(--text-base);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--tracking-normal);
     margin-bottom: var(--space-3);
   }
 
   .colophon-body strong {
-    font-weight: var(--font-weight-body);
     color: var(--color-text-primary);
   }
 
   .colophon-body code {
     background: var(--color-bg-alt);
-    padding: 2px 6px;
+    padding: var(--radius-sm) var(--space-1);
     border-radius: var(--radius-sm);
   }
 </style>

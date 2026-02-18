@@ -1,11 +1,10 @@
 ---
-import experience from '../data/experience.json'
-import typo from '../data/typography.json'
+import experience from '../content/experience.json'
 
-const thCfg = typo.tags.timelineHeading
-const tjCfg = typo.tags.timelineJobTitle
-const HeadingTag = thCfg.tag as any
-const JobTag = tjCfg.tag as any
+const jobs = experience.jobs
+const HeadingTag = experience.headingTag as any
+const JobTag = experience.jobTitleTag as any
+const CompanyTag = experience.companyTag as any
 
 function formatDate(dateStr: string | null) {
   if (!dateStr) return 'Present'
@@ -17,21 +16,26 @@ function formatDate(dateStr: string | null) {
 
 <section class="timeline-section" aria-label="Experience">
   <div class="timeline-inner">
-    <HeadingTag class={`typo-${thCfg.role}`}>Experience</HeadingTag>
+    <HeadingTag class={`typo-${experience.headingRole}`} data-reveal>Experience</HeadingTag>
     <ol class="timeline" role="list">
-      {experience.map((job, i) => (
+      {jobs.map((job, i) => (
         <li class="timeline-item" data-reveal="stagger">
           <div class="timeline-dot" aria-hidden="true" />
-          {i < experience.length - 1 && <div class="timeline-line" aria-hidden="true" />}
+          {i < jobs.length - 1 && <div class="timeline-line" aria-hidden="true" />}
           <div class="timeline-content">
-            <JobTag class:list={["timeline-title", `typo-${tjCfg.role}`]}>{job.title}</JobTag>
-            <p class="timeline-company">
+            <JobTag class:list={["timeline-title", `typo-${experience.jobTitleRole}`]}>{job.title}</JobTag>
+            <CompanyTag class:list={["timeline-company", `typo-${experience.companyRole}`]}>
               {job.company} &middot; {job.startDate
                 ? <time datetime={job.startDate}>{formatDate(job.startDate)}</time>
                 : formatDate(job.startDate)} — {job.endDate
                 ? <time datetime={job.endDate}>{formatDate(job.endDate)}</time>
                 : formatDate(job.endDate)}
-            </p>
+            </CompanyTag>
+            {job.highlights && job.highlights.length > 0 && (
+              <ul class:list={["timeline-highlights", `typo-${experience.highlightRole}`]} role="list">
+                {job.highlights.map(h => <li>{h}</li>)}
+              </ul>
+            )}
           </div>
         </li>
       ))}
@@ -41,12 +45,13 @@ function formatDate(dateStr: string | null) {
 
 <style>
   .timeline-section {
-    padding: var(--section-padding) var(--page-padding);
+    padding-block: var(--section-padding);
   }
 
   .timeline-inner {
     max-width: var(--container-content);
     margin: 0 auto;
+    padding-inline: var(--page-padding);
   }
 
   .timeline-inner > h2 {
@@ -92,5 +97,26 @@ function formatDate(dateStr: string | null) {
 
   .timeline-company {
     color: var(--color-text-secondary);
+  }
+
+  .timeline-highlights {
+    margin-top: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  .timeline-highlights li {
+    position: relative;
+    padding-left: var(--space-3);
+    color: var(--color-text-secondary);
+  }
+
+  .timeline-highlights li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-border);
   }
 </style>

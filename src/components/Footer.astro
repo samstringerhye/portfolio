@@ -5,18 +5,18 @@ const year = new Date().getFullYear()
 <footer class="footer">
   <div class="footer-inner">
     <address class="footer-left">
-      <p class="footer-name">Sam Stringer-Hye</p>
-      <p class="footer-role">Associate Design Director</p>
+      <p class="footer-name typo-body">Sam Stringer-Hye</p>
+      <p class="footer-role typo-caption">Associate Design Director</p>
     </address>
 
     <nav class="footer-links" aria-label="Footer links">
-      <a href="mailto:sam@samstringerhye.com" class="footer-link">Email</a>
-      <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn<span class="visually-hidden"> (opens in new tab)</span></a>
+      <a href="mailto:sam@samstringerhye.com" class="footer-link typo-caption">Email</a>
+      <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-link typo-caption">LinkedIn<span class="visually-hidden"> (opens in new tab)</span></a>
     </nav>
 
     <div class="footer-right">
-      <p class="footer-copyright">&copy; {year} Sam Stringer-Hye</p>
-      <a href="/colophon" class="footer-colophon">Colophon</a>
+      <p class="footer-copyright typo-caption">&copy; {year} Sam Stringer-Hye</p>
+      <a href="/colophon" class="footer-colophon typo-caption">Colophon</a>
     </div>
   </div>
 </footer>
@@ -59,7 +59,7 @@ const year = new Date().getFullYear()
     margin-bottom: var(--space-1);
   }
 
-  @media (max-width: 768px) {
+  @media (--mobile) {
     .footer-inner {
       flex-direction: column;
       gap: var(--space-4);

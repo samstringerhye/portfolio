@@ -4,8 +4,7 @@ import SEO from '../components/SEO.astro'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import AboutModal from '../components/AboutModal.astro'
-import FontSwitcher from '../components/FontSwitcher.astro'
-import typo from '../data/typography.json'
+import tokens from '../data/tokens.json'
 import '../styles/global.css'
 
 interface Props {
@@ -17,29 +16,94 @@ interface Props {
 
 const { title, description, ogImage, hideFooter = false } = Astro.props
 
+/* ── Helper: fluid clamp from min→max rem across 375→1440px ── */
 function buildClamp(min: number, max: number): string {
   if (min === max) return `${min}rem`
-  const slope = ((max - min) / (1440 - 375)) * 100
-  const intercept = min - (slope / 100) * 375
+  const rootPx = 17
+  const slope = ((max - min) * rootPx * 100) / (1440 - 375)
+  const intercept = min - (slope * 375) / (100 * rootPx)
   return `clamp(${min.toFixed(2)}rem, ${intercept.toFixed(4)}rem + ${slope.toFixed(4)}vw, ${max.toFixed(2)}rem)`
 }
 
-const scaleVars = Object.entries(typo.scale).map(([key, val]) => {
+/* ── Helper: camelCase → kebab-case ── */
+function kebab(s: string): string {
+  return s.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+}
+
+/* ── Typography vars ── */
+const scaleVars = Object.entries(tokens.scale).map(([key, val]) => {
   if (typeof val === 'number') return `--text-${key}: ${val}rem;`
   const v = val as { min: number; max: number }
   return `--text-${key}: ${buildClamp(v.min, v.max)};`
 }).join('\n    ')
 
-const leadingVars = Object.entries(typo.lineHeight)
+const leadingVars = Object.entries(tokens.lineHeight)
   .map(([key, val]) => `--line-height-${key}: ${val};`).join('\n    ')
 
-const trackingVars = Object.entries(typo.tracking)
+const trackingVars = Object.entries(tokens.tracking)
   .map(([key, val]) => `--tracking-${key}: ${val}em;`).join('\n    ')
 
-const fonts = typo.fonts as Record<string, string>
+const fonts = tokens.fonts as Record<string, string>
 const fontVars = Object.entries(fonts)
   .map(([key, val]) => `--font-${key}: ${val};`).join('\n    ')
 
+const fontWeights = tokens.fontWeight as Record<string, number>
+const weightVars = Object.entries(fontWeights)
+  .map(([key, val]) => `--font-weight-${key}: ${val};`).join('\n    ')
+
+/* ── Color vars ── */
+const colorVars = Object.entries(tokens.colors)
+  .map(([key, val]) => `--color-${kebab(key)}: ${val};`).join('\n    ')
+
+/* ── Spacing vars ── */
+const spacingVars = Object.entries(tokens.spacing)
+  .map(([key, val]) => `--space-${key}: ${val};`).join('\n    ')
+
+/* ── Layout vars ── */
+const layoutVars = [
+  `--container-content: ${tokens.layout.contentWidth}px;`,
+  `--page-padding: ${tokens.layout.pagePadding};`,
+  `--grid-gutter: ${tokens.layout.gridGutter};`,
+  `--section-padding: ${tokens.layout.sectionPadding};`,
+  `--nav-height: ${tokens.layout.navHeight};`,
+].join('\n    ')
+
+/* ── Breakpoint vars (for JS access — CSS @media requires literal values) ── */
+const breakpointVars = Object.entries(tokens.breakpoints)
+  .map(([key, val]) => `--breakpoint-${key}: ${val}px;`).join('\n    ')
+
+/* ── Radii vars ── */
+const radiiVars = Object.entries(tokens.radii)
+  .map(([key, val]) => `--radius-${key}: ${val};`).join('\n    ')
+
+/* ── Z-index vars ── */
+const zVars = Object.entries(tokens.zIndex)
+  .map(([key, val]) => `--z-${kebab(key)}: ${val};`).join('\n    ')
+
+/* ── Transition vars ── */
+const transitionVars = Object.entries(tokens.transitions)
+  .map(([key, val]) => `--transition-${key}: ${val};`).join('\n    ')
+
+/* ── Modal vars ── */
+const modalVars = Object.entries(tokens.modal)
+  .map(([key, val]) => `--modal-${kebab(key)}: ${val};`).join('\n    ')
+
+/* ── Scrollbar vars ── */
+const scrollbarVars = Object.entries(tokens.scrollbar)
+  .map(([key, val]) => `--scrollbar-${key}: ${val};`).join('\n    ')
+
+/* ── Glow vars ── */
+const glowVars = Object.entries(tokens.glow)
+  .map(([key, val]) => `--glow-${key}: ${val};`).join('\n    ')
+
+/* ── Hover vars ── */
+const hoverVars = Object.entries(tokens.hover)
+  .map(([key, val]) => {
+    const unit = typeof val === 'number' && key !== 'perspective' ? '' : typeof val === 'number' ? 'px' : ''
+    return `--hover-${kebab(key)}: ${val}${unit};`
+  }).join('\n    ')
+
+/* ── Font faces ── */
 const fontFaces = [
   { name: 'PP Editorial New', src: '/fonts/trial/PPEditorialNew-Regular.otf' },
   { name: 'PP Neue Montreal', src: '/fonts/trial/PPNeueMontreal-Medium.otf' },
@@ -49,11 +113,8 @@ const fontFaces = [
     font-display: swap;
   }`).join('\n  ')
 
-const fontWeights = typo.fontWeight as Record<string, number>
-const weightVars = Object.entries(fontWeights)
-  .map(([key, val]) => `--font-weight-${key}: ${val};`).join('\n    ')
-
-const roleRules = Object.entries(typo.roles).map(([name, cfg]) => {
+/* ── Typography role utility classes ── */
+const roleRules = Object.entries(tokens.roles).map(([name, cfg]) => {
   const c = cfg as { font: string; scale: string; lineHeight: string; tracking: string }
   return `.typo-${name} {
     font-family: var(--font-${c.font});
@@ -64,15 +125,28 @@ const roleRules = Object.entries(typo.roles).map(([name, cfg]) => {
   }`
 }).join('\n  ')
 
+/* ── Assemble the full :root block ── */
 const typoCss = `${fontFaces}
   :root {
     ${fontVars}
-    --font-primary: var(--font-body);
+    --font-primary: var(--font-sans-serif);
     ${weightVars}
     ${scaleVars}
     ${leadingVars}
     ${trackingVars}
-    --container-content: ${typo.contentWidth}px;
+    ${colorVars}
+    ${spacingVars}
+    ${layoutVars}
+    ${breakpointVars}
+    ${radiiVars}
+    ${zVars}
+    ${transitionVars}
+    ${modalVars}
+    ${scrollbarVars}
+    ${glowVars}
+    ${hoverVars}
+    --focus-ring: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-text-primary);
+    --border-light: 1px solid var(--color-border);
   }
   ${roleRules}`
 ---
@@ -84,6 +158,7 @@ const typoCss = `${fontFaces}
     <link rel="preload" href="/fonts/trial/PPEditorialNew-Regular.otf" as="font" type="font/otf" crossorigin />
     <link rel="preload" href="/fonts/trial/PPNeueMontreal-Medium.otf" as="font" type="font/otf" crossorigin />
     <style set:html={typoCss}></style>
+    <noscript><style>.hero-word, .bio-line { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
     <ViewTransitions fallback="swap" />
   </head>
   <body>
@@ -94,17 +169,16 @@ const typoCss = `${fontFaces}
     </main>
     {!hideFooter && <Footer />}
     <AboutModal />
-    <FontSwitcher />
 
     <script>
       import Lenis from 'lenis'
       import gsap from 'gsap'
       import { ScrollTrigger } from 'gsap/ScrollTrigger'
-      import animConfig from '../data/animations.json'
+      import tokens from '../data/tokens.json'
 
       gsap.registerPlugin(ScrollTrigger)
 
-      const scrollCfg = animConfig.smoothScroll
+      const scrollCfg = tokens.animations.smoothScroll
       let lenis: InstanceType<typeof Lenis> | null = null
 
       function initLenis() {

@@ -12,6 +12,7 @@ const work = defineCollection({
     tagline: z.string(),
     thumbnail: z.string(),
     heroImage: z.string(),
+    heroImageAlt: z.string().optional(),
     featured: z.boolean().default(true),
     sortOrder: z.number(),
     tags: z.array(z.string()).default([]),
@@ -22,27 +23,4 @@ const work = defineCollection({
   }),
 })
 
-const blog = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    date: z.coerce.date(),
-    published: z.boolean().default(false),
-    tags: z.array(z.string()).default([]),
-  }),
-})
-
-const playground = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/playground' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    thumbnail: z.string().optional(),
-    url: z.string().optional(),
-    tags: z.array(z.string()).default([]),
-    sortOrder: z.number().default(0),
-  }),
-})
-
-export const collections = { work, blog, playground }
+export const collections = { work }

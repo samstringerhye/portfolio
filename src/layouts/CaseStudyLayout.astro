@@ -11,6 +11,7 @@ interface Props {
   agency: string
   tagline: string
   heroImage: string
+  heroImageAlt?: string
   metrics?: { value: string; label: string }[]
   prevSlug?: string
   prevTitle?: string
@@ -19,7 +20,7 @@ interface Props {
 }
 
 const {
-  title, client, year, role, agency, tagline, heroImage, metrics,
+  title, client, year, role, agency, tagline, heroImage, heroImageAlt, metrics,
   prevSlug, prevTitle, nextSlug, nextTitle,
 } = Astro.props
 ---
@@ -33,6 +34,7 @@ const {
     agency={agency}
     tagline={tagline}
     heroImage={heroImage}
+    heroImageAlt={heroImageAlt}
     metrics={metrics}
   />
 
@@ -56,21 +58,37 @@ const {
   }
 
   .case-study-body h2 {
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-serif);
+    font-size: var(--text-3xl);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--tracking-normal);
     margin-top: var(--space-10);
     margin-bottom: var(--space-3);
   }
 
   .case-study-body h3 {
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-serif);
+    font-size: var(--text-2xl);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--tracking-normal);
     margin-top: var(--space-6);
     margin-bottom: var(--space-2);
   }
 
   .case-study-body p {
+    font-family: var(--font-sans-serif);
+    font-weight: var(--font-weight-sans-serif);
+    font-size: var(--text-base);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--tracking-normal);
     margin-bottom: var(--space-3);
   }
 
   .case-study-body img {
     width: 100%;
+    height: auto;
     border-radius: var(--radius-lg);
     margin: var(--space-4) 0;
   }
@@ -82,6 +100,11 @@ const {
   }
 
   .case-study-body li {
+    font-family: var(--font-sans-serif);
+    font-weight: var(--font-weight-sans-serif);
+    font-size: var(--text-base);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--tracking-normal);
     margin-bottom: var(--space-1);
   }
 </style>

@@ -12,21 +12,21 @@
     </button>
 
     <div class="about-body">
-      <h2 id="about-modal-title">Sam Stringer-Hye</h2>
+      <h2 id="about-modal-title" class="typo-title">Sam Stringer-Hye</h2>
 
-      <p class="about-bio">
+      <p class="about-bio typo-body">
         Experienced Product and UX/UI designer with 10+ years of crafting intuitive, high-performing digital experiences for top brands. Skilled in designing scalable systems, motion design, and seamless user interactions that bridge creativity and functionality.
       </p>
 
-      <p class="about-bio">
+      <p class="about-bio typo-body">
         Adept at collaborating with cross-functional teams and stakeholders to bring user-centered solutions to life. Passionate about refining and elevating digital experiences through thoughtful design and problem-solving.
       </p>
 
       <nav class="about-links" aria-label="Contact links">
-        <a href="mailto:sam@samstringerhye.com" class="about-link">sam@samstringerhye.com</a>
-        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link">LinkedIn<span class="visually-hidden"> (opens in new tab)</span></a>
+        <a href="mailto:sam@samstringerhye.com" class="about-link typo-body">sam@samstringerhye.com</a>
+        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link typo-body">LinkedIn<span class="visually-hidden"> (opens in new tab)</span></a>
         <!-- TODO: Add resume PDF to /assets/resume.pdf -->
-        <a href="/assets/resume.pdf" download class="about-link">Download Resume</a>
+        <a href="/assets/resume.pdf" download class="about-link typo-body">Download Resume</a>
       </nav>
     </div>
   </div>
@@ -49,21 +49,21 @@
   .about-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: var(--color-backdrop);
+    backdrop-filter: blur(var(--modal-backdrop-blur));
+    -webkit-backdrop-filter: blur(var(--modal-backdrop-blur));
   }
 
   .about-content {
     position: relative;
     width: 100%;
-    max-width: 520px;
-    max-height: 85vh;
+    max-width: var(--modal-max-width);
+    max-height: var(--modal-max-height);
     background: var(--color-bg-primary);
     padding: var(--space-8) var(--space-6);
     overflow-y: auto;
     border-radius: var(--radius-lg);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--modal-shadow);
   }
 
   .about-close {
@@ -71,7 +71,7 @@
     top: var(--space-3);
     right: var(--space-3);
     color: var(--color-text-secondary);
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast) ease;
   }
 
   .about-close:hover {
@@ -87,7 +87,6 @@
   }
 
   .about-bio {
-    line-height: var(--line-height-body);
     margin-bottom: var(--space-4);
   }
 
@@ -101,7 +100,7 @@
     gap: var(--space-2);
   }
 
-  @media (max-width: 768px) {
+  @media (--mobile) {
     .about-content {
       max-width: 100%;
     }

@@ -1,0 +1,54 @@
+{
+  "hero": {
+    "headline": "Hi there. I'm Sam.",
+    "headlineTag": "h1",
+    "headlineRole": "display"
+  },
+  "bio": {
+    "headline": "Who me?",
+    "headlineTag": "h2",
+    "headlineRole": "title",
+    "body": "I'm a product and UI designer with 10+ years crafting intuitive, high-performing digital experiences for top brands. Skilled in designing scalable systems, motion design, and seamless user interactions that bridge creativity and functionality.",
+    "bodyTag": "h3",
+    "bodyRole": "lead"
+  },
+  "work": {
+    "headingTag": "h3",
+    "headingRole": "title",
+    "cardTitleTag": "h4",
+    "cardTitleRole": "label"
+  },
+  "interests": {
+    "textRole": "display",
+    "items": [
+      "Technology",
+      "Gadgets",
+      "Denim",
+      "Boots",
+      "Leather",
+      "Watches",
+      "Audio",
+      "HiFi",
+      "Homelab",
+      "Restoration",
+      "Typography",
+      "Motion",
+      "Film",
+      "Electronic Music",
+      "UX",
+      "UI",
+      "Mac",
+      "Internet",
+      "History",
+      "Philosophy",
+      "Video Games",
+      "Graphic Novels",
+      "Vinyl",
+      "Manga",
+      "Horror",
+      "Science Fiction"
+    ],
+    "headingTag": "h2",
+    "headingRole": "display"
+  }
+}

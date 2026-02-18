@@ -2,22 +2,23 @@ import React, { useRef, useEffect, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import { Draggable } from 'gsap/Draggable'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import animConfig from '../data/animations.json'
+import tokens from '../data/tokens.json'
 
 gsap.registerPlugin(Draggable, ScrollTrigger)
 
-const snapCfg = animConfig.carousel.snap
-const entrCfg = animConfig.carousel.entrance
+const snapCfg = tokens.animations.carousel.snap
+const entrCfg = tokens.animations.carousel.entrance
 const WHEEL_THRESHOLD = snapCfg.wheelThreshold
 const MOMENTUM_FACTOR = snapCfg.momentumFactor
-const CARD_GAP = 24
-const CARD_RADIUS = 28
-const MOBILE_BREAKPOINT = 768
+const CARD_GAP = tokens.animations.carousel.cardGap
+const CARD_RADIUS = tokens.animations.carousel.cardRadius
+const MOBILE_BREAKPOINT = tokens.breakpoints.mobile
+const CONTENT_WIDTH = tokens.layout.contentWidth
 
 function computeCardWidth() {
   const vw = window.innerWidth
   if (vw < MOBILE_BREAKPOINT) return vw - 48
-  return Math.min(1260, vw - 80)
+  return Math.min(CONTENT_WIDTH, vw - 80)
 }
 
 function computeSideMargin() {
@@ -51,6 +52,8 @@ function CarouselCard({ card, cardWidth, titleTag: TitleTag = 'h4', titleRole = 
           src={card.thumbnail}
           alt=""
           draggable={false}
+          width="1260"
+          height="681"
           style={{
             width: '100%',
             height: '100%',
@@ -65,7 +68,6 @@ function CarouselCard({ card, cardWidth, titleTag: TitleTag = 'h4', titleRole = 
         style={{
           margin: 0,
           marginTop: 'var(--space-2)',
-          fontWeight: 'var(--font-weight-body)',
         }}
       >
         {card.title}
@@ -280,7 +282,7 @@ export default function WorkCarousel({ cards, cardTitleTag, cardTitleRole }) {
       role="region"
       aria-label="Work carousel"
       aria-roledescription="carousel"
-      style={{ position: 'relative', width: '100%', overflow: 'hidden', outline: 'none' }}
+      style={{ position: 'relative', width: '100%', overflow: 'hidden' }}
     >
       <div style={{ position: 'relative', cursor: 'grab' }}>
         <div
@@ -293,7 +295,13 @@ export default function WorkCarousel({ cards, cardTitleTag, cardTitleRole }) {
           }}
         >
           {cards.map((card, i) => (
-            <div key={card.slug} ref={el => cardsElRef.current[i] = el}>
+            <div
+              key={card.slug}
+              ref={el => cardsElRef.current[i] = el}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${cards.length}: ${card.title}`}
+            >
               <CarouselCard card={card} cardWidth={cardWidth} titleTag={cardTitleTag} titleRole={cardTitleRole} />
             </div>
           ))}
@@ -327,8 +335,8 @@ export default function WorkCarousel({ cards, cardTitleTag, cardTitleRole }) {
               width: i === activeIndex ? 24 : 8,
               height: 8,
               borderRadius: 4,
-              background: i === activeIndex ? 'var(--color-text-primary)' : 'var(--color-border)',
-              transition: 'width 0.3s ease, background 0.3s ease',
+              background: i === activeIndex ? 'var(--color-text-primary)' : 'var(--color-dot-inactive)',
+              transition: 'width var(--transition-base) ease, background var(--transition-base) ease',
               display: 'block',
             }} />
           </button>

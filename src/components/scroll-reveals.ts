@@ -1,10 +1,10 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import animConfig from '../data/animations.json'
+import tokens from '../data/tokens.json'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const cfg = animConfig.scrollReveal
+const cfg = tokens.animations.scrollReveal
 const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const D1 = cfg.aberration, D2 = D1 * 1.5, D3 = D1 * 2
@@ -28,11 +28,13 @@ export function initScrollReveals() {
 
     gsap.set(el, {
       opacity: 0, y: cfg.y, filter: `blur(${cfg.blur}px)`, textShadow: SHADOW_FROM,
+      visibility: 'hidden',
     })
 
     gsap.to(el, {
       opacity: 1, y: 0, filter: 'blur(0px)',
       textShadow: SHADOW_TO,
+      visibility: 'visible',
       duration: cfg.duration, ease: cfg.ease,
       scrollTrigger: {
         trigger: el,

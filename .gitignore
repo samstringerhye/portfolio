@@ -26,6 +26,9 @@ CLAUDE.md
 *.log
 *.local
 
+# Auto-generated PostCSS custom-media definitions
+src/styles/custom-media.css
+
 # Playwright
 .playwright-mcp/
 

@@ -1,22 +1,26 @@
 ---
-import typo from '../data/typography.json'
-
 interface Props {
   headline: string
   body: string
+  headlineTag?: string
+  headlineRole?: string
+  bodyTag?: string
+  bodyRole?: string
 }
 
-const { headline, body } = Astro.props
-const hlCfg = typo.tags.bioHeadline
-const bodyCfg = typo.tags.bioBody
-const HeadlineTag = hlCfg.tag as any
-const BodyTag = bodyCfg.tag as any
+const {
+  headline, body,
+  headlineTag = 'h2', headlineRole = 'title',
+  bodyTag = 'p', bodyRole = 'lead',
+} = Astro.props
+const HeadlineTag = headlineTag as any
+const BodyTag = bodyTag as any
 ---
 
 <section class="bio-section" aria-label="About">
   <div class="bio-inner">
-    <HeadlineTag class:list={["bio-headline", `typo-${hlCfg.role}`]}>{headline}</HeadlineTag>
-    <BodyTag class:list={["bio-text", `typo-${bodyCfg.role}`]} data-bio-text>{body}</BodyTag>
+    <HeadlineTag class:list={["bio-headline", `typo-${headlineRole}`]} data-reveal>{headline}</HeadlineTag>
+    <BodyTag class:list={["bio-text", `typo-${bodyRole}`]} data-bio-text>{body}</BodyTag>
   </div>
 </section>
 
@@ -43,7 +47,6 @@ const BodyTag = bodyCfg.tag as any
   }
 
   .bio-text {
-    line-height: var(--line-height-body);
     color: var(--color-text-primary);
   }
 
@@ -53,17 +56,25 @@ const BodyTag = bodyCfg.tag as any
     transform: translateY(30px);
     filter: blur(14px);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bio-text :global(.bio-line) {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
 </style>
 
 <script>
   import gsap from 'gsap'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
   import { SplitText } from 'gsap/SplitText'
-  import animConfig from '../data/animations.json'
+  import tokens from '../data/tokens.json'
 
   gsap.registerPlugin(ScrollTrigger, SplitText)
 
-  const cfg = animConfig.bio
+  const cfg = tokens.animations.bio
 
   let bioTrigger: globalThis.ScrollTrigger | null = null
   let bioSplit: SplitText | null = null

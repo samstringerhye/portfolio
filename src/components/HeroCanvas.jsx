@@ -9,9 +9,9 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js'
-import animConfig from '../data/animations.json'
+import tokens from '../data/tokens.json'
 
-const cfg = animConfig.hero.canvas
+const cfg = tokens.animations.hero.canvas
 
 const TWO_PI = Math.PI * 2
 const PHI = (1 + Math.sqrt(5)) / 2
@@ -186,6 +186,8 @@ export default function HeroCanvas() {
     const container = containerRef.current
     if (!container || !webglSupported) return
 
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     // Renderer
     const dpr = Math.min(window.devicePixelRatio, cfg.maxDpr)
     const renderer = new WebGLRenderer({ antialias: false, alpha: false })
@@ -240,7 +242,7 @@ export default function HeroCanvas() {
         if (!isVisible && wasVisible) {
           cancelAnimationFrame(frameId)
           hiddenAt = performance.now()
-        } else if (isVisible && !wasVisible) {
+        } else if (isVisible && !wasVisible && !prefersReduced) {
           pauseAccum += performance.now() - hiddenAt
           frameId = requestAnimationFrame(tick)
         }
@@ -282,10 +284,12 @@ export default function HeroCanvas() {
     const startTime = performance.now()
 
     function tick() {
-      frameId = requestAnimationFrame(tick)
+      if (!prefersReduced) {
+        frameId = requestAnimationFrame(tick)
+      }
 
       const elapsed = (performance.now() - startTime - pauseAccum) / 1000
-      const time = cfg.wavePaused ? 0 : elapsed
+      const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
 
       // Update instanced dot matrices directly (skip Object3D overhead)
       for (let i = 0; i < total; i++) {

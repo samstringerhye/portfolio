@@ -6,18 +6,34 @@ import WorkCarousel from '../components/WorkCarousel.astro'
 import Timeline from '../components/Timeline.astro'
 import ScrollingInterests from '../components/ScrollingInterests.astro'
 
-// Read home.md frontmatter
-const homeFile = await import('../content/home.md')
-const home = homeFile.frontmatter
+import home from '../content/home.json'
 ---
 
 <BaseLayout>
-  <HeroSection blocks={home.heroBlocks} />
-  <BioSection
-    headline={home.bioHeadline}
-    body={home.bioBody}
+  <HeroSection
+    headline={home.hero.headline}
+    tag={home.hero.headlineTag}
+    role={home.hero.headlineRole}
   />
-  <WorkCarousel />
+  <BioSection
+    headline={home.bio.headline}
+    body={home.bio.body}
+    headlineTag={home.bio.headlineTag}
+    headlineRole={home.bio.headlineRole}
+    bodyTag={home.bio.bodyTag}
+    bodyRole={home.bio.bodyRole}
+  />
+  <WorkCarousel
+    headingTag={home.work.headingTag}
+    headingRole={home.work.headingRole}
+    cardTitleTag={home.work.cardTitleTag}
+    cardTitleRole={home.work.cardTitleRole}
+  />
   <Timeline />
-  <ScrollingInterests interests={home.interests} />
+  <ScrollingInterests
+    interests={home.interests.items}
+    headingTag={home.interests.headingTag}
+    headingRole={home.interests.headingRole}
+    textRole={home.interests.textRole}
+  />
 </BaseLayout>

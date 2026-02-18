@@ -15,7 +15,7 @@ function isActive(href: string) {
 
 <header class="nav" id="site-nav">
   <nav class="nav-inner" aria-label="Main navigation">
-    <a href="/" class="nav-logo" aria-label="Sam Stringer-Hye — Home">
+    <a href="/" class="nav-logo typo-body" aria-label="Sam Stringer-Hye — Home">
       Sam Stringer-Hye
     </a>
 
@@ -24,7 +24,7 @@ function isActive(href: string) {
         <li>
           <a
             href={link.href}
-            class:list={['nav-link', { active: isActive(link.href) }]}
+            class:list={['nav-link', 'typo-body', { active: isActive(link.href) }]}
             aria-current={isActive(link.href) ? 'page' : undefined}
             data-astro-prefetch="hover"
           >
@@ -33,7 +33,7 @@ function isActive(href: string) {
         </li>
       ))}
       <li>
-        <button class="nav-link" data-about-trigger aria-haspopup="dialog">
+        <button class="nav-link typo-body" data-about-trigger aria-haspopup="dialog">
           About
         </button>
       </li>
@@ -70,7 +70,6 @@ function isActive(href: string) {
     justify-content: space-between;
     padding: var(--space-2) var(--page-padding);
     height: var(--nav-height);
-    font-size: var(--text-base);
   }
 
   .nav-logo {
@@ -93,8 +92,7 @@ function isActive(href: string) {
     background: none;
     border: none;
     cursor: pointer;
-    font-family: inherit;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast) ease;
   }
 
   .nav-link:hover {
@@ -125,11 +123,11 @@ function isActive(href: string) {
     width: 20px;
     height: 1.5px;
     background: var(--color-text-primary);
-    border-radius: 1px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    border-radius: var(--radius-sm);
+    transition: transform var(--transition-base) ease, opacity var(--transition-base) ease;
   }
 
-  @media (max-width: 768px) {
+  @media (--mobile) {
     .nav-toggle {
       display: flex;
     }
@@ -146,7 +144,7 @@ function isActive(href: string) {
       padding: var(--space-6) var(--space-4);
       background: var(--color-bg-primary);
       transform: translateX(100%);
-      transition: transform 0.3s ease;
+      transition: transform var(--transition-base) ease;
     }
 
     .nav-links.open {

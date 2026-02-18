@@ -1,30 +1,22 @@
 ---
 import HeroCanvas from './HeroCanvas.jsx'
-import typo from '../data/typography.json'
-
-interface HeroBlock {
-  tag?: string
-  text: string
-}
 
 interface Props {
-  blocks: HeroBlock[]
+  headline: string
+  tag?: string
+  role?: string
 }
 
-const { blocks } = Astro.props
-const heroCfg = typo.tags.heroText
-const defaultTag = heroCfg.tag
-const heroRole = `typo-${heroCfg.role}`
+const { headline, tag = 'h1', role = 'display' } = Astro.props
+const HeroTag = tag as any
+const heroRole = `typo-${role}`
 ---
 
 <section class="hero" aria-label="Introduction">
   <div class="hero-canvas-fallback" aria-hidden="true"></div>
   <HeroCanvas client:only="react" />
   <div class="hero-text">
-    {blocks.map(block => {
-      const Tag = (block.tag || defaultTag) as any
-      return <Tag class:list={["hero-block", heroRole]} data-hero-text>{block.text}</Tag>
-    })}
+    <HeroTag class:list={["hero-block", heroRole]} data-hero-text>{headline}</HeroTag>
   </div>
 </section>
 
@@ -88,18 +80,26 @@ const heroRole = `typo-${heroCfg.role}`
     display: inline-block;
     opacity: 0;
     transform: translateY(40px);
-    filter: blur(14px);
+    filter: blur(6px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-block :global(.hero-word) {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
   }
 </style>
 
 <script>
   import gsap from 'gsap'
   import { SplitText } from 'gsap/SplitText'
-  import animConfig from '../data/animations.json'
+  import tokens from '../data/tokens.json'
 
   gsap.registerPlugin(SplitText)
 
-  const cfg = animConfig.hero.text
+  const cfg = tokens.animations.hero.text
 
   let heroSplits: SplitText[] = []
 

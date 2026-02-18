@@ -7,39 +7,40 @@ interface Props {
   agency: string
   tagline: string
   heroImage: string
+  heroImageAlt?: string
   metrics?: { value: string; label: string }[]
 }
 
-const { title, client, year, role, agency, tagline, heroImage, metrics } = Astro.props
+const { title, client, year, role, agency, tagline, heroImage, heroImageAlt, metrics } = Astro.props
 ---
 
 <header class="cs-hero" data-reveal="fade-up">
   <div class="cs-hero-image">
-    <img src={heroImage} alt={title} transition:name={`hero-${title.toLowerCase().replace(/\s+/g, '-')}`} />
+    <img src={heroImage} alt={heroImageAlt || `${title} — project showcase`} width="1260" height="709" transition:name={`hero-${title.toLowerCase().replace(/\s+/g, '-')}`} />
   </div>
 
   <div class="cs-hero-content">
-    <h1 class="cs-hero-title" transition:name={`title-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+    <h1 class="cs-hero-title typo-headline" transition:name={`title-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       {title}
     </h1>
-    <p class="cs-hero-tagline">{tagline}</p>
+    <p class="cs-hero-tagline typo-lead">{tagline}</p>
 
     <dl class="cs-hero-meta">
       <div class="cs-meta-item">
-        <dt class="cs-meta-label text-label">Client</dt>
-        <dd class="cs-meta-value">{client}</dd>
+        <dt class="cs-meta-label typo-caption">Client</dt>
+        <dd class="cs-meta-value typo-body">{client}</dd>
       </div>
       <div class="cs-meta-item">
-        <dt class="cs-meta-label text-label">Role</dt>
-        <dd class="cs-meta-value">{role}</dd>
+        <dt class="cs-meta-label typo-caption">Role</dt>
+        <dd class="cs-meta-value typo-body">{role}</dd>
       </div>
       <div class="cs-meta-item">
-        <dt class="cs-meta-label text-label">Agency</dt>
-        <dd class="cs-meta-value">{agency}</dd>
+        <dt class="cs-meta-label typo-caption">Agency</dt>
+        <dd class="cs-meta-value typo-body">{agency}</dd>
       </div>
       <div class="cs-meta-item">
-        <dt class="cs-meta-label text-label">Year</dt>
-        <dd class="cs-meta-value">{year}</dd>
+        <dt class="cs-meta-label typo-caption">Year</dt>
+        <dd class="cs-meta-value typo-body">{year}</dd>
       </div>
     </dl>
 
@@ -47,8 +48,8 @@ const { title, client, year, role, agency, tagline, heroImage, metrics } = Astro
       <dl class="cs-hero-metrics">
         {metrics.map(m => (
           <div class="cs-metric">
-            <dd class="cs-metric-value">{m.value}</dd>
-            <dt class="cs-metric-label text-label">{m.label}</dt>
+            <dt class="cs-metric-label typo-caption">{m.label}</dt>
+            <dd class="cs-metric-value typo-title">{m.value}</dd>
           </div>
         ))}
       </dl>
@@ -85,7 +86,6 @@ const { title, client, year, role, agency, tagline, heroImage, metrics } = Astro
   }
 
   .cs-hero-tagline {
-    line-height: var(--line-height-body);
     margin-bottom: var(--space-6);
   }
 
@@ -121,8 +121,12 @@ const { title, client, year, role, agency, tagline, heroImage, metrics } = Astro
     gap: var(--space-1);
   }
 
+  .cs-metric-label {
+    order: 2;
+  }
+
   .cs-metric-value {
-    letter-spacing: var(--tracking-tight);
+    order: 1;
     color: var(--color-text-primary);
     max-width: none;
   }

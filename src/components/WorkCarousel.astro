@@ -1,10 +1,19 @@
 ---
 import { getCollection } from 'astro:content'
 import WorkCarouselIsland from './WorkCarouselIsland.jsx'
-import typo from '../data/typography.json'
 
-const shCfg = typo.tags.sectionHeading
-const SectionTag = shCfg.tag as any
+interface Props {
+  headingTag?: string
+  headingRole?: string
+  cardTitleTag?: string
+  cardTitleRole?: string
+}
+
+const {
+  headingTag = 'h3', headingRole = 'title',
+  cardTitleTag = 'h4', cardTitleRole = 'label',
+} = Astro.props
+const SectionTag = headingTag as any
 const allWork = await getCollection('work')
 const featured = allWork
   .filter(w => w.data.featured)
@@ -20,9 +29,9 @@ const featured = allWork
 
 <section class="work-carousel-section" id="selected-work" aria-label="Selected work">
   <div class="work-carousel-header">
-    <SectionTag class={`typo-${shCfg.role}`}>Selected Work</SectionTag>
+    <SectionTag class={`typo-${headingRole}`} data-reveal>Selected Work</SectionTag>
   </div>
-  <WorkCarouselIsland cards={featured} cardTitleTag={typo.tags.carouselCardTitle.tag} cardTitleRole={`typo-${typo.tags.carouselCardTitle.role}`} client:visible />
+  <WorkCarouselIsland cards={featured} cardTitleTag={cardTitleTag} cardTitleRole={`typo-${cardTitleRole}`} client:visible />
 </section>
 
 <style>
