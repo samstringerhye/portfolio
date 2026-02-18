@@ -7,9 +7,10 @@ interface Props {
 const { heading, cta } = Astro.props
 ---
 
-<section class="resume-section" data-reveal="fade-up">
+<section class="resume-section" aria-label="Resume" data-reveal="fade-up">
   <div class="resume-inner">
     <h2 class="resume-heading">{heading}</h2>
+    <!-- TODO: Add resume PDF to /assets/resume.pdf -->
     <a href="/assets/resume.pdf" download class="resume-cta" data-hover="spectral-button">
       {cta}
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -21,36 +22,35 @@ const { heading, cta } = Astro.props
 
 <style>
   .resume-section {
-    padding: var(--space-3xl) var(--space-xl);
+    padding: var(--space-8) var(--page-padding);
   }
 
   .resume-inner {
-    max-width: var(--max-width-content);
+    max-width: var(--container-content);
     margin: 0 auto;
     text-align: center;
   }
 
   .resume-heading {
-    font-size: clamp(var(--font-size-xl), 2.5vw, var(--font-size-3xl));
-    font-weight: var(--font-weight-regular);
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-4);
   }
 
   .resume-cta {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-sm);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
-    padding: var(--space-sm) var(--space-xl);
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-4);
     border: var(--border-light);
     border-radius: var(--radius-md);
-    background: var(--color-background);
+    background: var(--color-bg-primary);
     transition: box-shadow 0.3s ease, transform 0.2s ease;
   }
 
   .resume-cta:hover {
-    box-shadow: 0 2px 16px -2px rgba(0,255,255,0.5), 0 4px 28px -4px rgba(255,0,255,0.35), 0 8px 40px -8px rgba(255,255,0,0.25);
+    box-shadow:
+      0 2px 16px -2px var(--glow-cyan),
+      0 4px 28px -4px var(--glow-magenta),
+      0 8px 40px -8px var(--glow-yellow);
     transform: translateY(-1px);
   }
 </style>

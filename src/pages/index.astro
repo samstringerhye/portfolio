@@ -12,13 +12,10 @@ const home = homeFile.frontmatter
 ---
 
 <BaseLayout>
-  <HeroSection
-    headline={home.heroHeadline}
-    subhead={home.heroSubhead}
-  />
+  <HeroSection blocks={home.heroBlocks} />
   <BioSection
-    bio={home.bio}
-    aboutCTA={home.aboutCTA}
+    headline={home.bioHeadline}
+    body={home.bioBody}
   />
   <WorkCarousel />
   <Timeline />

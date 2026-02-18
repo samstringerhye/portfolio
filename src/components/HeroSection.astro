@@ -1,18 +1,30 @@
 ---
 import HeroCanvas from './HeroCanvas.jsx'
+import typo from '../content/typography.json'
 
-interface Props {
-  headline: string
-  subhead: string
+interface HeroBlock {
+  tag?: string
+  text: string
 }
 
-const { headline, subhead } = Astro.props
+interface Props {
+  blocks: HeroBlock[]
+}
+
+const { blocks } = Astro.props
+const heroCfg = typo.tags.heroText
+const defaultTag = heroCfg.tag
+const heroRole = `typo-${heroCfg.role}`
 ---
 
 <section class="hero" aria-label="Introduction">
+  <div class="hero-canvas-fallback" aria-hidden="true"></div>
   <HeroCanvas client:only="react" />
   <div class="hero-text">
-    <p class="hero-content" data-hero-text>{headline} {subhead} 10+ years building websites and apps that feel considered and consistent. Philadelphia.</p>
+    {blocks.map(block => {
+      const Tag = (block.tag || defaultTag) as any
+      return <Tag class:list={["hero-block", heroRole]} data-hero-text>{block.text}</Tag>
+    })}
   </div>
 </section>
 
@@ -21,16 +33,23 @@ const { headline, subhead } = Astro.props
     position: relative;
     width: 100%;
     height: 100vh;
-    margin-top: -64px;
+    margin-top: calc(var(--nav-height) * -1);
     overflow: hidden;
-    background-color: var(--color-background);
+    background-color: var(--color-bg-primary);
+  }
+
+  .hero-canvas-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse at 50% 60%, var(--color-bg-alt) 0%, var(--color-bg-primary) 70%);
   }
 
   .hero :global(astro-island) {
     position: absolute;
     inset: 0;
     z-index: 0;
-    background-color: var(--color-background);
+    background-color: var(--color-bg-primary);
   }
 
   .hero::after {
@@ -40,7 +59,7 @@ const { headline, subhead } = Astro.props
     left: 0;
     right: 0;
     height: 30%;
-    background: linear-gradient(to bottom, transparent, var(--color-background));
+    background: linear-gradient(to bottom, transparent, var(--color-bg-primary));
     pointer-events: none;
     z-index: 1;
   }
@@ -48,142 +67,82 @@ const { headline, subhead } = Astro.props
   .hero-text {
     position: relative;
     width: 100%;
-    max-width: var(--max-width);
+    max-width: var(--container-content);
     margin: 0 auto;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 64px var(--space-xl) 0;
+    justify-content: center;
+    text-align: center;
+    padding: 0 var(--page-padding);
     z-index: 2;
   }
 
-  .hero-content {
-    font-size: clamp(var(--font-size-2xl), 3.2vw, var(--font-size-4xl));
-    font-weight: var(--font-weight-regular);
-    line-height: var(--line-height-snug);
+  .hero-block {
+    letter-spacing: var(--tracking-tight);
     color: var(--color-text-primary);
-    max-width: 75%;
   }
 
-  .hero-content :global(.hero-line) {
-    display: block;
+  .hero-block :global(.hero-word) {
+    display: inline-block;
     opacity: 0;
     transform: translateY(40px);
     filter: blur(14px);
-  }
-
-  @media (max-width: 768px) {
-    .hero-text {
-      padding: 0 var(--space-xl);
-    }
-
-    .hero-content {
-      max-width: 90%;
-    }
   }
 </style>
 
 <script>
   import gsap from 'gsap'
-  import { useTuningStore } from './store.js'
+  import { SplitText } from 'gsap/SplitText'
+  import animConfig from '../content/animations.json'
 
-  function splitIntoLines(el: HTMLElement): HTMLSpanElement[] {
-    const text = el.textContent || ''
-    const words = text.split(/\s+/).filter(Boolean)
-    if (!words.length) return []
+  gsap.registerPlugin(SplitText)
 
-    // Clear and insert word spans for measurement (inline, visible)
-    el.style.opacity = '0'
-    el.innerHTML = ''
+  const cfg = animConfig.hero.text
 
-    // Insert words separated by text-node spaces so the browser wraps naturally
-    const wordSpans: HTMLSpanElement[] = []
-    words.forEach((word, i) => {
-      if (i > 0) el.appendChild(document.createTextNode(' '))
-      const span = document.createElement('span')
-      span.style.display = 'inline'
-      span.textContent = word
-      el.appendChild(span)
-      wordSpans.push(span)
-    })
-
-    // Group words by their vertical position (top of each word span)
-    const lineGroups: string[][] = [[]]
-    let prevTop = Math.round(wordSpans[0].getBoundingClientRect().top)
-
-    wordSpans.forEach((span, i) => {
-      const top = Math.round(span.getBoundingClientRect().top)
-      if (top > prevTop + 2 && i > 0) {
-        lineGroups.push([])
-        prevTop = top
-      }
-      lineGroups[lineGroups.length - 1].push(words[i])
-    })
-
-    // Replace with line spans
-    el.innerHTML = ''
-    el.style.opacity = ''
-    const lineEls: HTMLSpanElement[] = []
-    lineGroups.forEach(lineWords => {
-      const lineSpan = document.createElement('span')
-      lineSpan.className = 'hero-line'
-      lineSpan.textContent = lineWords.join(' ')
-      el.appendChild(lineSpan)
-      lineEls.push(lineSpan)
-    })
-
-    return lineEls
-  }
+  let heroSplits: SplitText[] = []
 
   function animateHeroLines() {
-    const el = document.querySelector<HTMLElement>('[data-hero-text]')
-    if (!el) return
+    const els = document.querySelectorAll<HTMLElement>('[data-hero-text]')
+    if (!els.length) return
 
-    // Prevent double-run: store original text on first call
-    if (!el.dataset.originalText) {
-      el.dataset.originalText = el.textContent || ''
-    } else {
-      // Restore original text before re-splitting (e.g. on astro:page-load)
-      el.textContent = el.dataset.originalText
-    }
+    // Revert previous splits
+    heroSplits.forEach(s => s.revert())
+    heroSplits = []
+
+    // Split each block into words
+    const allWords: HTMLElement[] = []
+    els.forEach(el => {
+      const split = new SplitText(el, { type: 'words', wordsClass: 'hero-word' })
+      heroSplits.push(split)
+      allWords.push(...split.words)
+    })
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const lines = splitIntoLines(el)
 
     if (prefersReduced) {
-      gsap.set(lines, { opacity: 1, y: 0, filter: 'blur(0px)', textShadow: 'none' })
+      gsap.set(allWords, { opacity: 1, y: 0, filter: 'blur(0px)', textShadow: 'none' })
       return
     }
 
-    // Read title animation params from tuning store
-    const cfg = useTuningStore.getState()
-    const d1 = cfg.titleAberration
+    const d1 = cfg.aberration
     const d2 = d1 * 1.5
     const d3 = d1 * 2
-    const op = cfg.titleAberrationOpacity
+    const op = cfg.aberrationOpacity
     const shadowFrom = `0 ${d1}px rgba(0,255,255,${op}), 0 ${d2}px rgba(255,0,255,${op}), 0 ${d3}px rgba(255,255,0,${op})`
 
-    gsap.set(lines, {
-      opacity: 0, y: cfg.titleY, filter: `blur(${cfg.titleBlur}px)`, textShadow: shadowFrom,
+    gsap.set(allWords, {
+      opacity: 0, y: cfg.y, filter: `blur(${cfg.blur}px)`, textShadow: shadowFrom,
     })
 
-    gsap.to(lines, {
+    gsap.to(allWords, {
       opacity: 1, y: 0, filter: 'blur(0px)',
       textShadow: '0 0px transparent, 0 0px transparent, 0 0px transparent',
-      duration: cfg.titleDuration, stagger: cfg.titleStagger, ease: 'power3.out', delay: cfg.titleDelay,
+      duration: cfg.duration, stagger: cfg.stagger, ease: cfg.ease, delay: cfg.delay,
     })
   }
 
   animateHeroLines()
   document.addEventListener('astro:page-load', animateHeroLines)
-
-  // Subscribe to titleReplay action — re-trigger animation when value changes
-  let lastReplay = useTuningStore.getState().titleReplay ?? 0
-  useTuningStore.subscribe((state) => {
-    const current = state.titleReplay ?? 0
-    if (current !== lastReplay) {
-      lastReplay = current
-      animateHeroLines()
-    }
-  })
 </script>

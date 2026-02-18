@@ -11,27 +11,32 @@ function initAboutModal() {
   function open() {
     previousFocus = document.activeElement as HTMLElement
     modal!.hidden = false
+
+    // Prevent layout shift from scrollbar disappearance
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
     document.body.style.overflow = 'hidden'
+    document.body.style.paddingRight = `${scrollbarWidth}px`
+
     content?.focus()
   }
 
   function close() {
     modal!.hidden = true
     document.body.style.overflow = ''
+    document.body.style.paddingRight = ''
     previousFocus?.focus()
   }
 
   triggers.forEach(t => t.addEventListener('click', open))
   closers.forEach(c => c.addEventListener('click', close))
 
-  // Escape key
+  // Escape key + focus trap
   modal.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       close()
       return
     }
 
-    // Focus trap
     if (e.key === 'Tab') {
       const focusable = modal!.querySelectorAll<HTMLElement>(
         'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'

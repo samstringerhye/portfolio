@@ -5,7 +5,7 @@ year: 2024
 role: "Associate Design Director"
 agency: "Razorfish"
 tagline: "An intuitive customization tool that empowers users to personalize luxury kitchen appliances with confidence."
-thumbnail: "/assets/work/bespoke-design-studio/bespoke_thumbnail.jpeg"
+thumbnail: "/assets/work/bespoke-design-studio/bespoke-design-studio-thumbnail.jpeg"
 heroImage: "/assets/work/bespoke-design-studio/scene-2-1.png"
 featured: true
 sortOrder: 1

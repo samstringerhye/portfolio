@@ -1,7 +1,10 @@
 ---
 import { getCollection } from 'astro:content'
 import WorkCarouselIsland from './WorkCarouselIsland.jsx'
+import typo from '../content/typography.json'
 
+const shCfg = typo.tags.sectionHeading
+const SectionTag = shCfg.tag as any
 const allWork = await getCollection('work')
 const featured = allWork
   .filter(w => w.data.featured)
@@ -17,19 +20,21 @@ const featured = allWork
 
 <section class="work-carousel-section" id="selected-work" aria-label="Selected work">
   <div class="work-carousel-header">
-    <h3 class="text-label">Selected Work</h3>
+    <SectionTag class={`typo-${shCfg.role}`}>Selected Work</SectionTag>
   </div>
-  <WorkCarouselIsland cards={featured} client:visible />
+  <WorkCarouselIsland cards={featured} cardTitleTag={typo.tags.carouselCardTitle.tag} cardTitleRole={`typo-${typo.tags.carouselCardTitle.role}`} client:visible />
 </section>
 
 <style>
   .work-carousel-section {
-    padding: var(--space-4xl) 0;
+    padding: var(--section-padding) 0;
     overflow: hidden;
   }
 
   .work-carousel-header {
-    padding: 0 var(--space-xl);
-    margin-bottom: var(--space-2xl);
+    max-width: var(--container-content);
+    margin: 0 auto;
+    padding: 0 var(--page-padding);
+    margin-bottom: var(--space-4);
   }
 </style>

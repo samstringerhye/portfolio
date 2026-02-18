@@ -1,5 +1,11 @@
 ---
-import experience from '../experience.json'
+import experience from '../content/experience.json'
+import typo from '../content/typography.json'
+
+const thCfg = typo.tags.timelineHeading
+const tjCfg = typo.tags.timelineJobTitle
+const HeadingTag = thCfg.tag as any
+const JobTag = tjCfg.tag as any
 
 function formatDate(dateStr: string | null) {
   if (!dateStr) return 'Present'
@@ -11,32 +17,40 @@ function formatDate(dateStr: string | null) {
 
 <section class="timeline-section" aria-label="Experience">
   <div class="timeline-inner">
-    <p class="text-label" style="margin-bottom: var(--space-2xl);">Experience</p>
-    <div class="timeline">
+    <HeadingTag class={`typo-${thCfg.role}`}>Experience</HeadingTag>
+    <ol class="timeline" role="list">
       {experience.map((job, i) => (
-        <div class="timeline-item" data-reveal="stagger">
-          <div class="timeline-dot" />
-          {i < experience.length - 1 && <div class="timeline-line" />}
+        <li class="timeline-item" data-reveal="stagger">
+          <div class="timeline-dot" aria-hidden="true" />
+          {i < experience.length - 1 && <div class="timeline-line" aria-hidden="true" />}
           <div class="timeline-content">
-            <h3 class="timeline-title">{job.title}</h3>
+            <JobTag class:list={["timeline-title", `typo-${tjCfg.role}`]}>{job.title}</JobTag>
             <p class="timeline-company">
-              {job.company} &middot; {formatDate(job.startDate)} — {formatDate(job.endDate)}
+              {job.company} &middot; {job.startDate
+                ? <time datetime={job.startDate}>{formatDate(job.startDate)}</time>
+                : formatDate(job.startDate)} — {job.endDate
+                ? <time datetime={job.endDate}>{formatDate(job.endDate)}</time>
+                : formatDate(job.endDate)}
             </p>
           </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ol>
   </div>
 </section>
 
 <style>
   .timeline-section {
-    padding: var(--space-4xl) var(--space-xl);
+    padding: var(--section-padding) var(--page-padding);
   }
 
   .timeline-inner {
-    max-width: var(--max-width-content);
+    max-width: var(--container-content);
     margin: 0 auto;
+  }
+
+  .timeline-inner > h2 {
+    margin-bottom: var(--space-4);
   }
 
   .timeline {
@@ -45,8 +59,8 @@ function formatDate(dateStr: string | null) {
 
   .timeline-item {
     position: relative;
-    padding-left: var(--space-2xl);
-    padding-bottom: var(--space-2xl);
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-6);
   }
 
   .timeline-item:last-child {
@@ -60,7 +74,7 @@ function formatDate(dateStr: string | null) {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--color-text-muted);
+    background: var(--color-text-secondary);
   }
 
   .timeline-line {
@@ -73,12 +87,10 @@ function formatDate(dateStr: string | null) {
   }
 
   .timeline-title {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-regular);
     margin-bottom: 2px;
   }
 
   .timeline-company {
-    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
   }
 </style>

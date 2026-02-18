@@ -29,6 +29,12 @@ CLAUDE.md
 # Playwright
 .playwright-mcp/
 
+# Debug screenshots (root level)
+/*.png
+
 # Source files (PSD, AI, etc.)
 *.psd
 *.ai
+
+# Source font packages
+/fonts/

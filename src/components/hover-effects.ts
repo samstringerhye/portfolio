@@ -21,7 +21,6 @@ function initCausticCard(el: HTMLElement) {
 
   gsap.set(el, { transformStyle: 'preserve-3d' })
 
-  // Ensure parent has perspective
   if (el.parentElement) {
     gsap.set(el.parentElement, { perspective: 800 })
   }
@@ -35,7 +34,11 @@ function initCausticCard(el: HTMLElement) {
   })
 
   el.addEventListener('mouseenter', () => {
-    el.style.boxShadow = '0 4px 24px -4px rgba(0,255,255,0.5), 0 8px 48px -8px rgba(255,0,255,0.35), 0 12px 64px -12px rgba(255,255,0,0.25)'
+    const style = getComputedStyle(document.documentElement)
+    const cyan = style.getPropertyValue('--glow-cyan').trim() || 'rgba(0,255,255,0.5)'
+    const magenta = style.getPropertyValue('--glow-magenta').trim() || 'rgba(255,0,255,0.35)'
+    const yellow = style.getPropertyValue('--glow-yellow').trim() || 'rgba(255,255,0,0.25)'
+    el.style.boxShadow = `0 4px 24px -4px ${cyan}, 0 8px 48px -8px ${magenta}, 0 12px 64px -12px ${yellow}`
   })
 
   el.addEventListener('mouseleave', () => {
@@ -46,7 +49,6 @@ function initCausticCard(el: HTMLElement) {
 }
 
 function initSpectralLink(el: HTMLElement) {
-  // Inject underline if not present
   if (!el.querySelector('.spectral-underline')) {
     el.style.position = 'relative'
     el.style.display = 'inline-block'
@@ -76,7 +78,11 @@ function initSpectralButton(el: HTMLElement) {
   el.style.transition = 'box-shadow 0.3s ease, transform 0.2s ease'
 
   el.addEventListener('mouseenter', () => {
-    el.style.boxShadow = '0 2px 16px -2px rgba(0,255,255,0.5), 0 4px 28px -4px rgba(255,0,255,0.35), 0 8px 40px -8px rgba(255,255,0,0.25)'
+    const style = getComputedStyle(document.documentElement)
+    const cyan = style.getPropertyValue('--glow-cyan').trim() || 'rgba(0,255,255,0.5)'
+    const magenta = style.getPropertyValue('--glow-magenta').trim() || 'rgba(255,0,255,0.35)'
+    const yellow = style.getPropertyValue('--glow-yellow').trim() || 'rgba(255,255,0,0.25)'
+    el.style.boxShadow = `0 2px 16px -2px ${cyan}, 0 4px 28px -4px ${magenta}, 0 8px 40px -8px ${yellow}`
     el.style.transform = 'translateY(-1px)'
   })
 
@@ -85,6 +91,3 @@ function initSpectralButton(el: HTMLElement) {
     el.style.transform = ''
   })
 }
-
-// Auto-init
-initHoverEffects()

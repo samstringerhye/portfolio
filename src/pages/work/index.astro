@@ -39,23 +39,23 @@ const sorted = allWork.sort((a, b) => a.data.sortOrder - b.data.sortOrder)
 
 <style>
   .work-index {
-    max-width: var(--max-width);
+    max-width: var(--container-content);
     margin: 0 auto;
-    padding: var(--space-3xl) var(--space-xl);
+    padding: var(--space-8) var(--page-padding);
   }
 
   .work-header {
-    margin-bottom: var(--space-3xl);
+    margin-bottom: var(--space-8);
   }
 
   .work-header h1 {
-    margin-top: var(--space-sm);
+    margin-top: var(--space-1);
   }
 
   .work-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: var(--space-2xl);
+    grid-template-columns: repeat(auto-fill, minmax(min(400px, 100%), 1fr));
+    gap: var(--grid-gutter);
   }
 
   .work-card {
@@ -66,7 +66,10 @@ const sorted = allWork.sort((a, b) => a.data.sortOrder - b.data.sortOrder)
   }
 
   .work-card:hover {
-    box-shadow: 0 4px 24px -4px rgba(0,255,255,0.4), 0 8px 48px -8px rgba(255,0,255,0.3), 0 12px 64px -12px rgba(255,255,0,0.2);
+    box-shadow:
+      0 4px 24px -4px var(--glow-cyan),
+      0 8px 48px -8px var(--glow-magenta),
+      0 12px 64px -12px var(--glow-yellow);
   }
 
   .work-card-image {
@@ -86,23 +89,20 @@ const sorted = allWork.sort((a, b) => a.data.sortOrder - b.data.sortOrder)
   }
 
   .work-card-info {
-    padding: var(--space-lg) var(--space-sm) var(--space-sm);
+    padding: var(--space-3) var(--space-1) var(--space-1);
   }
 
   .work-card-title {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-regular);
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-1);
   }
 
   .work-card-meta {
-    font-size: var(--font-size-sm);
-    margin-bottom: var(--space-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-1);
   }
 
   .work-card-tagline {
-    font-size: var(--font-size-sm);
-    line-height: var(--line-height-normal);
+    line-height: var(--line-height-body);
   }
 
   @media (max-width: 768px) {

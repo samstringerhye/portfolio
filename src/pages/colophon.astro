@@ -13,8 +13,8 @@ import BaseLayout from '../layouts/BaseLayout.astro'
       <h2>Tech Stack</h2>
       <p>
         Built with <strong>Astro</strong> for static-first delivery with selective React hydration for interactive components.
-        3D hero animation rendered with <strong>React Three Fiber</strong>.
-        Animations powered by <strong>GSAP</strong> (ScrollTrigger, Draggable).
+        3D hero animation rendered with <strong>Three.js</strong>.
+        Animations powered by <strong>GSAP</strong> (ScrollTrigger, Draggable, SplitText).
         Smooth scrolling via <strong>Lenis</strong>. Deployed on <strong>Vercel</strong>.
       </p>
 
@@ -42,24 +42,22 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
 <style>
   .colophon-page {
-    max-width: var(--max-width-content);
+    max-width: var(--container-content);
     margin: 0 auto;
-    padding: var(--space-3xl) var(--space-xl);
+    padding: var(--space-8) var(--page-padding);
   }
 
   .colophon-header {
-    margin-bottom: var(--space-3xl);
+    margin-bottom: var(--space-8);
   }
 
   .colophon-header h1 {
-    margin-top: var(--space-sm);
+    margin-top: var(--space-1);
   }
 
   .colophon-body h2 {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-regular);
-    margin-top: var(--space-2xl);
-    margin-bottom: var(--space-sm);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-1);
   }
 
   .colophon-body h2:first-child {
@@ -67,19 +65,16 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   }
 
   .colophon-body p {
-    font-size: var(--font-size-base);
-    line-height: var(--line-height-relaxed);
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-3);
   }
 
   .colophon-body strong {
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-body);
     color: var(--color-text-primary);
   }
 
   .colophon-body code {
-    font-size: var(--font-size-sm);
-    background: var(--color-surface);
+    background: var(--color-bg-alt);
     padding: 2px 6px;
     border-radius: var(--radius-sm);
   }

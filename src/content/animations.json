@@ -1,0 +1,81 @@
+{
+  "hero": {
+    "canvas": {
+      "arrangement": "spiral",
+      "numRays": 80,
+      "dotsPerRay": 50,
+      "spacing": 0.75,
+      "innerRadius": 2,
+      "dotRadius": 0.25,
+      "dotSegments": 6,
+      "dotColor": "#1D1D1F",
+      "bgColor": "#FDFDFD",
+      "sizeStart": 0.1,
+      "sizeMid": 1.0,
+      "sizeEnd": 0.1,
+      "wavePaused": false,
+      "waveSpeed": 1.0,
+      "waveFrequency": 0.1,
+      "waveAmplitude": 0.4,
+      "waveSharpness": 0.15,
+      "propagation": 25,
+      "baseScale": 1.3,
+      "twistAmount": 0.15,
+      "rgbDelay": 1.5,
+      "rgbSplitMode": "cmy",
+      "zoom": 20,
+      "maxDpr": 1.5
+    },
+    "text": {
+      "duration": 1.4,
+      "stagger": 0.15,
+      "y": 40,
+      "blur": 14,
+      "aberration": 30,
+      "aberrationOpacity": 0.5,
+      "delay": 0.6,
+      "ease": "power3.out"
+    }
+  },
+  "bio": {
+    "duration": 1.2,
+    "stagger": 0.12,
+    "y": 30,
+    "blur": 14,
+    "aberration": 30,
+    "aberrationOpacity": 0.5,
+    "triggerStart": "top 60%",
+    "ease": "power3.out"
+  },
+  "scrollReveal": {
+    "duration": 0.9,
+    "y": 30,
+    "blur": 6,
+    "aberration": 12,
+    "aberrationOpacity": 0.45,
+    "triggerStart": "top 65%",
+    "ease": "power3.out"
+  },
+  "carousel": {
+    "entrance": {
+      "duration": 0.8,
+      "stagger": 0.08,
+      "blur": 10,
+      "x": 120,
+      "triggerStart": "top 70%",
+      "ease": "power2.out"
+    },
+    "snap": {
+      "ease": "power3.out",
+      "momentumFactor": 12,
+      "wheelThreshold": 60
+    }
+  },
+  "interests": {
+    "scrollDuration": 30
+  },
+  "smoothScroll": {
+    "lerp": 0.25,
+    "wheelMultiplier": 1.4
+  }
+}

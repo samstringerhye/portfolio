@@ -24,7 +24,3 @@
   transition: height 0.3s ease, opacity 0.3s ease;
 }
 
-/* Reveal line helper (used by pre-split hero text) */
-.reveal-line {
-  display: block;
-}

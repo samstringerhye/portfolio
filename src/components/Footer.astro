@@ -4,15 +4,15 @@ const year = new Date().getFullYear()
 
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-left">
+    <address class="footer-left">
       <p class="footer-name">Sam Stringer-Hye</p>
       <p class="footer-role">Associate Design Director</p>
-    </div>
+    </address>
 
-    <div class="footer-links">
+    <nav class="footer-links" aria-label="Footer links">
       <a href="mailto:sam@samstringerhye.com" class="footer-link">Email</a>
-      <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn</a>
-    </div>
+      <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn<span class="visually-hidden"> (opens in new tab)</span></a>
+    </nav>
 
     <div class="footer-right">
       <p class="footer-copyright">&copy; {year} Sam Stringer-Hye</p>
@@ -24,40 +24,31 @@ const year = new Date().getFullYear()
 <style>
   .footer {
     border-top: var(--border-light);
-    padding: var(--space-3xl) 0;
-    margin-top: var(--space-5xl);
+    padding: var(--space-8) 0;
+    margin-top: var(--section-padding);
   }
 
   .footer-inner {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    max-width: var(--max-width);
+    max-width: var(--container-content);
     margin: 0 auto;
-    padding: 0 var(--space-xl);
-    gap: var(--space-2xl);
+    padding: 0 var(--page-padding);
+    gap: var(--space-6);
+  }
+
+  .footer-left {
+    font-style: normal;
   }
 
   .footer-name {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
-    margin-bottom: var(--space-xs);
-  }
-
-  .footer-role {
-    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-1);
   }
 
   .footer-links {
     display: flex;
-    gap: var(--space-lg);
-  }
-
-  .footer-link {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
-    color: var(--color-text-primary);
-    text-decoration: none;
+    gap: var(--space-3);
   }
 
   .footer-right {
@@ -65,19 +56,13 @@ const year = new Date().getFullYear()
   }
 
   .footer-copyright {
-    font-size: var(--font-size-sm);
-    margin-bottom: var(--space-xs);
-  }
-
-  .footer-colophon {
-    font-size: var(--font-size-sm);
-    text-decoration: none;
+    margin-bottom: var(--space-1);
   }
 
   @media (max-width: 768px) {
     .footer-inner {
       flex-direction: column;
-      gap: var(--space-xl);
+      gap: var(--space-4);
     }
 
     .footer-right {

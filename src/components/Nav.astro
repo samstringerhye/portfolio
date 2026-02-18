@@ -4,12 +4,11 @@ const pathname = Astro.url.pathname
 const links = [
   { href: '/', label: 'Home' },
   { href: '/#selected-work', label: 'Work' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/playground', label: 'Playground' },
 ]
 
 function isActive(href: string) {
   if (href === '/') return pathname === '/'
+  if (href.startsWith('/#')) return false
   return pathname.startsWith(href)
 }
 ---
@@ -20,13 +19,14 @@ function isActive(href: string) {
       Sam Stringer-Hye
     </a>
 
-    <ul class="nav-links" id="nav-links">
+    <ul class="nav-links" id="nav-links" role="list">
       {links.map(link => (
         <li>
           <a
             href={link.href}
             class:list={['nav-link', { active: isActive(link.href) }]}
             aria-current={isActive(link.href) ? 'page' : undefined}
+            data-astro-prefetch="hover"
           >
             {link.label}
           </a>
@@ -58,7 +58,7 @@ function isActive(href: string) {
     top: 0;
     left: 0;
     right: 0;
-    max-width: var(--max-width);
+    max-width: var(--container-content);
     margin: 0 auto;
     z-index: var(--z-nav);
     background: transparent;
@@ -68,14 +68,12 @@ function isActive(href: string) {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-md) var(--space-xl);
-    height: 64px;
+    padding: var(--space-2) var(--page-padding);
+    height: var(--nav-height);
+    font-size: var(--text-base);
   }
 
   .nav-logo {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
-    letter-spacing: var(--letter-spacing-wide);
     color: var(--color-text-primary);
     text-decoration: none;
   }
@@ -83,16 +81,14 @@ function isActive(href: string) {
   .nav-links {
     display: flex;
     align-items: center;
-    gap: var(--space-xl);
+    gap: var(--space-4);
     list-style: none;
   }
 
   .nav-link {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
     color: var(--color-text-primary);
     text-decoration: none;
-    padding: var(--space-xs) 0;
+    padding: var(--space-1) 0;
     position: relative;
     background: none;
     border: none;
@@ -101,27 +97,24 @@ function isActive(href: string) {
     transition: color 0.2s ease;
   }
 
-  .nav-link:hover,
-  .nav-link.active {
-    color: var(--color-text-primary);
+  .nav-link:hover {
+    color: var(--color-accent);
   }
 
-  .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 1.5px;
-    background: var(--color-text-primary);
-    border-radius: 1px;
+  .nav-link.active {
+    color: var(--color-accent);
   }
+
 
   .nav-toggle {
     display: none;
     flex-direction: column;
     gap: 5px;
-    padding: var(--space-sm);
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-1);
     background: none;
     border: none;
     cursor: pointer;
@@ -143,15 +136,15 @@ function isActive(href: string) {
 
     .nav-links {
       position: fixed;
-      top: 64px;
+      top: var(--nav-height);
       left: 0;
       right: 0;
       bottom: 0;
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--space-lg);
-      padding: var(--space-2xl) var(--space-xl);
-      background: var(--color-background);
+      gap: var(--space-3);
+      padding: var(--space-6) var(--space-4);
+      background: var(--color-bg-primary);
       transform: translateX(100%);
       transition: transform 0.3s ease;
     }
@@ -161,7 +154,7 @@ function isActive(href: string) {
     }
 
     .nav-link {
-      font-size: var(--font-size-xl);
+      padding: var(--space-2) 0;
     }
 
     .nav-toggle[aria-expanded="true"] .nav-toggle-bar:first-child {
@@ -180,18 +173,46 @@ function isActive(href: string) {
     const links = document.getElementById('nav-links')
     if (!toggle || !links) return
 
+    let removeTrap: (() => void) | null = null
+
+    function openNav() {
+      toggle!.setAttribute('aria-expanded', 'true')
+      links!.classList.add('open')
+
+      // Focus trap for mobile nav
+      const focusable = links!.querySelectorAll<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])')
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      function handler(e: KeyboardEvent) {
+        if (e.key === 'Escape') { closeNav(); return }
+        if (e.key !== 'Tab') return
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus() }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus() }
+      }
+
+      links!.addEventListener('keydown', handler)
+      first?.focus()
+      removeTrap = () => links!.removeEventListener('keydown', handler)
+    }
+
+    function closeNav() {
+      toggle!.setAttribute('aria-expanded', 'false')
+      links!.classList.remove('open')
+      removeTrap?.()
+      removeTrap = null
+      toggle!.focus()
+    }
+
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true'
-      toggle.setAttribute('aria-expanded', String(!expanded))
-      links.classList.toggle('open')
+      if (expanded) closeNav()
+      else openNav()
     })
 
     // Close on nav link click (mobile)
     links.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        toggle.setAttribute('aria-expanded', 'false')
-        links.classList.remove('open')
-      })
+      link.addEventListener('click', closeNav)
     })
   }
 

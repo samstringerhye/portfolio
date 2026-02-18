@@ -9,16 +9,13 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.7.0",
     "@astrojs/react": "^4.2.0",
     "@astrojs/sitemap": "^3.3.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@react-three/fiber": "^8.17.0",
-    "@react-three/drei": "^9.115.0",
-    "three": "^0.160.0",
+    "astro": "^5.7.0",
     "gsap": "^3.12.7",
     "lenis": "^1.1.18",
-    "zustand": "^5.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.170.0"
   }
 }

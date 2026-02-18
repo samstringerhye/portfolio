@@ -2,6 +2,15 @@
 @import './typography.css';
 @import './interactions.css';
 
+/* Self-hosted Inter variable font */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
 /* Reset */
 *,
 *::before,
@@ -12,6 +21,7 @@
 }
 
 html {
+  font-size: 17px;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
@@ -19,11 +29,11 @@ html {
 
 body {
   font-family: var(--font-primary);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-normal);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-body);
+  line-height: var(--line-height-body);
   color: var(--color-text-primary);
-  background-color: var(--color-background);
+  background-color: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -68,15 +78,15 @@ ol {
 
 /* Focus visible */
 :focus-visible {
-  outline: var(--focus-ring-width) solid var(--focus-ring);
-  outline-offset: var(--focus-ring-offset);
+  outline: none;
+  box-shadow: var(--focus-ring);
   border-radius: var(--radius-sm);
 }
 
 /* Selection */
 ::selection {
   background-color: var(--color-text-primary);
-  color: var(--color-background);
+  color: var(--color-bg-primary);
 }
 
 /* Scrollbar */
@@ -90,30 +100,28 @@ ol {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
-  border-radius: var(--radius-full);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+  background: var(--color-text-secondary);
 }
 
 /* Skip to content */
 .skip-to-content {
   position: absolute;
   top: -100%;
-  left: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
+  left: var(--space-2);
+  padding: var(--space-1) var(--space-2);
   background: var(--color-text-primary);
-  color: var(--color-background);
+  color: var(--color-bg-primary);
   border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-regular);
-  z-index: var(--z-toast);
+  z-index: 300;
   transition: top 0.2s ease;
 }
 
 .skip-to-content:focus {
-  top: var(--space-md);
+  top: var(--space-2);
 }
 
 /* Utilities */

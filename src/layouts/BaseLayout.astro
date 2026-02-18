@@ -4,6 +4,8 @@ import SEO from '../components/SEO.astro'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import AboutModal from '../components/AboutModal.astro'
+import FontSwitcher from '../components/FontSwitcher.astro'
+import typo from '../content/typography.json'
 import '../styles/global.css'
 
 interface Props {
@@ -14,30 +16,94 @@ interface Props {
 }
 
 const { title, description, ogImage, hideFooter = false } = Astro.props
+
+function buildClamp(min: number, max: number): string {
+  if (min === max) return `${min}rem`
+  const slope = ((max - min) / (1440 - 375)) * 100
+  const intercept = min - (slope / 100) * 375
+  return `clamp(${min.toFixed(2)}rem, ${intercept.toFixed(4)}rem + ${slope.toFixed(4)}vw, ${max.toFixed(2)}rem)`
+}
+
+const scaleVars = Object.entries(typo.scale).map(([key, val]) => {
+  if (typeof val === 'number') return `--text-${key}: ${val}rem;`
+  const v = val as { min: number; max: number }
+  return `--text-${key}: ${buildClamp(v.min, v.max)};`
+}).join('\n    ')
+
+const leadingVars = Object.entries(typo.lineHeight)
+  .map(([key, val]) => `--line-height-${key}: ${val};`).join('\n    ')
+
+const trackingVars = Object.entries(typo.tracking)
+  .map(([key, val]) => `--tracking-${key}: ${val}em;`).join('\n    ')
+
+const fonts = typo.fonts as Record<string, string>
+const fontVars = Object.entries(fonts)
+  .map(([key, val]) => `--font-${key}: ${val};`).join('\n    ')
+
+const fontFaces = [
+  { name: 'PP Editorial New', src: '/fonts/trial/PPEditorialNew-Regular.otf' },
+  { name: 'PP Neue Montreal', src: '/fonts/trial/PPNeueMontreal-Medium.otf' },
+].map(f => `@font-face {
+    font-family: "${f.name}";
+    src: url("${f.src}") format("opentype");
+    font-display: swap;
+  }`).join('\n  ')
+
+const fontWeights = typo.fontWeight as Record<string, number>
+const weightVars = Object.entries(fontWeights)
+  .map(([key, val]) => `--font-weight-${key}: ${val};`).join('\n    ')
+
+const roleRules = Object.entries(typo.roles).map(([name, cfg]) => {
+  const c = cfg as { font: string; scale: string; lineHeight: string; tracking: string }
+  return `.typo-${name} {
+    font-family: var(--font-${c.font});
+    font-weight: var(--font-weight-${c.font});
+    font-size: var(--text-${c.scale});
+    line-height: var(--line-height-${c.lineHeight});
+    letter-spacing: var(--tracking-${c.tracking});
+  }`
+}).join('\n  ')
+
+const typoCss = `${fontFaces}
+  :root {
+    ${fontVars}
+    --font-primary: var(--font-body);
+    ${weightVars}
+    ${scaleVars}
+    ${leadingVars}
+    ${trackingVars}
+  }
+  ${roleRules}`
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <SEO title={title} description={description} ogImage={ogImage} />
-    <ViewTransitions />
+    <link rel="preload" href="/fonts/trial/PPEditorialNew-Regular.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/fonts/trial/PPNeueMontreal-Medium.otf" as="font" type="font/otf" crossorigin />
+    <style set:html={typoCss}></style>
+    <ViewTransitions fallback="swap" />
   </head>
   <body>
     <a href="#main" class="skip-to-content">Skip to content</a>
     <Nav />
-    <main id="main" style="padding-top: 64px;">
+    <main id="main" tabindex="-1" style="padding-top: var(--nav-height);">
       <slot />
     </main>
     {!hideFooter && <Footer />}
     <AboutModal />
+    <FontSwitcher />
 
     <script>
       import Lenis from 'lenis'
       import gsap from 'gsap'
       import { ScrollTrigger } from 'gsap/ScrollTrigger'
+      import animConfig from '../content/animations.json'
 
       gsap.registerPlugin(ScrollTrigger)
 
+      const scrollCfg = animConfig.smoothScroll
       let lenis: InstanceType<typeof Lenis> | null = null
 
       function initLenis() {
@@ -47,36 +113,29 @@ const { title, description, ogImage, hideFooter = false } = Astro.props
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
         if (prefersReduced) return
 
-        lenis = new Lenis({ lerp: 0.15, smoothWheel: true, wheelMultiplier: 1.2 })
+        lenis = new Lenis({ lerp: scrollCfg.lerp, smoothWheel: true, wheelMultiplier: scrollCfg.wheelMultiplier })
 
         lenis.on('scroll', ScrollTrigger.update)
         gsap.ticker.add((time) => lenis?.raf(time * 1000))
         gsap.ticker.lagSmoothing(0)
       }
 
-      function initScrollReveals() {
-        // Dynamically import scroll reveals
-        import('../components/scroll-reveals.ts')
-      }
-
-      function initHoverEffects() {
-        // Dynamically import hover effects
-        import('../components/hover-effects.ts')
+      async function initInteractions() {
+        const { initScrollReveals } = await import('../components/scroll-reveals.ts')
+        const { initHoverEffects } = await import('../components/hover-effects.ts')
+        initScrollReveals()
+        initHoverEffects()
       }
 
       initLenis()
-      initScrollReveals()
-      initHoverEffects()
+      initInteractions()
 
       document.addEventListener('astro:after-swap', () => {
         initLenis()
         ScrollTrigger.refresh()
       })
 
-      document.addEventListener('astro:page-load', () => {
-        initScrollReveals()
-        initHoverEffects()
-      })
+      document.addEventListener('astro:page-load', initInteractions)
     </script>
 
     <script src="../components/about-modal.ts"></script>

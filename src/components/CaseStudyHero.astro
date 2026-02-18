@@ -24,115 +24,106 @@ const { title, client, year, role, agency, tagline, heroImage, metrics } = Astro
     </h1>
     <p class="cs-hero-tagline">{tagline}</p>
 
-    <div class="cs-hero-meta">
+    <dl class="cs-hero-meta">
       <div class="cs-meta-item">
-        <span class="cs-meta-label text-label">Client</span>
-        <span class="cs-meta-value">{client}</span>
+        <dt class="cs-meta-label text-label">Client</dt>
+        <dd class="cs-meta-value">{client}</dd>
       </div>
       <div class="cs-meta-item">
-        <span class="cs-meta-label text-label">Role</span>
-        <span class="cs-meta-value">{role}</span>
+        <dt class="cs-meta-label text-label">Role</dt>
+        <dd class="cs-meta-value">{role}</dd>
       </div>
       <div class="cs-meta-item">
-        <span class="cs-meta-label text-label">Agency</span>
-        <span class="cs-meta-value">{agency}</span>
+        <dt class="cs-meta-label text-label">Agency</dt>
+        <dd class="cs-meta-value">{agency}</dd>
       </div>
       <div class="cs-meta-item">
-        <span class="cs-meta-label text-label">Year</span>
-        <span class="cs-meta-value">{year}</span>
+        <dt class="cs-meta-label text-label">Year</dt>
+        <dd class="cs-meta-value">{year}</dd>
       </div>
-    </div>
+    </dl>
 
     {metrics && metrics.length > 0 && (
-      <div class="cs-hero-metrics">
+      <dl class="cs-hero-metrics">
         {metrics.map(m => (
           <div class="cs-metric">
-            <span class="cs-metric-value">{m.value}</span>
-            <span class="cs-metric-label">{m.label}</span>
+            <dd class="cs-metric-value">{m.value}</dd>
+            <dt class="cs-metric-label text-label">{m.label}</dt>
           </div>
         ))}
-      </div>
+      </dl>
     )}
   </div>
 </header>
 
 <style>
   .cs-hero {
-    max-width: var(--max-width);
+    max-width: var(--container-content);
     margin: 0 auto;
-    padding: var(--space-2xl) var(--space-xl) 0;
+    padding: var(--space-6) var(--page-padding) 0;
   }
 
   .cs-hero-image {
     border-radius: var(--radius-lg);
     overflow: hidden;
-    margin-bottom: var(--space-2xl);
+    margin-bottom: var(--space-6);
   }
 
   .cs-hero-image img {
     width: 100%;
     display: block;
+    aspect-ratio: 16/9;
   }
 
   .cs-hero-content {
-    max-width: var(--max-width-content);
+    max-width: var(--container-content);
     margin: 0 auto;
   }
 
   .cs-hero-title {
-    font-size: clamp(var(--font-size-3xl), 4vw, var(--font-size-5xl));
-    font-weight: var(--font-weight-regular);
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-2);
   }
 
   .cs-hero-tagline {
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-relaxed);
-    margin-bottom: var(--space-2xl);
-    max-width: 55ch;
+    line-height: var(--line-height-body);
+    margin-bottom: var(--space-6);
   }
 
   .cs-hero-meta {
     display: flex;
-    gap: var(--space-2xl);
+    gap: var(--space-6);
     flex-wrap: wrap;
-    padding: var(--space-lg) 0;
+    padding: var(--space-3) 0;
     border-top: var(--border-light);
     border-bottom: var(--border-light);
-    margin-bottom: var(--space-2xl);
+    margin-bottom: var(--space-6);
   }
 
   .cs-meta-item {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    gap: var(--space-1);
   }
 
   .cs-meta-value {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
+    margin: 0;
   }
 
   .cs-hero-metrics {
     display: flex;
-    gap: var(--space-3xl);
+    gap: var(--space-8);
     flex-wrap: wrap;
   }
 
   .cs-metric {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    gap: var(--space-1);
   }
 
   .cs-metric-value {
-    font-size: var(--font-size-4xl);
-    font-weight: var(--font-weight-regular);
-    letter-spacing: var(--letter-spacing-tight);
+    letter-spacing: var(--tracking-tight);
     color: var(--color-text-primary);
-  }
-
-  .cs-metric-label {
-    font-size: var(--font-size-sm);
+    max-width: none;
   }
 </style>

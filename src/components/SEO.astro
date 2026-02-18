@@ -4,6 +4,7 @@ interface Props {
   description?: string
   ogImage?: string
   canonicalUrl?: string
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
 }
 
 const {
@@ -11,16 +12,36 @@ const {
   description = 'Product and UX/UI designer with 10+ years crafting intuitive, high-performing digital experiences for top brands.',
   ogImage = '/assets/og-image.jpg',
   canonicalUrl,
+  jsonLd,
 } = Astro.props
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://samstringerhye.com'
 const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`
 const canonical = canonicalUrl ?? Astro.url.href
+
+const defaultJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Sam Stringer-Hye",
+    "jobTitle": "Associate Design Director",
+    "url": siteUrl,
+    "sameAs": ["https://linkedin.com/in/samstringerhye"],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Sam Stringer-Hye",
+    "url": siteUrl,
+  },
+]
+
+const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : defaultJsonLd
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="generator" content={Astro.generator} />
+<meta name="theme-color" content="#FFFFFF" />
 
 <title>{title}</title>
 <meta name="description" content={description} />
@@ -31,13 +52,18 @@ const canonical = canonicalUrl ?? Astro.url.href
 <meta property="og:description" content={description} />
 <meta property="og:image" content={fullOgImage} />
 <meta property="og:url" content={canonical} />
+<meta property="og:site_name" content="Sam Stringer-Hye" />
+<meta property="og:locale" content="en_US" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={fullOgImage} />
 
+{schemas.map(schema => (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+))}
+
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="preload" href="/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin />

@@ -1,0 +1,57 @@
+{
+  "fonts": {
+    "display": "\"PP Editorial New\", serif",
+    "body": "\"PP Neue Montreal\", sans-serif"
+  },
+  "fontWeight": {
+    "display": 400,
+    "body": 400
+  },
+
+  "roles": {
+    "display":  { "font": "display", "scale": "5xl", "lineHeight": "heading",   "tracking": "normal" },
+    "headline": { "font": "display", "scale": "4xl", "lineHeight": "heading", "tracking": "normal" },
+    "title":    { "font": "display", "scale": "2xl", "lineHeight": "heading", "tracking": "normal" },
+    "subtitle": { "font": "body",    "scale": "xl",  "lineHeight": "heading", "tracking": "normal" },
+    "lead":     { "font": "body",    "scale": "xl",  "lineHeight": "body",    "tracking": "normal" },
+    "body":     { "font": "body",    "scale": "base","lineHeight": "body",    "tracking": "normal" },
+    "label":    { "font": "body",    "scale": "sm",  "lineHeight": "body",    "tracking": "normal" },
+    "caption":  { "font": "body",    "scale": "xs",  "lineHeight": "body",    "tracking": "normal" }
+  },
+
+  "tags": {
+    "heroText":          { "tag": "h1", "role": "display" },
+    "bioHeadline":       { "tag": "h3", "role": "title" },
+    "bioBody":           { "tag": "p",  "role": "lead" },
+    "sectionHeading":    { "tag": "h3", "role": "title" },
+    "carouselCardTitle": { "tag": "h4", "role": "subtitle" },
+    "timelineHeading":   { "tag": "h2", "role": "headline" },
+    "timelineJobTitle":  { "tag": "h3", "role": "title" },
+    "interestsHeading":  { "tag": "h2", "role": "headline" }
+  },
+
+  "scale": {
+    "5xl": { "min": 2.35, "max": 4.71 },
+    "4xl": { "min": 2.12, "max": 3.76 },
+    "3xl": { "min": 1.88, "max": 3.06 },
+    "2xl": { "min": 1.65, "max": 2.47 },
+    "xl":  { "min": 1.41, "max": 1.94 },
+    "lg":  { "min": 1.24, "max": 1.59 },
+    "md":  { "min": 1.12, "max": 1.24 },
+    "base": 1,
+    "sm":  0.8235,
+    "xs":  0.7059
+  },
+
+  "lineHeight": {
+    "tight": 1,
+    "heading": 1.25,
+    "body": 1.5
+  },
+
+  "tracking": {
+    "tight": -0.02,
+    "normal": 0,
+    "wide": 0.02
+  }
+}

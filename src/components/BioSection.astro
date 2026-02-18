@@ -1,15 +1,22 @@
 ---
+import typo from '../content/typography.json'
+
 interface Props {
-  bio: string
-  aboutCTA: string
+  headline: string
+  body: string
 }
 
-const { bio, aboutCTA } = Astro.props
+const { headline, body } = Astro.props
+const hlCfg = typo.tags.bioHeadline
+const bodyCfg = typo.tags.bioBody
+const HeadlineTag = hlCfg.tag as any
+const BodyTag = bodyCfg.tag as any
 ---
 
-<section class="bio-section">
+<section class="bio-section" aria-label="About">
   <div class="bio-inner">
-    <p class="bio-text" data-bio-text>{bio}</p>
+    <HeadlineTag class:list={["bio-headline", `typo-${hlCfg.role}`]}>{headline}</HeadlineTag>
+    <BodyTag class:list={["bio-text", `typo-${bodyCfg.role}`]} data-bio-text>{body}</BodyTag>
   </div>
 </section>
 
@@ -20,20 +27,24 @@ const { bio, aboutCTA } = Astro.props
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding: var(--space-4xl) var(--space-xl);
+    padding-block: var(--section-padding);
   }
 
   .bio-inner {
     width: 100%;
-    max-width: var(--max-width);
+    max-width: var(--container-content);
     margin: 0 auto;
+    padding-inline: var(--page-padding);
+  }
+
+  .bio-headline {
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-3);
   }
 
   .bio-text {
-    font-size: clamp(var(--font-size-xl), 3vw, var(--font-size-3xl));
-    line-height: var(--line-height-relaxed);
+    line-height: var(--line-height-body);
     color: var(--color-text-primary);
-    max-width: 60ch;
   }
 
   .bio-text :global(.bio-line) {
@@ -47,100 +58,60 @@ const { bio, aboutCTA } = Astro.props
 <script>
   import gsap from 'gsap'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  import { SplitText } from 'gsap/SplitText'
+  import animConfig from '../content/animations.json'
 
-  gsap.registerPlugin(ScrollTrigger)
+  gsap.registerPlugin(ScrollTrigger, SplitText)
 
-  function splitIntoLines(el: HTMLElement, className: string): HTMLSpanElement[] {
-    const text = el.textContent || ''
-    const words = text.split(/\s+/).filter(Boolean)
-    if (!words.length) return []
-
-    el.style.opacity = '0'
-    el.innerHTML = ''
-
-    const wordSpans: HTMLSpanElement[] = []
-    words.forEach((word, i) => {
-      if (i > 0) el.appendChild(document.createTextNode(' '))
-      const span = document.createElement('span')
-      span.style.display = 'inline'
-      span.textContent = word
-      el.appendChild(span)
-      wordSpans.push(span)
-    })
-
-    const lineGroups: string[][] = [[]]
-    let prevTop = Math.round(wordSpans[0].getBoundingClientRect().top)
-
-    wordSpans.forEach((span, i) => {
-      const top = Math.round(span.getBoundingClientRect().top)
-      if (top > prevTop + 2 && i > 0) {
-        lineGroups.push([])
-        prevTop = top
-      }
-      lineGroups[lineGroups.length - 1].push(words[i])
-    })
-
-    el.innerHTML = ''
-    el.style.opacity = ''
-    const lineEls: HTMLSpanElement[] = []
-    lineGroups.forEach(lineWords => {
-      const lineSpan = document.createElement('span')
-      lineSpan.className = className
-      lineSpan.textContent = lineWords.join(' ')
-      el.appendChild(lineSpan)
-      lineEls.push(lineSpan)
-    })
-
-    return lineEls
-  }
+  const cfg = animConfig.bio
 
   let bioTrigger: globalThis.ScrollTrigger | null = null
+  let bioSplit: SplitText | null = null
 
   function animateBioLines() {
     const el = document.querySelector<HTMLElement>('[data-bio-text]')
     if (!el) return
 
-    // Kill previous trigger to avoid duplicates on re-navigation
     if (bioTrigger) {
       bioTrigger.kill()
       bioTrigger = null
     }
 
-    if (!el.dataset.originalText) {
-      el.dataset.originalText = el.textContent || ''
-    } else {
-      el.textContent = el.dataset.originalText
+    if (bioSplit) {
+      bioSplit.revert()
+      bioSplit = null
     }
 
+    bioSplit = new SplitText(el, { type: 'lines', linesClass: 'bio-line' })
+    const lines = bioSplit.lines
+
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const lines = splitIntoLines(el, 'bio-line')
 
     if (prefersReduced) {
       gsap.set(lines, { opacity: 1, y: 0, filter: 'blur(0px)', textShadow: 'none' })
       return
     }
 
-    const d1 = 30, d2 = d1 * 1.5, d3 = d1 * 2, op = 0.5
+    const d1 = cfg.aberration, d2 = d1 * 1.5, d3 = d1 * 2, op = cfg.aberrationOpacity
     const shadowFrom = `0 ${d1}px rgba(0,255,255,${op}), 0 ${d2}px rgba(255,0,255,${op}), 0 ${d3}px rgba(255,255,0,${op})`
 
     gsap.set(lines, {
-      opacity: 0, y: 30, filter: 'blur(14px)', textShadow: shadowFrom,
+      opacity: 0, y: cfg.y, filter: `blur(${cfg.blur}px)`, textShadow: shadowFrom,
     })
 
     bioTrigger = ScrollTrigger.create({
       trigger: el,
-      start: 'top 60%',
+      start: cfg.triggerStart,
       once: true,
       onEnter: () => {
         gsap.to(lines, {
           opacity: 1, y: 0, filter: 'blur(0px)',
           textShadow: '0 0px transparent, 0 0px transparent, 0 0px transparent',
-          duration: 1.2, stagger: 0.12, ease: 'power3.out',
+          duration: cfg.duration, stagger: cfg.stagger, ease: cfg.ease,
         })
       },
     })
   }
 
-  // Use only astro:page-load (fires on initial load + navigations)
   document.addEventListener('astro:page-load', animateBioLines)
 </script>

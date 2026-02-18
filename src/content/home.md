@@ -1,19 +1,33 @@
 ---
-heroHeadline: "I like interfaces with a point of view."
-heroSubhead: "A design system should protect that point of view everywhere."
-bio: "Product and UX/UI designer with 10+ years crafting intuitive, high-performing digital experiences for top brands. Skilled in designing scalable systems, motion design, and seamless user interactions that bridge creativity and functionality."
-aboutCTA: "More about me"
-resumeHeading: "Want the full picture?"
-resumeCTA: "Download Resume"
+heroBlocks:
+  - text: "Hi there. I'm Sam."
+bioHeadline: "Who me?"
+bioBody: "Product and UX/UI designer with 10+ years crafting intuitive, high-performing digital experiences for top brands. Skilled in designing scalable systems, motion design, and seamless user interactions that bridge creativity and functionality."
 interests:
-  - Design Systems
-  - Product Design
-  - Interactive Experiences
-  - Motion Design
-  - Prototyping
+  - Technology
+  - Gadgets
+  - Denim
+  - Boots
+  - Leather
+  - Watches
+  - Audio
+  - HiFi
+  - Homelab
+  - Restoration
   - Typography
-  - WebGL
-  - Creative Coding
-footerEmail: "sam@samstringerhye.com"
-footerLinkedIn: "https://linkedin.com/in/samstringerhye"
+  - Motion
+  - Film
+  - Electronic Music
+  - UX
+  - UI
+  - Mac
+  - Internet
+  - History
+  - Philosophy
+  - Video Games
+  - Graphic Novels
+  - Vinyl
+  - Manga
+  - Horror
+  - Science Fiction
 ---

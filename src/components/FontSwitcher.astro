@@ -1,0 +1,223 @@
+---
+// Dev-only font family switcher
+---
+
+<div class="font-switcher" id="font-switcher">
+  <button class="font-switcher-toggle" id="font-switcher-toggle" aria-label="Toggle font switcher">Aa</button>
+  <div class="font-switcher-panel" id="font-switcher-panel" hidden>
+    <p class="font-switcher-label">Font Family</p>
+    <div class="font-switcher-list" id="font-switcher-list" role="radiogroup" aria-label="Choose font"></div>
+    <button class="font-switcher-reset" id="font-switcher-reset">Reset</button>
+  </div>
+</div>
+
+<style>
+  .font-switcher {
+    position: fixed;
+    bottom: var(--space-3);
+    right: var(--space-3);
+    z-index: 9999;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--color-text-primary);
+  }
+
+  .font-switcher-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease;
+  }
+
+  .font-switcher-toggle:hover {
+    transform: scale(1.05);
+  }
+
+  .font-switcher-panel {
+    position: absolute;
+    bottom: 56px;
+    right: 0;
+    width: 280px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: var(--color-bg-primary);
+    border: var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    padding: var(--space-2);
+  }
+
+  .font-switcher-panel[hidden] {
+    display: none;
+  }
+
+  .font-switcher-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    padding: 4px 8px 2px;
+    margin: 0;
+    max-width: none;
+  }
+
+  .font-switcher-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .font-switcher-list :global(button) {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 6px 8px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    transition: background 0.15s ease;
+    font-family: system-ui, sans-serif;
+  }
+
+  .font-switcher-list :global(button:hover) {
+    background: var(--color-bg-alt);
+  }
+
+  .font-switcher-list :global(button[aria-checked="true"]) {
+    background: var(--color-bg-alt);
+    font-weight: 600;
+  }
+
+  .font-switcher-list :global(.font-preview) {
+    display: block;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-top: 1px;
+  }
+
+  .font-switcher-reset {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border: var(--border-light);
+    border-radius: var(--radius-sm);
+    background: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: system-ui, sans-serif;
+    color: var(--color-text-secondary);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .font-switcher-reset:hover {
+    background: var(--color-bg-alt);
+    color: var(--color-text-primary);
+  }
+</style>
+
+<script>
+  const FONTS = [
+    { name: 'Inter', family: 'Inter, system-ui, sans-serif', src: null },
+    { name: 'PP Neue Montreal', family: '"PP Neue Montreal", sans-serif', src: '/fonts/trial/PPNeueMontreal-Medium.otf' },
+    { name: 'PP Mori', family: '"PP Mori", sans-serif', src: '/fonts/trial/PPMori-Regular.otf' },
+    { name: 'PP Telegraf', family: '"PP Telegraf", sans-serif', src: '/fonts/trial/PPTelegraf-Regular.otf' },
+    { name: 'PP Object Sans', family: '"PP Object Sans", sans-serif', src: '/fonts/trial/PPObjectSans-Regular.otf' },
+    { name: 'PP Radio Grotesk', family: '"PP Radio Grotesk", sans-serif', src: '/fonts/trial/PPRadioGrotesk-Regular.otf' },
+    { name: 'PP Frama', family: '"PP Frama", sans-serif', src: '/fonts/trial/PPFrama-Regular.otf' },
+    { name: 'PP Monument Extended', family: '"PP Monument Extended", sans-serif', src: '/fonts/trial/PPMonumentExtended-Regular.otf' },
+    { name: 'PP Monument', family: '"PP Monument", sans-serif', src: '/fonts/trial/PPMonumentNormal-Regular.otf' },
+    { name: 'PP Neue Corp', family: '"PP Neue Corp", sans-serif', src: '/fonts/trial/PPNeueCorp-NormalMedium.otf' },
+    { name: 'PP Kyoto', family: '"PP Kyoto", serif', src: '/fonts/trial/PPKyoto-Medium.otf' },
+    { name: 'PP Museum', family: '"PP Museum", serif', src: '/fonts/trial/PPMuseum-Regular.otf' },
+    { name: 'PP Neue York', family: '"PP Neue York", serif', src: '/fonts/trial/PPNeueYork-NormalMedium.otf' },
+    { name: 'PP Editorial Old', family: '"PP Editorial Old", serif', src: '/fonts/trial/PPEditorialOld-Regular.otf' },
+    { name: 'PP Editorial New', family: '"PP Editorial New", serif', src: '/fonts/trial/PPEditorialNew-Regular.otf' },
+    { name: 'PP Rader', family: '"PP Rader", sans-serif', src: '/fonts/trial/PPRader-Regular.otf' },
+    { name: 'PP Stellar', family: '"PP Stellar", sans-serif', src: '/fonts/trial/PPStellar-Light.otf' },
+    { name: 'PP NM Mono', family: '"PP NM Mono", monospace', src: '/fonts/trial/PPNeueMontrealMono-Medium.otf' },
+  ]
+
+  const loadedFonts = new Set<string>()
+
+  function loadFont(font: typeof FONTS[0]) {
+    if (!font.src || loadedFonts.has(font.name)) return
+    const face = new FontFace(font.name, `url(${font.src})`)
+    face.load().then(loaded => {
+      document.fonts.add(loaded)
+      loadedFonts.add(font.name)
+    })
+  }
+
+  function initFontSwitcher() {
+    const toggle = document.getElementById('font-switcher-toggle')
+    const panel = document.getElementById('font-switcher-panel')
+    const list = document.getElementById('font-switcher-list')
+    const resetBtn = document.getElementById('font-switcher-reset')
+    if (!toggle || !panel || !list || !resetBtn) return
+
+    list.innerHTML = ''
+    const savedFont = localStorage.getItem('typo-font') || 'Inter'
+
+    FONTS.forEach(font => {
+      const btn = document.createElement('button')
+      btn.setAttribute('role', 'radio')
+      btn.setAttribute('aria-checked', font.name === savedFont ? 'true' : 'false')
+      btn.innerHTML = `${font.name}<span class="font-preview" style="font-family: ${font.family}">Aa Bb Cc 123</span>`
+      btn.addEventListener('click', () => {
+        loadFont(font)
+        document.documentElement.style.setProperty('--font-primary', font.family)
+        localStorage.setItem('typo-font', font.name)
+        list.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', 'false'))
+        btn.setAttribute('aria-checked', 'true')
+      })
+      loadFont(font)
+      list.appendChild(btn)
+    })
+
+    // Restore saved font
+    const restoredFont = FONTS.find(f => f.name === savedFont)
+    if (restoredFont) {
+      loadFont(restoredFont)
+      document.documentElement.style.setProperty('--font-primary', restoredFont.family)
+    }
+
+    // Reset
+    resetBtn.addEventListener('click', () => {
+      localStorage.removeItem('typo-font')
+      document.documentElement.style.removeProperty('--font-primary')
+      initFontSwitcher()
+    })
+
+    // Toggle panel
+    toggle.addEventListener('click', () => {
+      const hidden = panel.hasAttribute('hidden')
+      if (hidden) panel.removeAttribute('hidden')
+      else panel.setAttribute('hidden', '')
+    })
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      const switcher = document.getElementById('font-switcher')
+      if (switcher && !switcher.contains(e.target as Node)) {
+        panel.setAttribute('hidden', '')
+      }
+    })
+  }
+
+  document.addEventListener('astro:page-load', initFontSwitcher)
+</script>

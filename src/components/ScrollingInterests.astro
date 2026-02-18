@@ -1,14 +1,19 @@
 ---
+import typo from '../content/typography.json'
+
 interface Props {
   interests: string[]
 }
 
 const { interests } = Astro.props
+const ihCfg = typo.tags.interestsHeading
+const HeadingTag = ihCfg.tag as any
 const text = interests.join(' \u00b7 ') + ' \u00b7 '
 const copies = 4
 ---
 
 <section class="interests-section" aria-label="Interests">
+  <HeadingTag class:list={["visually-hidden", `typo-${ihCfg.role}`]}>Interests</HeadingTag>
   <div class="interests-row" data-direction="left">
     <svg class="interests-svg-defs" aria-hidden="true">
       <defs>
@@ -18,7 +23,7 @@ const copies = 4
         </filter>
       </defs>
     </svg>
-    <div class="interests-track">
+    <div class="interests-track" aria-hidden="true">
       {Array.from({ length: copies }, () => (
         <span class="interests-text">{text}</span>
       ))}
@@ -34,12 +39,14 @@ const copies = 4
         </filter>
       </defs>
     </svg>
-    <div class="interests-track">
+    <div class="interests-track" aria-hidden="true">
       {Array.from({ length: copies }, () => (
         <span class="interests-text">{text}</span>
       ))}
     </div>
   </div>
+
+  <p class="visually-hidden">{interests.join(', ')}</p>
 </section>
 
 <style>
@@ -48,7 +55,7 @@ const copies = 4
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: var(--space-lg);
+    gap: var(--space-3);
     overflow: hidden;
   }
 
@@ -72,20 +79,30 @@ const copies = 4
   }
 
   .interests-text {
-    font-size: clamp(var(--font-size-5xl), 6vw, var(--font-size-7xl));
-    font-weight: var(--font-weight-regular);
     color: var(--color-text-primary);
     line-height: 1.2;
     padding: 0 0.1em;
+    max-width: none;
   }
 </style>
 
 <script>
   import gsap from 'gsap'
+  import animConfig from '../content/animations.json'
+
+  const scrollDuration = animConfig.interests.scrollDuration
+  let interestsTweens: gsap.core.Tween[] = []
+
+  function cleanupScrollingInterests() {
+    interestsTweens.forEach(t => t.kill())
+    interestsTweens = []
+  }
 
   function initScrollingInterests() {
+    cleanupScrollingInterests()
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const rows = document.querySelectorAll('.interests-row')
-    const tweens: gsap.core.Tween[] = []
 
     rows.forEach((row, i) => {
       const track = row.querySelector('.interests-track')
@@ -94,11 +111,7 @@ const copies = 4
       const copyWidth = (track as HTMLElement).scrollWidth / 4
       const direction = row.getAttribute('data-direction')
       const filterId = `distort-${i + 1}`
-      const filter = row.querySelector(`#${filterId}`)
-      const displace = filter?.querySelector('feDisplacementMap')
-      const turb = filter?.querySelector('feTurbulence')
 
-      // Apply filter
       ;(track as HTMLElement).style.filter = `url(#${filterId})`
 
       let tween: gsap.core.Tween
@@ -106,7 +119,7 @@ const copies = 4
       if (direction === 'left') {
         tween = gsap.to(track, {
           x: -copyWidth,
-          duration: 30,
+          duration: scrollDuration,
           ease: 'none',
           repeat: -1,
           modifiers: {
@@ -117,7 +130,7 @@ const copies = 4
         gsap.set(track, { x: -copyWidth })
         tween = gsap.to(track, {
           x: 0,
-          duration: 30,
+          duration: scrollDuration,
           ease: 'none',
           repeat: -1,
           modifiers: {
@@ -129,12 +142,11 @@ const copies = 4
         })
       }
 
-      tweens.push(tween)
-
-      // Hover distortion disabled for now
+      interestsTweens.push(tween)
     })
   }
 
   initScrollingInterests()
   document.addEventListener('astro:page-load', initScrollingInterests)
+  document.addEventListener('astro:before-swap', cleanupScrollingInterests)
 </script>
