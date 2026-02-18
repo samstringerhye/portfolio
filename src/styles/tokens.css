@@ -35,7 +35,7 @@
   --color-border: rgba(0, 0, 0, 0.08);
 
   /* ── Layout ── */
-  --container-content: 1260px;
+  /* --container-content is set from typography.json via BaseLayout */
   --container-wide: 1680px;
   --page-padding: clamp(1.5rem, 6.25vw, 120px);
   --grid-gutter: clamp(0.94rem, 0.81rem + 6.01vw, 4.71rem);   /* 16→80px */

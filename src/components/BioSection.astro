@@ -1,5 +1,5 @@
 ---
-import typo from '../content/typography.json'
+import typo from '../data/typography.json'
 
 interface Props {
   headline: string
@@ -59,7 +59,7 @@ const BodyTag = bodyCfg.tag as any
   import gsap from 'gsap'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
   import { SplitText } from 'gsap/SplitText'
-  import animConfig from '../content/animations.json'
+  import animConfig from '../data/animations.json'
 
   gsap.registerPlugin(ScrollTrigger, SplitText)
 

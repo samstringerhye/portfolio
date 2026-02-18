@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import { Draggable } from 'gsap/Draggable'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import animConfig from '../content/animations.json'
+import animConfig from '../data/animations.json'
 
 gsap.registerPlugin(Draggable, ScrollTrigger)
 

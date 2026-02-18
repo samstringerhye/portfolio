@@ -1,6 +1,6 @@
 ---
 import HeroCanvas from './HeroCanvas.jsx'
-import typo from '../content/typography.json'
+import typo from '../data/typography.json'
 
 interface HeroBlock {
   tag?: string
@@ -95,7 +95,7 @@ const heroRole = `typo-${heroCfg.role}`
 <script>
   import gsap from 'gsap'
   import { SplitText } from 'gsap/SplitText'
-  import animConfig from '../content/animations.json'
+  import animConfig from '../data/animations.json'
 
   gsap.registerPlugin(SplitText)
 

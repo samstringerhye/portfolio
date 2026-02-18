@@ -11,20 +11,20 @@
   "roles": {
     "display":  { "font": "display", "scale": "5xl", "lineHeight": "heading",   "tracking": "normal" },
     "headline": { "font": "display", "scale": "4xl", "lineHeight": "heading", "tracking": "normal" },
-    "title":    { "font": "display", "scale": "2xl", "lineHeight": "heading", "tracking": "normal" },
-    "subtitle": { "font": "body",    "scale": "xl",  "lineHeight": "heading", "tracking": "normal" },
-    "lead":     { "font": "body",    "scale": "xl",  "lineHeight": "body",    "tracking": "normal" },
+    "title":    { "font": "display", "scale": "3xl", "lineHeight": "heading", "tracking": "normal" },
+    "subtitle": { "font": "body",    "scale": "2xl",  "lineHeight": "heading", "tracking": "normal" },
+    "lead":     { "font": "body",    "scale": "xl",  "lineHeight": "heading",    "tracking": "normal" },
     "body":     { "font": "body",    "scale": "base","lineHeight": "body",    "tracking": "normal" },
-    "label":    { "font": "body",    "scale": "sm",  "lineHeight": "body",    "tracking": "normal" },
+    "label":    { "font": "body",    "scale": "lg",  "lineHeight": "body",    "tracking": "normal" },
     "caption":  { "font": "body",    "scale": "xs",  "lineHeight": "body",    "tracking": "normal" }
   },
 
   "tags": {
     "heroText":          { "tag": "h1", "role": "display" },
-    "bioHeadline":       { "tag": "h3", "role": "title" },
+    "bioHeadline":       { "tag": "h2", "role": "title" },
     "bioBody":           { "tag": "p",  "role": "lead" },
     "sectionHeading":    { "tag": "h3", "role": "title" },
-    "carouselCardTitle": { "tag": "h4", "role": "subtitle" },
+    "carouselCardTitle": { "tag": "h4", "role": "label" },
     "timelineHeading":   { "tag": "h2", "role": "headline" },
     "timelineJobTitle":  { "tag": "h3", "role": "title" },
     "interestsHeading":  { "tag": "h2", "role": "headline" }
@@ -53,5 +53,7 @@
     "tight": -0.02,
     "normal": 0,
     "wide": 0.02
-  }
+  },
+
+  "contentWidth": 1260
 }

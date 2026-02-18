@@ -5,7 +5,7 @@ import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import AboutModal from '../components/AboutModal.astro'
 import FontSwitcher from '../components/FontSwitcher.astro'
-import typo from '../content/typography.json'
+import typo from '../data/typography.json'
 import '../styles/global.css'
 
 interface Props {
@@ -72,6 +72,7 @@ const typoCss = `${fontFaces}
     ${scaleVars}
     ${leadingVars}
     ${trackingVars}
+    --container-content: ${typo.contentWidth}px;
   }
   ${roleRules}`
 ---
@@ -99,7 +100,7 @@ const typoCss = `${fontFaces}
       import Lenis from 'lenis'
       import gsap from 'gsap'
       import { ScrollTrigger } from 'gsap/ScrollTrigger'
-      import animConfig from '../content/animations.json'
+      import animConfig from '../data/animations.json'
 
       gsap.registerPlugin(ScrollTrigger)
 

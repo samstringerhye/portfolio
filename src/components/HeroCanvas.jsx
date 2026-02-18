@@ -9,7 +9,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js'
-import animConfig from '../content/animations.json'
+import animConfig from '../data/animations.json'
 
 const cfg = animConfig.hero.canvas
 

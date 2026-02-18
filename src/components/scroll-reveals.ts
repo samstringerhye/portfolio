@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import animConfig from '../content/animations.json'
+import animConfig from '../data/animations.json'
 
 gsap.registerPlugin(ScrollTrigger)
 

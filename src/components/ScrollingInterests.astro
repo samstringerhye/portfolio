@@ -1,5 +1,5 @@
 ---
-import typo from '../content/typography.json'
+import typo from '../data/typography.json'
 
 interface Props {
   interests: string[]
@@ -88,7 +88,7 @@ const copies = 4
 
 <script>
   import gsap from 'gsap'
-  import animConfig from '../content/animations.json'
+  import animConfig from '../data/animations.json'
 
   const scrollDuration = animConfig.interests.scrollDuration
   let interestsTweens: gsap.core.Tween[] = []
