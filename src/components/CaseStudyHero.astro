@@ -20,27 +20,27 @@ const { title, client, year, role, agency, tagline, heroImage, heroImageAlt, met
   </div>
 
   <div class="cs-hero-content">
-    <h1 class="cs-hero-title typo-headline" transition:name={`title-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+    <h1 class="cs-hero-title typo-prose-title-lg" transition:name={`title-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       {title}
     </h1>
-    <p class="cs-hero-tagline typo-lead">{tagline}</p>
+    <p class="cs-hero-tagline typo-prose-subhead-lg">{tagline}</p>
 
     <dl class="cs-hero-meta">
       <div class="cs-meta-item">
-        <dt class="cs-meta-label typo-caption">Client</dt>
-        <dd class="cs-meta-value typo-body">{client}</dd>
+        <dt class="cs-meta-label typo-ui-nav-section">Client</dt>
+        <dd class="cs-meta-value typo-prose-body">{client}</dd>
       </div>
       <div class="cs-meta-item">
-        <dt class="cs-meta-label typo-caption">Role</dt>
-        <dd class="cs-meta-value typo-body">{role}</dd>
+        <dt class="cs-meta-label typo-ui-nav-section">Role</dt>
+        <dd class="cs-meta-value typo-prose-body">{role}</dd>
       </div>
       <div class="cs-meta-item">
-        <dt class="cs-meta-label typo-caption">Agency</dt>
-        <dd class="cs-meta-value typo-body">{agency}</dd>
+        <dt class="cs-meta-label typo-ui-nav-section">Agency</dt>
+        <dd class="cs-meta-value typo-prose-body">{agency}</dd>
       </div>
       <div class="cs-meta-item">
-        <dt class="cs-meta-label typo-caption">Year</dt>
-        <dd class="cs-meta-value typo-body">{year}</dd>
+        <dt class="cs-meta-label typo-ui-nav-section">Year</dt>
+        <dd class="cs-meta-value typo-prose-body">{year}</dd>
       </div>
     </dl>
 
@@ -48,8 +48,8 @@ const { title, client, year, role, agency, tagline, heroImage, heroImageAlt, met
       <dl class="cs-hero-metrics">
         {metrics.map(m => (
           <div class="cs-metric">
-            <dt class="cs-metric-label typo-caption">{m.label}</dt>
-            <dd class="cs-metric-value typo-title">{m.value}</dd>
+            <dt class="cs-metric-label typo-ui-nav-section">{m.label}</dt>
+            <dd class="cs-metric-value typo-prose-title-lg">{m.value}</dd>
           </div>
         ))}
       </dl>
@@ -59,13 +59,11 @@ const { title, client, year, role, agency, tagline, heroImage, heroImageAlt, met
 
 <style>
   .cs-hero {
-    max-width: var(--container-content);
-    margin: 0 auto;
     padding: var(--space-6) var(--page-padding) 0;
   }
 
   .cs-hero-image {
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-3x);
     overflow: hidden;
     margin-bottom: var(--space-6);
   }
@@ -77,8 +75,6 @@ const { title, client, year, role, agency, tagline, heroImage, heroImageAlt, met
   }
 
   .cs-hero-content {
-    max-width: var(--container-content);
-    margin: 0 auto;
   }
 
   .cs-hero-title {

@@ -5,8 +5,8 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 <BaseLayout title="Colophon — Sam Stringer-Hye" description="How this site was built.">
   <section class="colophon-page">
     <div class="colophon-header">
-      <p class="typo-caption" style="color: var(--color-text-secondary);">About this site</p>
-      <h1 class="typo-headline">Colophon</h1>
+      <p class="typo-ui-nav-section" style="color: var(--color-text-secondary);">About this site</p>
+      <h1 class="typo-prose-title-lg">Colophon</h1>
     </div>
 
     <div class="colophon-body" data-reveal="fade-up">
@@ -20,8 +20,10 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
       <h2>Typography</h2>
       <p>
-        <strong>Inter</strong> by Rasmus Andersson — a typeface designed for computer screens with a tall x-height for legibility at small sizes.
-        All text uses regular weight (400); hierarchy is expressed through size alone.
+        <strong>PP Editorial New</strong> by Pangram Pangram is used for display and headline roles, paired with
+        <strong>PP Neue Montreal</strong> for body text and UI elements.
+        The serif/sans-serif pairing creates a two-register type system — editorial for impact, geometric sans for readability.
+        Hierarchy is driven by role tokens across scale, line height, and tracking.
       </p>
 
       <h2>Design Language</h2>
@@ -42,8 +44,6 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
 <style>
   .colophon-page {
-    max-width: var(--container-content);
-    margin: 0 auto;
     padding: var(--space-8) var(--page-padding);
   }
 
@@ -57,8 +57,8 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
   .colophon-body h2 {
     font-family: var(--font-serif);
-    font-weight: var(--font-weight-serif);
-    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--text-6x);
     line-height: var(--line-height-normal);
     letter-spacing: var(--tracking-normal);
     margin-top: var(--space-6);
@@ -70,9 +70,9 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   }
 
   .colophon-body p {
-    font-family: var(--font-sans-serif);
-    font-weight: var(--font-weight-sans-serif);
-    font-size: var(--text-base);
+    font-family: var(--font-sans);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-1x);
     line-height: var(--line-height-normal);
     letter-spacing: var(--tracking-normal);
     margin-bottom: var(--space-3);
@@ -83,8 +83,8 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   }
 
   .colophon-body code {
-    background: var(--color-bg-alt);
-    padding: var(--radius-sm) var(--space-1);
-    border-radius: var(--radius-sm);
+    background: var(--prose-code-bg);
+    padding: var(--prose-code-padding-block) var(--prose-code-padding-inline);
+    border-radius: var(--prose-code-border-radius);
   }
 </style>

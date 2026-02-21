@@ -1,0 +1,18 @@
+[      -2ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://smithery.ai/servers/mcp-server-lottiefiles:0
+[     518ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://smithery.ai/blog?_rsc=1ibou:0
+[     563ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://smithery.ai/docs?_rsc=1ibou:0
+[    2369ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://smithery.ai/monitoring?o=4510748811526144&p=4510748812312576&r=us:0
+[    5818ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rY (https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:92698)
+    at ll (https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:143420)
+    at uc (https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:183891)
+    at https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:183736
+    at uu (https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:183744)
+    at s9 (https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:178888)
+    at uH (https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:205517)
+    at uj (https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:203731)
+    at uF (https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:204075)
+    at https://smithery.ai/_next/static/chunks/01df9f3fbe80db95.js?dpl=dpl_2Ss87r5MGfVzh6p1ZKjACApwFMJY:21:203360
+[    6011ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://smithery.ai/monitoring?o=4510748811526144&p=4510748812312576&r=us:0
+[    6567ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://smithery.ai/docs?_rsc=1r34m:0
+[    9071ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://smithery.ai/monitoring?o=4510748811526144&p=4510748812312576&r=us:0

@@ -6,7 +6,10 @@ import WorkCarousel from '../components/WorkCarousel.astro'
 import Timeline from '../components/Timeline.astro'
 import ScrollingInterests from '../components/ScrollingInterests.astro'
 
-import home from '../content/home.json'
+import homeData from '../content/home.json'
+import type { HomeContent } from '../types/content'
+
+const home: HomeContent = homeData
 ---
 
 <BaseLayout>
@@ -15,6 +18,7 @@ import home from '../content/home.json'
     tag={home.hero.headlineTag}
     role={home.hero.headlineRole}
   />
+  <hr class="section-rule" />
   <BioSection
     headline={home.bio.headline}
     body={home.bio.body}
@@ -23,17 +27,19 @@ import home from '../content/home.json'
     bodyTag={home.bio.bodyTag}
     bodyRole={home.bio.bodyRole}
   />
+  <hr class="section-rule" />
   <WorkCarousel
+    headline={home.work.headline}
     headingTag={home.work.headingTag}
     headingRole={home.work.headingRole}
     cardTitleTag={home.work.cardTitleTag}
     cardTitleRole={home.work.cardTitleRole}
   />
+  <hr class="section-rule" />
   <Timeline />
+  <hr class="section-rule" />
   <ScrollingInterests
     interests={home.interests.items}
-    headingTag={home.interests.headingTag}
-    headingRole={home.interests.headingRole}
     textRole={home.interests.textRole}
   />
 </BaseLayout>

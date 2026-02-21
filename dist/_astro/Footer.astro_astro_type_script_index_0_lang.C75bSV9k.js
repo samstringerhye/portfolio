@@ -1,0 +1,1 @@
+import{c as n,a as r}from"./tokens.q7p3D4vK.js";const o=n(r.timeline.hover.saveCmyOpacity);let a=0;function t(){document.querySelectorAll(".footer-icon-cell").forEach(e=>{e.addEventListener("mouseenter",()=>{e.style.backgroundColor=o[a++%o.length]}),e.addEventListener("mouseleave",()=>{e.style.backgroundColor=""})})}t();document.addEventListener("astro:page-load",t);

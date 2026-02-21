@@ -1,19 +1,24 @@
 ---
 import { getCollection } from 'astro:content'
-import WorkCarouselIsland from './WorkCarouselIsland.jsx'
+import { Icon } from 'astro-icon/components'
+import type { HeadingTag, TypographyRole } from '../types/typography'
+import { animations } from '../data/tokens'
 
 interface Props {
-  headingTag?: string
-  headingRole?: string
-  cardTitleTag?: string
-  cardTitleRole?: string
+  headline?: string
+  headingTag?: HeadingTag
+  headingRole?: TypographyRole
+  cardTitleTag?: HeadingTag
+  cardTitleRole?: TypographyRole
 }
 
 const {
-  headingTag = 'h3', headingRole = 'title',
-  cardTitleTag = 'h4', cardTitleRole = 'label',
-} = Astro.props
+  headline = 'Selected Work',
+  headingTag = 'h2', headingRole = 'prose-title-lg',
+  cardTitleTag = 'h3', cardTitleRole = 'prose-title-sm',
+} = Astro.props as Props
 const SectionTag = headingTag as any
+const CardTitleTag = cardTitleTag as any
 const allWork = await getCollection('work')
 const featured = allWork
   .filter(w => w.data.featured)
@@ -25,25 +30,288 @@ const featured = allWork
     thumbnail: w.data.thumbnail,
     slug: w.id,
   }))
+const revealCfg = animations.textReveal
+const workInitBlur = `${revealCfg.initialBlur}px`
 ---
 
-<section class="work-carousel-section" id="selected-work" aria-label="Selected work">
-  <div class="work-carousel-header">
-    <SectionTag class={`typo-${headingRole}`} data-reveal>Selected Work</SectionTag>
+<section class="work-section" id="selected-work" aria-label="Selected work">
+  <div class="work-container">
+    <SectionTag class={`work-label typo-${headingRole}`} data-reveal>{headline}</SectionTag>
+
+    <div class="work-grid">
+      {featured.map(card => (
+        <a href={`/work/${card.slug}`} class="work-card" data-work-card>
+          <div class="work-card-proof" aria-hidden="true">
+            <span class="trim trim-tl-v"></span>
+            <span class="trim trim-tl-h"></span>
+            <span class="trim trim-tr-v"></span>
+            <span class="trim trim-tr-h"></span>
+            <span class="trim trim-bl-v"></span>
+            <span class="trim trim-bl-h"></span>
+            <span class="trim trim-br-v"></span>
+            <span class="trim trim-br-h"></span>
+          </div>
+          <div class="work-card-inner">
+            <img
+              src={card.thumbnail}
+              alt={card.title}
+              loading="lazy"
+              decoding="async"
+            />
+            <CardTitleTag class={`work-card-title typo-${cardTitleRole}`} data-card-title>{card.title}</CardTitleTag>
+            <div class="work-card-cta">
+              <Icon name="material-symbols:arrow-forward-sharp" class="work-card-cta-icon" />
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
   </div>
-  <WorkCarouselIsland cards={featured} cardTitleTag={cardTitleTag} cardTitleRole={`typo-${cardTitleRole}`} client:visible />
 </section>
 
-<style>
-  .work-carousel-section {
-    padding: var(--section-padding) 0;
-    overflow: hidden;
+<style define:vars={{ workInitBlur }}>
+  .work-section {
+    padding: calc(var(--section-padding) * 2) 0 var(--section-padding) 0;
   }
 
-  .work-carousel-header {
-    max-width: var(--container-content);
-    margin: 0 auto;
-    padding: 0 var(--page-padding);
+  .work-container {
+    padding: 0 var(--page-margin);
+  }
+
+  .work-label {
+    color: var(--color-text-primary);
     margin-bottom: var(--space-4);
+    padding-inline: var(--content-inset);
+    opacity: 0;
+    filter: blur(var(--workInitBlur));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-label {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--content-inset);
+    padding-inline: var(--content-inset);
+  }
+
+  .work-card {
+    --trim-length: 1.5rem;
+    position: relative;
+    display: block;
+    text-decoration: none;
+  }
+
+  .work-card-inner {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border: var(--border-width-1) solid transparent;
+    transition: border-color var(--transition-1x) ease;
+  }
+
+  .work-card:hover .work-card-inner {
+    border-color: var(--color-text-primary);
+  }
+
+  .work-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-1x) ease, filter var(--transition-1x) ease;
+  }
+
+  .work-card-inner::before,
+  .work-card-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity var(--transition-1x) ease;
+    pointer-events: none;
+  }
+
+  .work-card-inner::before {
+    background: white;
+    z-index: 1;
+  }
+
+  .work-card-inner::after {
+    background: var(--card-hover-color, transparent);
+    mix-blend-mode: multiply;
+    z-index: 1;
+  }
+
+  .work-card:hover img {
+    filter: grayscale(1);
+  }
+
+  .work-card:hover .work-card-inner::before {
+    opacity: 0.8;
+  }
+
+  .work-card:hover .work-card-inner::after {
+    opacity: 1;
+  }
+
+  .work-card-cta {
+    position: absolute;
+    bottom: var(--content-inset);
+    right: var(--content-inset);
+    z-index: 3;
+    display: flex;
+    align-items: flex-end;
+    color: var(--color-text-primary);
+    opacity: 0;
+    transform: translateX(8px);
+    transition: opacity var(--transition-1x) ease, transform var(--transition-1x) ease;
+    pointer-events: none;
+  }
+
+  .work-card:hover .work-card-cta {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .work-card-cta-icon {
+    width: 3em;
+    height: 3em;
+  }
+
+  .work-card-title {
+    position: absolute;
+    bottom: var(--content-inset);
+    left: var(--content-inset);
+    z-index: 3;
+    color: var(--color-text-primary);
+    margin: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* ── Print proof marks ── */
+  .work-card-proof {
+    position: absolute;
+    inset: calc(-1 * var(--trim-length));
+    pointer-events: none;
+  }
+
+  /* Trim lines — draw in from corners */
+  .trim {
+    position: absolute;
+    background: none;
+    border: none;
+    transition: transform var(--transition-1x) ease;
+  }
+
+  /* Vertical trims */
+  .trim-tl-v, .trim-tr-v { width: 0; height: var(--trim-length); top: 0; border-left: var(--border-width-1) solid var(--color-text-primary); }
+  .trim-bl-v, .trim-br-v { width: 0; height: var(--trim-length); bottom: 0; border-left: var(--border-width-1) solid var(--color-text-primary); }
+  .trim-tl-v, .trim-bl-v { left: var(--trim-length); }
+  .trim-tr-v, .trim-br-v { right: var(--trim-length); }
+
+  /* Horizontal trims */
+  .trim-tl-h, .trim-bl-h { height: 0; width: var(--trim-length); left: 0; border-top: var(--border-width-1) solid var(--color-text-primary); }
+  .trim-tr-h, .trim-br-h { height: 0; width: var(--trim-length); right: 0; border-top: var(--border-width-1) solid var(--color-text-primary); }
+  .trim-tl-h, .trim-tr-h { top: var(--trim-length); }
+  .trim-bl-h, .trim-br-h { bottom: var(--trim-length); }
+
+  /* Draw direction: scale from image edge outward */
+  .trim-tl-v, .trim-tr-v { transform-origin: bottom; transform: scaleY(0); }
+  .trim-bl-v, .trim-br-v { transform-origin: top; transform: scaleY(0); }
+  .trim-tl-h, .trim-bl-h { transform-origin: right; transform: scaleX(0); }
+  .trim-tr-h, .trim-br-h { transform-origin: left; transform: scaleX(0); }
+
+  .work-card:hover .trim { transform: scale(1); }
+
+  @media (--2x) {
+    .work-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-card img {
+      transition: none;
+    }
+
+    .work-card-overlay {
+      transition: none;
+    }
   }
 </style>
+
+<script>
+  import gsap from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  import { SplitText } from 'gsap/SplitText'
+  import { animations, cmyRgba } from '../data/tokens'
+  import { createCmyAutoSplitReveal, type CmyAutoSplitHandle } from './cmy-animate'
+
+  gsap.registerPlugin(ScrollTrigger, SplitText)
+
+  const CMY_COLORS = cmyRgba(0.7)
+  let colorIndex = 0
+
+  function initWorkSection() {
+    const cards = document.querySelectorAll<HTMLElement>('[data-work-card]')
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Card entrance animation (non-text, so not handled by scroll-reveals)
+    if (cards.length && !prefersReduced) {
+      const cfg = animations.textReveal
+      gsap.set(cards, { opacity: 0, y: 40, filter: `blur(${cfg.initialBlur}px)` })
+
+      ScrollTrigger.batch(cards, {
+        onEnter: (batch) => {
+          gsap.to(batch, {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 1,
+            stagger: 0.1,
+            ease: cfg.ease,
+          })
+        },
+        start: 'top 70%',
+        once: true,
+      })
+
+      // Card hover: cycling CMY overlay + title reveal
+      const cfg2 = animations.textReveal
+      cards.forEach((card) => {
+        const inner = card.querySelector<HTMLElement>('.work-card-inner')
+        const title = card.querySelector<HTMLElement>('[data-card-title]')
+
+        let revealHandle: CmyAutoSplitHandle | null = null
+
+        card.addEventListener('mouseenter', () => {
+          // Set cycling CMY color on overlay
+          if (inner) {
+            inner.style.setProperty('--card-hover-color', CMY_COLORS[colorIndex++ % CMY_COLORS.length])
+          }
+
+          // Title reveal
+          if (!title) return
+          if (revealHandle) { revealHandle.kill(); revealHandle = null }
+          gsap.set(title, { visibility: 'visible' })
+          revealHandle = createCmyAutoSplitReveal(title, cfg2)
+        })
+
+        card.addEventListener('mouseleave', () => {
+          if (revealHandle) { revealHandle.kill(); revealHandle = null }
+          if (title) gsap.set(title, { visibility: 'hidden', opacity: 1, y: 0, filter: 'none', textShadow: 'none' })
+        })
+      })
+    }
+  }
+
+  initWorkSection()
+  document.addEventListener('astro:page-load', initWorkSection)
+</script>

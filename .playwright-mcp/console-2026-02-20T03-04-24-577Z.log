@@ -1,0 +1,82 @@
+[     138ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[     186ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[     196ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[     337ms] TypeError: jsxDEV is not a function
+    at HeroCanvas (http://localhost:4321/src/components/HeroCanvas.jsx:310:26)
+    at renderWithHooks (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:3521:25)
+    at updateFunctionComponent (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5152:19)
+    at beginWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5763:18)
+    at performUnitOfWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8568:18)
+    at workLoopSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8466:41)
+    at renderRootSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8450:11)
+    at performWorkOnRoot (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8125:44)
+    at performWorkOnRootViaSchedulerTask (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:9129:7)
+    at MessagePort.performWorkUntilDeadline (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:123:48)
+[   96202ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[   96205ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[   96212ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[   96259ms] TypeError: jsxDEV is not a function
+    at HeroCanvas (http://localhost:4321/src/components/HeroCanvas.jsx:310:26)
+    at renderWithHooks (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:3521:25)
+    at updateFunctionComponent (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5152:19)
+    at beginWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5763:18)
+    at performUnitOfWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8568:18)
+    at workLoopSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8466:41)
+    at renderRootSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8450:11)
+    at performWorkOnRoot (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8125:44)
+    at performWorkOnRootViaSchedulerTask (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:9129:7)
+    at MessagePort.performWorkUntilDeadline (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:123:48)
+[  103832ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[  103835ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[  103839ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[  103856ms] TypeError: jsxDEV is not a function
+    at HeroCanvas (http://localhost:4321/src/components/HeroCanvas.jsx:310:26)
+    at renderWithHooks (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:3521:25)
+    at updateFunctionComponent (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5152:19)
+    at beginWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5763:18)
+    at performUnitOfWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8568:18)
+    at workLoopSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8466:41)
+    at renderRootSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8450:11)
+    at performWorkOnRoot (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8125:44)
+    at performWorkOnRootViaSchedulerTask (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:9129:7)
+    at MessagePort.performWorkUntilDeadline (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:123:48)
+[  117720ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[  117723ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[  117725ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[  117752ms] TypeError: jsxDEV is not a function
+    at HeroCanvas (http://localhost:4321/src/components/HeroCanvas.jsx:310:26)
+    at renderWithHooks (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:3521:25)
+    at updateFunctionComponent (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5152:19)
+    at beginWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5763:18)
+    at performUnitOfWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8568:18)
+    at workLoopSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8466:41)
+    at renderRootSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8450:11)
+    at performWorkOnRoot (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8125:44)
+    at performWorkOnRootViaSchedulerTask (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:9129:7)
+    at MessagePort.performWorkUntilDeadline (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:123:48)
+[  124750ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[  124755ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[  124760ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=9ba9bd0c:298
+[  124778ms] TypeError: jsxDEV is not a function
+    at HeroCanvas (http://localhost:4321/src/components/HeroCanvas.jsx:310:26)
+    at renderWithHooks (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:3521:25)
+    at updateFunctionComponent (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5152:19)
+    at beginWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5763:18)
+    at performUnitOfWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8568:18)
+    at workLoopSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8466:41)
+    at renderRootSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8450:11)
+    at performWorkOnRoot (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8125:44)
+    at performWorkOnRootViaSchedulerTask (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:9129:7)
+    at MessagePort.performWorkUntilDeadline (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:123:48)
+[  136982ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[  137134ms] TypeError: jsxDEV is not a function
+    at HeroCanvas (http://localhost:4321/src/components/HeroCanvas.jsx:310:26)
+    at renderWithHooks (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:3521:25)
+    at updateFunctionComponent (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5152:19)
+    at beginWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:5763:18)
+    at performUnitOfWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8568:18)
+    at workLoopSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8466:41)
+    at renderRootSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8450:11)
+    at performWorkOnRoot (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:8125:44)
+    at performWorkOnRootViaSchedulerTask (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:9129:7)
+    at MessagePort.performWorkUntilDeadline (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=e7df7cff:123:48)

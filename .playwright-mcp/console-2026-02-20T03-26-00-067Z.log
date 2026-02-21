@@ -1,0 +1,9 @@
+[      57ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[    7221ms] [ERROR] WebSocket connection to 'ws://localhost:4321/?token=-0Vh_jUkSGEJ' failed:  @ http://localhost:4321/@vite/client:1533
+[    7488ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[    8490ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[    9493ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[   12877ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=fedc7fde:298
+[   13092ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[   13106ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=fedc7fde:298
+[  579925ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0

@@ -1,0 +1,75 @@
+{
+  "$schema": "./animation.config.schema.json",
+  "textReveal": {
+    "duration": 1,
+    "wordStagger": 0.05,
+    "blockStagger": 0.25,
+    "slideUp": 40,
+    "initialBlur": 10,
+    "ease": { "$ref": "semantic.motion.gsapEasing.enter" },
+    "scrollStart": "top 70%",
+    "cmyStagger": 0.075,
+    "cmyOpacity": 1
+  },
+  "hero": {
+    "canvas": {
+      "arrangement": "spiral",
+      "numRays": 80,
+      "dotsPerRay": 30,
+      "spacing": 1,
+      "innerRadius": 0,
+      "dotRadius": 0.2,
+      "dotSegments": 8,
+      "sizeStart": 0.1,
+      "sizeMid": 1.0,
+      "sizeEnd": 0.1,
+      "waveSpeed": 1.0,
+      "waveFrequency": 0.1,
+      "waveAmplitude": 0.5,
+      "waveSharpness": 0.25,
+      "propagation": 30,
+      "baseScale": 1.25,
+      "twistAmount": 0.5,
+      "zoom": 20,
+      "maxDpr": 2,
+      "cmyStagger": 0.03
+    },
+    "text": {
+      "startDelay": 0.25
+    }
+  },
+  "timeline": {
+    "hover": {
+      "cmyOpacity": 1,
+      "saveCmyOpacity": 1,
+      "expandDuration": 0.5,
+      "expandEase": { "$ref": "semantic.motion.gsapEasing.bounce" },
+      "collapseDuration": { "$ref": "semantic.motion.duration.quick" },
+      "collapseEase": { "$ref": "semantic.motion.gsapEasing.bounceMove" },
+      "textShowDuration": { "$ref": "semantic.motion.duration.quick" },
+      "textHideDuration": { "$ref": "semantic.motion.duration.quick" },
+      "collapseTextDuration": { "$ref": "semantic.motion.duration.quick" },
+      "wipeDuration": { "$ref": "semantic.motion.duration.quick" },
+      "wipeEase": { "$ref": "semantic.motion.gsapEasing.bounce" },
+      "wipeOutDuration": { "$ref": "semantic.motion.duration.quick" },
+      "wipeOutEase": { "$ref": "semantic.motion.gsapEasing.bounceIn" },
+      "highlightsShowDuration": { "$ref": "semantic.motion.duration.quick" },
+      "highlightsShowDelay": 0.15,
+      "highlightsShowEase": { "$ref": "semantic.motion.gsapEasing.bounce" },
+      "highlightsHideDuration": 0.2,
+      "highlightsHideEase": { "$ref": "semantic.motion.gsapEasing.bounceIn" }
+    }
+  },
+  "dotGrid": {
+    "spacing": 30,
+    "radius": 1,
+    "opacity": 0.5
+  },
+  "interests": {
+    "scrollDuration": 480
+  },
+  "smoothScroll": {
+    "lerp": 0.25,
+    "wheelMultiplier": 1.4
+  }
+}

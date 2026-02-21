@@ -1,0 +1,3 @@
+[    3210ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ about:blank:0
+[    3415ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://developer.mozilla.org/static/client/1111.53dba753dc3eb961.js:2
+[    3444ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://developer.mozilla.org/static/client/1111.53dba753dc3eb961.js:2

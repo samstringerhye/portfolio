@@ -1,0 +1,308 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#FDFCFB"><title>Samsung.com Redesign — Sam Stringer-Hye</title><meta name="description" content="A cohesive design system and global navigation overhaul for Samsung's worldwide B2C platform."><link rel="canonical" href="https://samstringerhye.com/work/samsung-redesign/"><meta property="og:type" content="website"><meta property="og:title" content="Samsung.com Redesign — Sam Stringer-Hye"><meta property="og:description" content="A cohesive design system and global navigation overhaul for Samsung's worldwide B2C platform."><meta property="og:image" content="https://samstringerhye.com/assets/og-image.jpg"><meta property="og:url" content="https://samstringerhye.com/work/samsung-redesign/"><meta property="og:site_name" content="Sam Stringer-Hye"><meta property="og:locale" content="en_US"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Samsung.com Redesign — Sam Stringer-Hye"><meta name="twitter:description" content="A cohesive design system and global navigation overhaul for Samsung's worldwide B2C platform."><meta name="twitter:image" content="https://samstringerhye.com/assets/og-image.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Sam Stringer-Hye","jobTitle":"Associate Design Director","url":"https://samstringerhye.com","sameAs":["https://linkedin.com/in/samstringerhye"]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Sam Stringer-Hye","url":"https://samstringerhye.com"}</script><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="sitemap" href="/sitemap-index.xml"><link rel="preload" href="/fonts/trial/PPEditorialNew-Regular.otf" as="font" type="font/otf" crossorigin><link rel="preload" href="/fonts/trial/PPNeueMontreal-Book.otf" as="font" type="font/otf" crossorigin><style>@font-face {
+    font-family: "PP Editorial New";
+    src: url("/fonts/trial/PPEditorialNew-Regular.otf") format("opentype");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Neue Montreal";
+    src: url("/fonts/trial/PPNeueMontreal-Book.otf") format("opentype");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Frama";
+    src: url("/fonts/trial/PPFrama-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Monument Extended";
+    src: url("/fonts/trial/PPMonumentExtended-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Monument Normal";
+    src: url("/fonts/trial/PPMonumentNormal-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Mori";
+    src: url("/fonts/trial/PPMori-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Neue Corp";
+    src: url("/fonts/trial/PPNeueCorp-NormalMedium.otf") format("opentype");
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Watch";
+    src: url("/fonts/trial/PPWatch-Medium.otf") format("opentype");
+    font-weight: 500;
+    font-display: swap;
+  }
+  :root {
+    --font-serif: "PP Editorial New", serif;
+    --font-sans: "PP Neue Montreal", sans-serif;
+    --font-mono: "SF Mono", "Fira Code", ui-monospace, monospace;
+    --font-primary: var(--font-sans);
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+    --text-1x: 1rem;
+    --text-2x: 1.333rem;
+    --text-3x: clamp(1.50rem, 1.4025rem + 0.4162vw, 1.78rem);
+    --text-4x: clamp(1.75rem, 1.5320rem + 0.9300vw, 2.37rem);
+    --text-5x: clamp(2.00rem, 1.5926rem + 1.7382vw, 3.16rem);
+    --text-6x: clamp(2.50rem, 1.8982rem + 2.5675vw, 4.21rem);
+    --text-7x: clamp(3.00rem, 2.0810rem + 3.9211vw, 5.61rem);
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --tracking-tighter: -0.04em;
+    --tracking-tight: -0.02em;
+    --tracking-normal: 0em;
+    --tracking-wide: 0.02em;
+    --color-text-primary: #33312E;
+    --color-text-secondary: #6A6661;
+    --color-bg-primary: #FDFCFB;
+    --color-bg-alt: #D8D3CD;
+    --color-accent: #4A4743;
+    --color-cmy-cyan: #19F1F1;
+    --color-cmy-magenta: #F21BF2;
+    --color-cmy-yellow: #F6F622;
+    --color-border: #00000014;
+    --color-backdrop: #0000004D;
+    --space-1: 0.5rem;
+    --space-2: 1rem;
+    --space-3: 1.5rem;
+    --space-4: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --space-6: clamp(2.00rem, 1.6479rem + 1.5023vw, 3.00rem);
+    --space-8: clamp(2.50rem, 1.9718rem + 2.2535vw, 4.00rem);
+    --space-10: clamp(3.00rem, 2.2958rem + 3.0047vw, 5.00rem);
+    --space-12: clamp(3.50rem, 2.6197rem + 3.7559vw, 6.00rem);
+    --inline-spacing-1x: 0.1em;
+    --inline-spacing-2x: 0.3em;
+    --page-margin: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --content-inset: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --page-padding: calc(clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem) + clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem));
+    --grid-gutter: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --section-padding: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --nav-height: 4.5rem;
+    --touch-target: 44px;
+    --section-rule-mark-size: 0.85rem;
+    --wordmark-size: clamp(1.25rem, 3vw, 2rem);
+    --wordmark-size-mobile: clamp(1rem, 4vw, 1.5rem);
+    --nav-toggle-bar-width: 20px;
+    --nav-toggle-bar-height: 1.5px;
+    --nav-toggle-gap: 5px;
+    --radius-1x: 4px;
+    --radius-2x: 8px;
+    --radius-3x: 12px;
+    --radius-pill: 9999px;
+    --z-base: 0;
+    --z-nav: 100;
+    --z-modal: 200;
+    --z-skip-link: 300;
+    --z-debug: 9999;
+    --transition-fast: 0.2s;
+    --transition-1x: 0.3s;
+    --border-width-1: 1px;
+    --border-width-2: 2px;
+    --focus-ring-width: 2px;
+    --focus-ring-color: #33312E;
+    --focus-ring-offset: 2px;
+    --modal-max-width: 520px;
+    --modal-max-height: 85vh;
+    --modal-backdrop-blur: 4px;
+    --modal-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+    --scrollbar-width: 8px;
+    --opacity-30: 0.3;
+    --opacity-50: 0.5;
+    --opacity-60: 0.6;
+    --opacity-80: 0.8;
+    --hover-lift: -1px;
+    --hover-underline-height: 1px;
+    --hover-underline-hover-height: 2px;
+    --hover-underline-opacity: 0.3;
+    --hover-underline-hover-opacity: 0.8;
+    --prose-code-bg: #D8D3CD;
+    --prose-code-padding-inline: 0.3em;
+    --prose-code-padding-block: 0.1em;
+    --prose-code-border-radius: 4px;
+    --prose-code-block-padding: 1rem;
+    --prose-code-block-radius: 8px;
+    --focus-ring: 0 0 0 var(--focus-ring-width) var(--color-bg-primary), 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
+    --border-light: var(--border-width-1) solid var(--color-accent);
+  }
+  .typo-prose-title-lg {
+    font-family: var(--typo-prose-title-lg-family, var(--font-serif));
+    font-weight: var(--typo-prose-title-lg-weight, 400);
+    font-size: clamp(3.00rem, 2.0810rem + 3.9211vw, 5.61rem);
+    line-height: 1.25;
+    letter-spacing: var(--typo-prose-title-lg-tracking, 0em);
+    text-transform: var(--typo-prose-title-lg-transform, none);
+    font-stretch: var(--typo-prose-title-lg-stretch, normal);
+  }
+  .typo-prose-heading-lg {
+    font-family: var(--typo-prose-heading-lg-family, var(--font-serif));
+    font-weight: var(--typo-prose-heading-lg-weight, 400);
+    font-size: clamp(2.00rem, 1.5926rem + 1.7382vw, 3.16rem);
+    line-height: 1.25;
+    letter-spacing: var(--typo-prose-heading-lg-tracking, -0.02em);
+    text-transform: var(--typo-prose-heading-lg-transform, none);
+    font-stretch: var(--typo-prose-heading-lg-stretch, normal);
+  }
+  .typo-prose-subhead-lg {
+    font-family: var(--typo-prose-subhead-lg-family, var(--font-sans));
+    font-weight: var(--typo-prose-subhead-lg-weight, 600);
+    font-size: clamp(1.50rem, 1.4025rem + 0.4162vw, 1.78rem);
+    line-height: 1.5;
+    letter-spacing: var(--typo-prose-subhead-lg-tracking, 0em);
+    text-transform: var(--typo-prose-subhead-lg-transform, none);
+    font-stretch: var(--typo-prose-subhead-lg-stretch, normal);
+  }
+  .typo-prose-title-sm {
+    font-family: var(--typo-prose-title-sm-family, var(--font-serif));
+    font-weight: var(--typo-prose-title-sm-weight, 400);
+    font-size: clamp(1.75rem, 1.5320rem + 0.9300vw, 2.37rem);
+    line-height: 1.25;
+    letter-spacing: var(--typo-prose-title-sm-tracking, -0.02em);
+    text-transform: var(--typo-prose-title-sm-transform, none);
+    font-stretch: var(--typo-prose-title-sm-stretch, normal);
+  }
+  .typo-prose-heading-sm {
+    font-family: var(--typo-prose-heading-sm-family, var(--font-serif));
+    font-weight: var(--typo-prose-heading-sm-weight, 400);
+    font-size: clamp(1.50rem, 1.4025rem + 0.4162vw, 1.78rem);
+    line-height: 1.5;
+    letter-spacing: var(--typo-prose-heading-sm-tracking, 0em);
+    text-transform: var(--typo-prose-heading-sm-transform, none);
+    font-stretch: var(--typo-prose-heading-sm-stretch, normal);
+  }
+  .typo-prose-body {
+    font-family: var(--typo-prose-body-family, var(--font-sans));
+    font-weight: var(--typo-prose-body-weight, 600);
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: var(--typo-prose-body-tracking, 0em);
+    text-transform: var(--typo-prose-body-transform, none);
+    font-stretch: var(--typo-prose-body-stretch, normal);
+  }
+  .typo-ui-nav-item-lg {
+    font-family: var(--typo-ui-nav-item-lg-family, var(--font-sans));
+    font-weight: var(--typo-ui-nav-item-lg-weight, 600);
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: var(--typo-ui-nav-item-lg-tracking, 0em);
+    text-transform: var(--typo-ui-nav-item-lg-transform, none);
+    font-stretch: var(--typo-ui-nav-item-lg-stretch, normal);
+  }
+  .typo-ui-nav-section {
+    font-family: var(--typo-ui-nav-section-family, var(--font-sans));
+    font-weight: var(--typo-ui-nav-section-weight, 600);
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: var(--typo-ui-nav-section-tracking, 0.02em);
+    text-transform: var(--typo-ui-nav-section-transform, none);
+    font-stretch: var(--typo-ui-nav-section-stretch, normal);
+  }</style><noscript><style>.cmy-word { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><style>.cs-hero[data-astro-cid-kqkazgyp]{padding:var(--space-6) var(--page-padding) 0}.cs-hero-image[data-astro-cid-kqkazgyp]{border-radius:var(--radius-3x);overflow:hidden;margin-bottom:var(--space-6)}.cs-hero-image[data-astro-cid-kqkazgyp] img[data-astro-cid-kqkazgyp]{width:100%;display:block;aspect-ratio:16/9}.cs-hero-title[data-astro-cid-kqkazgyp]{margin-bottom:var(--space-2)}.cs-hero-tagline[data-astro-cid-kqkazgyp]{margin-bottom:var(--space-6)}.cs-hero-meta[data-astro-cid-kqkazgyp]{display:flex;gap:var(--space-6);flex-wrap:wrap;padding:var(--space-3) 0;border-top:var(--border-light);border-bottom:var(--border-light);margin-bottom:var(--space-6)}.cs-meta-item[data-astro-cid-kqkazgyp]{display:flex;flex-direction:column;gap:var(--space-1)}.cs-meta-value[data-astro-cid-kqkazgyp]{margin:0}.cs-hero-metrics[data-astro-cid-kqkazgyp]{display:flex;gap:var(--space-8);flex-wrap:wrap}.cs-metric[data-astro-cid-kqkazgyp]{display:flex;flex-direction:column;gap:var(--space-1)}.cs-metric-label[data-astro-cid-kqkazgyp]{order:2}.cs-metric-value[data-astro-cid-kqkazgyp]{order:1;color:var(--color-text-primary);max-width:none}@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media(prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}[data-astro-transition-scope]{animation:none!important}}.cs-nav[data-astro-cid-duv2srto]{border-top:var(--border-light);padding:var(--space-8) var(--page-padding)}.cs-nav-inner[data-astro-cid-duv2srto]{display:flex;justify-content:space-between}.cs-nav-link[data-astro-cid-duv2srto]{text-decoration:none;transition:color var(--transition-fast) ease}.cs-nav-next[data-astro-cid-duv2srto]{text-align:right}.cs-nav-label[data-astro-cid-duv2srto]{display:block;margin-bottom:var(--space-1)}.cs-nav-link[data-astro-cid-duv2srto]:hover .cs-nav-title[data-astro-cid-duv2srto]{color:var(--color-text-primary)}.case-study-body{padding:var(--space-8) var(--page-padding) var(--space-12)}.case-study-body h2{font-family:var(--font-serif);font-weight:var(--font-weight-regular);font-size:var(--text-6x);line-height:var(--line-height-normal);letter-spacing:var(--tracking-normal);margin-top:var(--space-10);margin-bottom:var(--space-3)}.case-study-body h3{font-family:var(--font-serif);font-weight:var(--font-weight-regular);font-size:var(--text-5x);line-height:var(--line-height-normal);letter-spacing:var(--tracking-normal);margin-top:var(--space-6);margin-bottom:var(--space-2)}.case-study-body p{font-family:var(--font-sans);font-weight:var(--font-weight-semibold);font-size:var(--text-1x);line-height:var(--line-height-normal);letter-spacing:var(--tracking-normal);margin-bottom:var(--space-3)}.case-study-body img{width:100%;height:auto;border-radius:var(--radius-3x);margin:var(--space-4) 0}.case-study-body ul{list-style:disc;padding-left:var(--space-3);margin-bottom:var(--space-3)}.case-study-body li{font-family:var(--font-sans);font-weight:var(--font-weight-semibold);font-size:var(--text-1x);line-height:var(--line-height-normal);letter-spacing:var(--tracking-normal);margin-bottom:var(--space-1)}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.B_yGvoIs.css"><style>[data-astro-transition-scope="astro-u5naneys-1"] { view-transition-name: hero-samsung_2ecom-redesign; }@layer astro { ::view-transition-old(hero-samsung_2ecom-redesign) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(hero-samsung_2ecom-redesign) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(hero-samsung_2ecom-redesign) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(hero-samsung_2ecom-redesign) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-u5naneys-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-u5naneys-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-u5naneys-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-u5naneys-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-u5naneys-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-u5naneys-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-u5naneys-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-u5naneys-1"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style><style>[data-astro-transition-scope="astro-bwtspbdc-2"] { view-transition-name: title-samsung_2ecom-redesign; }@layer astro { ::view-transition-old(title-samsung_2ecom-redesign) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(title-samsung_2ecom-redesign) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(title-samsung_2ecom-redesign) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(title-samsung_2ecom-redesign) { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-bwtspbdc-2"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-bwtspbdc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-bwtspbdc-2"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-bwtspbdc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-bwtspbdc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-bwtspbdc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-bwtspbdc-2"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-bwtspbdc-2"] { 
+	animation-duration: 180ms;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head> <body> <a href="#main" class="skip-to-content">Skip to content</a> <div class="grid-overlay" aria-hidden="true"></div> <header class="nav" id="site-nav" data-astro-cid-dmqpwcec> <nav class="nav-inner" aria-label="Main navigation" data-astro-cid-dmqpwcec> <a href="/" class="nav-logo typo-ui-nav-item-lg" aria-label="Sam Stringer-Hye — Home" data-astro-cid-dmqpwcec>
+Sam Stringer-Hye
+</a> <ul class="nav-links" id="nav-links" role="list" data-astro-cid-dmqpwcec> <li data-astro-cid-dmqpwcec> <a href="/" class="nav-link typo-ui-nav-item-lg" data-astro-prefetch="hover" data-astro-cid-dmqpwcec> Home </a> </li><li data-astro-cid-dmqpwcec> <a href="/#selected-work" class="nav-link typo-ui-nav-item-lg" data-astro-prefetch="hover" data-astro-cid-dmqpwcec> Work </a> </li> <li data-astro-cid-dmqpwcec> <button class="nav-link typo-ui-nav-item-lg" data-about-trigger aria-haspopup="dialog" data-astro-cid-dmqpwcec>
+About
+</button> </li> </ul> <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links" data-astro-cid-dmqpwcec> <span class="nav-toggle-bar" data-astro-cid-dmqpwcec></span> <span class="nav-toggle-bar" data-astro-cid-dmqpwcec></span> </button> </nav> </header>  <script type="module" src="/_astro/Nav.astro_astro_type_script_index_0_lang.DKqyQfNC.js"></script> <main id="main" tabindex="-1">  <header class="cs-hero" data-reveal="fade-up" data-astro-cid-kqkazgyp> <div class="cs-hero-image" data-astro-cid-kqkazgyp> <img src="/assets/work/samsung-redesign/revamp-kv.jpg" alt="Samsung.com Redesign — project showcase" width="1260" height="709" data-astro-cid-kqkazgyp data-astro-transition-scope="astro-u5naneys-1"> </div> <div class="cs-hero-content" data-astro-cid-kqkazgyp> <h1 class="cs-hero-title typo-prose-title-lg" data-astro-cid-kqkazgyp data-astro-transition-scope="astro-bwtspbdc-2"> Samsung.com Redesign </h1> <p class="cs-hero-tagline typo-prose-subhead-lg" data-astro-cid-kqkazgyp>A cohesive design system and global navigation overhaul for Samsung&#39;s worldwide B2C platform.</p> <dl class="cs-hero-meta" data-astro-cid-kqkazgyp> <div class="cs-meta-item" data-astro-cid-kqkazgyp> <dt class="cs-meta-label typo-ui-nav-section" data-astro-cid-kqkazgyp>Client</dt> <dd class="cs-meta-value typo-prose-body" data-astro-cid-kqkazgyp>Samsung</dd> </div> <div class="cs-meta-item" data-astro-cid-kqkazgyp> <dt class="cs-meta-label typo-ui-nav-section" data-astro-cid-kqkazgyp>Role</dt> <dd class="cs-meta-value typo-prose-body" data-astro-cid-kqkazgyp>Senior Designer</dd> </div> <div class="cs-meta-item" data-astro-cid-kqkazgyp> <dt class="cs-meta-label typo-ui-nav-section" data-astro-cid-kqkazgyp>Agency</dt> <dd class="cs-meta-value typo-prose-body" data-astro-cid-kqkazgyp>Razorfish</dd> </div> <div class="cs-meta-item" data-astro-cid-kqkazgyp> <dt class="cs-meta-label typo-ui-nav-section" data-astro-cid-kqkazgyp>Year</dt> <dd class="cs-meta-value typo-prose-body" data-astro-cid-kqkazgyp>2023</dd> </div> </dl> <dl class="cs-hero-metrics" data-astro-cid-kqkazgyp> <div class="cs-metric" data-astro-cid-kqkazgyp> <dt class="cs-metric-label typo-ui-nav-section" data-astro-cid-kqkazgyp>Conversion rate increase</dt> <dd class="cs-metric-value typo-prose-title-lg" data-astro-cid-kqkazgyp>+10%</dd> </div><div class="cs-metric" data-astro-cid-kqkazgyp> <dt class="cs-metric-label typo-ui-nav-section" data-astro-cid-kqkazgyp>Additional revenue</dt> <dd class="cs-metric-value typo-prose-title-lg" data-astro-cid-kqkazgyp>$143M</dd> </div> </dl> </div> </header>  <article class="case-study-body">  <p>Samsung.com needed a more unified, modern web experience that could scale across global markets and business sectors. The redesign focused on creating a cohesive design system, refining global navigation, and improving product presentation. This work strengthened consistency across the platform and supported a more seamless brand experience worldwide.</p>
+<h2 id="approach">Approach</h2>
+<p>As a Senior Designer, I was one of several contributors to this transformation. I helped evolve the design system and applied it across key site areas to support visual and functional consistency. I also designed and refined page layouts aligned with Samsung’s brand standards, and contributed to the exploration, design, and testing of updates to global navigation to improve usability across regions and audiences.</p>
+<p><img src="/assets/work/samsung-redesign/revamp-ui-mosaic.jpg" alt="UI mosaic overview" loading="lazy" decoding="async"></p>
+<h2 id="design-system">Design System</h2>
+<p><img src="/assets/work/samsung-redesign/samsung-section-2-pcd-desktop.jpg" alt="Product category page" loading="lazy" decoding="async"></p>
+<p><img src="/assets/work/samsung-redesign/samsung-section-2-pd-zoom-desktop.jpg" alt="Product detail zoom" loading="lazy" decoding="async"></p>
+<h2 id="global-navigation">Global Navigation</h2>
+<p><img src="/assets/work/samsung-redesign/samsung-section-3-gnb-desktop.jpg" alt="Global navigation bar" loading="lazy" decoding="async"></p>
+<p><img src="/assets/work/samsung-redesign/samsung-section-3-gnb-closeup-desktop.jpg" alt="Global navigation closeup" loading="lazy" decoding="async"></p>
+<p><img src="/assets/work/samsung-redesign/samsung-section-3-gnb-desktop-full.jpg" alt="Global navigation full desktop" loading="lazy" decoding="async"></p>
+<h2 id="product-experience">Product Experience</h2>
+<p><img src="/assets/work/samsung-redesign/samsung-section-4-showcase-desktop.jpg" alt="Product showcase" loading="lazy" decoding="async"></p>
+<p><img src="/assets/work/samsung-redesign/samsung-section-5-pd-desktop.jpg" alt="Product detail page" loading="lazy" decoding="async"></p>
+<p><img src="/assets/work/samsung-redesign/samsung-section-6-pf-desktop.jpg" alt="Product finder" loading="lazy" decoding="async"></p>  </article> <nav class="cs-nav" aria-label="Case study navigation" data-astro-cid-duv2srto><div class="cs-nav-inner" data-astro-cid-duv2srto><a href="/work/myfrontier-app" class="cs-nav-link cs-nav-prev" data-hover="spectral-link" data-astro-cid-duv2srto><span class="cs-nav-label typo-ui-nav-section" data-astro-cid-duv2srto>Previous</span><span class="cs-nav-title typo-ui-nav-item-lg" data-astro-cid-duv2srto>MyFrontier App Redesign</span></a><a href="/work/cvs-redesign" class="cs-nav-link cs-nav-next" data-hover="spectral-link" data-astro-cid-duv2srto><span class="cs-nav-label typo-ui-nav-section" data-astro-cid-duv2srto>Next</span><span class="cs-nav-title typo-ui-nav-item-lg" data-astro-cid-duv2srto>CVS Shop Website Redesign</span></a></div></nav>  </main> <footer class="footer" data-astro-cid-sz7xmlte> <div class="footer-container" data-astro-cid-sz7xmlte> <!-- Name bar --> <div class="footer-bar" data-astro-cid-sz7xmlte> <div class="footer-bar-text" data-astro-cid-sz7xmlte> <p class="footer-wordmark-text" data-astro-cid-sz7xmlte>Sam Stringer-Hye</p> </div> <nav class="footer-bar-icons" aria-label="Social links" data-astro-cid-sz7xmlte> <a href="mailto:sam@samstringerhye.com" class="footer-icon-cell" aria-label="Email" data-astro-cid-sz7xmlte> <svg width="1em" height="1em" data-astro-cid-sz7xmlte="true" data-icon="material-symbols-light:mail-outline-sharp">   <symbol id="ai:material-symbols-light:mail-outline-sharp" viewBox="0 0 24 24"><path fill="currentColor" d="M3 19V5h18v14zm9-6.884L4 6.885V18h16V6.885zM12 11l7.692-5H4.308zM4 6.885V6v12z"/></symbol><use href="#ai:material-symbols-light:mail-outline-sharp"></use>  </svg> </a> <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-icon-cell" aria-label="LinkedIn" data-astro-cid-sz7xmlte> <svg width="1em" height="1em" data-astro-cid-sz7xmlte="true" data-icon="simple-icons:linkedin">   <symbol id="ai:simple-icons:linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037c-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85c3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.06 2.06 0 0 1-2.063-2.065a2.064 2.064 0 1 1 2.063 2.065m1.782 13.019H3.555V9h3.564zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0z"/></symbol><use href="#ai:simple-icons:linkedin"></use>  </svg> </a> </nav> </div> <!-- Bottom bar --> <div class="footer-bottom" data-astro-cid-sz7xmlte> <p class="footer-copyright typo-ui-nav-section" data-astro-cid-sz7xmlte>&copy; 2026</p> <a href="/colophon" class="footer-colophon typo-ui-nav-section" data-astro-cid-sz7xmlte>Colophon</a> </div> </div> </footer>  <script type="module" src="/_astro/Footer.astro_astro_type_script_index_0_lang.C75bSV9k.js"></script> <div class="about-modal" id="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title" hidden data-astro-cid-mulelyzn> <div class="about-backdrop" data-about-close data-astro-cid-mulelyzn></div> <div class="about-content" tabindex="-1" data-astro-cid-mulelyzn> <button class="about-close" data-about-close aria-label="Close about panel" data-astro-cid-mulelyzn> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" data-astro-cid-mulelyzn> <path d="M18 6L6 18M6 6l12 12" data-astro-cid-mulelyzn></path> </svg> </button> <div class="about-body" data-astro-cid-mulelyzn> <h2 id="about-modal-title" class="typo-prose-title-lg" data-astro-cid-mulelyzn>Sam Stringer-Hye</h2> <p class="about-bio typo-prose-body" data-astro-cid-mulelyzn>
+Experienced Product and UX/UI designer with 10+ years of crafting intuitive, high-performing digital experiences for top brands. Skilled in designing scalable systems, motion design, and seamless user interactions that bridge creativity and functionality.
+</p> <p class="about-bio typo-prose-body" data-astro-cid-mulelyzn>
+Adept at collaborating with cross-functional teams and stakeholders to bring user-centered solutions to life. Passionate about refining and elevating digital experiences through thoughtful design and problem-solving.
+</p> <nav class="about-links" aria-label="Contact links" data-astro-cid-mulelyzn> <a href="mailto:sam@samstringerhye.com" class="about-link typo-prose-body" data-astro-cid-mulelyzn>sam@samstringerhye.com</a> <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link typo-prose-body" data-astro-cid-mulelyzn>LinkedIn<span class="visually-hidden" data-astro-cid-mulelyzn> (opens in new tab)</span></a> <a href="/assets/resume.pdf" download class="about-link typo-prose-body" data-astro-cid-mulelyzn>Download Resume</a> </nav> </div> </div> </div>  <script type="module">function l(){const t=document.getElementById("about-modal");if(!t)return;const s=t.querySelector(".about-content"),i=document.querySelectorAll("[data-about-trigger]"),f=t.querySelectorAll("[data-about-close]");let d=null;function b(){d=document.activeElement,t.hidden=!1;const e=window.innerWidth-document.documentElement.clientWidth;document.body.style.overflow="hidden",document.body.style.paddingRight=`${e}px`,s?.focus()}function a(){t.hidden=!0,document.body.style.overflow="",document.body.style.paddingRight="",d?.focus()}i.forEach(e=>{const o=e;o.dataset.aboutTriggerBound!=="true"&&(o.dataset.aboutTriggerBound="true",o.addEventListener("click",b))}),f.forEach(e=>{const o=e;o.dataset.aboutCloserBound!=="true"&&(o.dataset.aboutCloserBound="true",o.addEventListener("click",a))}),t.__aboutKeydownHandler&&t.removeEventListener("keydown",t.__aboutKeydownHandler);const r=e=>{if(e.key==="Escape"){a();return}if(e.key==="Tab"){const o=t.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),u=o[0],c=o[o.length-1];e.shiftKey&&document.activeElement===u?(e.preventDefault(),c?.focus()):!e.shiftKey&&document.activeElement===c&&(e.preventDefault(),u?.focus())}};t.__aboutKeydownHandler=r,t.addEventListener("keydown",r)}const n=window;n.__aboutAfterSwapHandler&&document.removeEventListener("astro:after-swap",n.__aboutAfterSwapHandler);n.__aboutAfterSwapHandler=l;l();document.addEventListener("astro:after-swap",n.__aboutAfterSwapHandler);</script> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.Bd03hyAY.js"></script> </body> </html> 

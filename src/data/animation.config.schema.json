@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Animation Config",
+  "description": "GSAP animation parameters for all page sections. Supports $ref to tokens.json values.",
+  "type": "object",
+  "definitions": {
+    "gsapEase": {
+      "type": "string",
+      "description": "GSAP easing function",
+      "enum": [
+        "none",
+        "power1.in", "power1.out", "power1.inOut",
+        "power2.in", "power2.out", "power2.inOut",
+        "power3.in", "power3.out", "power3.inOut",
+        "power4.in", "power4.out", "power4.inOut",
+        "back.in", "back.out", "back.inOut",
+        "back.in(1.4)", "back.out(1.4)", "back.inOut(1.4)",
+        "elastic.in", "elastic.out", "elastic.inOut",
+        "bounce.in", "bounce.out", "bounce.inOut",
+        "expo.in", "expo.out", "expo.inOut",
+        "circ.in", "circ.out", "circ.inOut",
+        "sine.in", "sine.out", "sine.inOut",
+        "steps(1)", "steps(2)", "steps(3)", "steps(4)", "steps(5)"
+      ]
+    },
+    "duration": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Animation duration in seconds"
+    },
+    "stagger": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Stagger delay between elements in seconds"
+    },
+    "blurPx": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Blur amount in pixels"
+    },
+    "offsetPx": {
+      "type": "number",
+      "description": "Translate offset in pixels"
+    },
+    "opacity01": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Opacity value (0-1)"
+    },
+    "scrollTriggerStart": {
+      "type": "string",
+      "pattern": "^(top|center|bottom) \\d+%$",
+      "description": "ScrollTrigger start position (e.g. 'top 70%')"
+    },
+    "tokenRef": {
+      "type": "object",
+      "description": "Reference to a design token in tokens.json via dot-path",
+      "properties": {
+        "$ref": { "type": "string", "pattern": "^(primitives|semantic)\\.", "description": "Dot-path to a token value (e.g. semantic.motion.gsapEasing.enter)" }
+      },
+      "required": ["$ref"],
+      "additionalProperties": false
+    },
+    "easeOrRef": {
+      "description": "GSAP easing function or token $ref",
+      "oneOf": [
+        { "$ref": "#/definitions/gsapEase" },
+        { "$ref": "#/definitions/tokenRef" }
+      ]
+    },
+    "durationOrRef": {
+      "description": "Duration in seconds or token $ref",
+      "oneOf": [
+        { "$ref": "#/definitions/duration" },
+        { "$ref": "#/definitions/tokenRef" }
+      ]
+    }
+  },
+  "properties": {
+    "$schema": { "type": "string" },
+    "textReveal": {
+      "type": "object",
+      "description": "Unified text reveal animation config — single source for all text animations. slideUp is computed at runtime as fontSize × slideUp; CMY offset is derived from cmyStagger / duration.",
+      "properties": {
+        "duration":      { "$ref": "#/definitions/duration", "description": "How long each word's reveal takes" },
+        "wordStagger":   { "$ref": "#/definitions/stagger", "description": "Delay between each word starting its reveal" },
+        "blockStagger":  { "$ref": "#/definitions/stagger", "description": "Delay between grouped text blocks in a [data-reveal-group]" },
+        "slideUp":  { "$ref": "#/definitions/offsetPx", "description": "Slide distance in pixels — used for both text motion and CMY shadow offset" },
+        "initialBlur":   { "$ref": "#/definitions/blurPx", "description": "Starting blur — sharpens to 0 during reveal" },
+        "ease":          { "$ref": "#/definitions/easeOrRef" },
+        "scrollStart":   { "$ref": "#/definitions/scrollTriggerStart" },
+        "cmyStagger":    { "$ref": "#/definitions/stagger", "description": "Delay between each CMY color channel following the text" },
+        "cmyOpacity":    { "$ref": "#/definitions/opacity01", "description": "Visibility of trailing CMY color layers" }
+      },
+      "additionalProperties": false
+    },
+    "hero": {
+      "type": "object",
+      "description": "Hero section animations",
+      "properties": {
+        "canvas": {
+          "type": "object",
+          "description": "Three.js hero canvas parameters",
+          "properties": {
+            "arrangement":   { "type": "string", "enum": ["spiral", "grid", "random"], "description": "Dot arrangement pattern" },
+            "numRays":       { "type": "integer", "minimum": 1, "description": "Number of spiral rays" },
+            "dotsPerRay":    { "type": "integer", "minimum": 1, "description": "Dots per ray" },
+            "spacing":       { "type": "number", "minimum": 0, "description": "Spacing between dots" },
+            "innerRadius":   { "type": "number", "minimum": 0, "description": "Inner radius of spiral" },
+            "dotRadius":     { "type": "number", "minimum": 0, "description": "Base dot radius" },
+            "dotSegments":   { "type": "integer", "minimum": 3, "maximum": 32, "description": "Dot geometry segments (3=triangle, 6=hex, 32=circle)" },
+            "sizeStart":     { "type": "number", "minimum": 0, "description": "Dot size at spiral start" },
+            "sizeMid":       { "type": "number", "minimum": 0, "description": "Dot size at spiral midpoint" },
+            "sizeEnd":       { "type": "number", "minimum": 0, "description": "Dot size at spiral end" },
+            "wavePaused":    { "type": "boolean", "description": "Pause wave animation" },
+            "waveSpeed":     { "type": "number", "minimum": 0, "description": "Wave animation speed multiplier" },
+            "waveFrequency": { "type": "number", "minimum": 0, "description": "Wave oscillation frequency" },
+            "waveAmplitude": { "type": "number", "minimum": 0, "description": "Wave oscillation amplitude" },
+            "waveSharpness": { "type": "number", "minimum": 0, "maximum": 1, "description": "Wave shape sharpness (0=sine, 1=square)" },
+            "propagation":   { "type": "number", "minimum": 0, "description": "Wave propagation distance" },
+            "baseScale":     { "type": "number", "minimum": 0, "description": "Base scale multiplier for all dots" },
+            "twistAmount":   { "type": "number", "description": "Spiral twist factor" },
+            "zoom":          { "type": "number", "minimum": 1, "description": "Camera zoom level" },
+            "maxDpr":        { "type": "number", "minimum": 0.5, "maximum": 3, "description": "Max device pixel ratio cap" },
+            "cmyStagger":    { "$ref": "#/definitions/stagger", "description": "Delay between CMY color channels in hero dot wave (seconds)" }
+          },
+          "additionalProperties": false
+        },
+        "text": {
+          "type": "object",
+          "description": "Hero-specific text animation overrides",
+          "properties": {
+            "startDelay": { "type": "number", "minimum": 0, "description": "Initial delay waiting for canvas init (seconds)" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "timeline": {
+      "type": "object",
+      "description": "Experience timeline animations",
+      "properties": {
+        "hover": {
+          "type": "object",
+          "description": "Timeline card hover interaction parameters",
+          "properties": {
+            "cmyOpacity":              { "$ref": "#/definitions/opacity01", "description": "Opacity of CMY wipe color" },
+            "saveCmyOpacity":          { "$ref": "#/definitions/opacity01", "description": "Opacity of CMY color on save/download button hover" },
+            "expandDuration":          { "$ref": "#/definitions/durationOrRef", "description": "Card/year group flex expansion duration" },
+            "expandEase":              { "$ref": "#/definitions/easeOrRef" },
+            "collapseDuration":        { "$ref": "#/definitions/durationOrRef", "description": "Mouse leave collapse duration" },
+            "collapseEase":            { "$ref": "#/definitions/easeOrRef" },
+            "textShowDuration":        { "$ref": "#/definitions/durationOrRef", "description": "Text fade-in duration on hover" },
+            "textHideDuration":        { "$ref": "#/definitions/durationOrRef", "description": "Text fade-out duration on other cards" },
+            "collapseTextDuration":    { "$ref": "#/definitions/durationOrRef", "description": "Text fade-in duration on mouse leave" },
+            "wipeDuration":            { "$ref": "#/definitions/durationOrRef", "description": "Color wipe scaleX in duration" },
+            "wipeEase":                { "$ref": "#/definitions/easeOrRef" },
+            "wipeOutDuration":         { "$ref": "#/definitions/durationOrRef", "description": "Color wipe scaleX out duration" },
+            "wipeOutEase":             { "$ref": "#/definitions/easeOrRef" },
+            "highlightsShowDuration":  { "$ref": "#/definitions/durationOrRef", "description": "Highlights fade-in duration" },
+            "highlightsShowDelay":     { "$ref": "#/definitions/duration", "description": "Highlights fade-in delay" },
+            "highlightsShowEase":      { "$ref": "#/definitions/easeOrRef" },
+            "highlightsHideDuration":  { "$ref": "#/definitions/duration", "description": "Highlights fade-out duration on leave" },
+            "highlightsHideEase":      { "$ref": "#/definitions/easeOrRef" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "interests": {
+      "type": "object",
+      "description": "Scrolling interests marquee",
+      "properties": {
+        "scrollDuration": { "type": "number", "minimum": 0, "description": "Full scroll loop duration in seconds" }
+      },
+      "additionalProperties": false
+    },
+    "smoothScroll": {
+      "type": "object",
+      "description": "Lenis smooth scroll parameters",
+      "properties": {
+        "lerp":            { "type": "number", "minimum": 0, "maximum": 1, "description": "Scroll interpolation factor (0=no smoothing, 1=instant)" },
+        "wheelMultiplier": { "type": "number", "minimum": 0, "description": "Mouse wheel speed multiplier" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

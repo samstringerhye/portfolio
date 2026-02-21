@@ -1,0 +1,4 @@
+[    3879ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[   20050ms] [WARNING] The resource http://localhost:4322/fonts/trial/PPEditorialNew-Regular.otf was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:4322/work/bespoke-design-studio:0
+[   20050ms] [WARNING] The resource http://localhost:4322/fonts/trial/PPNeueMontreal-Book.otf was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:4322/work/bespoke-design-studio:0
+[   22814ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4322/node_modules/.vite/deps/gsap_SplitText.js?v=0250ed3f:298

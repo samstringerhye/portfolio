@@ -1,0 +1,4 @@
+[     263ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://public.flourish.studio/resources/embed.js:17
+[     268ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://public.flourish.studio/resources/embed.js:17
+[     271ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://public.flourish.studio/resources/embed.js:17
+[     274ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://public.flourish.studio/resources/embed.js:17

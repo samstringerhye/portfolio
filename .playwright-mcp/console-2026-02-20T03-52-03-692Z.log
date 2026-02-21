@@ -1,0 +1,10 @@
+[     778ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://static.canva.com/web/c688833c9c362b5c.sentry_browser.js:0
+[     781ms] [ERROR] Not signed in with the identity provider. @ https://www.canva.com/templates/s/timeline/:0
+[    1384ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://www.canva.com/templates/s/timeline/:0
+[    1384ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://www.canva.com/templates/s/timeline/:0
+[    1384ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://www.canva.com/templates/s/timeline/:0
+[    1410ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://www.canva.com/templates/s/timeline/:0
+[    1431ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://www.canva.com/templates/s/timeline/:0
+[    1431ms] [ERROR] Attestation check for Attribution Reporting on https://ad.doubleclick.net failed. @ https://www.canva.com/templates/s/timeline/:0
+[    1872ms] [ERROR] Attestation check for Attribution Reporting on https://www.facebook.com failed. @ https://www.canva.com/templates/s/timeline/:0
+[    2988ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://static.canva.com/web/c688833c9c362b5c.sentry_browser.js:0

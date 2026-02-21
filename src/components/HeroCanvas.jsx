@@ -1,17 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react'
 import {
   Scene, OrthographicCamera, Color,
-  WebGLRenderer, WebGLRenderTarget, LinearFilter, RGBAFormat,
+  WebGLRenderer, MultiplyBlending,
   InstancedMesh, CircleGeometry, MeshBasicMaterial,
 } from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
-import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js'
-import tokens from '../data/tokens.json'
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
+import { animations, semantic } from '../data/tokens'
 
-const cfg = tokens.animations.hero.canvas
+const cfg = animations.hero.canvas
 
 const TWO_PI = Math.PI * 2
 const PHI = (1 + Math.sqrt(5)) / 2
@@ -111,40 +111,30 @@ function sizeTaper(n, sizeStart, sizeMid, sizeEnd) {
   return inv * inv * sizeStart + 2 * inv * n * sizeMid + n * n * sizeEnd
 }
 
-/* -- Temporal RGB split shader -- */
-const triColorMix = {
-  uniforms: {
-    tDiffuse: { value: null },
-    tPrev: { value: null },
-    tPrevPrev: { value: null },
-    uReverse: { value: 0.0 },
-  },
-  vertexShader: /* glsl */ `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  fragmentShader: /* glsl */ `
-    uniform sampler2D tDiffuse;
-    uniform sampler2D tPrev;
-    uniform sampler2D tPrevPrev;
-    uniform float uReverse;
-    varying vec2 vUv;
-    void main() {
-      vec4 curr = texture2D(tDiffuse, vUv);
-      vec4 prev = texture2D(tPrev, vUv);
-      vec4 pprev = texture2D(tPrevPrev, vUv);
-      float r = mix(curr.r, pprev.r, uReverse);
-      float g = prev.g;
-      float b = mix(pprev.b, curr.b, uReverse);
-      gl_FragColor = vec4(r, g, b, curr.a);
-    }
-  `,
+/* -- Update dot instance matrices for a given time -- */
+function updateDots(matArr, total, posX, posY, dist, dotScales, time) {
+  for (let i = 0; i < total; i++) {
+    const d = dist[i]
+    const t = time * cfg.waveSpeed - d / cfg.propagation
+    const wave = roundedSquareWave(t, cfg.waveSharpness + (0.2 * d) / 50, cfg.waveAmplitude, cfg.waveFrequency)
+    const scale = wave + cfg.baseScale
+    const tw = wave * cfg.twistAmount
+    const px = posX[i] * scale
+    const py = posY[i] * scale
+    const cosT = Math.cos(tw)
+    const sinT = Math.sin(tw)
+    const s = dotScales[i]
+
+    const o = i * 16
+    matArr[o]      = s    // scaleX
+    matArr[o + 5]  = s    // scaleY
+    matArr[o + 10] = s    // scaleZ
+    matArr[o + 12] = px * cosT - py * sinT // positionX
+    matArr[o + 13] = px * sinT + py * cosT // positionY
+  }
 }
 
-/* -- Build the scene -- */
+/* -- Build the scene with 3 CMY InstancedMeshes -- */
 function createHeroScene() {
   const gen = generators[cfg.arrangement] || generators.concentric
   const { posX, posY, dist, total } = gen(cfg.numRays, cfg.dotsPerRay, cfg.spacing, cfg.innerRadius)
@@ -162,11 +152,27 @@ function createHeroScene() {
 
   const scene = new Scene()
   const geometry = new CircleGeometry(cfg.dotRadius, cfg.dotSegments)
-  const material = new MeshBasicMaterial({ color: cfg.dotColor })
-  const mesh = new InstancedMesh(geometry, material, total)
-  scene.add(mesh)
 
-  return { scene, mesh, posX, posY, dist, dotScales, total }
+  const cmyColors = semantic.color.cmy
+  const channels = [
+    { color: cmyColors.cyan,    order: 0 },
+    { color: cmyColors.magenta, order: 1 },
+    { color: cmyColors.yellow,  order: 2 },
+  ]
+
+  const meshes = channels.map(({ color, order }) => {
+    const mat = new MeshBasicMaterial({
+      color,
+      blending: MultiplyBlending,
+      depthWrite: false,
+    })
+    const mesh = new InstancedMesh(geometry, mat, total)
+    mesh.renderOrder = order
+    scene.add(mesh)
+    return mesh
+  })
+
+  return { scene, meshes, posX, posY, dist, dotScales, total }
 }
 
 /* -- Main export -- */
@@ -192,7 +198,8 @@ export default function HeroCanvas() {
     const dpr = Math.min(window.devicePixelRatio, cfg.maxDpr)
     const renderer = new WebGLRenderer({ antialias: false, alpha: false })
     renderer.setPixelRatio(dpr)
-    renderer.setClearColor(new Color(cfg.bgColor), 1)
+    const bgColor = new Color(semantic.color.bg.primary).convertSRGBToLinear()
+    renderer.setClearColor(bgColor, 1)
     container.appendChild(renderer.domElement)
     renderer.domElement.style.display = 'block'
 
@@ -201,34 +208,21 @@ export default function HeroCanvas() {
     camera.position.set(0, 0, 100)
     camera.zoom = cfg.zoom
 
-    // Scene + dots
-    const { scene, mesh, posX, posY, dist, dotScales, total } = createHeroScene()
-    const matArr = mesh.instanceMatrix.array
+    // Scene + 3 CMY dot layers
+    const { scene, meshes, posX, posY, dist, dotScales, total } = createHeroScene()
 
-    // Post-processing (4 passes — no redundant CopyPass)
-    const ringSize = Math.round(cfg.rgbDelay * 2 + 1)
-    const ringBuffer = Array.from({ length: ringSize }, () =>
-      new WebGLRenderTarget(1, 1, { minFilter: LinearFilter, magFilter: LinearFilter, format: RGBAFormat })
-    )
-
+    // Post-processing: RenderPass → FXAA → OutputPass
     const composer = new EffectComposer(renderer)
 
     const renderPass = new RenderPass(scene, camera)
     renderPass.clearAlpha = 1
     composer.addPass(renderPass)
 
-    const savePass = new SavePass(ringBuffer[0])
-    composer.addPass(savePass)
-
-    const blendPass = new ShaderPass(triColorMix)
-    composer.addPass(blendPass)
-
     const fxaaPass = new ShaderPass(FXAAShader)
-    fxaaPass.renderToScreen = true
     composer.addPass(fxaaPass)
 
-    let ringIdx = 0
-    let warmup = 0
+    const outputPass = new OutputPass()
+    composer.addPass(outputPass)
 
     // Visibility tracking — pause RAF when hero is off-screen
     let isVisible = true
@@ -262,7 +256,6 @@ export default function HeroCanvas() {
       const pw = w * dpr
       const ph = h * dpr
       composer.setSize(w, h)
-      ringBuffer.forEach(rt => rt.setSize(pw, ph))
       fxaaPass.uniforms.resolution.value.set(1 / pw, 1 / ph)
 
       camera.left = -w / 2
@@ -282,6 +275,7 @@ export default function HeroCanvas() {
     // Animation loop
     let frameId = 0
     const startTime = performance.now()
+    const delay = animations.hero.canvas.cmyStagger
 
     function tick() {
       if (!prefersReduced) {
@@ -291,43 +285,11 @@ export default function HeroCanvas() {
       const elapsed = (performance.now() - startTime - pauseAccum) / 1000
       const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
 
-      // Update instanced dot matrices directly (skip Object3D overhead)
-      for (let i = 0; i < total; i++) {
-        const d = dist[i]
-        const t = time * cfg.waveSpeed - d / cfg.propagation
-        const wave = roundedSquareWave(t, cfg.waveSharpness + (0.2 * d) / 50, cfg.waveAmplitude, cfg.waveFrequency)
-        const scale = wave + cfg.baseScale
-        const tw = wave * cfg.twistAmount
-        const px = posX[i] * scale
-        const py = posY[i] * scale
-        const cosT = Math.cos(tw)
-        const sinT = Math.sin(tw)
-        const s = dotScales[i]
-
-        const o = i * 16
-        matArr[o]      = s    // scaleX
-        matArr[o + 5]  = s    // scaleY
-        matArr[o + 10] = s    // scaleZ
-        matArr[o + 12] = px * cosT - py * sinT // positionX
-        matArr[o + 13] = px * sinT + py * cosT // positionY
-      }
-      mesh.instanceMatrix.needsUpdate = true
-
-      // Temporal RGB split
-      const idx = ringIdx
-
-      if (warmup < ringSize) {
-        warmup++
-        blendPass.uniforms.tPrev.value = ringBuffer[idx].texture
-        blendPass.uniforms.tPrevPrev.value = ringBuffer[idx].texture
-      } else {
-        blendPass.uniforms.tPrev.value = ringBuffer[(idx - Math.round(cfg.rgbDelay) + ringSize) % ringSize].texture
-        blendPass.uniforms.tPrevPrev.value = ringBuffer[(idx - Math.round(cfg.rgbDelay) * 2 + ringSize) % ringSize].texture
-      }
-
-      savePass.renderTarget = ringBuffer[idx]
-      blendPass.uniforms.uReverse.value = cfg.rgbSplitMode === 'rgb' ? 1.0 : 0.0
-      ringIdx = (idx + 1) % ringSize
+      // Update each CMY layer at a different time offset
+      meshes.forEach((mesh, i) => {
+        updateDots(mesh.instanceMatrix.array, total, posX, posY, dist, dotScales, time - i * delay)
+        mesh.instanceMatrix.needsUpdate = true
+      })
 
       composer.render(1 / 60)
     }
@@ -340,9 +302,8 @@ export default function HeroCanvas() {
       observer.disconnect()
       ro.disconnect()
       composer.dispose()
-      ringBuffer.forEach(rt => rt.dispose())
-      mesh.geometry.dispose()
-      mesh.material.dispose()
+      meshes.forEach(mesh => mesh.material.dispose())
+      meshes[0].geometry.dispose()
       renderer.dispose()
       if (renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement)
@@ -356,7 +317,7 @@ export default function HeroCanvas() {
     <div
       ref={containerRef}
       aria-hidden="true"
-      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, backgroundColor: cfg.bgColor }}
+      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 'var(--z-base)' }}
     />
   )
 }

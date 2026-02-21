@@ -1,0 +1,15 @@
+[     116ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://img.timeinc.net/tii/omniture/h/config/time_s_code.js:0
+[     116ms] ReferenceError: s_time is not defined
+    at https://world.time.com/2013/12/05/nelson-mandelas-extraordinary-life-an-interactive-timeline/:213:4
+[     819ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://ape-asset-tag.timeinc.com/v0/article?url=https%3A%2F%2Fworld.time.com%2F2013%2F12%2F05%2Fnelson-mandelas-extraordinary-life-an-interactive-timeline%2F:0
+[     925ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://tiads.timeinc.net/ads/tii_bk-coretag.js:0
+[     925ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://tiads.timeinc.net/ads/subsbk.js:0
+[     926ms] [ERROR] Mixed Content: The page at 'https://world.time.com/2013/12/05/nelson-mandelas-extraordinary-life-an-interactive-timeline/' was loaded over HTTPS, but requested an insecure frame 'http://developers.google.com/#_methods=onPlusOne%2C_ready%2C_close%2C_open%2C_resizeMe%2C_renderstart%2Concircled%2Cdrefresh%2Cerefresh&id=I0_1771559515288&_gfid=I0_1771559515288&parent=https%3A%2F%2Fworld.time.com&pfname=&rpctoken=13392706'. This request has been blocked; the content must be served over HTTPS. @ https://apis.google.com/js/plusone.js:80
+[    1516ms] [WARNING] Google Deploy of the SharedId library has been deprecated. Please select another option in the GAM UI. If you use Prebid, we suggest the Prebid.js UserId option. If you do not, you may configure GAM to allow Google to share a first party user identifier with OB and AB participants, which is either the publisherProvidedId or the __gads value when that is missing. @ https://cdn.jsdelivr.net/gh/prebid/shared-id/pubcid.js/docs/pubcid.min.js:0
+[    1523ms] [WARNING] [GPT] Using deprecated googletag.encryptedSignalProviders. Please use googletag.secureSignalProviders instead.
+https://goo.gle/gpt-message#155 @ https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202602120101/pubads_impl.js:18
+[    1532ms] [WARNING] [GPT] Using deprecated googletag.encryptedSignalProviders. Please use googletag.secureSignalProviders instead.
+https://goo.gle/gpt-message#155 @ https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202602120101/pubads_impl.js:18
+[    1603ms] [WARNING] [GPT] Using deprecated googletag.encryptedSignalProviders. Please use googletag.secureSignalProviders instead.
+https://goo.gle/gpt-message#155 @ https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202602120101/pubads_impl.js:18
+[    8253ms] [WARNING] The resource https://getquicksafesearch.com/img/logo.png was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://getquicksafesearch.com/?ReFeMBdSoKkLSzoo&gad_source=5&gad_campaignid=23311747632&gclid=EAIaIQobChMIrYysvZXnkgMVaokDCB0XMTiPEAEYASAAEgJgT_D_BwE:0

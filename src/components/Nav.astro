@@ -15,7 +15,7 @@ function isActive(href: string) {
 
 <header class="nav" id="site-nav">
   <nav class="nav-inner" aria-label="Main navigation">
-    <a href="/" class="nav-logo typo-body" aria-label="Sam Stringer-Hye — Home">
+    <a href="/" class="nav-logo typo-ui-nav-item-lg" aria-label="Sam Stringer-Hye — Home">
       Sam Stringer-Hye
     </a>
 
@@ -24,7 +24,7 @@ function isActive(href: string) {
         <li>
           <a
             href={link.href}
-            class:list={['nav-link', 'typo-body', { active: isActive(link.href) }]}
+            class:list={['nav-link', 'typo-ui-nav-item-lg', { active: isActive(link.href) }]}
             aria-current={isActive(link.href) ? 'page' : undefined}
             data-astro-prefetch="hover"
           >
@@ -33,7 +33,7 @@ function isActive(href: string) {
         </li>
       ))}
       <li>
-        <button class="nav-link typo-body" data-about-trigger aria-haspopup="dialog">
+        <button class="nav-link typo-ui-nav-item-lg" data-about-trigger aria-haspopup="dialog">
           About
         </button>
       </li>
@@ -54,49 +54,54 @@ function isActive(href: string) {
 
 <style>
   .nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    max-width: var(--container-content);
-    margin: 0 auto;
+    position: relative;
     z-index: var(--z-nav);
-    background: transparent;
+    background: var(--color-bg-primary);
+    border-bottom: var(--border-width-1) solid var(--color-accent);
   }
 
   .nav-inner {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-2) var(--page-padding);
+    align-items: stretch;
     height: var(--nav-height);
+    margin-inline: var(--page-margin);
   }
 
   .nav-logo {
+    display: flex;
+    align-items: center;
+    padding-inline: var(--content-inset);
+    border-right: var(--border-width-1) solid var(--color-text-primary);
     color: var(--color-text-primary);
     text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 250ms ease;
   }
 
   .nav-links {
     display: flex;
-    align-items: center;
-    gap: var(--space-4);
+    align-items: stretch;
     list-style: none;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .nav-links li {
+    display: flex;
+    border-left: var(--border-width-1) solid var(--color-text-primary);
   }
 
   .nav-link {
+    display: flex;
+    align-items: center;
+    padding-inline: var(--content-inset);
     color: var(--color-text-primary);
     text-decoration: none;
-    padding: var(--space-1) 0;
     position: relative;
     background: none;
     border: none;
     cursor: pointer;
-    transition: color var(--transition-fast) ease;
-  }
-
-  .nav-link:hover {
-    color: var(--color-accent);
+    transition: background-color 250ms ease;
   }
 
   .nav-link.active {
@@ -107,9 +112,9 @@ function isActive(href: string) {
   .nav-toggle {
     display: none;
     flex-direction: column;
-    gap: 5px;
-    min-width: 44px;
-    min-height: 44px;
+    gap: var(--nav-toggle-gap);
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
     align-items: center;
     justify-content: center;
     padding: var(--space-1);
@@ -120,16 +125,22 @@ function isActive(href: string) {
 
   .nav-toggle-bar {
     display: block;
-    width: 20px;
-    height: 1.5px;
+    width: var(--nav-toggle-bar-width);
+    height: var(--nav-toggle-bar-height);
     background: var(--color-text-primary);
-    border-radius: var(--radius-sm);
-    transition: transform var(--transition-base) ease, opacity var(--transition-base) ease;
+    border-radius: var(--radius-1x);
+    transition: transform var(--transition-1x) ease, opacity var(--transition-1x) ease;
   }
 
-  @media (--mobile) {
+  @media (--2x) {
+    .nav {
+      position: sticky;
+      top: 0;
+    }
+
     .nav-toggle {
       display: flex;
+      border-left: var(--border-width-1) solid var(--color-text-primary);
     }
 
     .nav-links {
@@ -139,12 +150,16 @@ function isActive(href: string) {
       right: 0;
       bottom: 0;
       flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-3);
+      align-items: stretch;
       padding: var(--space-6) var(--space-4);
       background: var(--color-bg-primary);
       transform: translateX(100%);
-      transition: transform var(--transition-base) ease;
+      transition: transform var(--transition-1x) ease;
+    }
+
+    .nav-links li {
+      border-left: none;
+      border-bottom: var(--border-width-1) solid var(--color-text-primary);
     }
 
     .nav-links.open {
@@ -156,20 +171,49 @@ function isActive(href: string) {
     }
 
     .nav-toggle[aria-expanded="true"] .nav-toggle-bar:first-child {
-      transform: translateY(3.25px) rotate(45deg);
+      transform: translateY(calc((var(--nav-toggle-gap) + var(--nav-toggle-bar-height)) / 2)) rotate(45deg);
     }
 
     .nav-toggle[aria-expanded="true"] .nav-toggle-bar:last-child {
-      transform: translateY(-3.25px) rotate(-45deg);
+      transform: translateY(calc((var(--nav-toggle-gap) + var(--nav-toggle-bar-height)) / -2)) rotate(-45deg);
     }
   }
 </style>
 
 <script>
+  import { cmyRgba } from '../data/tokens'
+
+  const CMY_COLORS = cmyRgba(1)
+  let colorIndex = 0
+
+  function initNavHover() {
+    const items = document.querySelectorAll<HTMLElement>('.nav-link, .nav-logo')
+    items.forEach((el) => {
+      if (el.dataset.navHoverBound === 'true') return
+      el.dataset.navHoverBound = 'true'
+      el.addEventListener('mouseenter', () => {
+        el.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
+      })
+      el.addEventListener('mouseleave', () => {
+        el.style.backgroundColor = ''
+      })
+    })
+  }
+
+  initNavHover()
+  document.addEventListener('astro:after-swap', initNavHover)
+
+  type NavWindow = Window & {
+    __navAfterSwapHandler?: () => void
+  }
+
   function initNav() {
     const toggle = document.getElementById('nav-toggle')
     const links = document.getElementById('nav-links')
     if (!toggle || !links) return
+    if (toggle.dataset.navBound === 'true') return
+
+    toggle.dataset.navBound = 'true'
 
     let removeTrap: (() => void) | null = null
 
@@ -210,10 +254,18 @@ function isActive(href: string) {
 
     // Close on nav link click (mobile)
     links.querySelectorAll('a').forEach(link => {
+      if ((link as HTMLElement).dataset.navCloseBound === 'true') return
+      ;(link as HTMLElement).dataset.navCloseBound = 'true'
       link.addEventListener('click', closeNav)
     })
   }
 
+  const navWindow = window as NavWindow
+  if (navWindow.__navAfterSwapHandler) {
+    document.removeEventListener('astro:after-swap', navWindow.__navAfterSwapHandler)
+  }
+  navWindow.__navAfterSwapHandler = initNav
+
   initNav()
-  document.addEventListener('astro:after-swap', initNav)
+  document.addEventListener('astro:after-swap', navWindow.__navAfterSwapHandler)
 </script>

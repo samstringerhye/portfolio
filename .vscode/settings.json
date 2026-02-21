@@ -1,0 +1,12 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["src/data/tokens.json"],
+      "url": "./src/data/tokens.schema.json"
+    },
+    {
+      "fileMatch": ["src/content/home.json"],
+      "url": "./src/content/home.schema.json"
+    }
+  ]
+}

@@ -6,14 +6,23 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "audit:site": "node scripts/audit-site.mjs",
+    "perf:check": "node scripts/check-bundle-size.mjs",
+    "verify:site": "npm run build && npm run audit:site && npm run perf:check"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",
     "@astrojs/sitemap": "^3.3.0",
+    "@iconify-json/material-symbols": "^1.2.56",
+    "@iconify-json/material-symbols-light": "^1.2.56",
+    "@iconify-json/simple-icons": "^1.2.71",
     "astro": "^5.7.0",
+    "astro-icon": "^1.1.5",
+    "concurrently": "^9.2.1",
     "gsap": "^3.12.7",
     "lenis": "^1.1.18",
+    "lottie-web": "^5.13.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "three": "^0.170.0"

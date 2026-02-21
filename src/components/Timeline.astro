@@ -1,122 +1,450 @@
 ---
-import experience from '../content/experience.json'
+import homeData from '../content/home.json'
+import type { HomeContent } from '../types/content'
 
-const jobs = experience.jobs
-const HeadingTag = experience.headingTag as any
-const JobTag = experience.jobTitleTag as any
-const CompanyTag = experience.companyTag as any
+const home: HomeContent = homeData
+const {
+  headline = 'Experience',
+  headingTag = 'h2', headingRole = 'prose-title-lg',
+  jobTitleTag = 'h3', jobTitleRole = 'prose-subhead-lg',
+  companyTag = 'p', companyRole = 'prose-body',
+  highlightRole = 'prose-body',
+  jobs,
+} = home.experience
 
-function formatDate(dateStr: string | null) {
-  if (!dateStr) return 'Present'
-  const [year, month] = dateStr.split('-')
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return `${months[parseInt(month) - 1]} ${year}`
+const HeadingTag = headingTag as any
+const JobTitleTag = jobTitleTag as any
+const CompanyTag = companyTag as any
+
+const currentYear = new Date().getFullYear()
+
+function getYear(d: string | null) {
+  if (!d) return currentYear
+  return parseInt(d.split('-')[0], 10)
+}
+
+const timelineStart = 2012
+const timelineEnd = currentYear
+const totalSpan = timelineEnd - timelineStart
+
+const jobsWithFlex = jobs.map((j, i) => {
+  const start = getYear(j.startDate)
+  const end = getYear(j.endDate)
+  const span = end - start
+  const yearStart = start - timelineStart
+  return { ...j, span, yearStart, index: i }
+})
+
+// Reverse for chronological left-to-right display (oldest first)
+const jobsChronological = [...jobsWithFlex].reverse()
+
+// Year markers — one per column interval
+const yearMarkers: number[] = []
+for (let y = timelineStart; y < timelineEnd; y++) {
+  yearMarkers.push(y)
 }
 ---
 
-<section class="timeline-section" aria-label="Experience">
-  <div class="timeline-inner">
-    <HeadingTag class={`typo-${experience.headingRole}`} data-reveal>Experience</HeadingTag>
-    <ol class="timeline" role="list">
-      {jobs.map((job, i) => (
-        <li class="timeline-item" data-reveal="stagger">
-          <div class="timeline-dot" aria-hidden="true" />
-          {i < jobs.length - 1 && <div class="timeline-line" aria-hidden="true" />}
-          <div class="timeline-content">
-            <JobTag class:list={["timeline-title", `typo-${experience.jobTitleRole}`]}>{job.title}</JobTag>
-            <CompanyTag class:list={["timeline-company", `typo-${experience.companyRole}`]}>
-              {job.company} &middot; {job.startDate
-                ? <time datetime={job.startDate}>{formatDate(job.startDate)}</time>
-                : formatDate(job.startDate)} — {job.endDate
-                ? <time datetime={job.endDate}>{formatDate(job.endDate)}</time>
-                : formatDate(job.endDate)}
-            </CompanyTag>
-            {job.highlights && job.highlights.length > 0 && (
-              <ul class:list={["timeline-highlights", `typo-${experience.highlightRole}`]} role="list">
-                {job.highlights.map(h => <li>{h}</li>)}
-              </ul>
-            )}
+<section class="experience-section" aria-label="Experience">
+  <div class="experience-header">
+    <HeadingTag class:list={["experience-heading", `typo-${headingRole}`]} data-reveal>{headline}</HeadingTag>
+    <a href="/assets/resume.pdf" download class="experience-download" aria-label="Download resume" data-lottie-hover>
+      <div class="lottie-save" data-lottie-container></div>
+    </a>
+  </div>
+  <div class="experience-timeline" data-timeline data-total-span={totalSpan}>
+    <!-- Job cards row -->
+    <div class="timeline-cards">
+      {jobsChronological.map((job) => (
+        <div
+          class="timeline-card"
+          style={`flex: ${job.span} 1 0%;`}
+          data-card-index={job.index}
+          data-card-span={job.span}
+        >
+          <div class="timeline-card-wipe" aria-hidden="true"></div>
+          <div class="timeline-card-left">
+            <JobTitleTag class:list={["timeline-title", `typo-${jobTitleRole}`]}>{job.title}</JobTitleTag>
+            <CompanyTag class:list={["timeline-company", `typo-${companyRole}`]}>{job.company}</CompanyTag>
           </div>
-        </li>
+          {job.highlights?.length > 0 && (
+            <div class="timeline-highlights">
+              {job.highlights.map((h: string) => (
+                <p class:list={[`typo-${highlightRole}`]}>{h}</p>
+              ))}
+            </div>
+          )}
+        </div>
       ))}
-    </ol>
+    </div>
+
+    <!-- Year scale — grouped by card for alignment -->
+    <div class="timeline-years">
+      {jobsChronological.map((job) => (
+        <div
+          class="timeline-year-group"
+          style={`flex: ${job.span} 1 0%;`}
+          data-year-group={job.index}
+          data-year-group-span={job.span}
+        >
+          <div class="timeline-year-group-wipe" aria-hidden="true"></div>
+          {yearMarkers.slice(job.yearStart, job.yearStart + job.span).map(year => (
+            <div class="timeline-year">
+              <p class="typo-ui-nav-section">{year}</p>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
   </div>
 </section>
 
 <style>
-  .timeline-section {
-    padding-block: var(--section-padding);
+  .experience-section {
+    padding: 0;
   }
 
-  .timeline-inner {
-    max-width: var(--container-content);
-    margin: 0 auto;
-    padding-inline: var(--page-padding);
-  }
-
-  .timeline-inner > h2 {
-    margin-bottom: var(--space-4);
-  }
-
-  .timeline {
+  .experience-header {
     position: relative;
+    display: flex;
+    align-items: center;
+    padding-inline: var(--page-margin);
+    padding-block: var(--content-inset);
   }
 
-  .timeline-item {
-    position: relative;
-    padding-left: var(--space-6);
-    padding-bottom: var(--space-6);
+  .experience-heading {
+    color: var(--color-text-primary);
+    margin: 0;
+    padding-inline: var(--content-inset);
   }
 
-  .timeline-item:last-child {
-    padding-bottom: 0;
-  }
-
-  .timeline-dot {
+  .experience-download {
     position: absolute;
-    left: 0;
-    top: 6px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-text-secondary);
-  }
-
-  .timeline-line {
-    position: absolute;
-    left: 3.5px;
-    top: 18px;
+    top: 0;
+    right: var(--page-margin);
     bottom: 0;
-    width: 1px;
-    background: var(--color-border);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: var(--border-width-1) solid var(--color-text-primary);
+    color: var(--color-text-primary);
+    transition: background-color 250ms ease;
   }
 
-  .timeline-title {
-    margin-bottom: 2px;
+  .lottie-save {
+    width: 45%;
+    height: 45%;
+    transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1); /* leave: quick spring with overshoot */
   }
 
-  .timeline-company {
-    color: var(--color-text-secondary);
+  .experience-download:hover .lottie-save {
+    transform: scale(1.2) rotate(-5deg);
+    transition: transform 490ms cubic-bezier(0.5, 0, 0, 1); /* enter: smooth ease-out matching open */
+  }
+
+  .experience-timeline {
+    padding-inline: var(--page-margin);
+    min-width: 0;
+  }
+
+  /* ── Job cards row ── */
+  .timeline-cards {
+    display: flex;
+    border-top: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  .timeline-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: var(--content-inset) 0;
+    border-right: var(--border-width-1) solid var(--color-text-primary);
+    min-width: 0;
+    overflow: hidden;
+    will-change: flex-grow;
+  }
+
+  .timeline-card-left {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--content-inset) / 4);
+    flex-shrink: 0;
+    min-width: 0;
   }
 
   .timeline-highlights {
-    margin-top: var(--space-2);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    list-style: none;
-  }
-
-  .timeline-highlights li {
-    position: relative;
-    padding-left: var(--space-3);
-    color: var(--color-text-secondary);
-  }
-
-  .timeline-highlights li::before {
-    content: '—';
     position: absolute;
-    left: 0;
-    color: var(--color-border);
+    z-index: 1;
+    right: var(--content-inset);
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    width: 40ch;
+    max-width: 40vw;
+    color: var(--color-text-primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .timeline-card-wipe {
+    position: absolute;
+    inset: 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .timeline-title {
+    position: relative;
+    z-index: 1;
+    color: var(--color-text-primary);
+    padding-inline: var(--content-inset);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .timeline-company {
+    position: relative;
+    z-index: 1;
+    color: var(--color-text-primary);
+    padding-inline: var(--content-inset);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Year scale ── */
+  .timeline-years {
+    display: flex;
+    border-top: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  .timeline-year-group {
+    position: relative;
+    display: flex;
+    border-right: var(--border-width-1) solid var(--color-text-primary);
+    min-width: 0;
+    overflow: hidden;
+    will-change: flex-grow;
+  }
+
+  .timeline-year-group-wipe {
+    position: absolute;
+    inset: 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .timeline-year {
+    flex: 1 1 0%;
+    text-align: center;
+    padding: calc(var(--content-inset) / 2) 0;
+    color: var(--color-text-primary);
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .timeline-year + .timeline-year {
+    border-left: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  /* ── Mobile ── */
+  @media (--2x) {
+    .timeline-cards {
+      flex-direction: column;
+    }
+
+    .timeline-card {
+      flex: none !important;
+      border-right: none;
+      border-bottom: var(--border-width-1) solid var(--color-text-primary);
+    }
+
+    .timeline-card:last-child {
+      border-bottom: none;
+    }
+
+    .timeline-years {
+      display: none;
+    }
   }
 </style>
+
+<script>
+  import gsap from 'gsap'
+  import { animations, cmyRgba } from '../data/tokens'
+
+  const h = animations.timeline.hover
+  const CMY_COLORS = cmyRgba(h.cmyOpacity)
+  let colorIndex = 0
+
+  function initTimelineHover() {
+    const timeline = document.querySelector<HTMLElement>('[data-timeline]')
+    if (!timeline) return
+
+    const totalSpan = parseInt(timeline.dataset.totalSpan!, 10)
+    const cards = Array.from(timeline.querySelectorAll<HTMLElement>('.timeline-card'))
+    const yearGroups = Array.from(timeline.querySelectorAll<HTMLElement>('.timeline-year-group'))
+    const allText = timeline.querySelectorAll('.timeline-title, .timeline-company')
+    const allYearText = timeline.querySelectorAll('.timeline-year p')
+    const allHighlights = timeline.querySelectorAll('.timeline-highlights')
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const isMobile = window.matchMedia('(max-width: 768px)')
+    if (isMobile.matches) return
+
+    cards.forEach((card) => {
+      const cardIdx = parseInt(card.dataset.cardIndex!, 10)
+      const span = parseInt(card.dataset.cardSpan!, 10)
+      const wipe = card.querySelector<HTMLElement>('.timeline-card-wipe')!
+      const highlights = card.querySelector<HTMLElement>('.timeline-highlights')
+      const yearGroup = timeline.querySelector<HTMLElement>(`[data-year-group="${cardIdx}"]`)
+      const yearGroupWipe = yearGroup?.querySelector<HTMLElement>('.timeline-year-group-wipe')
+
+      card.addEventListener('mouseenter', () => {
+        if (isMobile.matches) return
+
+        // Kill all running tweens on timeline elements to prevent conflicts
+        gsap.killTweensOf(cards)
+        gsap.killTweensOf(yearGroups)
+        gsap.killTweensOf(allText)
+        gsap.killTweensOf(allYearText)
+        gsap.killTweensOf(allHighlights)
+
+        const color = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
+        const hoverGrow = totalSpan - span
+
+        // ── Hovered card: expand to 50% + color wipe + show text ──
+        gsap.to(card, { flexGrow: hoverGrow, duration: h.expandDuration, ease: h.expandEase })
+        gsap.to(card.querySelectorAll('.timeline-title, .timeline-company'), { opacity: 1, duration: h.textShowDuration })
+        gsap.set(wipe, { backgroundColor: color, scaleX: 0 })
+        gsap.to(wipe, { scaleX: 1, duration: h.wipeDuration, ease: h.wipeEase })
+
+        // ── Show highlights ──
+        if (highlights) {
+          gsap.to(highlights, { opacity: 1, duration: h.highlightsShowDuration, delay: h.highlightsShowDelay, ease: h.highlightsShowEase })
+        }
+
+        // ── Hovered year group: expand + show text + color ──
+        if (yearGroup && yearGroupWipe) {
+          gsap.to(yearGroup, { flexGrow: hoverGrow, duration: h.expandDuration, ease: h.expandEase })
+          gsap.to(yearGroup.querySelectorAll('.timeline-year p'), { opacity: 1, duration: h.textShowDuration })
+          gsap.set(yearGroupWipe, { backgroundColor: color, scaleX: 0 })
+          gsap.to(yearGroupWipe, { scaleX: 1, duration: h.wipeDuration, ease: h.wipeEase })
+        }
+
+        // ── Other cards: hide text + highlights, reset flex ──
+        cards.forEach((c) => {
+          if (parseInt(c.dataset.cardIndex!, 10) === cardIdx) return
+          const cSpan = parseInt(c.dataset.cardSpan!, 10)
+          gsap.to(c, { flexGrow: cSpan, duration: h.expandDuration, ease: h.expandEase })
+          gsap.to(c.querySelectorAll('.timeline-title, .timeline-company'), { opacity: 0, duration: h.textHideDuration })
+          const cHighlights = c.querySelector('.timeline-highlights')
+          if (cHighlights) gsap.set(cHighlights, { opacity: 0 })
+          const cWipe = c.querySelector('.timeline-card-wipe')
+          if (cWipe) gsap.to(cWipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
+        })
+
+        // ── Other year groups: hide text, reset flex ──
+        yearGroups.forEach((yg) => {
+          if (parseInt(yg.dataset.yearGroup!, 10) === cardIdx) return
+          const ygSpan = parseInt(yg.dataset.yearGroupSpan!, 10)
+          gsap.to(yg, { flexGrow: ygSpan, duration: h.expandDuration, ease: h.expandEase })
+          gsap.to(yg.querySelectorAll('.timeline-year p'), { opacity: 0, duration: h.textHideDuration })
+          const ygWipe = yg.querySelector('.timeline-year-group-wipe')
+          if (ygWipe) gsap.to(ygWipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
+        })
+      })
+
+      card.addEventListener('mouseleave', () => {
+        // Kill all running tweens
+        gsap.killTweensOf(cards)
+        gsap.killTweensOf(yearGroups)
+        gsap.killTweensOf(allText)
+        gsap.killTweensOf(allYearText)
+        gsap.killTweensOf(allHighlights)
+
+        // ── Reset everything to default ──
+        cards.forEach((c) => {
+          const cSpan = parseInt(c.dataset.cardSpan!, 10)
+          gsap.to(c, { flexGrow: cSpan, duration: h.collapseDuration, ease: h.collapseEase })
+          gsap.to(c.querySelectorAll('.timeline-title, .timeline-company'), { opacity: 1, duration: h.collapseTextDuration })
+          const cWipe = c.querySelector('.timeline-card-wipe')
+          if (cWipe) gsap.to(cWipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
+          const cHighlights = c.querySelector('.timeline-highlights')
+          if (cHighlights) gsap.to(cHighlights, { opacity: 0, duration: h.highlightsHideDuration, ease: h.highlightsHideEase })
+        })
+
+        yearGroups.forEach((yg) => {
+          const ygSpan = parseInt(yg.dataset.yearGroupSpan!, 10)
+          gsap.to(yg, { flexGrow: ygSpan, duration: h.collapseDuration, ease: h.collapseEase })
+          gsap.to(yg.querySelectorAll('.timeline-year p'), { opacity: 1, duration: h.collapseTextDuration })
+          const ygWipe = yg.querySelector('.timeline-year-group-wipe')
+          if (ygWipe) gsap.to(ygWipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
+        })
+      })
+    })
+  }
+
+  initTimelineHover()
+  document.addEventListener('astro:page-load', initTimelineHover)
+</script>
+
+<script>
+  import lottie from 'lottie-web'
+  import type { AnimationItem } from 'lottie-web'
+  import { animations, cmyRgba } from '../data/tokens'
+
+  // Segments: open (0→49), close (49→56)
+  const OPEN: [number, number]  = [0, 49]
+  const CLOSE: [number, number] = [49, 56]
+
+  const CMY_COLORS = cmyRgba(animations.timeline.hover.saveCmyOpacity)
+  let colorIndex = 0
+  let anim: AnimationItem | null = null
+
+  function initSaveLottie() {
+    const link = document.querySelector<HTMLAnchorElement>('[data-lottie-hover]')
+    const container = document.querySelector<HTMLElement>('[data-lottie-container]')
+    if (!link || !container) return
+
+    if (anim) {
+      anim.destroy()
+      anim = null
+    }
+
+    anim = lottie.loadAnimation({
+      container,
+      path: '/assets/save_icon.json',
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+    })
+
+    anim.goToAndStop(0, true)
+
+    link.addEventListener('mouseenter', () => {
+      anim?.playSegments(OPEN, true)
+      link.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
+    })
+
+    link.addEventListener('mouseleave', () => {
+      anim?.playSegments(CLOSE, true)
+      link.style.backgroundColor = ''
+    })
+  }
+
+  initSaveLottie()
+  document.addEventListener('astro:page-load', initSaveLottie)
+</script>

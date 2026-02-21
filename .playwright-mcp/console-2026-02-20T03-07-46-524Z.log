@@ -1,0 +1,23 @@
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/gsap.js?v=0f172ed2:0
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=79bd2512:0
+[      43ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/gsap_ScrollTrigger.js?v=416f8ee1:0
+[      44ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/lenis.js?v=2cf89d1f:0
+[      56ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=0a236ba4:0
+[      56ms] [ERROR] [astro-island] Error hydrating /src/components/HeroCanvas.jsx TypeError: Failed to fetch dynamically imported module: http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=0a236ba4 @ http://localhost:4321/:565
+[      56ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[      62ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=0a236ba4:0
+[      63ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/three_examples_jsm_postprocessing_EffectComposer__js.js?v=adc3c6e2:0
+[      63ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/astro___aria-query.js?v=0a236ba4:0
+[      63ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/astro___axobject-query.js?v=0a236ba4:0
+[     101ms] Failed to fetch dynamically imported module: http://localhost:4321/node_modules/astro/dist/runtime/client/dev-toolbar/apps/audit/index.js?v=40c3612a
+[      63ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/react.js?v=0a236ba4:0
+[      63ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/three.js?v=c8fa5ae8:0
+[      65ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/three_examples_jsm_postprocessing_RenderPass__js.js?v=c6061394:0
+[      65ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/three_examples_jsm_postprocessing_ShaderPass__js.js?v=d173df78:0
+[      65ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/three_examples_jsm_postprocessing_SavePass__js.js?v=ab374519:0
+[      65ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:4321/node_modules/.vite/deps/three_examples_jsm_shaders_FXAAShader__js.js?v=cb79790e:0
+[    6356ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[    7360ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[    8362ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[    9364ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[   12820ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0

@@ -1,15 +1,20 @@
 ---
 import HeroCanvas from './HeroCanvas.jsx'
+import type { HeadingTag, TypographyRole } from '../types/typography'
+import { animations } from '../data/tokens'
 
 interface Props {
   headline: string
-  tag?: string
-  role?: string
+  tag?: HeadingTag
+  role?: TypographyRole
 }
 
-const { headline, tag = 'h1', role = 'display' } = Astro.props
+const { headline, tag = 'h1', role = 'prose-title-lg' } = Astro.props as Props
 const HeroTag = tag as any
 const heroRole = `typo-${role}`
+
+const revealCfg = animations.textReveal
+const heroInitBlur = `${revealCfg.initialBlur}px`
 ---
 
 <section class="hero" aria-label="Introduction">
@@ -20,13 +25,14 @@ const heroRole = `typo-${role}`
   </div>
 </section>
 
-<style>
+<style define:vars={{ heroInitBlur }}>
   .hero {
     position: relative;
     width: 100%;
-    height: 100vh;
-    margin-top: calc(var(--nav-height) * -1);
+    height: 75vh;
     overflow: hidden;
+    margin: 0 var(--page-margin);
+    width: calc(100% - 2 * var(--page-margin));
     background-color: var(--color-bg-primary);
   }
 
@@ -44,30 +50,16 @@ const heroRole = `typo-${role}`
     background-color: var(--color-bg-primary);
   }
 
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 30%;
-    background: linear-gradient(to bottom, transparent, var(--color-bg-primary));
-    pointer-events: none;
-    z-index: 1;
-  }
-
   .hero-text {
     position: relative;
     width: 100%;
-    max-width: var(--container-content);
-    margin: 0 auto;
-    min-height: 100vh;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 0 var(--page-padding);
+    padding: 0 var(--page-margin);
     z-index: 2;
   }
 
@@ -76,15 +68,13 @@ const heroRole = `typo-${role}`
     color: var(--color-text-primary);
   }
 
-  .hero-block :global(.hero-word) {
-    display: inline-block;
+  .hero-block {
     opacity: 0;
-    transform: translateY(40px);
-    filter: blur(6px);
+    filter: blur(var(--heroInitBlur));
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-block :global(.hero-word) {
+    .hero-block {
       opacity: 1;
       transform: none;
       filter: none;
@@ -94,55 +84,35 @@ const heroRole = `typo-${role}`
 
 <script>
   import gsap from 'gsap'
-  import { SplitText } from 'gsap/SplitText'
-  import tokens from '../data/tokens.json'
+  import { animations } from '../data/tokens'
+  import { createCmyAutoSplitReveal, type CmyAutoSplitHandle } from './cmy-animate'
 
-  gsap.registerPlugin(SplitText)
+  const cfg = animations.textReveal
+  const startDelay = animations.hero.text.startDelay
 
-  const cfg = tokens.animations.hero.text
+  let heroHandles: CmyAutoSplitHandle[] = []
 
-  let heroSplits: SplitText[] = []
-
-  function animateHeroLines() {
+  async function animateHero() {
     const els = document.querySelectorAll<HTMLElement>('[data-hero-text]')
     if (!els.length) return
 
-    // Revert previous splits
-    heroSplits.forEach(s => s.revert())
-    heroSplits = []
-
-    // Split each block into words
-    const allWords: HTMLElement[] = []
-    els.forEach(el => {
-      const split = new SplitText(el, { type: 'words', wordsClass: 'hero-word' })
-      heroSplits.push(split)
-      allWords.push(...split.words)
-    })
+    heroHandles.forEach(h => h.kill())
+    heroHandles = []
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (prefersReduced) {
-      gsap.set(allWords, { opacity: 1, y: 0, filter: 'blur(0px)', textShadow: 'none' })
+      gsap.set(els, { opacity: 1, y: 0, filter: 'none', textShadow: 'none' })
       return
     }
 
-    const d1 = cfg.aberration
-    const d2 = d1 * 1.5
-    const d3 = d1 * 2
-    const op = cfg.aberrationOpacity
-    const shadowFrom = `0 ${d1}px rgba(0,255,255,${op}), 0 ${d2}px rgba(255,0,255,${op}), 0 ${d3}px rgba(255,255,0,${op})`
+    await document.fonts.ready
 
-    gsap.set(allWords, {
-      opacity: 0, y: cfg.y, filter: `blur(${cfg.blur}px)`, textShadow: shadowFrom,
-    })
-
-    gsap.to(allWords, {
-      opacity: 1, y: 0, filter: 'blur(0px)',
-      textShadow: '0 0px transparent, 0 0px transparent, 0 0px transparent',
-      duration: cfg.duration, stagger: cfg.stagger, ease: cfg.ease, delay: cfg.delay,
+    els.forEach(el => {
+      heroHandles.push(createCmyAutoSplitReveal(el, cfg, { delay: startDelay }))
     })
   }
 
-  animateHeroLines()
-  document.addEventListener('astro:page-load', animateHeroLines)
+  animateHero()
+  document.addEventListener('astro:page-load', animateHero)
 </script>

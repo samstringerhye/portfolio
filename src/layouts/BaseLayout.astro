@@ -4,7 +4,7 @@ import SEO from '../components/SEO.astro'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import AboutModal from '../components/AboutModal.astro'
-import tokens from '../data/tokens.json'
+import { primitives, semantic, roles, hover as hoverTokens, prose } from '../data/tokens'
 import '../styles/global.css'
 
 interface Props {
@@ -19,10 +19,18 @@ const { title, description, ogImage, hideFooter = false } = Astro.props
 /* ── Helper: fluid clamp from min→max rem across 375→1440px ── */
 function buildClamp(min: number, max: number): string {
   if (min === max) return `${min}rem`
-  const rootPx = 17
+  const rootPx = 16
   const slope = ((max - min) * rootPx * 100) / (1440 - 375)
   const intercept = min - (slope * 375) / (100 * rootPx)
   return `clamp(${min.toFixed(2)}rem, ${intercept.toFixed(4)}rem + ${slope.toFixed(4)}vw, ${max.toFixed(2)}rem)`
+}
+
+/* ── Helper: resolve a token value (number, string, or {min,max}) to CSS ── */
+function cssVal(val: any, unit = 'rem'): string {
+  if (typeof val === 'string') return val
+  if (typeof val === 'number') return `${val}${unit}`
+  if (val && typeof val === 'object' && 'min' in val && 'max' in val) return buildClamp(val.min, val.max)
+  return String(val)
 }
 
 /* ── Helper: camelCase → kebab-case ── */
@@ -30,98 +38,196 @@ function kebab(s: string): string {
   return s.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
+/* ── Helper: flatten nested object into CSS var entries ── */
+function flattenObject(obj: Record<string, any>, prefix: string): string[] {
+  const result: string[] = []
+  for (const [key, val] of Object.entries(obj)) {
+    const varName = `${prefix}-${kebab(key)}`
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      result.push(...flattenObject(val, varName))
+    } else {
+      result.push(`${varName}: ${val};`)
+    }
+  }
+  return result
+}
+
 /* ── Typography vars ── */
-const scaleVars = Object.entries(tokens.scale).map(([key, val]) => {
+const scaleVars = Object.entries(primitives.font.scale).map(([key, val]) => {
   if (typeof val === 'number') return `--text-${key}: ${val}rem;`
   const v = val as { min: number; max: number }
   return `--text-${key}: ${buildClamp(v.min, v.max)};`
 }).join('\n    ')
 
-const leadingVars = Object.entries(tokens.lineHeight)
+const leadingVars = Object.entries(primitives.font.lineHeight)
   .map(([key, val]) => `--line-height-${key}: ${val};`).join('\n    ')
 
-const trackingVars = Object.entries(tokens.tracking)
+const trackingVars = Object.entries(primitives.font.tracking)
   .map(([key, val]) => `--tracking-${key}: ${val}em;`).join('\n    ')
 
-const fonts = tokens.fonts as Record<string, string>
-const fontVars = Object.entries(fonts)
+const fontVars = Object.entries(primitives.font.family)
   .map(([key, val]) => `--font-${key}: ${val};`).join('\n    ')
 
-const fontWeights = tokens.fontWeight as Record<string, number>
-const weightVars = Object.entries(fontWeights)
+const weightVars = Object.entries(primitives.font.weight)
   .map(([key, val]) => `--font-weight-${key}: ${val};`).join('\n    ')
 
-/* ── Color vars ── */
-const colorVars = Object.entries(tokens.colors)
-  .map(([key, val]) => `--color-${kebab(key)}: ${val};`).join('\n    ')
+/* ── Color vars (flatten semantic.color to --color-*) ── */
+const colorVars = flattenObject(semantic.color, '--color').join('\n    ')
 
 /* ── Spacing vars ── */
-const spacingVars = Object.entries(tokens.spacing)
-  .map(([key, val]) => `--space-${key}: ${val};`).join('\n    ')
+const spacingVars = Object.entries(primitives.spacing).map(([key, val]) => {
+  if (typeof val === 'number') return `--space-${key}: ${val}rem;`
+  const v = val as { min: number; max: number }
+  return `--space-${key}: ${buildClamp(v.min, v.max)};`
+}).join('\n    ')
 
 /* ── Layout vars ── */
 const layoutVars = [
-  `--container-content: ${tokens.layout.contentWidth}px;`,
-  `--page-padding: ${tokens.layout.pagePadding};`,
-  `--grid-gutter: ${tokens.layout.gridGutter};`,
-  `--section-padding: ${tokens.layout.sectionPadding};`,
-  `--nav-height: ${tokens.layout.navHeight};`,
+  `--page-margin: ${cssVal(semantic.layout.pageMargin)};`,
+  `--content-inset: ${cssVal(semantic.layout.contentInset)};`,
+  `--page-padding: calc(${cssVal(semantic.layout.pageMargin)} + ${cssVal(semantic.layout.contentInset)});`,
+  `--grid-gutter: ${cssVal(semantic.layout.gridGutter)};`,
+  `--section-padding: ${cssVal(semantic.layout.sectionPadding)};`,
+  `--nav-height: ${semantic.layout.navHeight};`,
 ].join('\n    ')
 
-/* ── Breakpoint vars (for JS access — CSS @media requires literal values) ── */
-const breakpointVars = Object.entries(tokens.breakpoints)
-  .map(([key, val]) => `--breakpoint-${key}: ${val}px;`).join('\n    ')
+/* ── Sizing vars (wordmark, section-rule marks, nav toggle) ── */
+const sizingVars = [
+  `--touch-target: ${primitives.sizing.touchTarget};`,
+  `--section-rule-mark-size: ${primitives.sizing.sectionRuleMark};`,
+  `--wordmark-size: ${primitives.sizing.wordmark};`,
+  `--wordmark-size-mobile: ${primitives.sizing.wordmarkMobile};`,
+  `--nav-toggle-bar-width: ${primitives.sizing.navToggleBarWidth};`,
+  `--nav-toggle-bar-height: ${primitives.sizing.navToggleBarHeight};`,
+  `--nav-toggle-gap: ${primitives.sizing.navToggleGap};`,
+].join('\n    ')
+
+/* ── Inline spacing vars ── */
+const inlineSpacingVars = Object.entries(primitives.inlineSpacing)
+  .map(([key, val]) => `--inline-spacing-${key}: ${val};`).join('\n    ')
 
 /* ── Radii vars ── */
-const radiiVars = Object.entries(tokens.radii)
+const radiiVars = Object.entries(primitives.radii)
   .map(([key, val]) => `--radius-${key}: ${val};`).join('\n    ')
 
-/* ── Z-index vars ── */
-const zVars = Object.entries(tokens.zIndex)
+/* ── Z-index vars (from semantic.layer) ── */
+const zVars = Object.entries(semantic.layer)
   .map(([key, val]) => `--z-${kebab(key)}: ${val};`).join('\n    ')
 
 /* ── Transition vars ── */
-const transitionVars = Object.entries(tokens.transitions)
+const transitionVars = Object.entries(primitives.motion.duration)
   .map(([key, val]) => `--transition-${key}: ${val};`).join('\n    ')
 
+/* ── Border width vars ── */
+const borderWidthVars = Object.entries(primitives.border.width)
+  .map(([key, val]) => `--border-width-${key}: ${val};`).join('\n    ')
+
+/* ── Focus ring vars ── */
+const focusRingVars = [
+  `--focus-ring-width: ${semantic.focus.ring.width};`,
+  `--focus-ring-color: ${semantic.focus.ring.color};`,
+  `--focus-ring-offset: ${semantic.focus.ring.offset};`,
+].join('\n    ')
+
 /* ── Modal vars ── */
-const modalVars = Object.entries(tokens.modal)
+const modalVars = Object.entries(semantic.modal)
   .map(([key, val]) => `--modal-${kebab(key)}: ${val};`).join('\n    ')
 
 /* ── Scrollbar vars ── */
-const scrollbarVars = Object.entries(tokens.scrollbar)
+const scrollbarVars = Object.entries(semantic.scrollbar)
   .map(([key, val]) => `--scrollbar-${key}: ${val};`).join('\n    ')
 
-/* ── Glow vars ── */
-const glowVars = Object.entries(tokens.glow)
-  .map(([key, val]) => `--glow-${key}: ${val};`).join('\n    ')
+/* ── Opacity vars ── */
+const opacityVars = Object.entries(primitives.opacity)
+  .map(([key, val]) => `--opacity-${key}: ${val};`).join('\n    ')
 
 /* ── Hover vars ── */
-const hoverVars = Object.entries(tokens.hover)
+const hoverVars = Object.entries(hoverTokens)
   .map(([key, val]) => {
     const unit = typeof val === 'number' && key !== 'perspective' ? '' : typeof val === 'number' ? 'px' : ''
     return `--hover-${kebab(key)}: ${val}${unit};`
   }).join('\n    ')
 
+/* ── Prose block styling vars ── */
+const proseVars = [
+  `--prose-code-bg: ${prose.code.bg};`,
+  `--prose-code-padding-inline: ${cssVal(prose.code.paddingInline)};`,
+  `--prose-code-padding-block: ${cssVal(prose.code.paddingBlock)};`,
+  `--prose-code-border-radius: ${cssVal(prose.code.borderRadius)};`,
+  `--prose-code-block-padding: ${cssVal(prose.code.blockPadding)};`,
+  `--prose-code-block-radius: ${cssVal(prose.code.blockRadius)};`,
+].join('\n    ')
+
 /* ── Font faces ── */
-const fontFaces = [
-  { name: 'PP Editorial New', src: '/fonts/trial/PPEditorialNew-Regular.otf' },
-  { name: 'PP Neue Montreal', src: '/fonts/trial/PPNeueMontreal-Medium.otf' },
-].map(f => `@font-face {
-    font-family: "${f.name}";
-    src: url("${f.src}") format("opentype");
+/* Only declare weights for files that exist on disk.
+   Missing weight files cause 404s that block the browser from falling back to nearby weights. */
+const fontFaces = `@font-face {
+    font-family: "PP Editorial New";
+    src: url("/fonts/trial/PPEditorialNew-Regular.otf") format("opentype");
+    font-weight: 100 900;
     font-display: swap;
-  }`).join('\n  ')
+  }
+  @font-face {
+    font-family: "PP Neue Montreal";
+    src: url("/fonts/trial/PPNeueMontreal-Book.otf") format("opentype");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Frama";
+    src: url("/fonts/trial/PPFrama-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Monument Extended";
+    src: url("/fonts/trial/PPMonumentExtended-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Monument Normal";
+    src: url("/fonts/trial/PPMonumentNormal-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Mori";
+    src: url("/fonts/trial/PPMori-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Neue Corp";
+    src: url("/fonts/trial/PPNeueCorp-NormalMedium.otf") format("opentype");
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "PP Watch";
+    src: url("/fonts/trial/PPWatch-Medium.otf") format("opentype");
+    font-weight: 500;
+    font-display: swap;
+  }`
 
 /* ── Typography role utility classes ── */
-const roleRules = Object.entries(tokens.roles).map(([name, cfg]) => {
-  const c = cfg as { font: string; scale: string; lineHeight: string; tracking: string }
+/* Reverse lookup: resolved literal family → CSS var so role rules cascade with overrides */
+const familyToVar = Object.fromEntries(
+  Object.entries(primitives.font.family).map(([key, val]) => [val, `var(--font-${key})`])
+) as Record<string, string>
+
+const roleRules = Object.entries(roles).map(([name, cfg]) => {
+  const c = cfg as { family: string; weight: number; scale: number | { min: number; max: number }; lineHeight: number; tracking: number }
+  const fontSize = typeof c.scale === 'number' ? `${c.scale}rem` : buildClamp(c.scale.min, c.scale.max)
+  const familyDefault = familyToVar[c.family] ?? c.family
   return `.typo-${name} {
-    font-family: var(--font-${c.font});
-    font-weight: var(--font-weight-${c.font});
-    font-size: var(--text-${c.scale});
-    line-height: var(--line-height-${c.lineHeight});
-    letter-spacing: var(--tracking-${c.tracking});
+    font-family: var(--typo-${name}-family, ${familyDefault});
+    font-weight: var(--typo-${name}-weight, ${c.weight});
+    font-size: ${fontSize};
+    line-height: ${c.lineHeight};
+    letter-spacing: var(--typo-${name}-tracking, ${c.tracking}em);
+    text-transform: var(--typo-${name}-transform, none);
+    font-stretch: var(--typo-${name}-stretch, normal);
   }`
 }).join('\n  ')
 
@@ -129,24 +235,28 @@ const roleRules = Object.entries(tokens.roles).map(([name, cfg]) => {
 const typoCss = `${fontFaces}
   :root {
     ${fontVars}
-    --font-primary: var(--font-sans-serif);
+    --font-primary: var(--font-sans);
     ${weightVars}
     ${scaleVars}
     ${leadingVars}
     ${trackingVars}
     ${colorVars}
     ${spacingVars}
+    ${inlineSpacingVars}
     ${layoutVars}
-    ${breakpointVars}
+    ${sizingVars}
     ${radiiVars}
     ${zVars}
     ${transitionVars}
+    ${borderWidthVars}
+    ${focusRingVars}
     ${modalVars}
     ${scrollbarVars}
-    ${glowVars}
+    ${opacityVars}
     ${hoverVars}
-    --focus-ring: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-text-primary);
-    --border-light: 1px solid var(--color-border);
+    ${proseVars}
+    --focus-ring: 0 0 0 var(--focus-ring-width) var(--color-bg-primary), 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
+    --border-light: var(--border-width-1) solid var(--color-accent);
   }
   ${roleRules}`
 ---
@@ -156,33 +266,68 @@ const typoCss = `${fontFaces}
   <head>
     <SEO title={title} description={description} ogImage={ogImage} />
     <link rel="preload" href="/fonts/trial/PPEditorialNew-Regular.otf" as="font" type="font/otf" crossorigin />
-    <link rel="preload" href="/fonts/trial/PPNeueMontreal-Medium.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/fonts/trial/PPNeueMontreal-Book.otf" as="font" type="font/otf" crossorigin />
     <style set:html={typoCss}></style>
-    <noscript><style>.hero-word, .bio-line { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
+    <noscript><style>.cmy-word { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
     <ViewTransitions fallback="swap" />
+    {import.meta.env.DEV && (
+      <script is:inline>
+        // Restore per-role font overrides from localStorage before first paint (dev only)
+        (function() {
+          try {
+            var d = JSON.parse(localStorage.getItem('dev-font-overrides') || '{}');
+            var s = document.documentElement.style;
+            var props = ['family', 'weight', 'tracking', 'transform', 'stretch'];
+            for (var role in d) {
+              var ov = d[role];
+              for (var i = 0; i < props.length; i++) {
+                if (ov[props[i]] != null) s.setProperty('--typo-' + role + '-' + props[i], String(ov[props[i]]));
+              }
+            }
+          } catch(e) {}
+        })();
+      </script>
+    )}
   </head>
   <body>
     <a href="#main" class="skip-to-content">Skip to content</a>
+    <div class="grid-overlay" aria-hidden="true"></div>
     <Nav />
-    <main id="main" tabindex="-1" style="padding-top: var(--nav-height);">
+    <main id="main" tabindex="-1">
       <slot />
     </main>
     {!hideFooter && <Footer />}
     <AboutModal />
-
     <script>
       import Lenis from 'lenis'
       import gsap from 'gsap'
       import { ScrollTrigger } from 'gsap/ScrollTrigger'
-      import tokens from '../data/tokens.json'
+      import { animations } from '../data/tokens'
 
       gsap.registerPlugin(ScrollTrigger)
 
-      const scrollCfg = tokens.animations.smoothScroll
+      const scrollCfg = animations.smoothScroll
       let lenis: InstanceType<typeof Lenis> | null = null
+      let lenisTicker: ((time: number) => void) | null = null
+
+      type GlobalInitState = Window & {
+        __siteAfterSwapHandler?: () => void
+        __sitePageLoadHandler?: () => void
+        __siteDestroyLenis?: () => void
+      }
+
+      function destroyLenis() {
+        if (lenisTicker) {
+          gsap.ticker.remove(lenisTicker)
+          lenisTicker = null
+        }
+
+        lenis?.destroy()
+        lenis = null
+      }
 
       function initLenis() {
-        lenis?.destroy()
+        destroyLenis()
 
         // Respect reduced motion
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -191,26 +336,46 @@ const typoCss = `${fontFaces}
         lenis = new Lenis({ lerp: scrollCfg.lerp, smoothWheel: true, wheelMultiplier: scrollCfg.wheelMultiplier })
 
         lenis.on('scroll', ScrollTrigger.update)
-        gsap.ticker.add((time) => lenis?.raf(time * 1000))
+        lenisTicker = (time) => lenis?.raf(time * 1000)
+        gsap.ticker.add(lenisTicker)
         gsap.ticker.lagSmoothing(0)
       }
 
       async function initInteractions() {
         const { initScrollReveals } = await import('../components/scroll-reveals.ts')
         const { initHoverEffects } = await import('../components/hover-effects.ts')
-        initScrollReveals()
+        await initScrollReveals()
         initHoverEffects()
       }
+
+      const globalState = window as GlobalInitState
+
+      if (globalState.__siteAfterSwapHandler) {
+        document.removeEventListener('astro:after-swap', globalState.__siteAfterSwapHandler)
+      }
+      if (globalState.__sitePageLoadHandler) {
+        document.removeEventListener('astro:page-load', globalState.__sitePageLoadHandler)
+      }
+      globalState.__siteDestroyLenis?.()
+
+      const handleAfterSwap = () => {
+        initLenis()
+        ScrollTrigger.refresh()
+      }
+
+      const handlePageLoad = () => {
+        initInteractions()
+      }
+
+      globalState.__siteAfterSwapHandler = handleAfterSwap
+      globalState.__sitePageLoadHandler = handlePageLoad
+      globalState.__siteDestroyLenis = destroyLenis
 
       initLenis()
       initInteractions()
 
-      document.addEventListener('astro:after-swap', () => {
-        initLenis()
-        ScrollTrigger.refresh()
-      })
-
-      document.addEventListener('astro:page-load', initInteractions)
+      document.addEventListener('astro:after-swap', handleAfterSwap)
+      document.addEventListener('astro:page-load', handlePageLoad)
     </script>
 
     <script src="../components/about-modal.ts"></script>

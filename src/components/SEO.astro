@@ -37,12 +37,12 @@ const defaultJsonLd = [
 ]
 
 const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : defaultJsonLd
-import tokens from '../data/tokens.json'
+import { colors } from '../data/tokens'
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content={tokens.colors.bgPrimary} />
+<meta name="theme-color" content={colors.bg.primary} />
 
 <title>{title}</title>
 <meta name="description" content={description} />

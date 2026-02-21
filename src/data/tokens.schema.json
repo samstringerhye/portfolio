@@ -1,0 +1,657 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "tokens.schema.json",
+  "title": "Design Tokens",
+  "description": "Design token schema for Sam Stringer-Hye portfolio. Supports a custom $ref system where { \"$ref\": \"primitives.x.y.z\" } references leaf values in the primitives section.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "primitives": { "$ref": "#/definitions/primitives" },
+    "semantic": { "$ref": "#/definitions/semantic" },
+    "roles": { "$ref": "#/definitions/roles" },
+    "hover": { "$ref": "#/definitions/hover" },
+    "prose": { "$ref": "#/definitions/prose" }
+  },
+  "required": ["primitives", "semantic", "roles", "hover", "prose"],
+  "additionalProperties": false,
+
+  "definitions": {
+
+    "refPath": {
+      "type": "string",
+      "description": "Dot-path to a primitives leaf value",
+      "enum": [
+        "primitives.font.family.serif",
+        "primitives.font.family.sans",
+        "primitives.font.family.mono",
+
+        "primitives.font.weight.regular",
+        "primitives.font.weight.semibold",
+
+        "primitives.font.scale.1x",
+        "primitives.font.scale.2x",
+        "primitives.font.scale.3x",
+        "primitives.font.scale.4x",
+        "primitives.font.scale.5x",
+        "primitives.font.scale.6x",
+        "primitives.font.scale.7x",
+
+        "primitives.font.lineHeight.tight",
+        "primitives.font.lineHeight.normal",
+
+        "primitives.font.tracking.tight",
+        "primitives.font.tracking.normal",
+        "primitives.font.tracking.wide",
+
+        "primitives.color.neutral.900",
+        "primitives.color.neutral.700",
+        "primitives.color.neutral.500",
+        "primitives.color.neutral.100",
+        "primitives.color.neutral.50",
+
+        "primitives.color.alpha.black8",
+        "primitives.color.alpha.black30",
+
+        "primitives.color.cmy.cyan",
+        "primitives.color.cmy.magenta",
+        "primitives.color.cmy.yellow",
+
+        "primitives.spacing.1",
+        "primitives.spacing.2",
+        "primitives.spacing.3",
+        "primitives.spacing.4",
+        "primitives.spacing.6",
+        "primitives.spacing.8",
+        "primitives.spacing.10",
+        "primitives.spacing.12",
+
+        "primitives.inlineSpacing.1x",
+        "primitives.inlineSpacing.2x",
+
+        "primitives.radii.1x",
+        "primitives.radii.2x",
+        "primitives.radii.3x",
+        "primitives.radii.pill",
+
+        "primitives.border.width.1",
+        "primitives.border.width.2",
+
+        "primitives.shadow.3",
+
+        "primitives.motion.duration.fast",
+        "primitives.motion.duration.1x",
+
+        "primitives.motion.gsapEasing.enter",
+        "primitives.motion.gsapEasing.bounce",
+        "primitives.motion.gsapEasing.bounceIn",
+        "primitives.motion.gsapEasing.bounceMove",
+
+        "primitives.zIndex.1x",
+        "primitives.zIndex.overlay",
+        "primitives.zIndex.modal",
+        "primitives.zIndex.toast",
+        "primitives.zIndex.debug",
+
+        "primitives.sizing.navHeight",
+        "primitives.sizing.modalMaxWidth",
+        "primitives.sizing.modalMaxHeight",
+        "primitives.sizing.scrollbarWidth",
+        "primitives.sizing.sectionRuleMark",
+        "primitives.sizing.wordmark",
+        "primitives.sizing.wordmarkMobile",
+        "primitives.sizing.touchTarget",
+        "primitives.sizing.navToggleBarWidth",
+        "primitives.sizing.navToggleBarHeight",
+        "primitives.sizing.navToggleGap",
+
+        "primitives.blur.1x",
+
+        "primitives.opacity.30",
+        "primitives.opacity.50",
+        "primitives.opacity.60",
+        "primitives.opacity.80",
+
+        "primitives.interaction.lift",
+
+        "semantic.color.text.primary",
+        "semantic.color.text.secondary",
+        "semantic.color.bg.primary",
+        "semantic.color.bg.alt",
+        "semantic.color.accent",
+        "semantic.color.cmy.cyan",
+        "semantic.color.cmy.magenta",
+        "semantic.color.cmy.yellow",
+        "semantic.color.border",
+        "semantic.color.backdrop",
+
+        "semantic.motion.duration.instant",
+        "semantic.motion.duration.default",
+        "semantic.motion.gsapEasing.enter",
+        "semantic.motion.gsapEasing.bounce",
+        "semantic.motion.gsapEasing.bounceIn",
+        "semantic.motion.gsapEasing.bounceMove"
+      ]
+    },
+
+    "refObject": {
+      "type": "object",
+      "description": "A reference to a token value via dot-path (primitives or semantic)",
+      "properties": {
+        "$ref": { "$ref": "#/definitions/refPath" }
+      },
+      "required": ["$ref"],
+      "additionalProperties": false
+    },
+
+    "fluidRange": {
+      "type": "object",
+      "description": "A fluid clamp range with min/max rem values",
+      "properties": {
+        "min": { "type": "number", "minimum": 0 },
+        "max": { "type": "number", "minimum": 0 }
+      },
+      "required": ["min", "max"],
+      "additionalProperties": false
+    },
+
+    "fluidOrFixed": {
+      "description": "Either a fixed number or a { min, max } fluid range",
+      "oneOf": [
+        { "type": "number", "minimum": 0 },
+        { "$ref": "#/definitions/fluidRange" }
+      ]
+    },
+
+    "hexColor": {
+      "type": "string",
+      "format": "color",
+      "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$",
+      "description": "Hex color value (#RRGGBB or #RRGGBBAA)"
+    },
+
+    "cssLength": {
+      "type": "string",
+      "pattern": "^-?\\d+(\\.\\d+)?(px|rem|em|vh|vw|%)$",
+      "description": "CSS length value"
+    },
+
+    "cssPx": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d+)?px$",
+      "description": "CSS pixel value"
+    },
+
+    "cssDuration": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d+)?s$",
+      "description": "CSS duration in seconds"
+    },
+
+    "cssEasing": {
+      "type": "string",
+      "pattern": "^cubic-bezier\\(",
+      "description": "CSS cubic-bezier easing function"
+    },
+
+    "cssShadow": {
+      "type": "string",
+      "pattern": "^\\d+",
+      "description": "CSS box-shadow value"
+    },
+
+    "fontWeight": {
+      "type": "number",
+      "minimum": 100,
+      "maximum": 900,
+      "multipleOf": 100,
+      "description": "CSS font-weight (100-900, multiples of 100)"
+    },
+
+    "primitives": {
+      "type": "object",
+      "description": "Raw design primitive values",
+      "properties": {
+        "font": {
+          "type": "object",
+          "properties": {
+            "family": {
+              "type": "object",
+              "description": "Font family stacks",
+              "properties": {
+                "serif": { "type": "string", "description": "Serif font stack" },
+                "sans": { "type": "string", "description": "Sans-serif font stack" },
+                "mono": { "type": "string", "description": "Monospace font stack" }
+              },
+              "additionalProperties": false
+            },
+            "weight": {
+              "type": "object",
+              "description": "Font weight values (100-900)",
+              "properties": {
+                "regular":    { "$ref": "#/definitions/fontWeight" },
+                "semibold":   { "$ref": "#/definitions/fontWeight" }
+              },
+              "additionalProperties": false
+            },
+            "scale": {
+              "type": "object",
+              "description": "Type scale multipliers (fluid or fixed)",
+              "properties": {
+                "1x": { "$ref": "#/definitions/fluidOrFixed" },
+                "2x": { "$ref": "#/definitions/fluidOrFixed" },
+                "3x": { "$ref": "#/definitions/fluidOrFixed" },
+                "4x": { "$ref": "#/definitions/fluidOrFixed" },
+                "5x": { "$ref": "#/definitions/fluidOrFixed" },
+                "6x": { "$ref": "#/definitions/fluidOrFixed" },
+                "7x": { "$ref": "#/definitions/fluidOrFixed" }
+              },
+              "additionalProperties": false
+            },
+            "lineHeight": {
+              "type": "object",
+              "description": "Line height multipliers",
+              "properties": {
+                "tight":  { "type": "number", "minimum": 0.5, "maximum": 3 },
+                "normal": { "type": "number", "minimum": 0.5, "maximum": 3 }
+              },
+              "additionalProperties": false
+            },
+            "tracking": {
+              "type": "object",
+              "description": "Letter-spacing in em units",
+              "properties": {
+                "tight":   { "type": "number", "minimum": -0.1, "maximum": 0.1 },
+                "normal":  { "type": "number", "minimum": -0.1, "maximum": 0.1 },
+                "wide":    { "type": "number", "minimum": -0.1, "maximum": 0.1 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "color": {
+          "type": "object",
+          "description": "Color primitives",
+          "properties": {
+            "neutral": {
+              "type": "object",
+              "description": "Neutral grayscale palette (hex)",
+              "properties": {
+                "900": { "$ref": "#/definitions/hexColor" },
+                "700": { "$ref": "#/definitions/hexColor" },
+                "500": { "$ref": "#/definitions/hexColor" },
+                "100": { "$ref": "#/definitions/hexColor" },
+                "50":  { "$ref": "#/definitions/hexColor" }
+              },
+              "additionalProperties": false
+            },
+            "alpha": {
+              "type": "object",
+              "description": "Semi-transparent black overlays (rgba)",
+              "properties": {
+                "black8":  { "$ref": "#/definitions/hexColor" },
+                "black30": { "$ref": "#/definitions/hexColor" }
+              },
+              "additionalProperties": false
+            },
+            "cmy": {
+              "type": "object",
+              "description": "Pure CMY base colors (no alpha) — single source for all aberration effects",
+              "properties": {
+                "cyan":    { "$ref": "#/definitions/hexColor" },
+                "magenta": { "$ref": "#/definitions/hexColor" },
+                "yellow":  { "$ref": "#/definitions/hexColor" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "spacing": {
+          "type": "object",
+          "description": "Spacing scale in rem (fluid or fixed)",
+          "properties": {
+            "1":  { "$ref": "#/definitions/fluidOrFixed" },
+            "2":  { "$ref": "#/definitions/fluidOrFixed" },
+            "3":  { "$ref": "#/definitions/fluidOrFixed" },
+            "4":  { "$ref": "#/definitions/fluidOrFixed" },
+            "6":  { "$ref": "#/definitions/fluidOrFixed" },
+            "8":  { "$ref": "#/definitions/fluidOrFixed" },
+            "10": { "$ref": "#/definitions/fluidOrFixed" },
+            "12": { "$ref": "#/definitions/fluidOrFixed" }
+          },
+          "additionalProperties": false
+        },
+        "inlineSpacing": {
+          "type": "object",
+          "description": "Inline spacing values in em units",
+          "properties": {
+            "1x": { "type": "string", "pattern": "^\\d+(\\.\\d+)?em$" },
+            "2x": { "type": "string", "pattern": "^\\d+(\\.\\d+)?em$" }
+          },
+          "additionalProperties": false
+        },
+        "radii": {
+          "type": "object",
+          "description": "Border radius values",
+          "properties": {
+            "1x":   { "$ref": "#/definitions/cssPx" },
+            "2x":   { "$ref": "#/definitions/cssPx" },
+            "3x":   { "$ref": "#/definitions/cssPx" },
+            "pill":  { "$ref": "#/definitions/cssPx" }
+          },
+          "additionalProperties": false
+        },
+        "border": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "object",
+              "description": "Border width values in px",
+              "properties": {
+                "1": { "$ref": "#/definitions/cssPx" },
+                "2": { "$ref": "#/definitions/cssPx" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "shadow": {
+          "type": "object",
+          "description": "Box shadow elevation levels",
+          "properties": {
+            "3": { "$ref": "#/definitions/cssShadow" }
+          },
+          "additionalProperties": false
+        },
+        "motion": {
+          "type": "object",
+          "description": "CSS transition timing",
+          "properties": {
+            "duration": {
+              "type": "object",
+              "description": "Transition durations in seconds",
+              "properties": {
+                "fast": { "$ref": "#/definitions/cssDuration" },
+                "1x":   { "$ref": "#/definitions/cssDuration" }
+              },
+              "additionalProperties": false
+            },
+            "gsapEasing": {
+              "type": "object",
+              "description": "GSAP easing function names for animation config",
+              "properties": {
+                "enter":      { "type": "string", "description": "Default entrance/deceleration ease" },
+                "bounce":     { "type": "string", "description": "Bouncy overshoot ease (expand)" },
+                "bounceIn":   { "type": "string", "description": "Bouncy anticipation ease (retract)" },
+                "bounceMove": { "type": "string", "description": "Bouncy symmetric ease (settle)" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "breakpoint": {
+          "type": "object",
+          "description": "Responsive breakpoints in px",
+          "properties": {
+            "1x": { "type": "number", "minimum": 0, "description": "Small breakpoint" },
+            "2x": { "type": "number", "minimum": 0, "description": "Medium breakpoint" },
+            "3x": { "type": "number", "minimum": 0, "description": "Large breakpoint" }
+          },
+          "additionalProperties": false
+        },
+        "zIndex": {
+          "type": "object",
+          "description": "Z-index stacking layers",
+          "properties": {
+            "1x":       { "type": "integer", "minimum": 0 },
+            "overlay":  { "type": "integer", "minimum": 0 },
+            "modal":    { "type": "integer", "minimum": 0 },
+            "toast":    { "type": "integer", "minimum": 0 },
+            "debug":    { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "sizing": {
+          "type": "object",
+          "description": "Fixed sizing values for UI elements",
+          "properties": {
+            "navHeight":        { "type": "string", "description": "Navigation bar height" },
+            "modalMaxWidth":    { "type": "string", "description": "Modal maximum width" },
+            "modalMaxHeight":   { "type": "string", "description": "Modal maximum height" },
+            "scrollbarWidth":   { "$ref": "#/definitions/cssPx" },
+            "sectionRuleMark":  { "type": "string", "description": "Crosshair mark font size" },
+            "wordmark":         { "type": "string", "description": "Wordmark size (fluid clamp)" },
+            "wordmarkMobile":   { "type": "string", "description": "Wordmark mobile size (fluid clamp)" },
+            "touchTarget":      { "$ref": "#/definitions/cssPx", "description": "Minimum touch target (44px)" },
+            "navToggleBarWidth":  { "$ref": "#/definitions/cssPx" },
+            "navToggleBarHeight": { "type": "string", "description": "Nav toggle bar height" },
+            "navToggleGap":       { "$ref": "#/definitions/cssPx" }
+          },
+          "additionalProperties": false
+        },
+        "blur": {
+          "type": "object",
+          "description": "Blur radius values",
+          "properties": {
+            "1x": { "$ref": "#/definitions/cssPx" }
+          },
+          "additionalProperties": false
+        },
+        "opacity": {
+          "type": "object",
+          "description": "Opacity values (0-1)",
+          "properties": {
+            "30": { "type": "number", "minimum": 0, "maximum": 1 },
+            "50": { "type": "number", "minimum": 0, "maximum": 1 },
+            "60": { "type": "number", "minimum": 0, "maximum": 1 },
+            "80": { "type": "number", "minimum": 0, "maximum": 1 }
+          },
+          "additionalProperties": false
+        },
+        "interaction": {
+          "type": "object",
+          "description": "Hover/interaction parameters",
+          "properties": {
+            "lift":        { "$ref": "#/definitions/cssLength", "description": "Hover lift translateY" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "semantic": {
+      "type": "object",
+      "description": "Semantic tokens mapped to primitives via $ref",
+      "properties": {
+        "color": {
+          "type": "object",
+          "description": "Semantic color assignments",
+          "properties": {
+            "text": {
+              "type": "object",
+              "properties": {
+                "primary":   { "$ref": "#/definitions/refObject" },
+                "secondary": { "$ref": "#/definitions/refObject" }
+              },
+              "additionalProperties": false
+            },
+            "bg": {
+              "type": "object",
+              "properties": {
+                "primary": { "$ref": "#/definitions/refObject" },
+                "alt":     { "$ref": "#/definitions/refObject" }
+              },
+              "additionalProperties": false
+            },
+            "accent":      { "$ref": "#/definitions/refObject" },
+            "cmy": {
+              "type": "object",
+              "description": "Semantic CMY color assignments for aberration and effects",
+              "properties": {
+                "cyan":    { "$ref": "#/definitions/refObject" },
+                "magenta": { "$ref": "#/definitions/refObject" },
+                "yellow":  { "$ref": "#/definitions/refObject" }
+              },
+              "additionalProperties": false
+            },
+            "border":      { "$ref": "#/definitions/refObject" },
+            "backdrop":    { "$ref": "#/definitions/refObject" }
+          },
+          "additionalProperties": false
+        },
+        "focus": {
+          "type": "object",
+          "description": "Focus ring styling",
+          "properties": {
+            "ring": {
+              "type": "object",
+              "properties": {
+                "width":  { "$ref": "#/definitions/refObject" },
+                "color":  { "$ref": "#/definitions/refObject" },
+                "offset": { "$ref": "#/definitions/refObject" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "layer": {
+          "type": "object",
+          "description": "Z-index layer assignments",
+          "properties": {
+            "base":     { "$ref": "#/definitions/refObject" },
+            "nav":      { "$ref": "#/definitions/refObject" },
+            "modal":    { "$ref": "#/definitions/refObject" },
+            "skipLink": { "$ref": "#/definitions/refObject" },
+            "debug":    { "$ref": "#/definitions/refObject" }
+          },
+          "additionalProperties": false
+        },
+        "layout": {
+          "type": "object",
+          "description": "Page layout spacing",
+          "properties": {
+            "pageMargin":     { "$ref": "#/definitions/refObject" },
+            "contentInset":   { "$ref": "#/definitions/refObject" },
+            "gridGutter":     { "$ref": "#/definitions/refObject" },
+            "sectionPadding": { "$ref": "#/definitions/refObject" },
+            "navHeight":      { "$ref": "#/definitions/refObject" }
+          },
+          "additionalProperties": false
+        },
+        "modal": {
+          "type": "object",
+          "description": "Modal dialog sizing",
+          "properties": {
+            "maxWidth":     { "$ref": "#/definitions/refObject" },
+            "maxHeight":    { "$ref": "#/definitions/refObject" },
+            "backdropBlur": { "$ref": "#/definitions/refObject" },
+            "shadow":       { "$ref": "#/definitions/refObject" }
+          },
+          "additionalProperties": false
+        },
+        "scrollbar": {
+          "type": "object",
+          "description": "Custom scrollbar styling",
+          "properties": {
+            "width": { "$ref": "#/definitions/refObject" }
+          },
+          "additionalProperties": false
+        },
+        "motion": {
+          "type": "object",
+          "description": "Semantic motion tokens for CSS transitions and GSAP animations",
+          "properties": {
+            "duration": {
+              "type": "object",
+              "properties": {
+                "instant": { "$ref": "#/definitions/refObject" },
+                "default": { "$ref": "#/definitions/refObject" }
+              },
+              "additionalProperties": false
+            },
+            "gsapEasing": {
+              "type": "object",
+              "description": "GSAP easing functions for animations",
+              "properties": {
+                "enter":      { "$ref": "#/definitions/refObject" },
+                "bounce":     { "$ref": "#/definitions/refObject" },
+                "bounceIn":   { "$ref": "#/definitions/refObject" },
+                "bounceMove": { "$ref": "#/definitions/refObject" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "typographyRole": {
+      "type": "object",
+      "description": "A typography role composing font primitives",
+      "properties": {
+        "family":     { "$ref": "#/definitions/refObject" },
+        "weight":     { "$ref": "#/definitions/refObject" },
+        "scale":      { "$ref": "#/definitions/refObject" },
+        "lineHeight": { "$ref": "#/definitions/refObject" },
+        "tracking":   { "$ref": "#/definitions/refObject" }
+      },
+      "required": ["family", "weight", "scale", "lineHeight", "tracking"],
+      "additionalProperties": false
+    },
+
+    "roles": {
+      "type": "object",
+      "description": "Named typography roles (prose-*, ui-*)",
+      "properties": {
+        "prose-title-lg":    { "$ref": "#/definitions/typographyRole" },
+        "prose-heading-lg":  { "$ref": "#/definitions/typographyRole" },
+        "prose-subhead-lg":  { "$ref": "#/definitions/typographyRole" },
+        "prose-body":        { "$ref": "#/definitions/typographyRole" },
+        "ui-nav-item-lg":    { "$ref": "#/definitions/typographyRole" },
+        "ui-nav-section":    { "$ref": "#/definitions/typographyRole" }
+      },
+      "additionalProperties": false
+    },
+
+    "hover": {
+      "type": "object",
+      "description": "Hover interaction tokens",
+      "properties": {
+        "lift":                 { "$ref": "#/definitions/refObject" },
+        "underlineHeight":      { "$ref": "#/definitions/refObject" },
+        "underlineHoverHeight": { "$ref": "#/definitions/refObject" },
+        "underlineOpacity":     { "$ref": "#/definitions/refObject" },
+        "underlineHoverOpacity": { "$ref": "#/definitions/refObject" }
+      },
+      "additionalProperties": false
+    },
+
+    "prose": {
+      "type": "object",
+      "description": "Prose content layout and styling tokens",
+      "properties": {
+        "code": {
+          "type": "object",
+          "description": "Code block styling",
+          "properties": {
+            "bg":            { "$ref": "#/definitions/refObject" },
+            "paddingInline": { "$ref": "#/definitions/refObject" },
+            "paddingBlock":  { "$ref": "#/definitions/refObject" },
+            "borderRadius":  { "$ref": "#/definitions/refObject" },
+            "blockPadding":  { "$ref": "#/definitions/refObject" },
+            "blockRadius":   { "$ref": "#/definitions/refObject" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

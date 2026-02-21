@@ -1,5 +1,13 @@
+type AboutWindow = Window & {
+  __aboutAfterSwapHandler?: () => void
+}
+
+type AboutModalElement = HTMLElement & {
+  __aboutKeydownHandler?: (e: KeyboardEvent) => void
+}
+
 function initAboutModal() {
-  const modal = document.getElementById('about-modal') as HTMLElement | null
+  const modal = document.getElementById('about-modal') as AboutModalElement | null
   if (!modal) return
 
   const content = modal.querySelector('.about-content') as HTMLElement | null
@@ -27,11 +35,26 @@ function initAboutModal() {
     previousFocus?.focus()
   }
 
-  triggers.forEach(t => t.addEventListener('click', open))
-  closers.forEach(c => c.addEventListener('click', close))
+  triggers.forEach(t => {
+    const trigger = t as HTMLElement
+    if (trigger.dataset.aboutTriggerBound === 'true') return
+    trigger.dataset.aboutTriggerBound = 'true'
+    trigger.addEventListener('click', open)
+  })
+
+  closers.forEach(c => {
+    const closer = c as HTMLElement
+    if (closer.dataset.aboutCloserBound === 'true') return
+    closer.dataset.aboutCloserBound = 'true'
+    closer.addEventListener('click', close)
+  })
 
   // Escape key + focus trap
-  modal.addEventListener('keydown', (e: KeyboardEvent) => {
+  if (modal.__aboutKeydownHandler) {
+    modal.removeEventListener('keydown', modal.__aboutKeydownHandler)
+  }
+
+  const handleKeydown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       close()
       return
@@ -52,8 +75,17 @@ function initAboutModal() {
         first?.focus()
       }
     }
-  })
+  }
+
+  modal.__aboutKeydownHandler = handleKeydown
+  modal.addEventListener('keydown', handleKeydown)
 }
 
+const aboutWindow = window as AboutWindow
+if (aboutWindow.__aboutAfterSwapHandler) {
+  document.removeEventListener('astro:after-swap', aboutWindow.__aboutAfterSwapHandler)
+}
+aboutWindow.__aboutAfterSwapHandler = initAboutModal
+
 initAboutModal()
-document.addEventListener('astro:after-swap', initAboutModal)
+document.addEventListener('astro:after-swap', aboutWindow.__aboutAfterSwapHandler)

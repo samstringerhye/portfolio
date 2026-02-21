@@ -1,0 +1,27 @@
+[      91ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1102025ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1102048ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4322/node_modules/.vite/deps/gsap_SplitText.js?v=65107fb0:298
+[ 1102060ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4322/node_modules/.vite/deps/gsap_SplitText.js?v=65107fb0:298
+[ 1132870ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1147306ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1155444ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1243961ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1247582ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1251473ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1251515ms] ReferenceError: fitAllText is not defined
+    at initBio (http://localhost:4322/src/components/BioSection.astro?astro&type=script&index=0&lang.ts:73:3)
+    at http://localhost:4322/src/components/BioSection.astro?astro&type=script&index=0&lang.ts:76:1
+[ 1262039ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1264567ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1275356ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1285103ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1300848ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1311526ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1323111ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1341719ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1443092ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1450915ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1540038ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1644189ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1649715ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[ 1726671ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4322/fonts/trial/PPNeueMontreal-SemiBold.otf:0

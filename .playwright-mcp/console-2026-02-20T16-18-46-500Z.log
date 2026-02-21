@@ -1,0 +1,5 @@
+[     131ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[  111425ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ :30
+[  204743ms] [WARNING] WARNING: Multiple instances of Three.js being imported. @ http://localhost:4321/node_modules/.vite/deps/chunk-BQJMB3HC.js?v=76740220:31166
+[  205295ms] [ERROR] %cAstro background: linear-gradient(66.77deg, #D83333 0%, #F041FF 100%); color: white; padding-inline: 4px; border-radius: 2px; font-family: monospace; Error while running audit's match function: TypeError: Failed to fetch @ http://localhost:4321/node_modules/astro/dist/runtime/client/dev-toolbar/settings.js?v=ecf0e246:22
+[  205380ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0

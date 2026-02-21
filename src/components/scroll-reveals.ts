@@ -1,47 +1,76 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import tokens from '../data/tokens.json'
+import { SplitText } from 'gsap/SplitText'
+import { animations } from '../data/tokens'
+import {
+  createCmyAutoSplitReveal,
+  createCmyAutoSplitRevealGrouped,
+  type CmyAutoSplitHandle,
+} from './cmy-animate'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, SplitText)
 
-const cfg = tokens.animations.scrollReveal
+const cfg = animations.textReveal
 const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-const D1 = cfg.aberration, D2 = D1 * 1.5, D3 = D1 * 2
-const SHADOW_FROM = `0 ${D1}px rgba(0,255,255,${cfg.aberrationOpacity}), 0 ${D2}px rgba(255,0,255,${cfg.aberrationOpacity}), 0 ${D3}px rgba(255,255,0,${cfg.aberrationOpacity})`
-const SHADOW_TO = '0 0px transparent, 0 0px transparent, 0 0px transparent'
+let revealHandles: CmyAutoSplitHandle[] = []
 
-export function initScrollReveals() {
-  const elements = document.querySelectorAll<HTMLElement>('[data-reveal]')
-  if (!elements.length) return
-
-  // Kill existing triggers to avoid duplicates on View Transition nav
+export async function initScrollReveals() {
+  // Kill existing reveal triggers and revert splits
   ScrollTrigger.getAll().forEach(st => {
     if ((st.vars as any)?._isReveal) st.kill()
   })
+  revealHandles.forEach(h => h.kill())
+  revealHandles = []
 
-  elements.forEach(el => {
-    if (prefersReduced()) {
+  if (prefersReduced()) {
+    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
       gsap.set(el, { opacity: 1, y: 0, filter: 'none', textShadow: 'none' })
-      return
-    }
-
-    gsap.set(el, {
-      opacity: 0, y: cfg.y, filter: `blur(${cfg.blur}px)`, textShadow: SHADOW_FROM,
-      visibility: 'hidden',
     })
+    return
+  }
 
-    gsap.to(el, {
-      opacity: 1, y: 0, filter: 'blur(0px)',
-      textShadow: SHADOW_TO,
-      visibility: 'visible',
-      duration: cfg.duration, ease: cfg.ease,
+  await document.fonts.ready
+
+  // Track grouped elements so we don't double-animate them
+  const grouped = new Set<HTMLElement>()
+
+  // ── Grouped reveals: [data-reveal-group] containers ──
+  document.querySelectorAll<HTMLElement>('[data-reveal-group]').forEach(group => {
+    const children = Array.from(group.querySelectorAll<HTMLElement>('[data-reveal]'))
+    if (!children.length) return
+
+    children.forEach(el => grouped.add(el))
+
+    const parentTl = gsap.timeline({
       scrollTrigger: {
-        trigger: el,
-        start: cfg.triggerStart,
+        trigger: group,
+        start: cfg.scrollStart,
         toggleActions: 'play none none none',
         _isReveal: true,
       } as any,
     })
+
+    children.forEach((el, idx) => {
+      revealHandles.push(
+        createCmyAutoSplitRevealGrouped(el, cfg, parentTl, idx * cfg.blockStagger),
+      )
+    })
+  })
+
+  // ── Standalone reveals: [data-reveal] not inside a group ──
+  document.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
+    if (grouped.has(el)) return
+
+    revealHandles.push(
+      createCmyAutoSplitReveal(el, cfg, {
+        scrollTrigger: {
+          trigger: el,
+          start: cfg.scrollStart,
+          toggleActions: 'play none none none',
+          _isReveal: true,
+        } as any,
+      }),
+    )
   })
 }

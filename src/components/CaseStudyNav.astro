@@ -14,15 +14,15 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     <div class="cs-nav-inner">
       {prevSlug ? (
         <a href={`/work/${prevSlug}`} class="cs-nav-link cs-nav-prev" data-hover="spectral-link">
-          <span class="cs-nav-label typo-caption">Previous</span>
-          <span class="cs-nav-title typo-body">{prevTitle}</span>
+          <span class="cs-nav-label typo-ui-nav-section">Previous</span>
+          <span class="cs-nav-title typo-ui-nav-item-lg">{prevTitle}</span>
         </a>
       ) : <div />}
 
       {nextSlug ? (
         <a href={`/work/${nextSlug}`} class="cs-nav-link cs-nav-next" data-hover="spectral-link">
-          <span class="cs-nav-label typo-caption">Next</span>
-          <span class="cs-nav-title typo-body">{nextTitle}</span>
+          <span class="cs-nav-label typo-ui-nav-section">Next</span>
+          <span class="cs-nav-title typo-ui-nav-item-lg">{nextTitle}</span>
         </a>
       ) : <div />}
     </div>
@@ -38,8 +38,6 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   .cs-nav-inner {
     display: flex;
     justify-content: space-between;
-    max-width: var(--container-content);
-    margin: 0 auto;
   }
 
   .cs-nav-link {

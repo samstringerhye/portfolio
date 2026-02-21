@@ -1,0 +1,21 @@
+[     337ms] TypeError: jsxDEV is not a function
+    at HeroCanvas (http://localhost:4321/src/components/HeroCanvas.jsx:267:26)
+    at renderWithHooks (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:3521:25)
+    at updateFunctionComponent (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:5152:19)
+    at beginWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:5763:18)
+    at performUnitOfWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:8568:18)
+    at workLoopSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:8466:41)
+    at renderRootSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:8450:11)
+    at performWorkOnRoot (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:8125:44)
+    at performWorkOnRootViaSchedulerTask (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:9129:7)
+    at MessagePort.performWorkUntilDeadline (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=696d4781:123:48)
+[  127246ms] [ERROR] WebSocket connection to 'ws://localhost:4321/?token=NXB0ji3DNLJ2' failed:  @ http://localhost:4321/@vite/client:1533
+[  127525ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[  128526ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[  129529ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[  130532ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[  131538ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[  132542ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[  133551ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[  134570ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[  135586ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766

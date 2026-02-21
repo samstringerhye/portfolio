@@ -1,0 +1,3 @@
+[      49ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=39775b2c:298
+[      63ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/fonts/trial/PPNeueMontreal-SemiBold.otf:0
+[      75ms] [WARNING] SplitText called before fonts loaded @ http://localhost:4321/node_modules/.vite/deps/gsap_SplitText.js?v=39775b2c:298

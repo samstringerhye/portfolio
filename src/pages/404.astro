@@ -4,10 +4,10 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
 <BaseLayout title="404 — Page Not Found" hideFooter={true}>
   <section class="not-found">
-    <p class="typo-caption" style="color: var(--color-text-secondary);">404</p>
-    <h1 class="typo-headline">Page not found</h1>
-    <p class="typo-body">The page you're looking for doesn't exist or has been moved.</p>
-    <a href="/" class="not-found-link typo-body" data-hover="spectral-button">Back to home</a>
+    <p class="typo-ui-nav-section" style="color: var(--color-text-secondary);">404</p>
+    <h1 class="typo-prose-title-lg">Page not found</h1>
+    <p class="typo-prose-body">The page you're looking for doesn't exist or has been moved.</p>
+    <a href="/" class="not-found-link typo-prose-body">Back to home</a>
   </section>
 </BaseLayout>
 
@@ -19,8 +19,6 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     justify-content: center;
     text-align: center;
     min-height: calc(100vh - var(--nav-height));
-    max-width: var(--container-content);
-    margin: 0 auto;
     padding: var(--space-4);
     gap: var(--space-2);
   }
@@ -29,15 +27,11 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     margin-top: var(--space-3);
     padding: var(--space-1) var(--space-4);
     border: var(--border-light);
-    border-radius: var(--radius-md);
-    transition: box-shadow var(--transition-base) ease, transform var(--transition-fast) ease;
+    border-radius: var(--radius-2x);
+    transition: box-shadow var(--transition-1x) ease, transform var(--transition-fast) ease;
   }
 
   .not-found-link:hover {
-    box-shadow:
-      0 2px 16px -2px var(--glow-cyan),
-      0 4px 28px -4px var(--glow-magenta),
-      0 8px 40px -8px var(--glow-yellow);
-    transform: translateY(-1px);
+    transform: translateY(var(--hover-lift));
   }
 </style>

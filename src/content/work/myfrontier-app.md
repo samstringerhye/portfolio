@@ -19,7 +19,7 @@ The MyFrontier app was overdue for a refresh to improve usability and align with
 
 ## Approach
 
-As a Principal Designer, I contributed across key parts of the redesign. I designed layouts for multiple screens and helped define the visual hierarchy for core UI components including the menu, calendar, and selectors. I also supported the evolution of the design system and overall product vision, and developed motion design patterns to bring consistency and clarity to interactions throughout the app.
+As an Associate Design Director, I contributed across key parts of the redesign. I designed layouts for multiple screens and helped define the visual hierarchy for core UI components including the menu, calendar, and selectors. I also supported the evolution of the design system and overall product vision, and developed motion design patterns to bring consistency and clarity to interactions throughout the app.
 
 ![Frontier app introduction screens](/assets/work/myfrontier-app/frontier-intro.png)
 

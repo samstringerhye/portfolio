@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Home Page Content",
+  "description": "Content and typography role assignments for the home page",
+  "type": "object",
+  "definitions": {
+    "typographyRole": {
+      "type": "string",
+      "description": "A typography role defined in tokens.json roles",
+      "enum": [
+        "prose-title-lg",
+        "prose-title-sm",
+        "prose-heading-lg",
+        "prose-heading-sm",
+        "prose-subhead-lg",
+        "prose-subhead-sm",
+        "prose-body",
+        "prose-mono",
+        "prose-code-block",
+        "prose-blockquote",
+        "prose-list",
+        "ui-button-lg",
+        "ui-button-sm",
+        "ui-nav-item-lg",
+        "ui-nav-item-sm",
+        "ui-nav-section",
+        "ui-nav-badge"
+      ]
+    },
+    "htmlTag": {
+      "type": "string",
+      "description": "HTML element tag for semantic markup",
+      "enum": ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", "div"]
+    },
+    "dateMonth": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}$",
+      "description": "Year-month date (YYYY-MM)"
+    }
+  },
+  "properties": {
+    "$schema": { "type": "string" },
+    "hero": {
+      "type": "object",
+      "description": "Hero section content",
+      "properties": {
+        "headline":     { "type": "string", "minLength": 1, "description": "Hero headline text" },
+        "headlineTag":  { "$ref": "#/definitions/htmlTag" },
+        "headlineRole": { "$ref": "#/definitions/typographyRole" }
+      },
+      "required": ["headline"],
+      "additionalProperties": false
+    },
+    "bio": {
+      "type": "object",
+      "description": "Bio/about section content",
+      "properties": {
+        "headline":     { "type": "string", "minLength": 1, "description": "Bio section heading" },
+        "headlineTag":  { "$ref": "#/definitions/htmlTag" },
+        "headlineRole": { "$ref": "#/definitions/typographyRole" },
+        "body":         { "type": "string", "minLength": 1, "description": "Bio body text" },
+        "bodyTag":      { "$ref": "#/definitions/htmlTag" },
+        "bodyRole":     { "$ref": "#/definitions/typographyRole" }
+      },
+      "required": ["headline", "body"],
+      "additionalProperties": false
+    },
+    "work": {
+      "type": "object",
+      "description": "Selected work section content",
+      "properties": {
+        "headline":      { "type": "string", "minLength": 1, "description": "Work section heading" },
+        "headingTag":    { "$ref": "#/definitions/htmlTag" },
+        "headingRole":   { "$ref": "#/definitions/typographyRole" },
+        "cardTitleTag":  { "$ref": "#/definitions/htmlTag" },
+        "cardTitleRole": { "$ref": "#/definitions/typographyRole" }
+      },
+      "required": ["headline"],
+      "additionalProperties": false
+    },
+    "experience": {
+      "type": "object",
+      "description": "Experience/timeline section content",
+      "properties": {
+        "headline":      { "type": "string", "minLength": 1, "description": "Experience section heading" },
+        "headingTag":    { "$ref": "#/definitions/htmlTag" },
+        "headingRole":   { "$ref": "#/definitions/typographyRole" },
+        "jobTitleTag":   { "$ref": "#/definitions/htmlTag" },
+        "jobTitleRole":  { "$ref": "#/definitions/typographyRole" },
+        "companyTag":    { "$ref": "#/definitions/htmlTag" },
+        "companyRole":   { "$ref": "#/definitions/typographyRole" },
+        "highlightTag":  { "$ref": "#/definitions/htmlTag" },
+        "highlightRole": { "$ref": "#/definitions/typographyRole" },
+        "jobs": {
+          "type": "array",
+          "description": "Work experience entries in reverse chronological order",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "title":      { "type": "string", "minLength": 1, "description": "Job title" },
+              "company":    { "type": "string", "minLength": 1, "description": "Company name" },
+              "location":   { "type": "string", "minLength": 1, "description": "Office location or Remote" },
+              "startDate":  { "$ref": "#/definitions/dateMonth" },
+              "endDate":    { "oneOf": [{ "$ref": "#/definitions/dateMonth" }, { "type": "null" }], "description": "End date or null for current role" },
+              "highlights": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "description": "Key accomplishments" }
+            },
+            "required": ["title", "company", "location", "startDate", "highlights"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["headline", "jobs"],
+      "additionalProperties": false
+    },
+    "interests": {
+      "type": "object",
+      "description": "Scrolling interests marquee content",
+      "properties": {
+        "textRole": { "$ref": "#/definitions/typographyRole" },
+        "items":    { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true, "description": "Interest/identity labels" }
+      },
+      "required": ["items"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["hero", "bio", "work", "experience", "interests"],
+  "additionalProperties": false
+}
