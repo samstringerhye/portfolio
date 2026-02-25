@@ -6,6 +6,9 @@ gsap.registerPlugin(SplitText)
 
 type TextRevealConfig = typeof animations.textReveal
 
+// Cache CMY color strings — pure function of constant token values, computed once
+const [cRgba, mRgba, yRgba] = cmyRgba(1)
+
 /**
  * Build a text-shadow string from CMY channel progress values.
  * offset = distance each channel shadow travels (px)
@@ -18,7 +21,6 @@ function buildCmyShadow(
   opacity: number,
   progress: { cy: number; mg: number; yw: number },
 ): string {
-  const [cRgba, mRgba, yRgba] = cmyRgba(1)
   const cOff = offset * progress.cy
   const mOff = offset * progress.mg
   const yOff = offset * progress.yw

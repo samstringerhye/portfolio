@@ -135,13 +135,13 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     justify-content: center;
     border-left: var(--border-width-1) solid var(--color-text-primary);
     color: var(--color-text-primary);
-    transition: background-color 250ms ease;
+    transition: background-color var(--transition-medium) ease;
   }
 
   .lottie-save {
     width: 45%;
     height: 45%;
-    transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1); /* leave: quick spring with overshoot */
+    transition: transform var(--transition-medium) cubic-bezier(0.34, 1.56, 0.64, 1); /* leave: quick spring with overshoot */
   }
 
   .experience-download:hover .lottie-save {
@@ -167,7 +167,6 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     border-right: var(--border-width-1) solid var(--color-text-primary);
     min-width: 0;
     overflow: hidden;
-    will-change: flex-grow;
   }
 
   .timeline-card-left {
@@ -235,7 +234,6 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     border-right: var(--border-width-1) solid var(--color-text-primary);
     min-width: 0;
     overflow: hidden;
-    will-change: flex-grow;
   }
 
   .timeline-year-group-wipe {

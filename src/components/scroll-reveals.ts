@@ -5,7 +5,6 @@ import { animations } from '../data/tokens'
 import {
   createCmyAutoSplitReveal,
   createCmyAutoSplitRevealGrouped,
-  type CmyAutoSplitHandle,
 } from './cmy-animate'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
@@ -13,15 +12,13 @@ gsap.registerPlugin(ScrollTrigger, SplitText)
 const cfg = animations.textReveal
 const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-let revealHandles: CmyAutoSplitHandle[] = []
+let revealCtx: gsap.Context | null = null
 
 export async function initScrollReveals() {
-  // Kill existing reveal triggers and revert splits
-  ScrollTrigger.getAll().forEach(st => {
-    if ((st.vars as any)?._isReveal) st.kill()
-  })
-  revealHandles.forEach(h => h.kill())
-  revealHandles = []
+  // Revert all tweens, timelines, ScrollTriggers, and SplitText splits
+  // that were created in the previous call's context.
+  revealCtx?.revert()
+  revealCtx = null
 
   if (prefersReduced()) {
     document.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
@@ -32,45 +29,41 @@ export async function initScrollReveals() {
 
   await document.fonts.ready
 
-  // Track grouped elements so we don't double-animate them
-  const grouped = new Set<HTMLElement>()
+  revealCtx = gsap.context(() => {
+    // Track grouped elements so we don't double-animate them
+    const grouped = new Set<HTMLElement>()
 
-  // ── Grouped reveals: [data-reveal-group] containers ──
-  document.querySelectorAll<HTMLElement>('[data-reveal-group]').forEach(group => {
-    const children = Array.from(group.querySelectorAll<HTMLElement>('[data-reveal]'))
-    if (!children.length) return
+    // ── Grouped reveals: [data-reveal-group] containers ──
+    document.querySelectorAll<HTMLElement>('[data-reveal-group]').forEach(group => {
+      const children = Array.from(group.querySelectorAll<HTMLElement>('[data-reveal]'))
+      if (!children.length) return
 
-    children.forEach(el => grouped.add(el))
+      children.forEach(el => grouped.add(el))
 
-    const parentTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: group,
-        start: cfg.scrollStart,
-        toggleActions: 'play none none none',
-        _isReveal: true,
-      } as any,
+      const parentTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: group,
+          start: cfg.scrollStart,
+          toggleActions: 'play none none none',
+        },
+      })
+
+      children.forEach((el, idx) => {
+        createCmyAutoSplitRevealGrouped(el, cfg, parentTl, idx * cfg.blockStagger)
+      })
     })
 
-    children.forEach((el, idx) => {
-      revealHandles.push(
-        createCmyAutoSplitRevealGrouped(el, cfg, parentTl, idx * cfg.blockStagger),
-      )
-    })
-  })
+    // ── Standalone reveals: [data-reveal] not inside a group ──
+    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
+      if (grouped.has(el)) return
 
-  // ── Standalone reveals: [data-reveal] not inside a group ──
-  document.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
-    if (grouped.has(el)) return
-
-    revealHandles.push(
       createCmyAutoSplitReveal(el, cfg, {
         scrollTrigger: {
           trigger: el,
           start: cfg.scrollStart,
           toggleActions: 'play none none none',
-          _isReveal: true,
-        } as any,
-      }),
-    )
+        },
+      })
+    })
   })
 }

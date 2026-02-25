@@ -83,23 +83,20 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   /* ── Copy blocks: inset padding ── */
-  .case-study-body h1,
-  .case-study-body h2,
-  .case-study-body h3,
-  .case-study-body p,
-  .case-study-body ul,
-  .case-study-body ol,
-  .case-study-body blockquote {
+  /* Standalone elements (sub-section h3s, orphan paragraphs) */
+  .case-study-body > h1,
+  .case-study-body > h2,
+  .case-study-body > h3,
+  .case-study-body > p,
+  .case-study-body > ul,
+  .case-study-body > ol,
+  .case-study-body > blockquote {
     padding: var(--content-inset);
   }
 
-  /* Intro paragraph: prose-subhead-lg role (sans, 3x scale) */
-  .case-study-body > h1 + p {
-    font-family: var(--font-sans);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--text-3x);
-    line-height: var(--line-height-normal);
-    letter-spacing: var(--tracking-normal);
+  /* Prose groups: inset the container, not individual children */
+  .case-study-body .prose-group {
+    padding: var(--content-inset);
   }
 
   /* ── Carousel: inherits bordered frame from > * rule ── */
@@ -108,7 +105,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   /* ── Images: flush to cell edges ── */
-  .case-study-body p:has(> img) {
+  .case-study-body > p:has(> img) {
     padding: 0;
   }
 
@@ -158,18 +155,18 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   /* ── Mobile ── */
-  @media (max-width: 768px) {
-    .case-study-body h1,
-    .case-study-body h2,
-    .case-study-body h3,
-    .case-study-body p,
-    .case-study-body ul,
-    .case-study-body ol,
-    .case-study-body blockquote {
+  @media (--2x) {
+    .case-study-body > h1,
+    .case-study-body > h2,
+    .case-study-body > h3,
+    .case-study-body > p,
+    .case-study-body > ul,
+    .case-study-body > ol,
+    .case-study-body > blockquote {
       padding-inline: var(--content-inset);
     }
 
-    .case-study-body ul {
+    .case-study-body > ul {
       padding-left: var(--content-inset);
     }
 

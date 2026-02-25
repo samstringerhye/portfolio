@@ -302,7 +302,7 @@ export default function HeroCanvas() {
         mesh.instanceMatrix.needsUpdate = true
       })
 
-      composer.render(1 / 60)
+      composer.render()
     }
 
     tick()

@@ -31,7 +31,18 @@ const year = new Date().getFullYear()
 <style>
   .footer {
     margin-top: 0;
-    border-top: var(--border-width-1) solid var(--color-text-primary);
+    position: relative;
+  }
+
+  .footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: var(--border-width-1);
+    background-color: var(--color-text-primary);
   }
 
   .footer-container {
@@ -66,13 +77,13 @@ const year = new Date().getFullYear()
     height: 100%;
     border-left: var(--border-width-1) solid var(--color-text-primary);
     color: var(--color-text-primary);
-    transition: background-color 250ms ease;
+    transition: background-color var(--transition-medium) ease;
   }
 
   .footer-icon-cell svg {
     width: 30%;
     height: 30%;
-    transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform var(--transition-medium) cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .footer-icon-cell:hover svg {

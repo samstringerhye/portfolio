@@ -1,0 +1,25 @@
+---
+---
+<div class="prose-group"><slot /></div>
+
+<style is:global>
+  .prose-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--prose-gap, var(--space-2));
+  }
+
+  /* p sizing based on preceding heading level */
+  .prose-group > h1 + p {
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--prose-lede-size, var(--text-5x));
+  }
+
+  .prose-group > h2 + p {
+    font-size: var(--h2-follow-size, inherit);
+  }
+
+  .prose-group > h3 + p {
+    font-size: var(--h3-follow-size, inherit);
+  }
+</style>

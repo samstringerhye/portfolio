@@ -57,7 +57,8 @@
         "agency",
         "tagline",
         "thumbnail",
-        "heroImage"
+        "heroImage",
+        "heroImageAlt"
       ],
       "additionalProperties": false
     }

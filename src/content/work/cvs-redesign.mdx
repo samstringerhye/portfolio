@@ -6,6 +6,7 @@ role: "Associate Design Director"
 agency: "Razorfish"
 tagline: "Design system foundations for one of the largest pharmacy retailers in the country."
 thumbnail: "../../assets/work/cvs-redesign/cvs-redesign-thumbnail.jpeg"
+heroImageAlt: "CVS Shop website redesign — e-commerce homepage, navigation, and design system components"
 heroImage: "../../assets/work/cvs-redesign/cvs-header-2.jpg"
 featured: true
 sortOrder: 4
@@ -14,23 +15,50 @@ tags: ["Design System", "E-commerce", "Accessibility", "Typography"]
 import HeroImage from '../../components/HeroImage.astro'
 import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
+import ProseGroup from '../../components/ProseGroup.astro'
 import heroSrc from '../../assets/work/cvs-redesign/cvs-header-2.jpg'
 
 <HeroImage src={heroSrc} alt="CVS Shop Website Redesign — project showcase" />
 
 <Meta client="CVS" role="Associate Design Director" agency="Razorfish" year={2023} />
 
+<ProseGroup>
+
 # CVS Shop Website Redesign
 
-CVS.com is a major e-commerce platform serving millions of customers. The shop had grown inconsistent. Visual hierarchy was unclear, navigation was fractured, and the system hadn't kept pace with the brand. The modernization brought clarity back to a platform that had gotten complicated.
+When the system is right, everything downstream gets better. CVS.com is one of the largest pharmacy retailer e-commerce platforms in the US, serving customers who might be filling a prescription, buying skincare, or both in the same session. The shop had accumulated years of inconsistency — unclear hierarchy, fractured navigation, and a visual language that had drifted from the brand. The modernization was about restoring clarity, not reinventing the wheel.
 
-## Approach
+</ProseGroup>
 
-I focused on the foundations: typographic framework, icon system, and reusable components built to scale across templates. When the system is right, everything downstream gets better.
+<ProseGroup>
+
+## The Problem
+
+CVS sits at an unusual intersection: it's both a pharmacy and a general retailer, which means the platform has to serve a wider range of intent than most e-commerce sites. Over time, the shop grew through acquisitions and incremental additions rather than deliberate system thinking. The result was a front-end that felt fractured — type scales that didn't hold up across pages, icons that varied in weight and proportion, and components that had been built independently rather than from shared parts.
+
+Fixing it wasn't a greenfield problem. CVS.com is a live platform with entrenched brand equity and real customer volume. The constraints were real: the brand wasn't up for reinvention, and large-scale disruption to existing templates wasn't viable. What the work called for was a disciplined approach to foundations — define the system clearly, build it rigorously, and give the product teams something they could actually use.
+
+</ProseGroup>
+
+<ProseGroup>
+
+## The Work
+
+I worked from the ground up: typographic framework first, then icons, then components and templates. Starting with typography wasn't arbitrary. On a platform this size, type decisions affect nearly every surface. Getting the scale, weight, and hierarchy right before building components meant the components inherited consistency rather than having to engineer it in later.
+
+The icon system came next because iconography is where visual inconsistency is most visible at a glance. A grid-based construction system ensured every icon held its proportions whether it appeared at 16px or 48px. Using CVS brand red as the primary icon color grounded the system in the existing brand rather than introducing something foreign to it.
+
+The component library was built to be specific enough to be useful and flexible enough to scale. Homepage modules, product page layouts, and category navigation were all scoped to desktop and mobile from the start — not adapted after the fact.
+
+</ProseGroup>
+
+<ProseGroup>
 
 ### Typography & Icons
 
 I designed a custom icon and illustration system for CVS using their brand red. Each icon was built on a grid to keep proportions consistent at any size.
+
+</ProseGroup>
 
 ![Brand visual language — CVS design elements and UI patterns](../../assets/work/cvs-redesign/group-10624.jpg)
 
@@ -42,9 +70,13 @@ I designed a custom icon and illustration system for CVS using their brand red. 
 
 </ImagePair>
 
+<ProseGroup>
+
 ### Components & Templates
 
 The component library covered everything from the homepage to product pages to category navigation. Each piece was built to work across desktop and mobile.
+
+</ProseGroup>
 
 ![CVS.com homepage — desktop and mobile responsive layout](../../assets/work/cvs-redesign/frame-10669.png)
 
@@ -59,3 +91,13 @@ The component library covered everything from the homepage to product pages to c
 ![UI components — pagination, branding elements, and category navigation](../../assets/work/cvs-redesign/frame-10608.png)
 
 </ImagePair>
+
+<ProseGroup>
+
+## What I Learned
+
+This was foundation work, which is not the glamorous part of a redesign. But foundation work is where the most leverage is. When the typographic scale is resolved, product teams stop making ad hoc decisions about which size to use. When the icon system is consistent, no one's spending cycles debating stroke weight. The component library gave teams a shared vocabulary to build from rather than starting from scratch on every new surface.
+
+What the system unlocked was speed downstream. Consistent inputs produce consistent outputs, and that frees up design and engineering capacity for harder problems. If there had been more runway, I would have pushed further into the checkout and pharmacy flows, where the visual debt was heavier and the stakes for usability are higher. But the foundations were right, and that's what makes the rest possible.
+
+</ProseGroup>

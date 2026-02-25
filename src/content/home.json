@@ -9,10 +9,10 @@
     "headline": "The short version.",
     "headlineTag": "h2",
     "headlineRole": "prose-title-sm",
-    "body": "Product designer at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll right past.",
+    "body": "Associate Design Director at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll right past.",
     "bodyTag": "h3",
     "bodyRole": "prose-heading-sm",
-    "contentInset": "lg"
+    "contentInset": "md"
   },
   "work": {
     "headline": "Selected Work",
@@ -20,13 +20,13 @@
     "headingRole": "prose-title-sm",
     "cardTitleTag": "h3",
     "cardTitleRole": "prose-subhead-lg",
-    "contentInset": "sm"
+    "contentInset": "md"
   },
   "experience": {
     "headline": "Experience",
     "headingTag": "h2",
     "headingRole": "prose-title-sm",
-    "contentInset": "sm",
+    "contentInset": "md",
     "jobTitleTag": "h3",
     "jobTitleRole": "prose-body",
     "companyTag": "p",

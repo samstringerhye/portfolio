@@ -6,6 +6,7 @@ role: "Senior Designer"
 agency: "Razorfish"
 tagline: "Design system and GNB for one of the world's most-visited consumer electronics sites."
 thumbnail: "../../assets/work/samsung-redesign/samsung-redesign-carousel.jpeg"
+heroImageAlt: "Samsung.com redesign — global navigation and product pages across desktop and mobile"
 heroImage: "../../assets/work/samsung-redesign/revamp-kv.jpg"
 featured: true
 sortOrder: 3
@@ -14,19 +15,38 @@ tags: ["Design System", "E-commerce", "Global", "Navigation"]
 import HeroImage from '../../components/HeroImage.astro'
 import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
+import ProseGroup from '../../components/ProseGroup.astro'
 import heroSrc from '../../assets/work/samsung-redesign/revamp-kv.jpg'
 
 <HeroImage src={heroSrc} alt="Samsung.com Redesign — project showcase" />
 
 <Meta client="Samsung" role="Senior Designer" agency="Razorfish" year={2023} />
 
+<ProseGroup>
+
 # Samsung.com Redesign
 
-Samsung.com serves hundreds of millions of visitors across dozens of markets. The design system had accumulated debt, and the global navigation wasn't holding up. This engagement focused on building consistency at scale: a tightened design system and a nav architecture that could work everywhere Samsung sells.
+Samsung.com is one of the most-visited consumer electronics sites on the internet. The design system had accumulated debt across years of regional additions, and the global navigation was cracking under the weight of it. This engagement tackled both: tighten the system, then redesign the GNB so it could actually hold across every market Samsung operates in.
 
-## Approach
+</ProseGroup>
 
-As a Senior Designer on a large cross-functional team, I evolved and applied the design system across key site areas, designed page layouts to Samsung's brand standards, and proposed and iterated on GNB updates. The nav had to work across a dozen-plus markets, so there were a lot of rounds.
+<ProseGroup>
+
+## The Problem
+
+When a navigation system has to work across 12+ markets, every structural decision has downstream consequences. Different product catalogues mean different category hierarchies. Different languages mean different string lengths and text overflow behaviours. Right-to-left scripts flip the entire spatial logic of the layout. Market-specific regulatory requirements add items that don't exist elsewhere. The GNB couldn't just look like Samsung -- it had to accommodate all of that without becoming a regional patchwork. The existing system had grown that way organically, and it showed. The challenge was designing a navigation architecture strict enough to read as a single coherent brand at global scale, but flexible enough that no market needed to break it to make it work.
+
+</ProseGroup>
+
+<ProseGroup>
+
+## The Work
+
+As a Senior Designer on a large cross-functional team at Razorfish, I worked across three areas: evolving and applying the design system to key site sections, designing page layouts to Samsung's precise brand standards, and proposing and iterating on GNB updates.
+
+The GNB work was the hardest part. The competing constraints were real: Samsung's brand guidelines are rigid by design, but market needs vary significantly, and engineering teams building across regions need structural predictability to ship without regressions. Every round of GNB iteration had to be stress-tested against those pressures -- not just against a single locale in Korean or English, but against the full range of script directions, catalogue depths, and nav item counts that different markets required. That meant a lot of rounds. Each one clarified the constraints more than the last.
+
+</ProseGroup>
 
 ![UI mosaic overview](../../assets/work/samsung-redesign/revamp-ui-mosaic.jpg)
 
@@ -40,6 +60,12 @@ As a Senior Designer on a large cross-functional team, I evolved and applied the
 
 </ImagePair>
 
+![Product showcase](../../assets/work/samsung-redesign/samsung-section-4-showcase-desktop.jpg)
+
+![Product detail page](../../assets/work/samsung-redesign/samsung-section-5-pd-desktop.jpg)
+
+![Product finder](../../assets/work/samsung-redesign/samsung-section-6-pf-desktop.jpg)
+
 ### Global Navigation
 
 ![Global navigation bar — mobile category browsing](../../assets/work/samsung-redesign/samsung-section-3-gnb-desktop.jpg)
@@ -52,10 +78,14 @@ As a Senior Designer on a large cross-functional team, I evolved and applied the
 
 </ImagePair>
 
-### Product Experience
+<ProseGroup>
 
-![Product showcase](../../assets/work/samsung-redesign/samsung-section-4-showcase-desktop.jpg)
+## What I Learned
 
-![Product detail page](../../assets/work/samsung-redesign/samsung-section-5-pd-desktop.jpg)
+The GNB problem was an information architecture problem before it was a visual one. The visual constraints -- Samsung's brand rigidity, the sparse premium aesthetic -- were actually the easier half. The harder question was structural: how do you build a nav hierarchy that holds when the product catalogue in one market has three tiers and another has five?
 
-![Product finder](../../assets/work/samsung-redesign/samsung-section-6-pf-desktop.jpg)
+The answer was designing for the hardest case first. Rather than starting with the standard English-language layout and adapting outward, the iteration process had to treat the most complex market requirements as the baseline. That forced decisions about hierarchy depth, label truncation, and overflow behaviour that a single-locale design would never surface.
+
+What this project reinforced: at global scale, the designer's job is to write constraints that regional teams can work within, not to design every regional variant themselves. A system that requires exceptions is a system that will drift. The goal was a GNB with so few ambiguous cases that the exceptions never needed to happen.
+
+</ProseGroup>

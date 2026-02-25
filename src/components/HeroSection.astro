@@ -37,14 +37,14 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
   .hero-canvas-fallback {
     position: absolute;
     inset: 0;
-    z-index: 0;
+    z-index: var(--z-base);
     background: radial-gradient(ellipse at 50% 60%, var(--color-bg-alt) 0%, var(--color-bg-primary) 70%);
   }
 
   .hero :global(astro-island) {
     position: absolute;
     inset: 0;
-    z-index: 0;
+    z-index: var(--z-base);
     background-color: var(--color-bg-primary);
   }
 

@@ -6,6 +6,7 @@ role: "Associate Design Director"
 agency: "Razorfish"
 tagline: "A configurator built to close the gap between the showroom floor and a screen."
 thumbnail: "../../assets/work/bespoke-design-studio/bespoke-design-studio-thumbnail.jpeg"
+heroImageAlt: "Samsung Bespoke Design Studio — product configurator with carousel and colour selection interface"
 heroImage: "../../assets/work/bespoke-design-studio/scene-2-1.png"
 featured: true
 sortOrder: 1
@@ -15,15 +16,20 @@ import HeroImage from '../../components/HeroImage.astro'
 import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
 import Carousel from '../../components/Carousel.astro'
+import ProseGroup from '../../components/ProseGroup.astro'
 import heroSrc from '../../assets/work/bespoke-design-studio/scene-2-1.png'
 
 <HeroImage src={heroSrc} alt="Samsung Bespoke Design Studio — project showcase" />
 
-# Samsung Bespoke Design Studio
-
 <Meta client="Samsung" role="Associate Design Director" agency="Razorfish" year={2024} />
 
-### Samsung's Bespoke line lets customers configure appliances down to the panel finish. But the online experience wasn't delivering that same sense of control. We built a tool to change that, one that makes the customization process feel as considered as the hardware itself.
+<ProseGroup>
+
+# Samsung Bespoke Design Studio
+
+Samsung's Bespoke line lets customers configure appliances down to the panel finish. But the online experience wasn't delivering that same sense of control. We built a tool to change that, one that makes the customization process feel as considered as the hardware itself.
+
+</ProseGroup>
 
 <ImagePair>
 
@@ -33,9 +39,21 @@ import heroSrc from '../../assets/work/bespoke-design-studio/scene-2-1.png'
 
 </ImagePair>
 
-## The Challenge
+<ProseGroup>
+
+## The Problem
 
 In-store, customers can see the exact finish, feel the panel, and make a call. Online, you're working with a screen. Samsung needed a digital customization experience that matched the confidence customers felt in person, without the friction that usually comes with complex configurators. I worked across UX, research, and engineering to define the strategy and interaction model.
+
+</ProseGroup>
+
+<ProseGroup>
+
+## The Work
+
+Every decision was grounded in research. User behavior analysis, competitor benchmarking, and usability studies shaped how we framed the problem and structured the solution. I led wireframing and prototyping through multiple iterations, working closely with engineering to refine the interaction model until the configurator felt easy to use.
+
+</ProseGroup>
 
 ### Wireframes
 
@@ -57,10 +75,6 @@ In-store, customers can see the exact finish, feel the panel, and make a call. O
 
 </Carousel>
 
-## Approach
-
-Every decision was grounded in research. User behavior analysis, competitor benchmarking, and usability studies shaped how we framed the problem and structured the solution. I led wireframing and prototyping through multiple iterations, working closely with engineering to refine the interaction model until the configurator felt easy to use.
-
 ![User flow for Bespoke Kitchen](../../assets/work/bespoke-design-studio/user-flow-bespoke-kitchen-2.jpg)
 
 <ImagePair>
@@ -79,9 +93,13 @@ Every decision was grounded in research. User behavior analysis, competitor benc
 
 </ImagePair>
 
+<ProseGroup>
+
 ### Design Execution
 
 I led UI and interaction design across mobile and desktop. Motion was used to reinforce actions, educational touchpoints helped reduce hesitation, and the design system was built flexible enough to grow with the platform.
+
+</ProseGroup>
 
 ![Kitchen configurator overview](../../assets/work/bespoke-design-studio/ha-bespoke-kitchen-desktop-006.jpg)
 
@@ -107,6 +125,10 @@ I led UI and interaction design across mobile and desktop. Motion was used to re
 
 ![Final checkout step — selected configuration with pricing](../../assets/work/bespoke-design-studio/desktop-13.png)
 
-## Key Takeaways
+<ProseGroup>
+
+## What I Learned
 
 The hardest part of this project was sequencing. A customer configuring a fridge has to pick a model, then a size, then colors for four separate door panels. Show all of that at once and people bail. Show too little and they don't understand their options. Most of the design work was figuring out the right order to present decisions so each step felt obvious. That's what made the configurator work.
+
+</ProseGroup>

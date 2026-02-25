@@ -58,7 +58,7 @@ const { label } = Astro.props
   .carousel-dots {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--space-1);
     padding: var(--space-2) 0;
   }
 
@@ -68,7 +68,7 @@ const { label } = Astro.props
     border-radius: 50%;
     background: var(--color-text-secondary);
     opacity: 0.3;
-    transition: opacity 0.2s;
+    transition: opacity var(--transition-medium);
     border: none;
     padding: 0;
     cursor: pointer;

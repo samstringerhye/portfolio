@@ -12,7 +12,7 @@ const work = defineCollection({
     tagline: z.string(),
     thumbnail: image(),
     heroImage: image(),
-    heroImageAlt: z.string().optional(),
+    heroImageAlt: z.string(),
     featured: z.boolean().default(false),
     sortOrder: z.number().default(999),
     tags: z.array(z.string()).optional(),
