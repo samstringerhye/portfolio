@@ -1,29 +1,32 @@
 {
   "$schema": "./home.schema.json",
   "hero": {
-    "headline": "Hi there. I'm Sam.",
+    "headline": "Every pixel, on purpose.",
     "headlineTag": "h1",
     "headlineRole": "prose-title-lg"
   },
   "bio": {
-    "headline": "Who me?",
+    "headline": "The short version.",
     "headlineTag": "h2",
-    "headlineRole": "prose-title-lg",
-    "body": "I'm a product and UI designer with 10+ years crafting intuitive, high-performing digital experiences for top brands. Skilled in designing scalable systems, motion design, and seamless user interactions that bridge creativity and functionality.",
+    "headlineRole": "prose-title-sm",
+    "body": "Product designer at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll right past.",
     "bodyTag": "h3",
-    "bodyRole": "prose-title-sm"
+    "bodyRole": "prose-heading-sm",
+    "contentInset": "lg"
   },
   "work": {
     "headline": "Selected Work",
     "headingTag": "h2",
-    "headingRole": "prose-heading-lg",
+    "headingRole": "prose-title-sm",
     "cardTitleTag": "h3",
-    "cardTitleRole": "prose-subhead-lg"
+    "cardTitleRole": "prose-subhead-lg",
+    "contentInset": "sm"
   },
   "experience": {
     "headline": "Experience",
     "headingTag": "h2",
-    "headingRole": "prose-heading-lg",
+    "headingRole": "prose-title-sm",
+    "contentInset": "sm",
     "jobTitleTag": "h3",
     "jobTitleRole": "prose-body",
     "companyTag": "p",
@@ -38,7 +41,7 @@
         "startDate": "2021-10",
         "endDate": null,
         "highlights": [
-          "Leads UX and design systems work across major product redesigns and platforms; mentors teams and drives measurable improvements"
+          "Leads UX and design systems across B2C product redesigns at scale. Mentors teams, owns outcomes, ships the work."
         ]
       },
       {
@@ -48,7 +51,7 @@
         "startDate": "2018-06",
         "endDate": "2021-10",
         "highlights": [
-          "Designed flows, prototypes, and motion interaction systems across enterprise clients, focused on improving customer experience."        
+          "Designed flows, prototypes, and motion systems for enterprise clients. Very focused on craft and reducing friction wherever possible."
         ]
       },
       {
@@ -58,7 +61,7 @@
         "startDate": "2016-08",
         "endDate": "2018-06",
         "highlights": [
-          "Delivered interactive prototypes and motion systems for product concepts and pitches to align stakeholders and guide build."        ]
+          "Built interactive prototypes and motion systems for early-stage products and client pitches. The kind of work that turns a deck into something you can actually click through."]
       },
       {
         "title": "Art Director",
@@ -77,7 +80,7 @@
         "startDate": "2012-08",
         "endDate": "2014-03",
         "highlights": [
-          "Built scalable motion templates and supported early brand identity work for high-volume social video content."
+          "Built the motion system behind NowThis's high-volume social video output and contributed to early brand identity work."
         ]
       }
     ]

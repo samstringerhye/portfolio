@@ -1,0 +1,47 @@
+[     187ms] [ERROR] Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:4321/node_modules/.vite/deps/chunk-J6SVP7EG.js?v=7bff4014:391
+[     187ms] [ERROR] Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:4321/node_modules/.vite/deps/chunk-J6SVP7EG.js?v=7bff4014:391
+[     187ms] [ERROR] Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:4321/node_modules/.vite/deps/chunk-J6SVP7EG.js?v=7bff4014:391
+[     187ms] [ERROR] Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:4321/node_modules/.vite/deps/chunk-J6SVP7EG.js?v=7bff4014:391
+[     187ms] [ERROR] Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:4321/node_modules/.vite/deps/chunk-J6SVP7EG.js?v=7bff4014:391
+[     187ms] [ERROR] Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem. @ http://localhost:4321/node_modules/.vite/deps/chunk-J6SVP7EG.js?v=7bff4014:391
+[     189ms] TypeError: Cannot read properties of null (reading 'useRef')
+    at exports.useRef (http://localhost:4321/node_modules/.vite/deps/chunk-J6SVP7EG.js?v=7bff4014:956:35)
+    at HeroCanvas (http://localhost:4321/src/components/HeroCanvas.jsx:178:24)
+    at renderWithHooks (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=7bff4014:3521:25)
+    at updateFunctionComponent (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=7bff4014:5152:19)
+    at beginWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=7bff4014:5763:18)
+    at performUnitOfWork (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=7bff4014:8568:18)
+    at workLoopSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=7bff4014:8466:41)
+    at renderRootSync (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=7bff4014:8450:11)
+    at performWorkOnRoot (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=7bff4014:8125:44)
+    at performWorkOnRootViaSchedulerTask (http://localhost:4321/node_modules/.vite/deps/@astrojs_react_client__js.js?v=7bff4014:9129:7)
+[   56821ms] [ERROR] WebSocket connection to 'ws://localhost:4321/?token=but0QZjonpvY' failed:  @ http://localhost:4321/@vite/client:1533
+[   56885ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[   57887ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[   58891ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[   59893ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[   60895ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766

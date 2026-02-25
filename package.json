@@ -12,6 +12,7 @@
     "verify:site": "npm run build && npm run audit:site && npm run perf:check"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.13",
     "@astrojs/react": "^4.2.0",
     "@astrojs/sitemap": "^3.3.0",
     "@iconify-json/material-symbols": "^1.2.56",

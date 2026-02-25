@@ -17,8 +17,7 @@
           "type": "string"
         },
         "agency": {
-          "type": "string",
-          "default": "Razorfish"
+          "type": "string"
         },
         "tagline": {
           "type": "string"
@@ -34,37 +33,17 @@
         },
         "featured": {
           "type": "boolean",
-          "default": true
+          "default": false
         },
         "sortOrder": {
-          "type": "number"
+          "type": "number",
+          "default": 999
         },
         "tags": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "default": []
-        },
-        "metrics": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "value": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "value",
-              "label"
-            ],
-            "additionalProperties": false
-          },
-          "default": []
+          }
         },
         "$schema": {
           "type": "string"
@@ -75,10 +54,10 @@
         "client",
         "year",
         "role",
+        "agency",
         "tagline",
         "thumbnail",
-        "heroImage",
-        "sortOrder"
+        "heroImage"
       ],
       "additionalProperties": false
     }

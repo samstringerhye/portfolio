@@ -23,6 +23,7 @@ const resolved = resolveRefs(rawTokens, rawTokens) as typeof rawTokens
 export const primitives = resolved.primitives
 export const semantic = resolved.semantic
 export const roles = resolved.roles
+export const elementMap = resolved.elementMap
 export const hover = resolved.hover
 
 export const prose = resolved.prose
@@ -30,21 +31,24 @@ export const animations = resolveRefs(rawAnimations, resolved) as typeof rawAnim
 
 export const colors = resolved.semantic.color
 
-// CMY color helpers
-const cmy = resolved.semantic.color.cmy
+// Accent color helpers
+const accent = resolved.semantic.color.accent
 function hexToRgb(hex: string) {
   return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]
 }
-const [cr, cg, cb] = hexToRgb(cmy.cyan)
-const [mr, mg, mb] = hexToRgb(cmy.magenta)
-const [yr, yg, yb] = hexToRgb(cmy.yellow)
+const [a1r, a1g, a1b] = hexToRgb(accent['1'])
+const [a2r, a2g, a2b] = hexToRgb(accent['2'])
+const [a3r, a3g, a3b] = hexToRgb(accent['3'])
 
-export function cmyRgba(opacity: number): [string, string, string] {
+export function accentRgba(opacity: number): [string, string, string] {
   return [
-    `rgba(${cr},${cg},${cb},${opacity})`,
-    `rgba(${mr},${mg},${mb},${opacity})`,
-    `rgba(${yr},${yg},${yb},${opacity})`,
+    `rgba(${a1r},${a1g},${a1b},${opacity})`,
+    `rgba(${a2r},${a2g},${a2b},${opacity})`,
+    `rgba(${a3r},${a3g},${a3b},${opacity})`,
   ]
 }
+
+/** @deprecated Use accentRgba instead */
+export const cmyRgba = accentRgba
 
 export default resolved

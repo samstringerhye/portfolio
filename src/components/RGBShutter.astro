@@ -1,0 +1,150 @@
+---
+---
+
+<div class="rgb-shutter" id="rgb-shutter" aria-hidden="true" transition:persist="rgb-shutter">
+  <div class="rgb-shutter-bar" data-bar="0"></div>
+  <div class="rgb-shutter-bar" data-bar="1"></div>
+  <div class="rgb-shutter-bar" data-bar="2"></div>
+</div>
+
+<style>
+  .rgb-shutter {
+    position: fixed;
+    top: var(--nav-height);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: calc(1600px + 4rem);
+    margin-inline: auto;
+    z-index: 9998;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .rgb-shutter-bar {
+    flex: 1;
+    transform: translateX(-101%);
+    will-change: transform;
+  }
+
+  .rgb-shutter-bar[data-bar="0"] {
+    background-color: var(--color-accent-1);
+  }
+  .rgb-shutter-bar[data-bar="1"] {
+    background-color: var(--color-accent-2);
+  }
+  .rgb-shutter-bar[data-bar="2"] {
+    background-color: var(--color-accent-3);
+  }
+
+  /* Suppress default root view transition crossfade —
+     our RGB shutters handle the global page transition. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+    mix-blend-mode: normal;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap'
+  import { animations } from '../data/tokens'
+
+  const cfg = animations.pageTransition
+
+  type ShutterWindow = Window & {
+    __shutterPrepHandler?: (e: Event) => void
+    __shutterSwapHandler?: () => void
+    __shutterActive?: boolean
+  }
+
+  function initShutter() {
+    const w = window as ShutterWindow
+    const bars = () => document.querySelectorAll<HTMLElement>('.rgb-shutter-bar')
+    const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Clean up previous handlers (idempotent)
+    if (w.__shutterPrepHandler) {
+      document.removeEventListener('astro:before-preparation', w.__shutterPrepHandler)
+    }
+    if (w.__shutterSwapHandler) {
+      document.removeEventListener('astro:after-swap', w.__shutterSwapHandler)
+    }
+
+    function coverAnimation(): Promise<void> {
+      if (prefersReduced()) return Promise.resolve()
+
+      const barEls = bars()
+      if (!barEls.length) return Promise.resolve()
+
+      gsap.set(barEls, { x: '-101%' })
+
+      const container = document.getElementById('rgb-shutter')
+      if (container) container.style.pointerEvents = 'all'
+
+      return new Promise((resolve) => {
+        gsap.to(barEls, {
+          x: '0%',
+          duration: cfg.duration,
+          ease: cfg.ease,
+          stagger: cfg.stagger,
+          onComplete: resolve,
+        })
+      })
+    }
+
+    function uncoverAnimation(): Promise<void> {
+      const barEls = bars()
+      const container = document.getElementById('rgb-shutter')
+
+      if (prefersReduced()) {
+        gsap.set(barEls, { x: '-101%' })
+        if (container) container.style.pointerEvents = 'none'
+        return Promise.resolve()
+      }
+
+      if (!barEls.length) return Promise.resolve()
+
+      return new Promise((resolve) => {
+        gsap.to(barEls, {
+          x: '101%',
+          duration: cfg.duration,
+          ease: cfg.ease,
+          stagger: cfg.stagger,
+          delay: cfg.exitDelay,
+          onComplete: () => {
+            gsap.set(barEls, { x: '-101%' })
+            if (container) container.style.pointerEvents = 'none'
+            resolve()
+          },
+        })
+      })
+    }
+
+    const handleBeforePreparation = (e: Event) => {
+      const event = e as any
+      const originalLoader = event.loader
+      event.loader = async () => {
+        w.__shutterActive = true
+        await coverAnimation()
+        await originalLoader()
+      }
+    }
+
+    const handleAfterSwap = () => {
+      if (!w.__shutterActive) return
+      w.__shutterActive = false
+      uncoverAnimation()
+    }
+
+    w.__shutterPrepHandler = handleBeforePreparation
+    w.__shutterSwapHandler = handleAfterSwap
+
+    document.addEventListener('astro:before-preparation', handleBeforePreparation)
+    document.addEventListener('astro:after-swap', handleAfterSwap)
+  }
+
+  initShutter()
+</script>

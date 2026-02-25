@@ -54,10 +54,21 @@ function isActive(href: string) {
 
 <style>
   .nav {
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: var(--z-nav);
     background: var(--color-bg-primary);
-    border-bottom: var(--border-width-1) solid var(--color-accent);
+  }
+
+  .nav::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: var(--border-width-1);
+    background: var(--color-rule);
   }
 
   .nav-inner {
@@ -71,7 +82,7 @@ function isActive(href: string) {
     display: flex;
     align-items: center;
     padding-inline: var(--content-inset);
-    border-right: var(--border-width-1) solid var(--color-text-primary);
+    border-right: var(--border-width-1) solid var(--color-rule);
     color: var(--color-text-primary);
     text-decoration: none;
     white-space: nowrap;
@@ -88,7 +99,7 @@ function isActive(href: string) {
 
   .nav-links li {
     display: flex;
-    border-left: var(--border-width-1) solid var(--color-text-primary);
+    border-left: var(--border-width-1) solid var(--color-rule);
   }
 
   .nav-link {
@@ -105,7 +116,7 @@ function isActive(href: string) {
   }
 
   .nav-link.active {
-    color: var(--color-accent);
+    color: var(--color-rule);
   }
 
 
@@ -133,14 +144,20 @@ function isActive(href: string) {
   }
 
   @media (--2x) {
-    .nav {
-      position: sticky;
-      top: 0;
+    .nav-logo {
+      border-right: none;
     }
 
     .nav-toggle {
       display: flex;
-      border-left: var(--border-width-1) solid var(--color-text-primary);
+      margin-left: auto;
+      border-left: var(--border-width-1) solid var(--color-rule);
+      border-right: var(--border-width-1) solid var(--color-rule);
+      width: var(--nav-height);
+      height: var(--nav-height);
+      min-width: unset;
+      min-height: unset;
+      padding: 0;
     }
 
     .nav-links {

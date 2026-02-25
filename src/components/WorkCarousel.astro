@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
 import { Icon } from 'astro-icon/components'
 import type { HeadingTag, TypographyRole } from '../types/typography'
 import { animations } from '../data/tokens'
@@ -10,12 +11,14 @@ interface Props {
   headingRole?: TypographyRole
   cardTitleTag?: HeadingTag
   cardTitleRole?: TypographyRole
+  contentInset?: 'sm' | 'md' | 'lg'
 }
 
 const {
   headline = 'Selected Work',
   headingTag = 'h2', headingRole = 'prose-title-lg',
   cardTitleTag = 'h3', cardTitleRole = 'prose-title-sm',
+  contentInset = 'md',
 } = Astro.props as Props
 const SectionTag = headingTag as any
 const CardTitleTag = cardTitleTag as any
@@ -34,7 +37,7 @@ const revealCfg = animations.textReveal
 const workInitBlur = `${revealCfg.initialBlur}px`
 ---
 
-<section class="work-section" id="selected-work" aria-label="Selected work">
+<section class="work-section" id="selected-work" aria-label="Selected work" style={`--content-inset: var(--content-inset-${contentInset})`}>
   <div class="work-container">
     <SectionTag class={`work-label typo-${headingRole}`} data-reveal>{headline}</SectionTag>
 
@@ -52,16 +55,21 @@ const workInitBlur = `${revealCfg.initialBlur}px`
             <span class="trim trim-br-h"></span>
           </div>
           <div class="work-card-inner">
-            <img
+            <Image
               src={card.thumbnail}
               alt={card.title}
+              width={1600}
+              format="webp"
+              quality={90}
               loading="lazy"
-              decoding="async"
             />
-            <CardTitleTag class={`work-card-title typo-${cardTitleRole}`} data-card-title>{card.title}</CardTitleTag>
             <div class="work-card-cta">
               <Icon name="material-symbols:arrow-forward-sharp" class="work-card-cta-icon" />
             </div>
+          </div>
+          <div class="work-card-label">
+            <CardTitleTag class={`work-card-title typo-${cardTitleRole}`} data-card-title>{card.title}</CardTitleTag>
+            <Icon name="material-symbols:arrow-forward-sharp" class="work-card-arrow" />
           </div>
         </a>
       ))}
@@ -71,17 +79,17 @@ const workInitBlur = `${revealCfg.initialBlur}px`
 
 <style define:vars={{ workInitBlur }}>
   .work-section {
-    padding: calc(var(--section-padding) * 2) 0 var(--section-padding) 0;
+    padding: 0;
   }
 
   .work-container {
-    padding: 0 var(--page-margin);
+    padding: 0;
   }
 
   .work-label {
     color: var(--color-text-primary);
-    margin-bottom: var(--space-4);
-    padding-inline: var(--content-inset);
+    margin: 0;
+    padding: var(--content-inset);
     opacity: 0;
     filter: blur(var(--workInitBlur));
   }
@@ -97,86 +105,46 @@ const workInitBlur = `${revealCfg.initialBlur}px`
   .work-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--content-inset);
-    padding-inline: var(--content-inset);
+    grid-template-rows: auto;
+    gap: 0;
+    border-top: var(--border-width-1) solid var(--color-text-primary);
+    border-bottom: var(--border-width-1) solid var(--color-text-primary);
   }
 
   .work-card {
     --trim-length: 1.5rem;
     position: relative;
-    display: block;
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
     text-decoration: none;
+  }
+
+  /* Vertical center line */
+  .work-card:nth-child(odd) {
+    border-right: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  /* Horizontal center line */
+  .work-card:nth-child(-n+2) {
+    border-bottom: var(--border-width-1) solid var(--color-text-primary);
   }
 
   .work-card-inner {
     position: relative;
     aspect-ratio: 3 / 2;
     overflow: hidden;
-    border: var(--border-width-1) solid transparent;
-    transition: border-color var(--transition-1x) ease;
-  }
-
-  .work-card:hover .work-card-inner {
-    border-color: var(--color-text-primary);
   }
 
   .work-card img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform var(--transition-1x) ease, filter var(--transition-1x) ease;
-  }
-
-  .work-card-inner::before,
-  .work-card-inner::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity var(--transition-1x) ease;
-    pointer-events: none;
-  }
-
-  .work-card-inner::before {
-    background: white;
-    z-index: 1;
-  }
-
-  .work-card-inner::after {
-    background: var(--card-hover-color, transparent);
-    mix-blend-mode: multiply;
-    z-index: 1;
-  }
-
-  .work-card:hover img {
-    filter: grayscale(1);
-  }
-
-  .work-card:hover .work-card-inner::before {
-    opacity: 0.8;
-  }
-
-  .work-card:hover .work-card-inner::after {
-    opacity: 1;
   }
 
   .work-card-cta {
-    position: absolute;
-    bottom: var(--content-inset);
-    right: var(--content-inset);
-    z-index: 3;
-    display: flex;
-    align-items: flex-end;
-    color: var(--color-text-primary);
-    opacity: 0;
-    transform: translateX(8px);
-    transition: opacity var(--transition-1x) ease, transform var(--transition-1x) ease;
-    pointer-events: none;
-  }
-
-  .work-card:hover .work-card-cta {
-    opacity: 1;
-    transform: translateX(0);
+    display: none;
   }
 
   .work-card-cta-icon {
@@ -184,15 +152,26 @@ const workInitBlur = `${revealCfg.initialBlur}px`
     height: 3em;
   }
 
+  .work-card-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--content-inset);
+    gap: var(--space-2);
+    border-top: var(--border-width-1) solid var(--color-text-primary);
+  }
+
   .work-card-title {
-    position: absolute;
-    bottom: var(--content-inset);
-    left: var(--content-inset);
-    z-index: 3;
+    display: block;
     color: var(--color-text-primary);
     margin: 0;
-    visibility: hidden;
-    pointer-events: none;
+  }
+
+  .work-card-arrow {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    color: var(--color-text-primary);
   }
 
   /* ── Print proof marks ── */
@@ -228,11 +207,18 @@ const workInitBlur = `${revealCfg.initialBlur}px`
   .trim-tl-h, .trim-bl-h { transform-origin: right; transform: scaleX(0); }
   .trim-tr-h, .trim-br-h { transform-origin: left; transform: scaleX(0); }
 
-  .work-card:hover .trim { transform: scale(1); }
-
   @media (--2x) {
     .work-grid {
       grid-template-columns: 1fr;
+    }
+
+    .work-card:nth-child(odd) {
+      border-right: none;
+    }
+
+    /* All cards except last get a bottom border */
+    .work-card:nth-child(-n+3) {
+      border-bottom: var(--border-width-1) solid var(--color-text-primary);
     }
   }
 
@@ -250,68 +236,68 @@ const workInitBlur = `${revealCfg.initialBlur}px`
 <script>
   import gsap from 'gsap'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  import { SplitText } from 'gsap/SplitText'
-  import { animations, cmyRgba } from '../data/tokens'
-  import { createCmyAutoSplitReveal, type CmyAutoSplitHandle } from './cmy-animate'
+  import { cmyRgba } from '../data/tokens'
 
-  gsap.registerPlugin(ScrollTrigger, SplitText)
+  gsap.registerPlugin(ScrollTrigger)
 
-  const CMY_COLORS = cmyRgba(0.7)
+  const CMY_COLORS = cmyRgba(1)
   let colorIndex = 0
+
+  function tightenSingleLineHeadings() {
+    document.querySelectorAll<HTMLElement>('.work-label, .work-card-title').forEach((el) => {
+      const style = getComputedStyle(el)
+      const lineHeight = parseFloat(style.lineHeight)
+      const contentHeight = el.scrollHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
+      if (contentHeight <= lineHeight * 1.1) {
+        el.style.lineHeight = '1'
+      }
+    })
+  }
 
   function initWorkSection() {
     const cards = document.querySelectorAll<HTMLElement>('[data-work-card]')
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    // Card entrance animation (non-text, so not handled by scroll-reveals)
-    if (cards.length && !prefersReduced) {
-      const cfg = animations.textReveal
-      gsap.set(cards, { opacity: 0, y: 40, filter: `blur(${cfg.initialBlur}px)` })
+    if (!cards.length) return
 
-      ScrollTrigger.batch(cards, {
-        onEnter: (batch) => {
-          gsap.to(batch, {
-            opacity: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 1,
-            stagger: 0.1,
-            ease: cfg.ease,
-          })
-        },
-        start: 'top 70%',
-        once: true,
+    if (prefersReduced) {
+      gsap.set(cards, { opacity: 1 })
+      return
+    }
+
+    gsap.set(cards, { opacity: 1 })
+    tightenSingleLineHeadings()
+  }
+
+  function initWorkHover() {
+    document.querySelectorAll<HTMLElement>('.work-card-label').forEach((label) => {
+      if (label.dataset.workHoverBound === 'true') return
+      label.dataset.workHoverBound = 'true'
+
+      label.addEventListener('mouseenter', () => {
+        label.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
       })
-
-      // Card hover: cycling CMY overlay + title reveal
-      const cfg2 = animations.textReveal
-      cards.forEach((card) => {
-        const inner = card.querySelector<HTMLElement>('.work-card-inner')
-        const title = card.querySelector<HTMLElement>('[data-card-title]')
-
-        let revealHandle: CmyAutoSplitHandle | null = null
-
-        card.addEventListener('mouseenter', () => {
-          // Set cycling CMY color on overlay
-          if (inner) {
-            inner.style.setProperty('--card-hover-color', CMY_COLORS[colorIndex++ % CMY_COLORS.length])
-          }
-
-          // Title reveal
-          if (!title) return
-          if (revealHandle) { revealHandle.kill(); revealHandle = null }
-          gsap.set(title, { visibility: 'visible' })
-          revealHandle = createCmyAutoSplitReveal(title, cfg2)
-        })
-
-        card.addEventListener('mouseleave', () => {
-          if (revealHandle) { revealHandle.kill(); revealHandle = null }
-          if (title) gsap.set(title, { visibility: 'hidden', opacity: 1, y: 0, filter: 'none', textShadow: 'none' })
-        })
+      label.addEventListener('mouseleave', () => {
+        label.style.backgroundColor = ''
       })
+    })
+  }
+
+  async function initWebGL() {
+    try {
+      const { initWebGLHoverEffect } = await import('./webgl-hover-effect')
+      initWebGLHoverEffect()
+    } catch (err) {
+      console.warn('[WorkCarousel] WebGL hover effect failed:', err)
     }
   }
 
-  initWorkSection()
-  document.addEventListener('astro:page-load', initWorkSection)
+  function init() {
+    initWorkSection()
+    initWorkHover()
+    initWebGL()
+  }
+
+  init()
+  document.addEventListener('astro:page-load', init)
 </script>

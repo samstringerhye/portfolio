@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copy Directions — Sam Stringer-Hye Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --bg: #0a0a0a;
+    --fg: #e8e8e8;
+    --muted: #777;
+    --rule: #2a2a2a;
+    --accent-a: #00c2ff;
+    --accent-b: #ff6b9d;
+    --accent-c: #a8ff60;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Page header ── */
+  .page-header {
+    padding: 3rem 2rem 2rem;
+    border-bottom: 1px solid var(--rule);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .page-header h1 {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    max-width: 44rem;
+  }
+
+  /* ── Direction columns ── */
+  .directions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 900px) {
+    .directions { grid-template-columns: 1fr; }
+    .direction { border-right: none !important; border-bottom: 1px solid var(--rule); }
+  }
+
+  .direction {
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .direction:last-child { border-right: none; }
+
+  /* ── Direction header ── */
+  .dir-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .dir-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.25rem;
+  }
+
+  .direction:nth-child(1) .dir-label { color: var(--accent-a); }
+  .direction:nth-child(2) .dir-label { color: var(--accent-b); }
+  .direction:nth-child(3) .dir-label { color: var(--accent-c); }
+
+  .dir-title {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--fg);
+  }
+
+  .dir-desc {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.35rem;
+  }
+
+  /* ── Sections ── */
+  .section {
+    padding: 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  /* ── Hero ── */
+  .hero-mock {
+    background: #111;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-text {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+  }
+
+  /* ── Bio ── */
+  .bio-mock {
+    display: grid;
+    grid-template-columns: auto 1px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .bio-label-text {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--fg);
+    white-space: nowrap;
+  }
+
+  .bio-rule {
+    background: var(--rule);
+    width: 1px;
+    align-self: stretch;
+  }
+
+  .bio-body {
+    font-size: 0.825rem;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  /* ── Case study ── */
+  .case-block {
+    margin-bottom: 1.25rem;
+  }
+
+  .case-block:last-child { margin-bottom: 0; }
+
+  .case-client {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .case-title {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    color: var(--fg);
+    margin-bottom: 0.3rem;
+  }
+
+  .case-tagline {
+    font-size: 0.775rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── Experience ── */
+  .exp-item {
+    margin-bottom: 1rem;
+  }
+
+  .exp-item:last-child { margin-bottom: 0; }
+
+  .exp-role {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--fg);
+  }
+
+  .exp-meta {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .exp-highlight {
+    font-size: 0.775rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── About ── */
+  .about-text {
+    font-size: 0.825rem;
+    line-height: 1.65;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .about-text:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Copy Directions</h1>
+  <p>Three full-page directions for the portfolio copy. Same structure, different voice. Read them as a recruiter or design director would — top to bottom, 60 seconds.</p>
+</div>
+
+<div class="directions">
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- DIRECTION A -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="direction">
+    <div class="dir-header">
+      <div class="dir-label">Direction A</div>
+      <div class="dir-title">The Craftsperson</div>
+      <div class="dir-desc">Understated confidence. Quality speaks. Apple product-page energy — short, precise, earned.</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="section">
+      <div class="section-label">Hero</div>
+      <div class="hero-mock">
+        <div class="hero-text">Every pixel, on purpose.</div>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="section">
+      <div class="section-label">Bio</div>
+      <div class="bio-mock">
+        <div class="bio-label-text">The short version.</div>
+        <div class="bio-rule"></div>
+        <div class="bio-body">Product designer at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS — and I obsess over the details most people scroll right past.</div>
+      </div>
+    </div>
+
+    <!-- Case Studies -->
+    <div class="section">
+      <div class="section-label">Case Study Taglines</div>
+
+      <div class="case-block">
+        <div class="case-client">Samsung</div>
+        <div class="case-title">Bespoke Design Studio</div>
+        <div class="case-tagline">A configurator built to close the gap between the showroom floor and a screen.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">Frontier</div>
+        <div class="case-title">MyFrontier App Redesign</div>
+        <div class="case-tagline">A top-to-bottom mobile redesign that made a utility app feel intentional.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">Samsung</div>
+        <div class="case-title">Samsung.com Redesign</div>
+        <div class="case-tagline">Design system and GNB for one of the world's most-visited consumer electronics sites.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">CVS</div>
+        <div class="case-title">CVS Shop Redesign</div>
+        <div class="case-tagline">Design system foundations for one of the largest pharmacy retailers in the country.</div>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="section">
+      <div class="section-label">Experience Highlights</div>
+
+      <div class="exp-item">
+        <div class="exp-role">Associate Design Director</div>
+        <div class="exp-meta">Razorfish · 2021–Present</div>
+        <div class="exp-highlight">Leads UX and design systems across B2C product redesigns at scale. Mentors multidisciplinary teams and owns outcomes — not just deliverables.</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-role">Senior Designer</div>
+        <div class="exp-meta">Razorfish · 2018–2021</div>
+        <div class="exp-highlight">Designed flows, prototypes, and motion systems for enterprise clients — relentlessly focused on craft and reducing friction.</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-role">Product Designer</div>
+        <div class="exp-meta">Independent · 2016–2018</div>
+        <div class="exp-highlight">Built interactive prototypes and motion systems for early-stage products and client pitches — turning vision into something you could actually click through.</div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="section">
+      <div class="section-label">About Modal</div>
+      <div class="about-text">Product designer at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS — and I obsess over the details most people scroll right past.</div>
+      <div class="about-text">I care a lot about craft. The rhythm in a transition, the hierarchy in the type, the way a component holds up across breakpoints. That's the part that doesn't show up in a brief but always shows up in the product.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- DIRECTION B -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="direction">
+    <div class="dir-header">
+      <div class="dir-label">Direction B</div>
+      <div class="dir-title">The Straight Talker</div>
+      <div class="dir-desc">Warm, direct, conversational. Reads like a person, not a brand. Slightly wry. Google "made by humans" energy.</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="section">
+      <div class="section-label">Hero</div>
+      <div class="hero-mock">
+        <div class="hero-text">I notice everything.<br>It's a problem.</div>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="section">
+      <div class="section-label">Bio</div>
+      <div class="bio-mock">
+        <div class="bio-label-text">A bit about me.</div>
+        <div class="bio-rule"></div>
+        <div class="bio-body">I'm Sam. I've spent the last 10 years at Razorfish designing products for Samsung, Frontier, and CVS. I work across UI, UX, motion, and design systems — basically anywhere the details add up to something that feels right.</div>
+      </div>
+    </div>
+
+    <!-- Case Studies -->
+    <div class="section">
+      <div class="section-label">Case Study Taglines</div>
+
+      <div class="case-block">
+        <div class="case-client">Samsung</div>
+        <div class="case-title">Bespoke Design Studio</div>
+        <div class="case-tagline">Samsung needed their showroom experience to work on a phone. We made it work on a phone.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">Frontier</div>
+        <div class="case-title">MyFrontier App Redesign</div>
+        <div class="case-tagline">The kind of app you open, pay your bill, and close. We made that feel good, too.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">Samsung</div>
+        <div class="case-title">Samsung.com Redesign</div>
+        <div class="case-tagline">One of the biggest consumer electronics sites in the world needed a tighter system. We built one.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">CVS</div>
+        <div class="case-title">CVS Shop Redesign</div>
+        <div class="case-tagline">The design system was messy. The typography didn't scale. We fixed the foundations.</div>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="section">
+      <div class="section-label">Experience Highlights</div>
+
+      <div class="exp-item">
+        <div class="exp-role">Associate Design Director</div>
+        <div class="exp-meta">Razorfish · 2021–Present</div>
+        <div class="exp-highlight">I run UX and systems across large B2C redesigns. I also mentor designers and try to make sure we're shipping work we'd actually want to use.</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-role">Senior Designer</div>
+        <div class="exp-meta">Razorfish · 2018–2021</div>
+        <div class="exp-highlight">Flows, prototypes, motion. Enterprise clients, tight timelines. I got very good at making things feel polished under pressure.</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-role">Product Designer</div>
+        <div class="exp-meta">Independent · 2016–2018</div>
+        <div class="exp-highlight">Freelance era. Built prototypes and motion systems for pitches — the kind of work where you have one meeting to make it click.</div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="section">
+      <div class="section-label">About Modal</div>
+      <div class="about-text">I'm Sam. I've spent the last 10 years at Razorfish designing products for Samsung, Frontier, and CVS. I work across UI, UX, motion, and design systems — basically anywhere the details add up to something that feels right.</div>
+      <div class="about-text">I'm the kind of designer who notices when the easing is wrong. I think about the spaces between components as much as the components themselves. I like building things that feel like someone thought about them — because someone did.</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- DIRECTION C -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="direction">
+    <div class="dir-header">
+      <div class="dir-label">Direction C</div>
+      <div class="dir-title">The Résumé Killer</div>
+      <div class="dir-desc">Facts only. No adjectives. Let the client names and numbers do the work. Stripe / Linear "just build" energy.</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="section">
+      <div class="section-label">Hero</div>
+      <div class="hero-mock">
+        <div class="hero-text">Sam Stringer-Hye</div>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="section">
+      <div class="section-label">Bio</div>
+      <div class="bio-mock">
+        <div class="bio-label-text">10 years.</div>
+        <div class="bio-rule"></div>
+        <div class="bio-body">Product designer at Razorfish. Samsung, Frontier, CVS. UI, UX, motion, design systems.</div>
+      </div>
+    </div>
+
+    <!-- Case Studies -->
+    <div class="section">
+      <div class="section-label">Case Study Taglines</div>
+
+      <div class="case-block">
+        <div class="case-client">Samsung</div>
+        <div class="case-title">Bespoke Design Studio</div>
+        <div class="case-tagline">Appliance configurator. –14% exit rate. +24% add-to-cart.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">Frontier</div>
+        <div class="case-title">MyFrontier App Redesign</div>
+        <div class="case-tagline">Full mobile redesign. +22% autopay sign-ups.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">Samsung</div>
+        <div class="case-title">Samsung.com Redesign</div>
+        <div class="case-tagline">Design system + GNB overhaul. +10% conversion. $143M additional revenue.</div>
+      </div>
+
+      <div class="case-block">
+        <div class="case-client">CVS</div>
+        <div class="case-title">CVS Shop Redesign</div>
+        <div class="case-tagline">Typography, icons, component system. +12% conversion.</div>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="section">
+      <div class="section-label">Experience Highlights</div>
+
+      <div class="exp-item">
+        <div class="exp-role">Associate Design Director</div>
+        <div class="exp-meta">Razorfish · 2021–Present</div>
+        <div class="exp-highlight">UX direction. Design systems. Team mentorship. B2C at scale.</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-role">Senior Designer</div>
+        <div class="exp-meta">Razorfish · 2018–2021</div>
+        <div class="exp-highlight">Flows, prototypes, motion. Enterprise clients.</div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-role">Product Designer</div>
+        <div class="exp-meta">Independent · 2016–2018</div>
+        <div class="exp-highlight">Interactive prototypes. Motion systems. Pitch decks that won.</div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="section">
+      <div class="section-label">About Modal</div>
+      <div class="about-text">Product designer at Razorfish. 10 years. Samsung, Frontier, CVS. UI, UX, motion, design systems.</div>
+      <div class="about-text">I focus on the details — transitions, type hierarchy, how components scale. The work below says the rest.</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

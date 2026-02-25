@@ -123,7 +123,9 @@
             "twistAmount":   { "type": "number", "description": "Spiral twist factor" },
             "zoom":          { "type": "number", "minimum": 1, "description": "Camera zoom level" },
             "maxDpr":        { "type": "number", "minimum": 0.5, "maximum": 3, "description": "Max device pixel ratio cap" },
-            "cmyStagger":    { "$ref": "#/definitions/stagger", "description": "Delay between CMY color channels in hero dot wave (seconds)" }
+            "cmyStagger":    { "$ref": "#/definitions/stagger", "description": "Delay between CMY color channels in hero dot wave (seconds)" },
+            "accentOpacity": { "$ref": "#/definitions/opacity01", "description": "Opacity of accent color dot layers (0=invisible, 1=fully opaque)" },
+            "bgColor":       { "oneOf": [{ "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }, { "$ref": "#/definitions/tokenRef" }], "description": "Canvas background color (hex or token $ref)" }
           },
           "additionalProperties": false
         },
@@ -167,6 +169,41 @@
           },
           "additionalProperties": false
         }
+      },
+      "additionalProperties": false
+    },
+    "workHover": {
+      "type": "object",
+      "description": "WebGL chromatic aberration hover effect on work card images",
+      "properties": {
+        "radius":         { "type": "number", "minimum": 0.05, "maximum": 1.0, "description": "Size of effect area around cursor (0.05=pinpoint, 1.0=covers entire image)" },
+        "channelSpread":  {
+          "type": "object",
+          "description": "RGB channel offset multipliers — higher = more separation. Keep r < g < b for natural chromatic spread.",
+          "properties": {
+            "r": { "type": "number", "minimum": 0.1, "maximum": 3.0, "description": "Red channel offset" },
+            "g": { "type": "number", "minimum": 0.1, "maximum": 3.0, "description": "Green channel offset (should be > r)" },
+            "b": { "type": "number", "minimum": 0.1, "maximum": 3.0, "description": "Blue channel offset (should be > g)" }
+          },
+          "additionalProperties": false
+        },
+        "mouseSmoothing":  { "type": "number", "minimum": 0.01, "maximum": 1.0, "description": "Cursor trailing speed (0.01=very laggy, 1.0=instant snap)" },
+        "speedSmoothing":  { "type": "number", "minimum": 0.01, "maximum": 1.0, "description": "How fast velocity ramps up (0.01=slow, 1.0=instant)" },
+        "speedDecay":      { "type": "number", "minimum": 0.9, "maximum": 0.999, "description": "Velocity fade per frame (0.9=snaps off, 0.999=lingers for seconds)" },
+        "maxVelocity":     { "type": "number", "minimum": 0.01, "maximum": 2.0, "description": "Caps effect intensity (higher=more extreme distortion)" },
+        "idleThreshold":   { "type": "number", "minimum": 0.0001, "maximum": 0.01, "description": "Velocity below which GPU rendering stops" },
+        "fadeDuration":    { "type": "number", "minimum": 0, "maximum": 1.0, "description": "Canvas show/hide CSS transition in seconds" },
+        "maxDpr":          { "type": "number", "minimum": 1, "maximum": 3, "description": "Max device pixel ratio (1=faster, 2=sharp retina, 3=sharpest)" }
+      },
+      "additionalProperties": false
+    },
+    "dotGrid": {
+      "type": "object",
+      "description": "Background dot grid overlay parameters",
+      "properties": {
+        "spacing": { "type": "number", "minimum": 5, "maximum": 100, "description": "Grid spacing in pixels" },
+        "radius":  { "type": "number", "minimum": 0.1, "maximum": 5, "description": "Dot radius in pixels" },
+        "opacity": { "$ref": "#/definitions/opacity01", "description": "Dot opacity" }
       },
       "additionalProperties": false
     },

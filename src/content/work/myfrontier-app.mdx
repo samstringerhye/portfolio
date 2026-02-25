@@ -1,0 +1,48 @@
+---
+title: "MyFrontier App Redesign"
+client: "Frontier"
+year: 2024
+role: "Associate Design Director"
+agency: "Razorfish"
+tagline: "A top-to-bottom mobile redesign that made a utility app feel intentional."
+thumbnail: "../../assets/work/myfrontier-app/myfrontier-app-thumbnail.jpeg"
+heroImage: "../../assets/work/myfrontier-app/frontier-app-kv.png"
+featured: true
+sortOrder: 2
+tags: ["Mobile App", "Design System", "Motion Design", "UX"]
+---
+import HeroImage from '../../components/HeroImage.astro'
+import Meta from '../../components/Meta.astro'
+import LottiePlayer from '../../components/LottiePlayer.astro'
+import heroSrc from '../../assets/work/myfrontier-app/frontier-app-kv.png'
+
+<HeroImage src={heroSrc} alt="MyFrontier App Redesign — project showcase" />
+
+<Meta client="Frontier" role="Associate Design Director" agency="Razorfish" year={2024} />
+
+# MyFrontier App Redesign
+
+The MyFrontier app had fallen behind on usability, brand, and the kind of craft that makes a utility app feel like it was built with intention. The redesign addressed all of it. Cleaner interface, better navigation, and motion that made the thing feel alive.
+
+## Approach
+
+As ADD, I owned layout design across multiple screens and defined visual hierarchy for core UI components like the menu, calendar, and selectors. I also drove the motion design system. Motion wasn't decorative here. It was doing real UX work, bringing consistency and clarity to interactions that previously felt arbitrary.
+
+![Frontier app introduction screens](../../assets/work/myfrontier-app/frontier-intro.png)
+
+![Dashboard view](../../assets/work/myfrontier-app/frontier-dashboard.png)
+
+![Bill pay flow](../../assets/work/myfrontier-app/frontier-bill-pay.png)
+
+### Motion Design
+
+Motion gave users immediate feedback that their actions went through. A coin animation confirmed a payment, a leaf marked a completed setup, and the intro sequence covered the initial load so the app felt responsive from the first tap.
+
+<div style="display: flex; gap: 1rem; justify-content: center; padding: var(--content-inset);">
+  <LottiePlayer src="src/lottie/Lottie-Intro.json" label="App launch animation" />
+  <LottiePlayer src="src/lottie/Lottie-Coin.json" label="Payment confirmation" />
+  <LottiePlayer src="src/lottie/Lottie-Leaf.json" label="Setup completion" />
+  <LottiePlayer src="src/lottie/Lottie-Confirmation.json" label="General confirmation" />
+</div>
+
+![Support flow — tracking technician status through installation](../../assets/work/myfrontier-app/frontier-bill-support.png)

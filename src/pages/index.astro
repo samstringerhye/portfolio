@@ -26,6 +26,7 @@ const home: HomeContent = homeData
     headlineRole={home.bio.headlineRole}
     bodyTag={home.bio.bodyTag}
     bodyRole={home.bio.bodyRole}
+    contentInset={home.bio.contentInset}
   />
   <hr class="section-rule" />
   <WorkCarousel
@@ -34,9 +35,9 @@ const home: HomeContent = homeData
     headingRole={home.work.headingRole}
     cardTitleTag={home.work.cardTitleTag}
     cardTitleRole={home.work.cardTitleRole}
+    contentInset={home.work.contentInset}
   />
-  <hr class="section-rule" />
-  <Timeline />
+  <Timeline contentInset={home.experience.contentInset} />
   <hr class="section-rule" />
   <ScrollingInterests
     interests={home.interests.items}

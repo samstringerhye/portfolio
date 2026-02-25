@@ -2,6 +2,12 @@
 import homeData from '../content/home.json'
 import type { HomeContent } from '../types/content'
 
+interface Props {
+  contentInset?: 'sm' | 'md' | 'lg'
+}
+
+const { contentInset = 'md' } = Astro.props as Props
+
 const home: HomeContent = homeData
 const {
   headline = 'Experience',
@@ -32,7 +38,8 @@ const jobsWithFlex = jobs.map((j, i) => {
   const end = getYear(j.endDate)
   const span = end - start
   const yearStart = start - timelineStart
-  return { ...j, span, yearStart, index: i }
+  const yearLabel = j.endDate ? `${start}–${end}` : `${start}–Present`
+  return { ...j, span, yearStart, yearLabel, index: i }
 })
 
 // Reverse for chronological left-to-right display (oldest first)
@@ -45,7 +52,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
 }
 ---
 
-<section class="experience-section" aria-label="Experience">
+<section class="experience-section" aria-label="Experience" style={`--content-inset: var(--content-inset-${contentInset})`}>
   <div class="experience-header">
     <HeadingTag class:list={["experience-heading", `typo-${headingRole}`]} data-reveal>{headline}</HeadingTag>
     <a href="/assets/resume.pdf" download class="experience-download" aria-label="Download resume" data-lottie-hover>
@@ -63,6 +70,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
           data-card-span={job.span}
         >
           <div class="timeline-card-wipe" aria-hidden="true"></div>
+          <p class="timeline-card-year typo-ui-nav-section" aria-hidden="true">{job.yearLabel}</p>
           <div class="timeline-card-left">
             <JobTitleTag class:list={["timeline-title", `typo-${jobTitleRole}`]}>{job.title}</JobTitleTag>
             <CompanyTag class:list={["timeline-company", `typo-${companyRole}`]}>{job.company}</CompanyTag>
@@ -108,20 +116,18 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     position: relative;
     display: flex;
     align-items: center;
-    padding-inline: var(--page-margin);
-    padding-block: var(--content-inset);
   }
 
   .experience-heading {
     color: var(--color-text-primary);
     margin: 0;
-    padding-inline: var(--content-inset);
+    padding: var(--content-inset);
   }
 
   .experience-download {
     position: absolute;
     top: 0;
-    right: var(--page-margin);
+    right: 0;
     bottom: 0;
     aspect-ratio: 1;
     display: flex;
@@ -144,7 +150,6 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   }
 
   .experience-timeline {
-    padding-inline: var(--page-margin);
     min-width: 0;
   }
 
@@ -168,7 +173,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   .timeline-card-left {
     display: flex;
     flex-direction: column;
-    gap: calc(var(--content-inset) / 4);
+    gap: var(--content-inset);
     flex-shrink: 0;
     min-width: 0;
   }
@@ -245,7 +250,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   .timeline-year {
     flex: 1 1 0%;
     text-align: center;
-    padding: calc(var(--content-inset) / 2) 0;
+    padding: var(--content-inset) 0;
     color: var(--color-text-primary);
     position: relative;
     z-index: 1;
@@ -258,6 +263,11 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     border-left: var(--border-width-1) solid var(--color-text-primary);
   }
 
+  /* ── Year label (mobile only) ── */
+  .timeline-card-year {
+    display: none;
+  }
+
   /* ── Mobile ── */
   @media (--2x) {
     .timeline-cards {
@@ -268,10 +278,19 @@ for (let y = timelineStart; y < timelineEnd; y++) {
       flex: none !important;
       border-right: none;
       border-bottom: var(--border-width-1) solid var(--color-text-primary);
+      gap: var(--content-inset);
     }
 
     .timeline-card:last-child {
       border-bottom: none;
+    }
+
+    .timeline-card-year {
+      display: block;
+      color: var(--color-text-primary);
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding-inline: var(--content-inset);
     }
 
     .timeline-years {
@@ -397,8 +416,23 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     })
   }
 
+  function tightenSingleLineHeadings() {
+    document.querySelectorAll<HTMLElement>('.experience-heading').forEach((el) => {
+      const style = getComputedStyle(el)
+      const lineHeight = parseFloat(style.lineHeight)
+      const contentHeight = el.scrollHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
+      if (contentHeight <= lineHeight * 1.1) {
+        el.style.lineHeight = '1'
+      }
+    })
+  }
+
+  tightenSingleLineHeadings()
   initTimelineHover()
-  document.addEventListener('astro:page-load', initTimelineHover)
+  document.addEventListener('astro:page-load', () => {
+    tightenSingleLineHeadings()
+    initTimelineHover()
+  })
 </script>
 
 <script>

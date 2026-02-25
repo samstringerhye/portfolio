@@ -25,9 +25,9 @@ function buildCmyShadow(
   const cBlur = blur * progress.cy
   const mBlur = blur * progress.mg
   const yBlur = blur * progress.yw
-  const cA = opacity * progress.cy
-  const mA = opacity * progress.mg
-  const yA = opacity * progress.yw
+  const cA = opacity * (1 - progress.cy)
+  const mA = opacity * (1 - progress.mg)
+  const yA = opacity * (1 - progress.yw)
   return [
     `0 ${cOff}px ${cBlur}px ${cRgba.replace(/,1\)$/, `,${cA})`)}`,
     `0 ${mOff}px ${mBlur}px ${mRgba.replace(/,1\)$/, `,${mA})`)}`,
@@ -63,6 +63,9 @@ export function createCmyReveal(
       onUpdate() {
         el.style.textShadow = buildCmyShadow(slideDistance, cfg.initialBlur, cfg.cmyOpacity, s)
       },
+      onComplete() {
+        el.style.textShadow = 'none'
+      },
     }),
   })
 
@@ -72,9 +75,9 @@ export function createCmyReveal(
   }, 0)
 
   if (hasCmy) {
-    tl.to(s, { cy: 0, duration: cfg.duration, ease: cfg.ease }, 0)
-    tl.to(s, { mg: 0, duration: cfg.duration, ease: cfg.ease }, cfg.cmyStagger)
-    tl.to(s, { yw: 0, duration: cfg.duration, ease: cfg.ease }, cfg.cmyStagger * 2)
+    tl.to(s, { cy: 0, duration: cfg.duration, ease: cfg.ease }, cfg.cmyStagger)
+    tl.to(s, { mg: 0, duration: cfg.duration, ease: cfg.ease }, cfg.cmyStagger * 2)
+    tl.to(s, { yw: 0, duration: cfg.duration, ease: cfg.ease }, cfg.cmyStagger * 3)
   }
 
   return tl

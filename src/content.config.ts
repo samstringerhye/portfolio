@@ -2,24 +2,20 @@ import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 
 const work = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/work' }),
-  schema: z.object({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/work' }),
+  schema: ({ image }) => z.object({
     title: z.string(),
     client: z.string(),
     year: z.number(),
     role: z.string(),
-    agency: z.string().default('Razorfish'),
+    agency: z.string(),
     tagline: z.string(),
-    thumbnail: z.string(),
-    heroImage: z.string(),
+    thumbnail: image(),
+    heroImage: image(),
     heroImageAlt: z.string().optional(),
-    featured: z.boolean().default(true),
-    sortOrder: z.number(),
-    tags: z.array(z.string()).default([]),
-    metrics: z.array(z.object({
-      value: z.string(),
-      label: z.string(),
-    })).default([]),
+    featured: z.boolean().default(false),
+    sortOrder: z.number().default(999),
+    tags: z.array(z.string()).optional(),
   }),
 })
 

@@ -4,7 +4,8 @@ import SEO from '../components/SEO.astro'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import AboutModal from '../components/AboutModal.astro'
-import { primitives, semantic, roles, hover as hoverTokens, prose } from '../data/tokens'
+import RGBShutter from '../components/RGBShutter.astro'
+import { primitives, semantic, roles, elementMap, hover as hoverTokens, prose } from '../data/tokens'
 import '../styles/global.css'
 
 interface Props {
@@ -16,11 +17,11 @@ interface Props {
 
 const { title, description, ogImage, hideFooter = false } = Astro.props
 
-/* ── Helper: fluid clamp from min→max rem across 375→1440px ── */
+/* ── Helper: fluid clamp from min→max rem across 375→1600px ── */
 function buildClamp(min: number, max: number): string {
   if (min === max) return `${min}rem`
   const rootPx = 16
-  const slope = ((max - min) * rootPx * 100) / (1440 - 375)
+  const slope = ((max - min) * rootPx * 100) / (1600 - 375)
   const intercept = min - (slope * 375) / (100 * rootPx)
   return `clamp(${min.toFixed(2)}rem, ${intercept.toFixed(4)}rem + ${slope.toFixed(4)}vw, ${max.toFixed(2)}rem)`
 }
@@ -84,8 +85,10 @@ const spacingVars = Object.entries(primitives.spacing).map(([key, val]) => {
 /* ── Layout vars ── */
 const layoutVars = [
   `--page-margin: ${cssVal(semantic.layout.pageMargin)};`,
-  `--content-inset: ${cssVal(semantic.layout.contentInset)};`,
-  `--page-padding: calc(${cssVal(semantic.layout.pageMargin)} + ${cssVal(semantic.layout.contentInset)});`,
+  `--content-inset-sm: ${cssVal(semantic.layout.contentInset.sm)};`,
+  `--content-inset-md: ${cssVal(semantic.layout.contentInset.md)};`,
+  `--content-inset-lg: ${cssVal(semantic.layout.contentInset.lg)};`,
+  `--content-inset: var(--content-inset-md);`,
   `--grid-gutter: ${cssVal(semantic.layout.gridGutter)};`,
   `--section-padding: ${cssVal(semantic.layout.sectionPadding)};`,
   `--nav-height: ${semantic.layout.navHeight};`,
@@ -221,15 +224,48 @@ const roleRules = Object.entries(roles).map(([name, cfg]) => {
   const fontSize = typeof c.scale === 'number' ? `${c.scale}rem` : buildClamp(c.scale.min, c.scale.max)
   const familyDefault = familyToVar[c.family] ?? c.family
   return `.typo-${name} {
-    font-family: var(--typo-${name}-family, ${familyDefault});
-    font-weight: var(--typo-${name}-weight, ${c.weight});
+    font-family: ${familyDefault};
+    font-weight: ${c.weight};
     font-size: ${fontSize};
     line-height: ${c.lineHeight};
-    letter-spacing: var(--typo-${name}-tracking, ${c.tracking}em);
-    text-transform: var(--typo-${name}-transform, none);
-    font-stretch: var(--typo-${name}-stretch, normal);
+    letter-spacing: ${c.tracking}em;
   }`
 }).join('\n  ')
+
+/* ── Element-level base styles from elementMap ── */
+/* Reverse lookups: resolved primitive value → CSS var name */
+const scaleToVar = Object.fromEntries(
+  Object.entries(primitives.font.scale).map(([key, val]) => [JSON.stringify(val), `var(--text-${key})`])
+) as Record<string, string>
+
+const lineHeightToVar = Object.fromEntries(
+  Object.entries(primitives.font.lineHeight).map(([key, val]) => [String(val), `var(--line-height-${key})`])
+) as Record<string, string>
+
+const trackingToVar = Object.fromEntries(
+  Object.entries(primitives.font.tracking).map(([key, val]) => [String(val), `var(--tracking-${key})`])
+) as Record<string, string>
+
+const weightToVar = Object.fromEntries(
+  Object.entries(primitives.font.weight).map(([key, val]) => [String(val), `var(--font-weight-${key})`])
+) as Record<string, string>
+
+const elementRules = Object.entries(elementMap).map(([el, roleName]) => {
+  const cfg = roles[roleName] as { family: string; weight: number; scale: number | { min: number; max: number }; lineHeight: number; tracking: number }
+  if (!cfg) return ''
+  const family = familyToVar[cfg.family] ?? cfg.family
+  const weight = weightToVar[String(cfg.weight)] ?? String(cfg.weight)
+  const fontSize = scaleToVar[JSON.stringify(cfg.scale)] ?? (typeof cfg.scale === 'number' ? `${cfg.scale}rem` : buildClamp(cfg.scale.min, cfg.scale.max))
+  const lh = lineHeightToVar[String(cfg.lineHeight)] ?? String(cfg.lineHeight)
+  const ls = trackingToVar[String(cfg.tracking)] ?? `${cfg.tracking}em`
+  return `${el} {
+    font-family: ${family};
+    font-weight: ${weight};
+    font-size: ${fontSize};
+    line-height: ${lh};
+    letter-spacing: ${ls};
+  }`
+}).filter(Boolean).join('\n  ')
 
 /* ── Assemble the full :root block ── */
 const typoCss = `${fontFaces}
@@ -256,9 +292,10 @@ const typoCss = `${fontFaces}
     ${hoverVars}
     ${proseVars}
     --focus-ring: 0 0 0 var(--focus-ring-width) var(--color-bg-primary), 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
-    --border-light: var(--border-width-1) solid var(--color-accent);
+    --border-light: var(--border-width-1) solid var(--color-rule);
   }
-  ${roleRules}`
+  ${roleRules}
+  ${elementRules}`
 ---
 
 <!doctype html>
@@ -270,34 +307,17 @@ const typoCss = `${fontFaces}
     <style set:html={typoCss}></style>
     <noscript><style>.cmy-word { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
     <ViewTransitions fallback="swap" />
-    {import.meta.env.DEV && (
-      <script is:inline>
-        // Restore per-role font overrides from localStorage before first paint (dev only)
-        (function() {
-          try {
-            var d = JSON.parse(localStorage.getItem('dev-font-overrides') || '{}');
-            var s = document.documentElement.style;
-            var props = ['family', 'weight', 'tracking', 'transform', 'stretch'];
-            for (var role in d) {
-              var ov = d[role];
-              for (var i = 0; i < props.length; i++) {
-                if (ov[props[i]] != null) s.setProperty('--typo-' + role + '-' + props[i], String(ov[props[i]]));
-              }
-            }
-          } catch(e) {}
-        })();
-      </script>
-    )}
   </head>
   <body>
     <a href="#main" class="skip-to-content">Skip to content</a>
     <div class="grid-overlay" aria-hidden="true"></div>
     <Nav />
-    <main id="main" tabindex="-1">
+    <main id="main" class="grid-12" tabindex="-1">
       <slot />
     </main>
     {!hideFooter && <Footer />}
     <AboutModal />
+    <RGBShutter />
     <script>
       import Lenis from 'lenis'
       import gsap from 'gsap'

@@ -31,13 +31,18 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
 <style>
   .cs-nav {
-    border-top: var(--border-light);
-    padding: var(--space-8) var(--page-padding);
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    padding: var(--space-8) 0;
   }
 
   .cs-nav-inner {
+    grid-column: 4 / 10;
     display: flex;
     justify-content: space-between;
+    border-top: var(--border-width-1) solid var(--color-rule);
+    padding-top: var(--space-8);
   }
 
   .cs-nav-link {
@@ -56,5 +61,11 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   .cs-nav-link:hover .cs-nav-title {
     color: var(--color-text-primary);
+  }
+
+  @media (max-width: 768px) {
+    .cs-nav-inner {
+      grid-column: 1 / -1;
+    }
   }
 </style>

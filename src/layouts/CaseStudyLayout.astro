@@ -1,43 +1,20 @@
 ---
 import BaseLayout from './BaseLayout.astro'
-import CaseStudyHero from '../components/CaseStudyHero.astro'
 import CaseStudyNav from '../components/CaseStudyNav.astro'
 
 interface Props {
   title: string
-  client: string
-  year: number
-  role: string
-  agency: string
-  tagline: string
-  heroImage: string
-  heroImageAlt?: string
-  metrics?: { value: string; label: string }[]
+  tagline?: string
   prevSlug?: string
   prevTitle?: string
   nextSlug?: string
   nextTitle?: string
 }
 
-const {
-  title, client, year, role, agency, tagline, heroImage, heroImageAlt, metrics,
-  prevSlug, prevTitle, nextSlug, nextTitle,
-} = Astro.props
+const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 ---
 
 <BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline}>
-  <CaseStudyHero
-    title={title}
-    client={client}
-    year={year}
-    role={role}
-    agency={agency}
-    tagline={tagline}
-    heroImage={heroImage}
-    heroImageAlt={heroImageAlt}
-    metrics={metrics}
-  />
-
   <article class="case-study-body">
     <slot />
   </article>
@@ -52,57 +29,197 @@ const {
 
 <style is:global>
   .case-study-body {
-    padding: var(--space-8) var(--page-padding) var(--space-12);
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
   }
 
-  .case-study-body h2 {
-    font-family: var(--font-serif);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--text-6x);
-    line-height: var(--line-height-normal);
-    letter-spacing: var(--tracking-normal);
-    margin-top: var(--space-10);
-    margin-bottom: var(--space-3);
+  /* ── All children: full-width bordered frame ── */
+  .case-study-body > * {
+    grid-column: 1 / -1;
+    border-left: var(--border-width-1) solid var(--color-text-primary);
+    border-right: var(--border-width-1) solid var(--color-text-primary);
+    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+    margin: 0;
   }
 
-  .case-study-body h3 {
-    font-family: var(--font-serif);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--text-5x);
-    line-height: var(--line-height-normal);
-    letter-spacing: var(--tracking-normal);
-    margin-top: var(--space-6);
-    margin-bottom: var(--space-2);
+  /* Border-top on first child (hero image) */
+  .case-study-body > *:first-child {
+    border-top: var(--border-width-1) solid var(--color-text-primary);
   }
 
-  .case-study-body p {
+  /* ── Hero image ── */
+  .case-study-body .cs-hero-image {
+    overflow: hidden;
+  }
+
+  .case-study-body .cs-hero-image img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16/9;
+  }
+
+  /* ── Meta bar ── */
+  .case-study-body .cs-hero-meta {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+  }
+
+  .case-study-body .cs-meta-item {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--content-inset);
+    padding: var(--content-inset);
+  }
+
+  .case-study-body .cs-meta-item + .cs-meta-item {
+    border-left: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  .case-study-body .cs-meta-value {
+    margin: 0;
+  }
+
+  /* ── Copy blocks: inset padding ── */
+  .case-study-body h1,
+  .case-study-body h2,
+  .case-study-body h3,
+  .case-study-body p,
+  .case-study-body ul,
+  .case-study-body ol,
+  .case-study-body blockquote {
+    padding: var(--content-inset);
+  }
+
+  /* Intro paragraph: prose-subhead-lg role (sans, 3x scale) */
+  .case-study-body > h1 + p {
     font-family: var(--font-sans);
     font-weight: var(--font-weight-semibold);
-    font-size: var(--text-1x);
+    font-size: var(--text-3x);
     line-height: var(--line-height-normal);
     letter-spacing: var(--tracking-normal);
-    margin-bottom: var(--space-3);
+  }
+
+  /* ── Carousel: inherits bordered frame from > * rule ── */
+  .case-study-body .carousel {
+    overflow: hidden;
+  }
+
+  /* ── Images: flush to cell edges ── */
+  .case-study-body p:has(> img) {
+    padding: 0;
   }
 
   .case-study-body img {
+    display: block;
     width: 100%;
     height: auto;
-    border-radius: var(--radius-3x);
-    margin: var(--space-4) 0;
   }
 
+  /* ── Lists ── */
   .case-study-body ul {
     list-style: disc;
-    padding-left: var(--space-3);
-    margin-bottom: var(--space-3);
+    padding-left: var(--content-inset);
   }
 
   .case-study-body li {
-    font-family: var(--font-sans);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--text-1x);
-    line-height: var(--line-height-normal);
-    letter-spacing: var(--tracking-normal);
     margin-bottom: var(--space-1);
   }
+
+  /* ── Image pairs: two images side by side ── */
+  .case-study-body .image-pair {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--border-width-1);
+    padding: 0;
+    background: var(--color-text-primary);
+    --pair-accent: var(--color-accent-1);
+  }
+
+  .case-study-body :nth-child(3n+1 of .image-pair) { --pair-accent: var(--color-accent-1); }
+  .case-study-body :nth-child(3n+2 of .image-pair) { --pair-accent: var(--color-accent-2); }
+  .case-study-body :nth-child(3n of .image-pair) { --pair-accent: var(--color-accent-3); }
+
+  .case-study-body .image-pair p {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: var(--pair-accent);
+    line-height: 0;
+  }
+
+  .case-study-body .image-pair img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .case-study-body h1,
+    .case-study-body h2,
+    .case-study-body h3,
+    .case-study-body p,
+    .case-study-body ul,
+    .case-study-body ol,
+    .case-study-body blockquote {
+      padding-inline: var(--content-inset);
+    }
+
+    .case-study-body ul {
+      padding-left: var(--content-inset);
+    }
+
+    .case-study-body .image-pair {
+      grid-template-columns: 1fr;
+      column-gap: 0;
+      row-gap: var(--border-width-1);
+    }
+
+    .case-study-body .cs-hero-meta {
+      flex-wrap: wrap;
+    }
+
+    .case-study-body .cs-meta-item {
+      flex: 1 1 45%;
+    }
+
+    .case-study-body .cs-meta-item + .cs-meta-item {
+      border-left: none;
+    }
+
+    .case-study-body .cs-meta-item:nth-child(even) {
+      border-left: var(--border-width-1) solid var(--color-text-primary);
+    }
+
+    .case-study-body .cs-meta-item:nth-child(n+3) {
+      border-top: var(--border-width-1) solid var(--color-text-primary);
+    }
+
+  }
 </style>
+
+<script>
+  function sizeImagePairs() {
+    document.querySelectorAll('.image-pair').forEach(pair => {
+      const imgs = pair.querySelectorAll('img')
+      if (imgs.length !== 2) return
+
+      const ratios = Array.from(imgs).map(img => {
+        const w = parseInt(img.getAttribute('width')) || img.naturalWidth
+        const h = parseInt(img.getAttribute('height')) || img.naturalHeight
+        return w && h ? w / h : 0
+      })
+
+      if (ratios[0] > 0 && ratios[1] > 0) {
+        pair.style.gridTemplateColumns = `${ratios[0]}fr ${ratios[1]}fr`
+      }
+    })
+  }
+
+  sizeImagePairs()
+  document.addEventListener('astro:page-load', sizeImagePairs)
+</script>

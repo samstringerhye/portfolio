@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 import {
-  Scene, OrthographicCamera, Color,
-  WebGLRenderer, MultiplyBlending,
+  Scene, OrthographicCamera, Color, SRGBColorSpace,
+  WebGLRenderer,
   InstancedMesh, CircleGeometry, MeshBasicMaterial,
 } from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
@@ -153,26 +153,36 @@ function createHeroScene() {
   const scene = new Scene()
   const geometry = new CircleGeometry(cfg.dotRadius, cfg.dotSegments)
 
-  const cmyColors = semantic.color.cmy
-  const channels = [
-    { color: cmyColors.cyan,    order: 0 },
-    { color: cmyColors.magenta, order: 1 },
-    { color: cmyColors.yellow,  order: 2 },
+  const accentColors = semantic.color.accent
+  const accentOpacity = cfg.accentOpacity ?? 1
+  // Draw order: accents first (underneath), dark last (on top)
+  // Timing order: dark leads (delay 0), accents trail (delay 1,2,3)
+  // Draw order (bottom→top): R → G → B → dark
+  // Timing order: dark leads (0), then R(1) → G(2) → B(3)
+  const layers = [
+    { color: accentColors['1'], delay: 1, opacity: accentOpacity },
+    { color: accentColors['2'], delay: 2, opacity: accentOpacity },
+    { color: accentColors['3'], delay: 3, opacity: accentOpacity },
+    { color: semantic.color.text.primary, delay: 0, opacity: 1 },
   ]
 
-  const meshes = channels.map(({ color, order }) => {
+  const meshes = []
+  const delays = []
+  for (const layer of layers) {
     const mat = new MeshBasicMaterial({
-      color,
-      blending: MultiplyBlending,
+      color: layer.color,
       depthWrite: false,
+      depthTest: false,
+      transparent: true,
+      opacity: layer.opacity,
     })
     const mesh = new InstancedMesh(geometry, mat, total)
-    mesh.renderOrder = order
     scene.add(mesh)
-    return mesh
-  })
+    meshes.push(mesh)
+    delays.push(layer.delay)
+  }
 
-  return { scene, meshes, posX, posY, dist, dotScales, total }
+  return { scene, meshes, delays, posX, posY, dist, dotScales, total }
 }
 
 /* -- Main export -- */
@@ -197,9 +207,10 @@ export default function HeroCanvas() {
     // Renderer
     const dpr = Math.min(window.devicePixelRatio, cfg.maxDpr)
     const renderer = new WebGLRenderer({ antialias: false, alpha: false })
+    renderer.sortObjects = false
+    renderer.outputColorSpace = SRGBColorSpace
     renderer.setPixelRatio(dpr)
-    const bgColor = new Color(semantic.color.bg.primary).convertSRGBToLinear()
-    renderer.setClearColor(bgColor, 1)
+    renderer.setClearColor(new Color(cfg.bgColor || semantic.color.bg.primary).convertSRGBToLinear(), 1)
     container.appendChild(renderer.domElement)
     renderer.domElement.style.display = 'block'
 
@@ -209,7 +220,7 @@ export default function HeroCanvas() {
     camera.zoom = cfg.zoom
 
     // Scene + 3 CMY dot layers
-    const { scene, meshes, posX, posY, dist, dotScales, total } = createHeroScene()
+    const { scene, meshes, delays, posX, posY, dist, dotScales, total } = createHeroScene()
 
     // Post-processing: RenderPass → FXAA → OutputPass
     const composer = new EffectComposer(renderer)
@@ -285,9 +296,9 @@ export default function HeroCanvas() {
       const elapsed = (performance.now() - startTime - pauseAccum) / 1000
       const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
 
-      // Update each CMY layer at a different time offset
+      // Update each layer at its own time offset
       meshes.forEach((mesh, i) => {
-        updateDots(mesh.instanceMatrix.array, total, posX, posY, dist, dotScales, time - i * delay)
+        updateDots(mesh.instanceMatrix.array, total, posX, posY, dist, dotScales, time - delays[i] * delay)
         mesh.instanceMatrix.needsUpdate = true
       })
 

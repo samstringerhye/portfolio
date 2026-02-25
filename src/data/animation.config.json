@@ -1,15 +1,15 @@
 {
   "$schema": "./animation.config.schema.json",
   "textReveal": {
-    "duration": 1,
-    "wordStagger": 0.05,
-    "blockStagger": 0.25,
-    "slideUp": 40,
-    "initialBlur": 10,
+    "duration": 0.5,
+    "wordStagger": 0.1,
+    "blockStagger": 0.1,
+    "slideUp": 100,
+    "initialBlur": 20,
     "ease": { "$ref": "semantic.motion.gsapEasing.enter" },
     "scrollStart": "top 70%",
-    "cmyStagger": 0.075,
-    "cmyOpacity": 1
+    "cmyStagger": 0.04,
+    "cmyOpacity": 0.4
   },
   "hero": {
     "canvas": {
@@ -32,7 +32,9 @@
       "twistAmount": 0.5,
       "zoom": 20,
       "maxDpr": 2,
-      "cmyStagger": 0.03
+      "cmyStagger": 0.03,
+      "accentOpacity": 0.6,
+      "bgColor": { "$ref": "semantic.color.bg.primary" }
     },
     "text": {
       "startDelay": 0.25
@@ -60,6 +62,17 @@
       "highlightsHideEase": { "$ref": "semantic.motion.gsapEasing.bounceIn" }
     }
   },
+  "workHover": {
+    "radius": 0.4,
+    "channelSpread": { "r": 0.4, "g": 0.45, "b": 0.35 },
+    "mouseSmoothing": 0.2,
+    "speedSmoothing": 0.2,
+    "speedDecay": 0.999,
+    "maxVelocity": 1.25,
+    "idleThreshold": 0.001,
+    "fadeDuration": 0.4,
+    "maxDpr": 1.8
+  },
   "dotGrid": {
     "spacing": 30,
     "radius": 1,
@@ -71,5 +84,11 @@
   "smoothScroll": {
     "lerp": 0.25,
     "wheelMultiplier": 1.4
+  },
+  "pageTransition": {
+    "duration": 0.25,
+    "stagger": 0.04,
+    "ease": "power2.inOut",
+    "exitDelay": 0.05
   }
 }

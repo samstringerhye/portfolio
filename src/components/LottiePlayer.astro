@@ -1,0 +1,87 @@
+---
+/**
+ * Inline Lottie animation player.
+ * Loads animation JSON at build time and plays on viewport entry.
+ */
+interface Props {
+  /** Path to the Lottie JSON file (relative to project root) */
+  src: string
+  /** Accessible label */
+  label: string
+  /** Whether to loop (default: true) */
+  loop?: boolean
+  /** Whether to autoplay on viewport entry (default: true) */
+  autoplay?: boolean
+  /** Max width constraint */
+  maxWidth?: string
+}
+
+const { src, label, loop = true, autoplay = true, maxWidth = '200px' } = Astro.props
+
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+let animationData: string | null = null
+try {
+  const filePath = resolve(process.cwd(), src)
+  animationData = readFileSync(filePath, 'utf-8')
+} catch (e) {
+  console.warn(`LottiePlayer: Could not read ${src}`)
+}
+---
+
+{animationData && (
+  <div
+    class="lottie-player"
+    data-animation={animationData}
+    data-loop={String(loop)}
+    data-autoplay={String(autoplay)}
+    role="img"
+    aria-label={label}
+    style={`max-width: ${maxWidth}; margin: 0 auto;`}
+  />
+)}
+
+<style>
+  .lottie-player {
+    width: 100%;
+    aspect-ratio: 1;
+  }
+</style>
+
+<script>
+  async function initLottie() {
+    const players = document.querySelectorAll<HTMLElement>('.lottie-player[data-animation]')
+    if (players.length === 0) return
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const lottie = await import('https://cdn.jsdelivr.net/npm/lottie-web@5/build/player/lottie_light.min.js')
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const el = entry.target as HTMLElement
+        if (entry.isIntersecting && !el.dataset.initialized) {
+          el.dataset.initialized = 'true'
+          try {
+            const animData = JSON.parse(el.dataset.animation!)
+            lottie.default.loadAnimation({
+              container: el,
+              renderer: 'svg',
+              loop: prefersReduced ? false : el.dataset.loop === 'true',
+              autoplay: prefersReduced ? false : el.dataset.autoplay === 'true',
+              animationData: animData,
+            })
+          } catch (e) {
+            console.warn('LottiePlayer: Failed to parse animation data')
+          }
+        }
+      })
+    }, { threshold: 0.2 })
+
+    players.forEach(p => observer.observe(p))
+  }
+
+  initLottie()
+  document.addEventListener('astro:page-load', initLottie)
+</script>

@@ -9,12 +9,14 @@ interface Props {
   headlineRole?: TypographyRole
   bodyTag?: TextTag
   bodyRole?: TypographyRole
+  contentInset?: 'sm' | 'md' | 'lg'
 }
 
 const {
   headline, body,
   headlineTag = 'h2', headlineRole = 'prose-title-lg',
   bodyTag = 'p', bodyRole = 'prose-subhead-lg',
+  contentInset = 'md',
 } = Astro.props as Props
 const HeadlineTag = headlineTag as any
 const BodyTag = bodyTag as any
@@ -23,7 +25,7 @@ const revealCfg = animations.textReveal
 const bioInitBlur = `${revealCfg.initialBlur}px`
 ---
 
-<section class="bio-section" aria-label="About">
+<section class="bio-section" aria-label="About" style={`--content-inset: var(--content-inset-${contentInset})`}>
   <div class="bio-inner" data-reveal-group>
     <div class="bio-left">
       <HeadlineTag class:list={["bio-headline", `typo-${headlineRole}`]} data-reveal>{headline}</HeadlineTag>
@@ -47,17 +49,15 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
 
   .bio-inner {
     display: grid;
-    grid-template-columns: 1fr auto 2fr;
+    grid-template-columns: auto auto 1fr;
     width: 100%;
-    padding-inline: var(--page-margin);
   }
 
   .bio-left {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-left: var(--content-inset);
-    padding-right: var(--grid-gutter);
+    padding: var(--content-inset);
   }
 
   .bio-headline {
@@ -69,48 +69,49 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
 
   .bio-divider {
     width: var(--border-width-1);
-    background: var(--color-accent);
+    background: var(--color-rule);
   }
 
   .bio-right {
     position: relative;
     display: flex;
     align-items: center;
-    padding: calc(var(--content-inset) * 4) var(--content-inset);
+    padding: var(--content-inset);
   }
 
   .bio-crosshair {
     position: absolute;
     width: 1.5rem;
     height: 1.5rem;
-    stroke: var(--color-accent);
+    stroke: var(--color-rule);
     stroke-width: var(--border-width-1);
   }
 
   .bio-crosshair-tl {
-    top: calc(var(--content-inset) / 2);
-    left: calc(var(--content-inset) / 2);
+    top: var(--space-2);
+    left: var(--space-2);
   }
 
   .bio-crosshair-tr {
-    top: calc(var(--content-inset) / 2);
-    right: calc(var(--content-inset) / 2);
+    top: var(--space-2);
+    right: var(--space-2);
   }
 
   .bio-crosshair-bl {
-    bottom: calc(var(--content-inset) / 2);
-    left: calc(var(--content-inset) / 2);
+    bottom: var(--space-2);
+    left: var(--space-2);
   }
 
   .bio-crosshair-br {
-    bottom: calc(var(--content-inset) / 2);
-    right: calc(var(--content-inset) / 2);
+    bottom: var(--space-2);
+    right: var(--space-2);
   }
 
   .bio-text {
     color: var(--color-text-primary);
     margin: 0;
     width: 100%;
+    text-wrap: pretty;
   }
 
   .bio-text {
@@ -124,8 +125,7 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
     }
 
     .bio-left {
-      padding-block: var(--content-inset);
-      padding-inline: var(--content-inset);
+      padding: var(--content-inset);
     }
 
     .bio-right {

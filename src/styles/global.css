@@ -12,7 +12,6 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
-  overflow-x: hidden;
 }
 
 body {
@@ -25,17 +24,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  max-width: calc(1600px + 4rem);
+  margin-inline: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
-  line-height: var(--line-height-normal);
-  font-weight: var(--font-weight-regular);
 }
 
 p {
-  font-size: var(--text-1x);
-  line-height: var(--line-height-normal);
   text-wrap: pretty;
 }
 
@@ -138,10 +135,32 @@ ol {
   border: 0;
 }
 
+/* ── 12-column grid system ── */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: var(--grid-gutter);
+  padding-inline: var(--page-margin);
+}
+
+.grid-12 > * {
+  grid-column: 1 / -1;
+}
+
+.col-span-6 { grid-column: span 6; }
+.col-span-8 { grid-column: span 8; }
+.col-span-12 { grid-column: span 12; }
+
+/* Centered spans */
+.col-6-center { grid-column: 4 / 10; }
+.col-8-center { grid-column: 3 / 11; }
+
 /* Persistent vertical guide lines (mikekus-style grid framework) */
 .grid-overlay {
   position: fixed;
   inset: 0;
+  max-width: calc(1600px + 4rem);
+  margin-inline: auto;
   z-index: var(--z-debug);
   pointer-events: none;
 }
@@ -153,7 +172,7 @@ ol {
   top: 0;
   bottom: 0;
   width: var(--border-width-1);
-  background: var(--color-accent);
+  background: var(--color-rule);
   opacity: 1;
 }
 
@@ -169,9 +188,8 @@ ol {
 .section-rule {
   position: relative;
   border: none;
-  border-top: var(--border-width-1) solid var(--color-accent);
+  border-top: var(--border-width-1) solid var(--color-rule);
   margin: 0;
-  margin-inline: var(--page-margin);
 }
 
 .section-rule::before,
@@ -183,7 +201,7 @@ ol {
   font-family: var(--font-sans);
   font-size: var(--section-rule-mark-size);
   line-height: 1;
-  color: var(--color-accent);
+  color: var(--color-rule);
   opacity: var(--opacity-60);
 }
 

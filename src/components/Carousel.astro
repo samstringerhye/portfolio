@@ -1,0 +1,147 @@
+---
+/**
+ * Horizontal scroll carousel with CSS scroll-snap.
+ * Images are displayed at their natural aspect ratio.
+ * Dots indicate position, keyboard arrows navigate.
+ */
+interface Props {
+  /** Optional label shown above the carousel */
+  label?: string
+}
+
+const { label } = Astro.props
+---
+
+<div class="carousel" tabindex="0" role="region" aria-label={label || 'Image carousel'}>
+  <div class="carousel-track">
+    <slot />
+  </div>
+  <div class="carousel-dots" aria-hidden="true"></div>
+</div>
+
+<style>
+  .carousel {
+    overflow: hidden;
+    position: relative;
+    outline: none;
+  }
+
+  .carousel-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+  }
+
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Each image (rendered as <p><img></p> by markdown) is a slide */
+  .carousel-track > :global(p) {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 0;
+    margin: 0;
+    border: none;
+  }
+
+  .carousel-track :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Dots */
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: var(--space-2) 0;
+  }
+
+  .carousel-dots :global(.dot) {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-text-secondary);
+    opacity: 0.3;
+    transition: opacity 0.2s;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .carousel-dots :global(.dot.active) {
+    opacity: 1;
+    background: var(--color-text-primary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-track {
+      scroll-behavior: auto;
+    }
+  }
+</style>
+
+<script>
+  function initCarousels() {
+    document.querySelectorAll('.carousel').forEach(carousel => {
+      const track = carousel.querySelector('.carousel-track')
+      const dotsContainer = carousel.querySelector('.carousel-dots')
+      if (!track || !dotsContainer) return
+
+      const slides = track.querySelectorAll(':scope > p')
+      if (slides.length <= 1) {
+        dotsContainer.style.display = 'none'
+        return
+      }
+
+      // Build dots
+      dotsContainer.innerHTML = ''
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button')
+        dot.className = `dot${i === 0 ? ' active' : ''}`
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`)
+        dot.addEventListener('click', () => {
+          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          slides[i].scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'nearest', inline: 'start' })
+        })
+        dotsContainer.appendChild(dot)
+      })
+
+      // Update dots on scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const index = Array.from(slides).indexOf(entry.target as Element)
+            dotsContainer.querySelectorAll('.dot').forEach((d, i) => {
+              d.classList.toggle('active', i === index)
+            })
+          }
+        })
+      }, { root: track, threshold: 0.5 })
+
+      slides.forEach(slide => observer.observe(slide))
+
+      // Keyboard navigation
+      carousel.addEventListener('keydown', (e) => {
+        const currentIndex = Array.from(slides).findIndex(
+          (_, i) => dotsContainer.querySelectorAll('.dot')[i]?.classList.contains('active')
+        )
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        const behavior = prefersReduced ? 'auto' : 'smooth'
+        if ((e as KeyboardEvent).key === 'ArrowRight' && currentIndex < slides.length - 1) {
+          slides[currentIndex + 1].scrollIntoView({ behavior, block: 'nearest', inline: 'start' })
+        } else if ((e as KeyboardEvent).key === 'ArrowLeft' && currentIndex > 0) {
+          slides[currentIndex - 1].scrollIntoView({ behavior, block: 'nearest', inline: 'start' })
+        }
+      })
+    })
+  }
+
+  initCarousels()
+  document.addEventListener('astro:page-load', initCarousels)
+</script>

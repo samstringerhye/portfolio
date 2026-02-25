@@ -9,10 +9,11 @@
     "primitives": { "$ref": "#/definitions/primitives" },
     "semantic": { "$ref": "#/definitions/semantic" },
     "roles": { "$ref": "#/definitions/roles" },
+    "elementMap": { "$ref": "#/definitions/elementMap" },
     "hover": { "$ref": "#/definitions/hover" },
     "prose": { "$ref": "#/definitions/prose" }
   },
-  "required": ["primitives", "semantic", "roles", "hover", "prose"],
+  "required": ["primitives", "semantic", "roles", "elementMap", "hover", "prose"],
   "additionalProperties": false,
 
   "definitions": {
@@ -52,9 +53,9 @@
         "primitives.color.alpha.black8",
         "primitives.color.alpha.black30",
 
-        "primitives.color.cmy.cyan",
-        "primitives.color.cmy.magenta",
-        "primitives.color.cmy.yellow",
+        "primitives.color.accent.1",
+        "primitives.color.accent.2",
+        "primitives.color.accent.3",
 
         "primitives.spacing.1",
         "primitives.spacing.2",
@@ -117,10 +118,10 @@
         "semantic.color.text.secondary",
         "semantic.color.bg.primary",
         "semantic.color.bg.alt",
-        "semantic.color.accent",
-        "semantic.color.cmy.cyan",
-        "semantic.color.cmy.magenta",
-        "semantic.color.cmy.yellow",
+        "semantic.color.rule",
+        "semantic.color.accent.1",
+        "semantic.color.accent.2",
+        "semantic.color.accent.3",
         "semantic.color.border",
         "semantic.color.backdrop",
 
@@ -294,13 +295,13 @@
               },
               "additionalProperties": false
             },
-            "cmy": {
+            "accent": {
               "type": "object",
-              "description": "Pure CMY base colors (no alpha) — single source for all aberration effects",
+              "description": "Accent colors — single source for all chromatic/hover effects",
               "properties": {
-                "cyan":    { "$ref": "#/definitions/hexColor" },
-                "magenta": { "$ref": "#/definitions/hexColor" },
-                "yellow":  { "$ref": "#/definitions/hexColor" }
+                "1": { "$ref": "#/definitions/hexColor" },
+                "2": { "$ref": "#/definitions/hexColor" },
+                "3": { "$ref": "#/definitions/hexColor" }
               },
               "additionalProperties": false
             }
@@ -487,14 +488,14 @@
               },
               "additionalProperties": false
             },
-            "accent":      { "$ref": "#/definitions/refObject" },
-            "cmy": {
+            "rule":        { "$ref": "#/definitions/refObject" },
+            "accent": {
               "type": "object",
-              "description": "Semantic CMY color assignments for aberration and effects",
+              "description": "Semantic accent color assignments for chromatic and hover effects",
               "properties": {
-                "cyan":    { "$ref": "#/definitions/refObject" },
-                "magenta": { "$ref": "#/definitions/refObject" },
-                "yellow":  { "$ref": "#/definitions/refObject" }
+                "1": { "$ref": "#/definitions/refObject" },
+                "2": { "$ref": "#/definitions/refObject" },
+                "3": { "$ref": "#/definitions/refObject" }
               },
               "additionalProperties": false
             },
@@ -613,11 +614,25 @@
         "prose-title-lg":    { "$ref": "#/definitions/typographyRole" },
         "prose-heading-lg":  { "$ref": "#/definitions/typographyRole" },
         "prose-subhead-lg":  { "$ref": "#/definitions/typographyRole" },
+        "prose-title-sm":    { "$ref": "#/definitions/typographyRole" },
+        "prose-heading-sm":  { "$ref": "#/definitions/typographyRole" },
         "prose-body":        { "$ref": "#/definitions/typographyRole" },
         "ui-nav-item-lg":    { "$ref": "#/definitions/typographyRole" },
         "ui-nav-section":    { "$ref": "#/definitions/typographyRole" }
       },
       "additionalProperties": false
+    },
+
+    "elementMap": {
+      "type": "object",
+      "description": "Maps HTML elements to typography role names for base element styling",
+      "propertyNames": {
+        "enum": ["h1", "h2", "h3", "h4", "h5", "h6", "p", "li"]
+      },
+      "additionalProperties": {
+        "type": "string",
+        "description": "Name of a typography role from the roles section"
+      }
     },
 
     "hover": {
