@@ -29,7 +29,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  max-width: calc(1600px + 4rem);
+  max-width: calc(1440px + 4rem);
   margin-inline: auto;
 }
 
@@ -152,19 +152,11 @@ ol {
   grid-column: 1 / -1;
 }
 
-.col-span-6 { grid-column: span 6; }
-.col-span-8 { grid-column: span 8; }
-.col-span-12 { grid-column: span 12; }
-
-/* Centered spans */
-.col-6-center { grid-column: 4 / 10; }
-.col-8-center { grid-column: 3 / 11; }
-
 /* Persistent vertical guide lines (mikekus-style grid framework) */
 .grid-overlay {
   position: fixed;
   inset: 0;
-  max-width: calc(1600px + 4rem);
+  max-width: calc(1440px + 4rem);
   margin-inline: auto;
   z-index: var(--z-debug);
   pointer-events: none;

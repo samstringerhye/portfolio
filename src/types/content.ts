@@ -1,5 +1,7 @@
 import type { HeadingTag, TextTag, TypographyRole } from './typography'
 
+export type ContentInset = 'sm' | 'md' | 'lg'
+
 export interface HomeContent {
   hero: {
     headline: string
@@ -13,6 +15,7 @@ export interface HomeContent {
     body: string
     bodyTag: TextTag
     bodyRole: TypographyRole
+    contentInset?: ContentInset
   }
   work: {
     headline: string
@@ -20,6 +23,7 @@ export interface HomeContent {
     headingRole: TypographyRole
     cardTitleTag: HeadingTag
     cardTitleRole: TypographyRole
+    contentInset?: ContentInset
   }
   experience: ExperienceContent
   interests: {
@@ -46,5 +50,6 @@ export interface ExperienceContent {
   jobTitleRole: TypographyRole
   companyRole: TypographyRole
   highlightRole: TypographyRole
+  contentInset?: ContentInset
   jobs: ExperienceJob[]
 }

@@ -19,13 +19,12 @@
     --font-weight-regular: 400;
     --font-weight-semibold: 600;
     --text-1x: 1rem;
-    --text-body: clamp(1.13rem, 1.0867rem + 0.1633vw, 1.25rem);
-    --text-2x: 1.333rem;
-    --text-3x: clamp(1.50rem, 1.4152rem + 0.3618vw, 1.78rem);
-    --text-4x: clamp(1.75rem, 1.5605rem + 0.8085vw, 2.37rem);
-    --text-5x: clamp(2.00rem, 1.6458rem + 1.5112vw, 3.16rem);
-    --text-6x: clamp(2.50rem, 1.9768rem + 2.2322vw, 4.21rem);
-    --text-7x: clamp(3.00rem, 2.2010rem + 3.4090vw, 5.61rem);
+    --text-base: clamp(1.13rem, 1.0810rem + 0.1878vw, 1.25rem);
+    --text-3x: clamp(1.50rem, 1.4025rem + 0.4162vw, 1.78rem);
+    --text-4x: clamp(1.75rem, 1.5320rem + 0.9300vw, 2.37rem);
+    --text-5x: clamp(2.00rem, 1.5926rem + 1.7382vw, 3.16rem);
+    --text-6x: clamp(2.50rem, 1.8982rem + 2.5675vw, 4.21rem);
+    --text-7x: clamp(3.00rem, 2.0810rem + 3.9211vw, 5.61rem);
     --line-height-tight: 1.25;
     --line-height-normal: 1.5;
     --tracking-tighter: -0.04em;
@@ -45,20 +44,20 @@
     --space-1: 0.5rem;
     --space-2: 1rem;
     --space-3: 1.5rem;
-    --space-4: clamp(1.00rem, 0.6939rem + 1.3061vw, 2.00rem);
-    --space-6: clamp(1.00rem, 0.0816rem + 3.9184vw, 4.00rem);
-    --space-8: clamp(2.00rem, 0.7755rem + 5.2245vw, 6.00rem);
-    --space-10: clamp(2.00rem, 0.1633rem + 7.8367vw, 8.00rem);
-    --space-12: clamp(2.00rem, -0.4490rem + 10.4490vw, 10.00rem);
+    --space-4: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --space-5: clamp(2.00rem, 1.2958rem + 3.0047vw, 4.00rem);
+    --space-6: clamp(2.50rem, 1.6197rem + 3.7559vw, 5.00rem);
+    --space-7: clamp(3.00rem, 1.2394rem + 7.5117vw, 8.00rem);
+    --space-8: clamp(4.00rem, 1.8873rem + 9.0141vw, 10.00rem);
     --inline-spacing-1x: 0.1em;
     --inline-spacing-2x: 0.3em;
-    --page-margin: clamp(1.00rem, 0.6939rem + 1.3061vw, 2.00rem);
-    --content-inset-sm: clamp(1.00rem, 0.6939rem + 1.3061vw, 2.00rem);
-    --content-inset-md: clamp(2.00rem, 0.7755rem + 5.2245vw, 6.00rem);
-    --content-inset-lg: clamp(2.00rem, 0.1633rem + 7.8367vw, 8.00rem);
+    --page-margin: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --content-inset-sm: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --content-inset-md: clamp(2.50rem, 1.6197rem + 3.7559vw, 5.00rem);
+    --content-inset-lg: clamp(3.00rem, 1.2394rem + 7.5117vw, 8.00rem);
     --content-inset: var(--content-inset-md);
-    --grid-gutter: clamp(1.00rem, 0.6939rem + 1.3061vw, 2.00rem);
-    --section-padding: clamp(1.00rem, 0.6939rem + 1.3061vw, 2.00rem);
+    --grid-gutter: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
+    --section-padding: clamp(1.50rem, 1.3239rem + 0.7512vw, 2.00rem);
     --nav-height: 4.5rem;
     --touch-target: 44px;
     --section-rule-mark-size: 0.85rem;
@@ -67,6 +66,9 @@
     --nav-toggle-bar-width: 20px;
     --nav-toggle-bar-height: 1.5px;
     --nav-toggle-gap: 5px;
+    --prose-measure: 66ch;
+    --prose-heading-measure: 42rem;
+    --cs-section-gap: var(--space-5);
     --radius-1x: 4px;
     --radius-2x: 8px;
     --radius-3x: 12px;
@@ -108,77 +110,63 @@
     --focus-ring: 0 0 0 var(--focus-ring-width) var(--color-bg-primary), 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
     --border-light: var(--border-width-1) solid var(--color-rule);
   }
-  .typo-prose-title-lg {
+  .typo-display {
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: clamp(3.00rem, 2.2010rem + 3.4090vw, 5.61rem);
+    font-size: clamp(3.00rem, 2.0810rem + 3.9211vw, 5.61rem);
     line-height: 1.25;
     letter-spacing: 0em;
   }
-  .typo-prose-heading-lg {
+  .typo-display-sm {
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: clamp(2.00rem, 1.6458rem + 1.5112vw, 3.16rem);
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-  }
-  .typo-prose-lede {
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: clamp(2.00rem, 1.6458rem + 1.5112vw, 3.16rem);
-    line-height: 1.5;
-    letter-spacing: 0em;
-  }
-  .typo-prose-subhead-lg {
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: clamp(1.50rem, 1.4152rem + 0.3618vw, 1.78rem);
-    line-height: 1.5;
-    letter-spacing: 0em;
-  }
-  .typo-prose-subhead-sm {
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: 1.333rem;
-    line-height: 1.5;
-    letter-spacing: 0em;
-  }
-  .typo-prose-title-sm {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(2.50rem, 1.9768rem + 2.2322vw, 4.21rem);
+    font-size: clamp(2.50rem, 1.8982rem + 2.5675vw, 4.21rem);
     line-height: 1.25;
     letter-spacing: -0.02em;
   }
-  .typo-prose-heading-sm {
+  .typo-heading-lg {
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: clamp(1.75rem, 1.5605rem + 0.8085vw, 2.37rem);
+    font-size: clamp(2.00rem, 1.5926rem + 1.7382vw, 3.16rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .typo-heading-sm {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 1.5320rem + 0.9300vw, 2.37rem);
     line-height: 1.5;
     letter-spacing: 0em;
   }
-  .typo-prose-label {
+  .typo-subhead {
     font-family: var(--font-sans);
     font-weight: 600;
-    font-size: clamp(1.13rem, 1.0867rem + 0.1633vw, 1.25rem);
+    font-size: clamp(1.50rem, 1.4025rem + 0.4162vw, 1.78rem);
     line-height: 1.5;
     letter-spacing: 0em;
   }
-  .typo-prose-body {
+  .typo-label {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(1.13rem, 1.0810rem + 0.1878vw, 1.25rem);
+    line-height: 1.5;
+    letter-spacing: 0em;
+  }
+  .typo-body {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(1.13rem, 1.0867rem + 0.1633vw, 1.25rem);
+    font-size: clamp(1.13rem, 1.0810rem + 0.1878vw, 1.25rem);
     line-height: 1.5;
     letter-spacing: 0em;
   }
-  .typo-ui-nav-item-lg {
+  .typo-ui {
     font-family: var(--font-sans);
     font-weight: 600;
     font-size: 1rem;
     line-height: 1.5;
     letter-spacing: 0em;
   }
-  .typo-ui-nav-section {
+  .typo-ui-caps {
     font-family: var(--font-sans);
     font-weight: 600;
     font-size: 1rem;
@@ -188,9 +176,9 @@
   h1 {
     font-family: var(--font-serif);
     font-weight: var(--font-weight-regular);
-    font-size: var(--text-7x);
+    font-size: var(--text-6x);
     line-height: var(--line-height-tight);
-    letter-spacing: var(--tracking-normal);
+    letter-spacing: var(--tracking-tight);
   }
   h2 {
     font-family: var(--font-serif);
@@ -216,38 +204,38 @@
   h5 {
     font-family: var(--font-sans);
     font-weight: var(--font-weight-semibold);
-    font-size: var(--text-2x);
+    font-size: var(--text-base);
     line-height: var(--line-height-normal);
     letter-spacing: var(--tracking-normal);
   }
   h6 {
     font-family: var(--font-sans);
     font-weight: var(--font-weight-semibold);
-    font-size: var(--text-body);
+    font-size: var(--text-base);
     line-height: var(--line-height-normal);
     letter-spacing: var(--tracking-normal);
   }
   p {
     font-family: var(--font-sans);
     font-weight: var(--font-weight-regular);
-    font-size: var(--text-body);
+    font-size: var(--text-base);
     line-height: var(--line-height-normal);
     letter-spacing: var(--tracking-normal);
   }
   li {
     font-family: var(--font-sans);
     font-weight: var(--font-weight-regular);
-    font-size: var(--text-body);
+    font-size: var(--text-base);
     line-height: var(--line-height-normal);
     letter-spacing: var(--tracking-normal);
   }</style><noscript><style>.cmy-word { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CDGfc0hd.js"></script><style>.not-found[data-astro-cid-zetdm5md]{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:calc(100vh - var(--nav-height));padding:var(--space-4);gap:var(--space-2)}.not-found-link[data-astro-cid-zetdm5md]{margin-top:var(--space-3);padding:var(--space-1) var(--space-4);border:var(--border-light);border-radius:var(--radius-2x);transition:box-shadow var(--transition-1x) ease,transform var(--transition-fast) ease}.not-found-link[data-astro-cid-zetdm5md]:hover{transform:translateY(var(--hover-lift))}
 </style>
-<link rel="stylesheet" href="/_astro/_slug_.z9lUdBa3.css"></head> <body> <a href="#main" class="skip-to-content">Skip to content</a> <div class="grid-overlay" aria-hidden="true"></div> <header class="nav" id="site-nav" data-astro-cid-dmqpwcec> <nav class="nav-inner" aria-label="Main navigation" data-astro-cid-dmqpwcec> <a href="/" class="nav-logo typo-ui-nav-item-lg" aria-label="Sam Stringer-Hye — Home" data-astro-cid-dmqpwcec>
+<link rel="stylesheet" href="/_astro/_slug_.BTWC0-fr.css"></head> <body> <a href="#main" class="skip-to-content">Skip to content</a> <div class="grid-overlay" aria-hidden="true"></div> <header class="nav" id="site-nav" data-astro-cid-dmqpwcec> <nav class="nav-inner" aria-label="Main navigation" data-astro-cid-dmqpwcec> <a href="/" class="nav-logo typo-ui" aria-label="Sam Stringer-Hye — Home" data-astro-cid-dmqpwcec>
 Sam Stringer-Hye
-</a> <ul class="nav-links" id="nav-links" role="list" data-astro-cid-dmqpwcec> <li data-astro-cid-dmqpwcec> <a href="/" class="nav-link typo-ui-nav-item-lg" data-astro-prefetch="hover" data-astro-cid-dmqpwcec> Home </a> </li><li data-astro-cid-dmqpwcec> <a href="/#selected-work" class="nav-link typo-ui-nav-item-lg" data-astro-prefetch="hover" data-astro-cid-dmqpwcec> Work </a> </li> <li data-astro-cid-dmqpwcec> <button class="nav-link typo-ui-nav-item-lg" data-about-trigger aria-haspopup="dialog" data-astro-cid-dmqpwcec>
+</a> <ul class="nav-links" id="nav-links" role="list" data-astro-cid-dmqpwcec> <li data-astro-cid-dmqpwcec> <a href="/" class="nav-link typo-ui" data-astro-prefetch="hover" data-astro-cid-dmqpwcec> Home </a> </li><li data-astro-cid-dmqpwcec> <a href="/#selected-work" class="nav-link typo-ui" data-astro-prefetch="hover" data-astro-cid-dmqpwcec> Work </a> </li> <li data-astro-cid-dmqpwcec> <button class="nav-link typo-ui" data-about-trigger aria-haspopup="dialog" data-astro-cid-dmqpwcec>
 About
-</button> </li> </ul> <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links" data-astro-cid-dmqpwcec> <span class="nav-toggle-bar" data-astro-cid-dmqpwcec></span> <span class="nav-toggle-bar" data-astro-cid-dmqpwcec></span> </button> </nav> </header>  <script type="module" src="/_astro/Nav.astro_astro_type_script_index_0_lang.s9BLYzfm.js"></script> <main id="main" class="grid-12" tabindex="-1">  <section class="not-found" data-astro-cid-zetdm5md> <p class="typo-ui-nav-section" style="color: var(--color-text-secondary);" data-astro-cid-zetdm5md>404</p> <h1 class="typo-prose-title-lg" data-astro-cid-zetdm5md>Page not found</h1> <p class="typo-prose-body" data-astro-cid-zetdm5md>The page you're looking for doesn't exist or has been moved.</p> <a href="/" class="not-found-link typo-prose-body" data-astro-cid-zetdm5md>Back to home</a> </section>  </main>  <div class="about-modal" id="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title" hidden data-astro-cid-mulelyzn> <div class="about-backdrop" data-about-close data-astro-cid-mulelyzn></div> <div class="about-content" tabindex="-1" data-astro-cid-mulelyzn> <button class="about-close" data-about-close aria-label="Close about panel" data-astro-cid-mulelyzn> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" data-astro-cid-mulelyzn> <path d="M18 6L6 18M6 6l12 12" data-astro-cid-mulelyzn></path> </svg> </button> <div class="about-body" data-astro-cid-mulelyzn> <h2 id="about-modal-title" class="typo-prose-title-lg" data-astro-cid-mulelyzn>Sam Stringer-Hye</h2> <p class="about-bio typo-prose-body" data-astro-cid-mulelyzn>
+</button> </li> </ul> <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links" data-astro-cid-dmqpwcec> <span class="nav-toggle-bar" data-astro-cid-dmqpwcec></span> <span class="nav-toggle-bar" data-astro-cid-dmqpwcec></span> </button> </nav> </header>  <script type="module" src="/_astro/Nav.astro_astro_type_script_index_0_lang.BqgxWB2X.js"></script> <main id="main" class="grid-12" tabindex="-1">  <section class="not-found" data-astro-cid-zetdm5md> <p class="typo-ui-caps" style="color: var(--color-text-secondary);" data-astro-cid-zetdm5md>404</p> <h1 class="typo-display" data-astro-cid-zetdm5md>Page not found</h1> <p class="typo-body" data-astro-cid-zetdm5md>The page you're looking for doesn't exist or has been moved.</p> <a href="/" class="not-found-link typo-body" data-astro-cid-zetdm5md>Back to home</a> </section>  </main>  <div class="about-modal" id="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title" hidden data-astro-cid-mulelyzn> <div class="about-backdrop" data-about-close data-astro-cid-mulelyzn></div> <div class="about-content" tabindex="-1" data-astro-cid-mulelyzn> <button class="about-close" data-about-close aria-label="Close about panel" data-astro-cid-mulelyzn> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" data-astro-cid-mulelyzn> <path d="M18 6L6 18M6 6l12 12" data-astro-cid-mulelyzn></path> </svg> </button> <div class="about-body" data-astro-cid-mulelyzn> <h2 id="about-modal-title" class="typo-display" data-astro-cid-mulelyzn>Sam Stringer-Hye</h2> <p class="about-bio typo-body" data-astro-cid-mulelyzn>
 Product designer at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll right past.
-</p> <p class="about-bio typo-prose-body" data-astro-cid-mulelyzn>
+</p> <p class="about-bio typo-body" data-astro-cid-mulelyzn>
 I care a lot about craft. How a transition feels, whether the type hierarchy actually works, if a component holds up at every breakpoint. That stuff never shows up in a brief, but you always notice it in the final product.
-</p> <nav class="about-links" aria-label="Contact links" data-astro-cid-mulelyzn> <a href="mailto:sam@samstringerhye.com" class="about-link typo-prose-body" data-astro-cid-mulelyzn>sam@samstringerhye.com</a> <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link typo-prose-body" data-astro-cid-mulelyzn>LinkedIn<span class="visually-hidden" data-astro-cid-mulelyzn> (opens in new tab)</span></a> <a href="/assets/resume.pdf" download class="about-link typo-prose-body" data-astro-cid-mulelyzn>Download Resume</a> </nav> </div> </div> </div>  <div class="rgb-shutter" id="rgb-shutter" aria-hidden="true" data-astro-transition-persist="rgb-shutter" data-astro-cid-p35sczsx> <div class="rgb-shutter-bar" data-bar="0" data-astro-cid-p35sczsx></div> <div class="rgb-shutter-bar" data-bar="1" data-astro-cid-p35sczsx></div> <div class="rgb-shutter-bar" data-bar="2" data-astro-cid-p35sczsx></div> </div>  <script type="module" src="/_astro/RGBShutter.astro_astro_type_script_index_0_lang.BPFedI3b.js"></script> <script type="module">function l(){const t=document.getElementById("about-modal");if(!t)return;const s=t.querySelector(".about-content"),i=document.querySelectorAll("[data-about-trigger]"),f=t.querySelectorAll("[data-about-close]");let d=null;function b(){d=document.activeElement,t.hidden=!1;const e=window.innerWidth-document.documentElement.clientWidth;document.body.style.overflow="hidden",document.body.style.paddingRight=`${e}px`,s?.focus()}function a(){t.hidden=!0,document.body.style.overflow="",document.body.style.paddingRight="",d?.focus()}i.forEach(e=>{const o=e;o.dataset.aboutTriggerBound!=="true"&&(o.dataset.aboutTriggerBound="true",o.addEventListener("click",b))}),f.forEach(e=>{const o=e;o.dataset.aboutCloserBound!=="true"&&(o.dataset.aboutCloserBound="true",o.addEventListener("click",a))}),t.__aboutKeydownHandler&&t.removeEventListener("keydown",t.__aboutKeydownHandler);const r=e=>{if(e.key==="Escape"){a();return}if(e.key==="Tab"){const o=t.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),u=o[0],c=o[o.length-1];e.shiftKey&&document.activeElement===u?(e.preventDefault(),c?.focus()):!e.shiftKey&&document.activeElement===c&&(e.preventDefault(),u?.focus())}};t.__aboutKeydownHandler=r,t.addEventListener("keydown",r)}const n=window;n.__aboutAfterSwapHandler&&document.removeEventListener("astro:after-swap",n.__aboutAfterSwapHandler);n.__aboutAfterSwapHandler=l;l();document.addEventListener("astro:after-swap",n.__aboutAfterSwapHandler);</script> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.CidNAfJq.js"></script> </body> </html> 
+</p> <nav class="about-links" aria-label="Contact links" data-astro-cid-mulelyzn> <a href="mailto:sam@samstringerhye.com" class="about-link typo-body" data-astro-cid-mulelyzn>sam@samstringerhye.com</a> <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link typo-body" data-astro-cid-mulelyzn>LinkedIn<span class="visually-hidden" data-astro-cid-mulelyzn> (opens in new tab)</span></a> <a href="/assets/resume.pdf" download class="about-link typo-body" data-astro-cid-mulelyzn>Download Resume</a> </nav> </div> </div> </div>  <div class="rgb-shutter" id="rgb-shutter" aria-hidden="true" data-astro-transition-persist="rgb-shutter" data-astro-cid-p35sczsx> <div class="rgb-shutter-bar" data-bar="0" data-astro-cid-p35sczsx></div> <div class="rgb-shutter-bar" data-bar="1" data-astro-cid-p35sczsx></div> <div class="rgb-shutter-bar" data-bar="2" data-astro-cid-p35sczsx></div> </div>  <script type="module" src="/_astro/RGBShutter.astro_astro_type_script_index_0_lang.D0u_3oJx.js"></script> <script type="module">function l(){const t=document.getElementById("about-modal");if(!t)return;const s=t.querySelector(".about-content"),i=document.querySelectorAll("[data-about-trigger]"),f=t.querySelectorAll("[data-about-close]");let d=null;function b(){d=document.activeElement,t.hidden=!1;const e=window.innerWidth-document.documentElement.clientWidth;document.body.style.overflow="hidden",document.body.style.paddingRight=`${e}px`,s?.focus()}function a(){t.hidden=!0,document.body.style.overflow="",document.body.style.paddingRight="",d?.focus()}i.forEach(e=>{const o=e;o.dataset.aboutTriggerBound!=="true"&&(o.dataset.aboutTriggerBound="true",o.addEventListener("click",b))}),f.forEach(e=>{const o=e;o.dataset.aboutCloserBound!=="true"&&(o.dataset.aboutCloserBound="true",o.addEventListener("click",a))}),t.__aboutKeydownHandler&&t.removeEventListener("keydown",t.__aboutKeydownHandler);const r=e=>{if(e.key==="Escape"){a();return}if(e.key==="Tab"){const o=t.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),u=o[0],c=o[o.length-1];e.shiftKey&&document.activeElement===u?(e.preventDefault(),c?.focus()):!e.shiftKey&&document.activeElement===c&&(e.preventDefault(),u?.focus())}};t.__aboutKeydownHandler=r,t.addEventListener("keydown",r)}const n=window;n.__aboutAfterSwapHandler&&document.removeEventListener("astro:after-swap",n.__aboutAfterSwapHandler);n.__aboutAfterSwapHandler=l;l();document.addEventListener("astro:after-swap",n.__aboutAfterSwapHandler);</script> <script type="module" src="/_astro/BaseLayout.astro_astro_type_script_index_1_lang.DYp_flkF.js"></script> </body> </html> 

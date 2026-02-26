@@ -21,7 +21,7 @@ const { title, description, ogImage, hideFooter = false } = Astro.props
 function buildClamp(min: number, max: number): string {
   if (min === max) return `${min}rem`
   const rootPx = 16
-  const slope = ((max - min) * rootPx * 100) / (1600 - 375)
+  const slope = ((max - min) * rootPx * 100) / (1440 - 375)
   const intercept = min - (slope * 375) / (100 * rootPx)
   return `clamp(${min.toFixed(2)}rem, ${intercept.toFixed(4)}rem + ${slope.toFixed(4)}vw, ${max.toFixed(2)}rem)`
 }
@@ -103,6 +103,9 @@ const sizingVars = [
   `--nav-toggle-bar-width: ${primitives.sizing.navToggleBarWidth};`,
   `--nav-toggle-bar-height: ${primitives.sizing.navToggleBarHeight};`,
   `--nav-toggle-gap: ${primitives.sizing.navToggleGap};`,
+  `--prose-measure: ${primitives.sizing.proseMeasure};`,
+  `--prose-heading-measure: ${primitives.sizing.proseHeadingMeasure};`,
+  `--cs-section-gap: var(--space-5);`,
 ].join('\n    ')
 
 /* ── Inline spacing vars ── */

@@ -5,12 +5,12 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 <BaseLayout title="Colophon — Sam Stringer-Hye" description="How this site was built.">
   <section class="colophon-page">
     <div class="colophon-header">
-      <p class="typo-ui-nav-section" style="color: var(--color-text-secondary);">About this site</p>
-      <h1 class="typo-prose-title-lg">Colophon</h1>
+      <p class="typo-ui-caps" style="color: var(--color-text-secondary);">About this site</p>
+      <h1 class="typo-display">Colophon</h1>
     </div>
 
     <div class="colophon-body" data-reveal="fade-up">
-      <h2>Tech Stack</h2>
+      <h2 class="typo-display-sm">Tech Stack</h2>
       <p>
         Built with <strong>Astro</strong> for static-first delivery with selective React hydration for interactive components.
         3D hero animation rendered with <strong>Three.js</strong>.
@@ -18,7 +18,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
         Smooth scrolling via <strong>Lenis</strong>. Deployed on <strong>Vercel</strong>.
       </p>
 
-      <h2>Typography</h2>
+      <h2 class="typo-display-sm">Typography</h2>
       <p>
         <strong>PP Editorial New</strong> by Pangram Pangram is used for display and headline roles, paired with
         <strong>PP Neue Montreal</strong> for body text and UI elements.
@@ -26,14 +26,14 @@ import BaseLayout from '../layouts/BaseLayout.astro'
         Hierarchy is driven by role tokens across scale, line height, and tracking.
       </p>
 
-      <h2>Design Language</h2>
+      <h2 class="typo-display-sm">Design Language</h2>
       <p>
         The prismatic/CMY (cyan, magenta, yellow) chromatic separation is used throughout as a unifying visual language.
         It appears in scroll reveals, hover effects, the hero animation's temporal RGB split, and the carousel's velocity-driven shadows.
         This references how white light splits through a prism — a metaphor for breaking a design system into its constituent parts.
       </p>
 
-      <h2>Accessibility</h2>
+      <h2 class="typo-display-sm">Accessibility</h2>
       <p>
         This site respects <code>prefers-reduced-motion</code> — all animations are disabled or minimized when the user has requested reduced motion.
         Navigation is fully keyboard-accessible, the about modal includes a focus trap, and all images include alt text.
@@ -44,11 +44,11 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
 <style>
   .colophon-page {
-    padding: var(--space-8) var(--page-padding);
+    padding: var(--space-6) var(--page-margin);
   }
 
   .colophon-header {
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
   }
 
   .colophon-header h1 {
@@ -56,12 +56,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   }
 
   .colophon-body h2 {
-    font-family: var(--font-serif);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--text-6x);
-    line-height: var(--line-height-normal);
-    letter-spacing: var(--tracking-normal);
-    margin-top: var(--space-6);
+    margin-top: var(--space-5);
     margin-bottom: var(--space-1);
   }
 
@@ -70,11 +65,6 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   }
 
   .colophon-body p {
-    font-family: var(--font-sans);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--text-1x);
-    line-height: var(--line-height-normal);
-    letter-spacing: var(--tracking-normal);
     margin-bottom: var(--space-3);
   }
 

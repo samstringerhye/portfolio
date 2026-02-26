@@ -30,7 +30,7 @@
         "primitives.font.weight.semibold",
 
         "primitives.font.scale.1x",
-        "primitives.font.scale.2x",
+        "primitives.font.scale.base",
         "primitives.font.scale.3x",
         "primitives.font.scale.4x",
         "primitives.font.scale.5x",
@@ -61,10 +61,10 @@
         "primitives.spacing.2",
         "primitives.spacing.3",
         "primitives.spacing.4",
+        "primitives.spacing.5",
         "primitives.spacing.6",
+        "primitives.spacing.7",
         "primitives.spacing.8",
-        "primitives.spacing.10",
-        "primitives.spacing.12",
 
         "primitives.inlineSpacing.1x",
         "primitives.inlineSpacing.2x",
@@ -239,7 +239,7 @@
               "description": "Type scale multipliers (fluid or fixed)",
               "properties": {
                 "1x": { "$ref": "#/definitions/fluidOrFixed" },
-                "2x": { "$ref": "#/definitions/fluidOrFixed" },
+                "base": { "$ref": "#/definitions/fluidOrFixed" },
                 "3x": { "$ref": "#/definitions/fluidOrFixed" },
                 "4x": { "$ref": "#/definitions/fluidOrFixed" },
                 "5x": { "$ref": "#/definitions/fluidOrFixed" },
@@ -316,10 +316,10 @@
             "2":  { "$ref": "#/definitions/fluidOrFixed" },
             "3":  { "$ref": "#/definitions/fluidOrFixed" },
             "4":  { "$ref": "#/definitions/fluidOrFixed" },
+            "5":  { "$ref": "#/definitions/fluidOrFixed" },
             "6":  { "$ref": "#/definitions/fluidOrFixed" },
-            "8":  { "$ref": "#/definitions/fluidOrFixed" },
-            "10": { "$ref": "#/definitions/fluidOrFixed" },
-            "12": { "$ref": "#/definitions/fluidOrFixed" }
+            "7":  { "$ref": "#/definitions/fluidOrFixed" },
+            "8":  { "$ref": "#/definitions/fluidOrFixed" }
           },
           "additionalProperties": false
         },
@@ -429,7 +429,8 @@
             "touchTarget":      { "$ref": "#/definitions/cssPx", "description": "Minimum touch target (44px)" },
             "navToggleBarWidth":  { "$ref": "#/definitions/cssPx" },
             "navToggleBarHeight": { "type": "string", "description": "Nav toggle bar height" },
-            "navToggleGap":       { "$ref": "#/definitions/cssPx" }
+            "navToggleGap":       { "$ref": "#/definitions/cssPx" },
+            "proseMeasure":       { "type": "string", "description": "Max inline size for prose text blocks" }
           },
           "additionalProperties": false
         },
@@ -609,16 +610,17 @@
 
     "roles": {
       "type": "object",
-      "description": "Named typography roles (prose-*, ui-*)",
+      "description": "Named typography roles",
       "properties": {
-        "prose-title-lg":    { "$ref": "#/definitions/typographyRole" },
-        "prose-heading-lg":  { "$ref": "#/definitions/typographyRole" },
-        "prose-subhead-lg":  { "$ref": "#/definitions/typographyRole" },
-        "prose-title-sm":    { "$ref": "#/definitions/typographyRole" },
-        "prose-heading-sm":  { "$ref": "#/definitions/typographyRole" },
-        "prose-body":        { "$ref": "#/definitions/typographyRole" },
-        "ui-nav-item-lg":    { "$ref": "#/definitions/typographyRole" },
-        "ui-nav-section":    { "$ref": "#/definitions/typographyRole" }
+        "display":      { "$ref": "#/definitions/typographyRole" },
+        "display-sm":   { "$ref": "#/definitions/typographyRole" },
+        "heading-lg":   { "$ref": "#/definitions/typographyRole" },
+        "heading-sm":   { "$ref": "#/definitions/typographyRole" },
+        "subhead":      { "$ref": "#/definitions/typographyRole" },
+        "label":        { "$ref": "#/definitions/typographyRole" },
+        "body":         { "$ref": "#/definitions/typographyRole" },
+        "ui":           { "$ref": "#/definitions/typographyRole" },
+        "ui-caps":      { "$ref": "#/definitions/typographyRole" }
       },
       "additionalProperties": false
     },

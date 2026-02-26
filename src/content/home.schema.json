@@ -8,29 +8,26 @@
       "type": "string",
       "description": "A typography role defined in tokens.json roles",
       "enum": [
-        "prose-title-lg",
-        "prose-title-sm",
-        "prose-heading-lg",
-        "prose-heading-sm",
-        "prose-subhead-lg",
-        "prose-subhead-sm",
-        "prose-body",
-        "prose-mono",
-        "prose-code-block",
-        "prose-blockquote",
-        "prose-list",
-        "ui-button-lg",
-        "ui-button-sm",
-        "ui-nav-item-lg",
-        "ui-nav-item-sm",
-        "ui-nav-section",
-        "ui-nav-badge"
+        "display",
+        "display-sm",
+        "heading-lg",
+        "heading-sm",
+        "subhead",
+        "label",
+        "body",
+        "ui",
+        "ui-caps"
       ]
     },
     "htmlTag": {
       "type": "string",
       "description": "HTML element tag for semantic markup",
       "enum": ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", "div"]
+    },
+    "contentInset": {
+      "type": "string",
+      "description": "Content inset size (maps to --content-inset-sm/md/lg)",
+      "enum": ["sm", "md", "lg"]
     },
     "dateMonth": {
       "type": "string",
@@ -60,7 +57,8 @@
         "headlineRole": { "$ref": "#/definitions/typographyRole" },
         "body":         { "type": "string", "minLength": 1, "description": "Bio body text" },
         "bodyTag":      { "$ref": "#/definitions/htmlTag" },
-        "bodyRole":     { "$ref": "#/definitions/typographyRole" }
+        "bodyRole":     { "$ref": "#/definitions/typographyRole" },
+        "contentInset": { "$ref": "#/definitions/contentInset" }
       },
       "required": ["headline", "body"],
       "additionalProperties": false
@@ -73,7 +71,8 @@
         "headingTag":    { "$ref": "#/definitions/htmlTag" },
         "headingRole":   { "$ref": "#/definitions/typographyRole" },
         "cardTitleTag":  { "$ref": "#/definitions/htmlTag" },
-        "cardTitleRole": { "$ref": "#/definitions/typographyRole" }
+        "cardTitleRole": { "$ref": "#/definitions/typographyRole" },
+        "contentInset": { "$ref": "#/definitions/contentInset" }
       },
       "required": ["headline"],
       "additionalProperties": false
@@ -91,6 +90,7 @@
         "companyRole":   { "$ref": "#/definitions/typographyRole" },
         "highlightTag":  { "$ref": "#/definitions/htmlTag" },
         "highlightRole": { "$ref": "#/definitions/typographyRole" },
+        "contentInset": { "$ref": "#/definitions/contentInset" },
         "jobs": {
           "type": "array",
           "description": "Work experience entries in reverse chronological order",

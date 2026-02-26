@@ -32,20 +32,22 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
+    row-gap: var(--cs-section-gap, var(--space-5));
   }
 
-  /* ── All children: full-width bordered frame ── */
+  /* ── All children: full-width bordered frame (all 4 sides) ── */
   .case-study-body > * {
     grid-column: 1 / -1;
-    border-left: var(--border-width-1) solid var(--color-text-primary);
-    border-right: var(--border-width-1) solid var(--color-text-primary);
-    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+    border: var(--border-width-1) solid var(--color-text-primary);
     margin: 0;
   }
 
-  /* Border-top on first child (hero image) */
-  .case-study-body > *:first-child {
-    border-top: var(--border-width-1) solid var(--color-text-primary);
+  /* ── Collapse: standalone h3 stays connected to following visual ── */
+  .case-study-body > h3 + .carousel,
+  .case-study-body > h3 + .image-pair,
+  .case-study-body > h3 + p:has(> img) {
+    margin-top: calc(-1 * var(--cs-section-gap, var(--space-5)));
+    border-top: none;
   }
 
   /* ── Hero image ── */
@@ -104,9 +106,9 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     overflow: hidden;
   }
 
-  /* ── Images: flush to cell edges ── */
+  /* ── Standalone images: breathing room inside bordered cell ── */
   .case-study-body > p:has(> img) {
-    padding: 0;
+    padding: var(--space-3);
   }
 
   .case-study-body img {

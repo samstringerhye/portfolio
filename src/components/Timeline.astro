@@ -11,10 +11,10 @@ const { contentInset = 'md' } = Astro.props as Props
 const home: HomeContent = homeData
 const {
   headline = 'Experience',
-  headingTag = 'h2', headingRole = 'prose-title-lg',
-  jobTitleTag = 'h3', jobTitleRole = 'prose-subhead-lg',
-  companyTag = 'p', companyRole = 'prose-body',
-  highlightRole = 'prose-body',
+  headingTag = 'h2', headingRole = 'display',
+  jobTitleTag = 'h3', jobTitleRole = 'subhead',
+  companyTag = 'p', companyRole = 'body',
+  highlightRole = 'body',
   jobs,
 } = home.experience
 
@@ -70,7 +70,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
           data-card-span={job.span}
         >
           <div class="timeline-card-wipe" aria-hidden="true"></div>
-          <p class="timeline-card-year typo-ui-nav-section" aria-hidden="true">{job.yearLabel}</p>
+          <p class="timeline-card-year typo-ui-caps" aria-hidden="true">{job.yearLabel}</p>
           <div class="timeline-card-left">
             <JobTitleTag class:list={["timeline-title", `typo-${jobTitleRole}`]}>{job.title}</JobTitleTag>
             <CompanyTag class:list={["timeline-company", `typo-${companyRole}`]}>{job.company}</CompanyTag>
@@ -98,7 +98,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
           <div class="timeline-year-group-wipe" aria-hidden="true"></div>
           {yearMarkers.slice(job.yearStart, job.yearStart + job.span).map(year => (
             <div class="timeline-year">
-              <p class="typo-ui-nav-section">{year}</p>
+              <p class="typo-ui-caps">{year}</p>
             </div>
           ))}
         </div>

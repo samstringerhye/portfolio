@@ -7,7 +7,7 @@ interface Props {
   textRole?: TypographyRole
 }
 
-const { interests, textRole = 'prose-title-lg' } = Astro.props as Props
+const { interests, textRole = 'display' } = Astro.props as Props
 const text = interests.join(' \u00b7 ') + ' \u00b7 '
 const copies = 4
 const dg = animations.dotGrid

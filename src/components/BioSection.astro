@@ -14,8 +14,8 @@ interface Props {
 
 const {
   headline, body,
-  headlineTag = 'h2', headlineRole = 'prose-title-lg',
-  bodyTag = 'p', bodyRole = 'prose-subhead-lg',
+  headlineTag = 'h2', headlineRole = 'display',
+  bodyTag = 'p', bodyRole = 'subhead',
   contentInset = 'md',
 } = Astro.props as Props
 const HeadlineTag = headlineTag as any

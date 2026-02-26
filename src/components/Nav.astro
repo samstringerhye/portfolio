@@ -15,7 +15,7 @@ function isActive(href: string) {
 
 <header class="nav" id="site-nav">
   <nav class="nav-inner" aria-label="Main navigation">
-    <a href="/" class="nav-logo typo-ui-nav-item-lg" aria-label="Sam Stringer-Hye — Home">
+    <a href="/" class="nav-logo typo-ui" aria-label="Sam Stringer-Hye — Home">
       Sam Stringer-Hye
     </a>
 
@@ -24,7 +24,7 @@ function isActive(href: string) {
         <li>
           <a
             href={link.href}
-            class:list={['nav-link', 'typo-ui-nav-item-lg', { active: isActive(link.href) }]}
+            class:list={['nav-link', 'typo-ui', { active: isActive(link.href) }]}
             aria-current={isActive(link.href) ? 'page' : undefined}
             data-astro-prefetch="hover"
           >
@@ -33,7 +33,7 @@ function isActive(href: string) {
         </li>
       ))}
       <li>
-        <button class="nav-link typo-ui-nav-item-lg" data-about-trigger aria-haspopup="dialog">
+        <button class="nav-link typo-ui" data-about-trigger aria-haspopup="dialog">
           About
         </button>
       </li>
@@ -168,7 +168,7 @@ function isActive(href: string) {
       bottom: 0;
       flex-direction: column;
       align-items: stretch;
-      padding: var(--space-6) var(--space-4);
+      padding: var(--space-5) var(--space-4);
       background: var(--color-bg-primary);
       transform: translateX(100%);
       transition: transform var(--transition-1x) ease;
