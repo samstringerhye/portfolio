@@ -6,7 +6,7 @@
     "blockStagger": 0.1,
     "slideUp": 100,
     "initialBlur": 20,
-    "ease": { "$ref": "semantic.motion.gsapEasing.enter" },
+    "ease": { "$ref": "sys.motion.gsapEasing.enter" },
     "scrollStart": "top 70%",
     "cmyStagger": 0.04,
     "cmyOpacity": 0.4
@@ -34,7 +34,7 @@
       "maxDpr": 2,
       "cmyStagger": 0.03,
       "accentOpacity": 0.6,
-      "bgColor": { "$ref": "semantic.color.bg.primary" }
+      "bgColor": { "$ref": "sys.color.bg.primary" }
     },
     "text": {
       "startDelay": 0.25
@@ -45,21 +45,21 @@
       "cmyOpacity": 1,
       "saveCmyOpacity": 1,
       "expandDuration": 0.5,
-      "expandEase": { "$ref": "semantic.motion.gsapEasing.bounce" },
-      "collapseDuration": { "$ref": "semantic.motion.duration.quick" },
-      "collapseEase": { "$ref": "semantic.motion.gsapEasing.bounceMove" },
-      "textShowDuration": { "$ref": "semantic.motion.duration.quick" },
-      "textHideDuration": { "$ref": "semantic.motion.duration.quick" },
-      "collapseTextDuration": { "$ref": "semantic.motion.duration.quick" },
-      "wipeDuration": { "$ref": "semantic.motion.duration.quick" },
-      "wipeEase": { "$ref": "semantic.motion.gsapEasing.bounce" },
-      "wipeOutDuration": { "$ref": "semantic.motion.duration.quick" },
-      "wipeOutEase": { "$ref": "semantic.motion.gsapEasing.bounceIn" },
-      "highlightsShowDuration": { "$ref": "semantic.motion.duration.quick" },
+      "expandEase": { "$ref": "sys.motion.gsapEasing.bounce" },
+      "collapseDuration": { "$ref": "sys.motion.duration.quick" },
+      "collapseEase": { "$ref": "sys.motion.gsapEasing.bounceMove" },
+      "textShowDuration": { "$ref": "sys.motion.duration.quick" },
+      "textHideDuration": { "$ref": "sys.motion.duration.quick" },
+      "collapseTextDuration": { "$ref": "sys.motion.duration.quick" },
+      "wipeDuration": { "$ref": "sys.motion.duration.quick" },
+      "wipeEase": { "$ref": "sys.motion.gsapEasing.bounce" },
+      "wipeOutDuration": { "$ref": "sys.motion.duration.quick" },
+      "wipeOutEase": { "$ref": "sys.motion.gsapEasing.bounceIn" },
+      "highlightsShowDuration": { "$ref": "sys.motion.duration.quick" },
       "highlightsShowDelay": 0.15,
-      "highlightsShowEase": { "$ref": "semantic.motion.gsapEasing.bounce" },
+      "highlightsShowEase": { "$ref": "sys.motion.gsapEasing.bounce" },
       "highlightsHideDuration": 0.2,
-      "highlightsHideEase": { "$ref": "semantic.motion.gsapEasing.bounceIn" }
+      "highlightsHideEase": { "$ref": "sys.motion.gsapEasing.bounceIn" }
     }
   },
   "workHover": {

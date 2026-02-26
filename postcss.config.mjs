@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const tokens = JSON.parse(readFileSync(join(__dirname, 'src/data/tokens.json'), 'utf-8'))
 
 // Generate @custom-media declarations from tokens.primitives.breakpoint
-const breakpoints = tokens.primitives.breakpoint
+const breakpoints = tokens.ref.breakpoint
 const declarations = Object.entries(breakpoints)
   .map(([key, val]) => `@custom-media --${key} (max-width: ${val}px);`)
   .join('\n')

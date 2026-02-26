@@ -98,12 +98,12 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   .case-study-body > ul,
   .case-study-body > ol,
   .case-study-body > blockquote {
-    padding: var(--content-inset);
+    padding: var(--content-inset-md);
   }
 
   /* Prose groups: inset the container, not individual children */
   .case-study-body .prose-group {
-    padding: var(--content-inset);
+    padding: var(--content-inset-md);
   }
 
   /* ── Carousel: inherits bordered frame from > * rule ── */
@@ -160,7 +160,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   /* ── Lists ── */
   .case-study-body ul {
     list-style: disc;
-    padding-left: var(--content-inset);
+    padding-left: var(--content-inset-md);
   }
 
   .case-study-body li {
@@ -238,7 +238,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: var(--content-inset);
+    padding: var(--content-inset-md);
     gap: var(--space-2);
   }
 
@@ -283,7 +283,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   .case-study-body .cs-figure figcaption {
     padding: var(--space-2) 0 0;
-    font-size: var(--text-1x);
+    font-size: var(--text-100);
     color: var(--color-text-secondary);
     line-height: var(--line-height-normal);
   }
@@ -334,11 +334,11 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     .case-study-body > ul,
     .case-study-body > ol,
     .case-study-body > blockquote {
-      padding-inline: var(--content-inset);
+      padding-inline: var(--content-inset-md);
     }
 
     .case-study-body > ul {
-      padding-left: var(--content-inset);
+      padding-left: var(--content-inset-md);
     }
 
     .case-study-body .zigzag-section {
@@ -480,7 +480,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
-    font-size: var(--text-1x);
+    font-size: var(--text-100);
     color: var(--color-bg-primary);
     background: rgba(0, 0, 0, 0.5);
     padding: var(--space-1) var(--space-2);

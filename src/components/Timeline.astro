@@ -121,7 +121,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   .experience-heading {
     color: var(--color-text-primary);
     margin: 0;
-    padding: var(--content-inset);
+    padding: var(--content-inset-md);
   }
 
   .experience-download {
@@ -163,7 +163,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     position: relative;
     display: flex;
     align-items: center;
-    padding: var(--content-inset) 0;
+    padding: var(--content-inset-sm) 0;
     border-right: var(--border-width-1) solid var(--color-text-primary);
     min-width: 0;
     overflow: hidden;
@@ -172,7 +172,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   .timeline-card-left {
     display: flex;
     flex-direction: column;
-    gap: var(--content-inset);
+    gap: var(--space-1);
     flex-shrink: 0;
     min-width: 0;
   }
@@ -180,7 +180,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   .timeline-highlights {
     position: absolute;
     z-index: 1;
-    right: var(--content-inset);
+    right: var(--content-inset-sm);
     top: 50%;
     transform: translateY(-50%);
     opacity: 0;
@@ -206,7 +206,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     position: relative;
     z-index: 1;
     color: var(--color-text-primary);
-    padding-inline: var(--content-inset);
+    padding-inline: var(--content-inset-sm);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -216,7 +216,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     position: relative;
     z-index: 1;
     color: var(--color-text-primary);
-    padding-inline: var(--content-inset);
+    padding-inline: var(--content-inset-sm);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -248,7 +248,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   .timeline-year {
     flex: 1 1 0%;
     text-align: center;
-    padding: var(--content-inset) 0;
+    padding: var(--content-inset-sm) 0;
     color: var(--color-text-primary);
     position: relative;
     z-index: 1;
@@ -276,7 +276,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
       flex: none !important;
       border-right: none;
       border-bottom: var(--border-width-1) solid var(--color-text-primary);
-      gap: var(--content-inset);
+      gap: var(--content-inset-sm);
     }
 
     .timeline-card:last-child {
@@ -288,7 +288,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
       color: var(--color-text-primary);
       white-space: nowrap;
       flex-shrink: 0;
-      padding-inline: var(--content-inset);
+      padding-inline: var(--content-inset-sm);
     }
 
     .timeline-years {

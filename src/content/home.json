@@ -3,36 +3,36 @@
   "hero": {
     "headline": "Every pixel, on purpose.",
     "headlineTag": "h1",
-    "headlineRole": "display"
+    "headlineRole": "display-lg"
   },
   "bio": {
     "headline": "The short version.",
     "headlineTag": "h2",
-    "headlineRole": "display-sm",
+    "headlineRole": "display-md",
     "body": "Associate Design Director at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll right past.",
     "bodyTag": "h3",
-    "bodyRole": "heading-sm",
+    "bodyRole": "title-lg",
     "contentInset": "md"
   },
   "work": {
     "headline": "Selected Work",
     "headingTag": "h2",
-    "headingRole": "display-sm",
-    "cardTitleTag": "h3",
-    "cardTitleRole": "subhead",
+    "headingRole": "display-md",
+    "cardTitleTag": "p",
+    "cardTitleRole": "title-lg",
     "contentInset": "md"
   },
   "experience": {
     "headline": "Experience",
     "headingTag": "h2",
-    "headingRole": "display-sm",
+    "headingRole": "display-md",
     "contentInset": "md",
-    "jobTitleTag": "h3",
-    "jobTitleRole": "body",
+    "jobTitleTag": "p",
+    "jobTitleRole": "body-lg",
     "companyTag": "p",
-    "companyRole": "body",
+    "companyRole": "body-lg",
     "highlightTag": "p",
-    "highlightRole": "body",
+    "highlightRole": "body-md",
     "jobs": [
       {
         "title": "Associate Design Director",
@@ -86,7 +86,7 @@
     ]
   },
   "interests": {
-    "textRole": "display",
+    "textRole": "display-lg",
     "items": [
       "Apple fanboy",
       "Pixel peeper",

@@ -1,7 +1,7 @@
 import rawTokens from './tokens.json'
 import rawAnimations from './animation.config.json'
 
-// Resolve { $ref: "primitives.color.neutral.900" } → actual value
+// Resolve { $ref: "ref.color.neutral.900" } → actual value
 function getPath(obj: any, path: string): any {
   return path.split('.').reduce((o, k) => o?.[k], obj)
 }
@@ -20,19 +20,24 @@ function resolveRefs(node: any, root: any): any {
 
 const resolved = resolveRefs(rawTokens, rawTokens) as typeof rawTokens
 
-export const primitives = resolved.primitives
-export const semantic = resolved.semantic
-export const roles = resolved.roles
+// New M3-aligned exports
+export const ref = resolved.ref
+export const sys = resolved.sys
 export const elementMap = resolved.elementMap
-export const hover = resolved.hover
 
-export const prose = resolved.prose
+// Backward-compat aliases
+export const primitives = ref
+export const semantic = sys
+export const roles = sys.typescale
+export const hover = sys.hover
+export const prose = sys.prose
+
 export const animations = resolveRefs(rawAnimations, resolved) as typeof rawAnimations
 
-export const colors = resolved.semantic.color
+export const colors = sys.color
 
 // Accent color helpers
-const accent = resolved.semantic.color.accent
+const accent = sys.color.accent
 function hexToRgb(hex: string) {
   return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]
 }

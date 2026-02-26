@@ -57,7 +57,7 @@
       "type": "object",
       "description": "Reference to a design token in tokens.json via dot-path",
       "properties": {
-        "$ref": { "type": "string", "pattern": "^(primitives|semantic)\\.", "description": "Dot-path to a token value (e.g. semantic.motion.gsapEasing.enter)" }
+        "$ref": { "type": "string", "pattern": "^(ref|sys)\\.", "description": "Dot-path to a token value (e.g. sys.motion.gsapEasing.enter)" }
       },
       "required": ["$ref"],
       "additionalProperties": false

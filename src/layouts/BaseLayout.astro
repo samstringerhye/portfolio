@@ -5,7 +5,7 @@ import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import AboutModal from '../components/AboutModal.astro'
 import RGBShutter from '../components/RGBShutter.astro'
-import { primitives, semantic, roles, elementMap, hover as hoverTokens, prose } from '../data/tokens'
+import { ref, sys, elementMap, animations } from '../data/tokens'
 import '../styles/global.css'
 
 interface Props {
@@ -17,13 +17,15 @@ interface Props {
 
 const { title, description, ogImage, hideFooter = false } = Astro.props
 
-/* ── Helper: fluid clamp from min→max rem across 375→1600px ── */
+/* ── Helper: fluid clamp from min→max rem across 480→1140px ── */
 function buildClamp(min: number, max: number): string {
   if (min === max) return `${min}rem`
   const rootPx = 16
-  const slope = ((max - min) * rootPx * 100) / (1440 - 375)
-  const intercept = min - (slope * 375) / (100 * rootPx)
-  return `clamp(${min.toFixed(2)}rem, ${intercept.toFixed(4)}rem + ${slope.toFixed(4)}vw, ${max.toFixed(2)}rem)`
+  const vwMin = 480
+  const vwMax = 1140
+  const slope = ((max - min) * rootPx * 100) / (vwMax - vwMin)
+  const intercept = min - (slope * vwMin) / (100 * rootPx)
+  return `clamp(${min.toFixed(4)}rem, ${intercept.toFixed(4)}rem + ${slope.toFixed(4)}vw, ${max.toFixed(4)}rem)`
 }
 
 /* ── Helper: resolve a token value (number, string, or {min,max}) to CSS ── */
@@ -54,29 +56,29 @@ function flattenObject(obj: Record<string, any>, prefix: string): string[] {
 }
 
 /* ── Typography vars ── */
-const scaleVars = Object.entries(primitives.font.scale).map(([key, val]) => {
+const scaleVars = Object.entries(ref.font.scale).map(([key, val]) => {
   if (typeof val === 'number') return `--text-${key}: ${val}rem;`
   const v = val as { min: number; max: number }
   return `--text-${key}: ${buildClamp(v.min, v.max)};`
 }).join('\n    ')
 
-const leadingVars = Object.entries(primitives.font.lineHeight)
+const leadingVars = Object.entries(ref.font.lineHeight)
   .map(([key, val]) => `--line-height-${key}: ${val};`).join('\n    ')
 
-const trackingVars = Object.entries(primitives.font.tracking)
+const trackingVars = Object.entries(ref.font.tracking)
   .map(([key, val]) => `--tracking-${key}: ${val}em;`).join('\n    ')
 
-const fontVars = Object.entries(primitives.font.family)
+const fontVars = Object.entries(ref.font.family)
   .map(([key, val]) => `--font-${key}: ${val};`).join('\n    ')
 
-const weightVars = Object.entries(primitives.font.weight)
+const weightVars = Object.entries(ref.font.weight)
   .map(([key, val]) => `--font-weight-${key}: ${val};`).join('\n    ')
 
-/* ── Color vars (flatten semantic.color to --color-*) ── */
-const colorVars = flattenObject(semantic.color, '--color').join('\n    ')
+/* ── Color vars (flatten sys.color to --color-*) ── */
+const colorVars = flattenObject(sys.color, '--color').join('\n    ')
 
 /* ── Spacing vars ── */
-const spacingVars = Object.entries(primitives.spacing).map(([key, val]) => {
+const spacingVars = Object.entries(ref.spacing).map(([key, val]) => {
   if (typeof val === 'number') return `--space-${key}: ${val}rem;`
   const v = val as { min: number; max: number }
   return `--space-${key}: ${buildClamp(v.min, v.max)};`
@@ -84,71 +86,95 @@ const spacingVars = Object.entries(primitives.spacing).map(([key, val]) => {
 
 /* ── Layout vars ── */
 const layoutVars = [
-  `--page-margin: ${cssVal(semantic.layout.pageMargin)};`,
-  `--content-inset-sm: ${cssVal(semantic.layout.contentInset.sm)};`,
-  `--content-inset-md: ${cssVal(semantic.layout.contentInset.md)};`,
-  `--content-inset-lg: ${cssVal(semantic.layout.contentInset.lg)};`,
+  `--page-margin: ${cssVal(sys.layout.pageMargin)};`,
+  `--content-inset-sm: ${cssVal(sys.layout.contentInset.sm)};`,
+  `--content-inset-md: ${cssVal(sys.layout.contentInset.md)};`,
+  `--content-inset-lg: ${cssVal(sys.layout.contentInset.lg)};`,
   `--content-inset: var(--content-inset-md);`,
-  `--grid-gutter: ${cssVal(semantic.layout.gridGutter)};`,
-  `--section-padding: ${cssVal(semantic.layout.sectionPadding)};`,
-  `--nav-height: ${semantic.layout.navHeight};`,
+  `--grid-gutter: ${cssVal(sys.layout.gridGutter)};`,
+  `--section-padding: ${cssVal(sys.layout.sectionPadding)};`,
+  `--nav-height: ${sys.layout.navHeight};`,
 ].join('\n    ')
 
-/* ── Sizing vars (wordmark, section-rule marks, nav toggle) ── */
+/* ── Sizing vars ── */
 const sizingVars = [
-  `--touch-target: ${primitives.sizing.touchTarget};`,
-  `--section-rule-mark-size: ${primitives.sizing.sectionRuleMark};`,
-  `--wordmark-size: ${primitives.sizing.wordmark};`,
-  `--wordmark-size-mobile: ${primitives.sizing.wordmarkMobile};`,
-  `--nav-toggle-bar-width: ${primitives.sizing.navToggleBarWidth};`,
-  `--nav-toggle-bar-height: ${primitives.sizing.navToggleBarHeight};`,
-  `--nav-toggle-gap: ${primitives.sizing.navToggleGap};`,
-  `--prose-measure: ${primitives.sizing.proseMeasure};`,
-  `--prose-heading-measure: ${primitives.sizing.proseHeadingMeasure};`,
+  `--touch-target: ${ref.sizing.touchTarget};`,
+  `--section-rule-mark-size: ${ref.sizing.sectionRuleMark};`,
+  `--wordmark-size: ${ref.sizing.wordmark};`,
+  `--wordmark-size-mobile: ${ref.sizing.wordmarkMobile};`,
+  `--nav-toggle-bar-width: ${ref.sizing.navToggleBarWidth};`,
+  `--nav-toggle-bar-height: ${ref.sizing.navToggleBarHeight};`,
+  `--nav-toggle-gap: ${ref.sizing.navToggleGap};`,
+  `--prose-measure: ${ref.sizing.proseMeasure};`,
   `--cs-section-gap: var(--space-3);`,
 ].join('\n    ')
 
 /* ── Inline spacing vars ── */
-const inlineSpacingVars = Object.entries(primitives.inlineSpacing)
+const inlineSpacingVars = Object.entries(ref.inlineSpacing)
   .map(([key, val]) => `--inline-spacing-${key}: ${val};`).join('\n    ')
 
-/* ── Radii vars ── */
-const radiiVars = Object.entries(primitives.radii)
+/* ── Radii vars (new semantic names + old aliases) ── */
+const radiiVars = Object.entries(ref.radii)
   .map(([key, val]) => `--radius-${key}: ${val};`).join('\n    ')
+const radiiAliases = [
+  `--radius-1x: var(--radius-xs);`,
+  `--radius-2x: var(--radius-sm);`,
+  `--radius-3x: var(--radius-md);`,
+  `--radius-pill: var(--radius-full);`,
+].join('\n    ')
 
-/* ── Z-index vars (from semantic.layer) ── */
-const zVars = Object.entries(semantic.layer)
+/* ── Z-index vars (from sys.layer) ── */
+const zVars = Object.entries(sys.layer)
   .map(([key, val]) => `--z-${kebab(key)}: ${val};`).join('\n    ')
 
-/* ── Transition vars ── */
-const transitionVars = Object.entries(primitives.motion.duration)
-  .map(([key, val]) => `--transition-${key}: ${val};`).join('\n    ')
+/* ── Duration vars (new names + old aliases) ── */
+const durationVars = Object.entries(ref.motion.duration)
+  .map(([key, val]) => `--duration-${key}: ${val};`).join('\n    ')
+const durationAliases = [
+  `--transition-fast: var(--duration-short);`,
+  `--transition-medium: var(--duration-medium);`,
+  `--transition-1x: var(--duration-long);`,
+].join('\n    ')
+
+/* ── Easing vars ── */
+const easingVars = Object.entries(ref.motion.easing)
+  .map(([key, val]) => `--easing-${key}: ${val};`).join('\n    ')
+const easingAliases = [
+  `--ease-bounce-out: var(--easing-emphasized);`,
+  `--ease-decel: var(--easing-standard);`,
+].join('\n    ')
+
+/* ── Elevation vars ── */
+const elevationRefVars = Object.entries(ref.elevation)
+  .map(([key, val]) => `--elevation-${key}: ${val};`).join('\n    ')
+const elevationSysVars = Object.entries(sys.elevation)
+  .map(([key, val]) => `--elevation-${kebab(key)}: ${val};`).join('\n    ')
 
 /* ── Border width vars ── */
-const borderWidthVars = Object.entries(primitives.border.width)
+const borderWidthVars = Object.entries(ref.border.width)
   .map(([key, val]) => `--border-width-${key}: ${val};`).join('\n    ')
 
 /* ── Focus ring vars ── */
 const focusRingVars = [
-  `--focus-ring-width: ${semantic.focus.ring.width};`,
-  `--focus-ring-color: ${semantic.focus.ring.color};`,
-  `--focus-ring-offset: ${semantic.focus.ring.offset};`,
+  `--focus-ring-width: ${sys.focus.ring.width};`,
+  `--focus-ring-color: ${sys.focus.ring.color};`,
+  `--focus-ring-offset: ${sys.focus.ring.offset};`,
 ].join('\n    ')
 
 /* ── Modal vars ── */
-const modalVars = Object.entries(semantic.modal)
+const modalVars = Object.entries(sys.modal)
   .map(([key, val]) => `--modal-${kebab(key)}: ${val};`).join('\n    ')
 
 /* ── Scrollbar vars ── */
-const scrollbarVars = Object.entries(semantic.scrollbar)
+const scrollbarVars = Object.entries(sys.scrollbar)
   .map(([key, val]) => `--scrollbar-${key}: ${val};`).join('\n    ')
 
 /* ── Opacity vars ── */
-const opacityVars = Object.entries(primitives.opacity)
+const opacityVars = Object.entries(ref.opacity)
   .map(([key, val]) => `--opacity-${key}: ${val};`).join('\n    ')
 
 /* ── Hover vars ── */
-const hoverVars = Object.entries(hoverTokens)
+const hoverVars = Object.entries(sys.hover)
   .map(([key, val]) => {
     const unit = typeof val === 'number' && key !== 'perspective' ? '' : typeof val === 'number' ? 'px' : ''
     return `--hover-${kebab(key)}: ${val}${unit};`
@@ -156,88 +182,63 @@ const hoverVars = Object.entries(hoverTokens)
 
 /* ── Prose block styling vars ── */
 const proseVars = [
-  `--prose-code-bg: ${prose.code.bg};`,
-  `--prose-code-padding-inline: ${cssVal(prose.code.paddingInline)};`,
-  `--prose-code-padding-block: ${cssVal(prose.code.paddingBlock)};`,
-  `--prose-code-border-radius: ${cssVal(prose.code.borderRadius)};`,
-  `--prose-code-block-padding: ${cssVal(prose.code.blockPadding)};`,
-  `--prose-code-block-radius: ${cssVal(prose.code.blockRadius)};`,
+  `--prose-code-bg: ${sys.prose.code.bg};`,
+  `--prose-code-padding-inline: ${cssVal(sys.prose.code.paddingInline)};`,
+  `--prose-code-padding-block: ${cssVal(sys.prose.code.paddingBlock)};`,
+  `--prose-code-border-radius: ${cssVal(sys.prose.code.borderRadius)};`,
+  `--prose-code-block-padding: ${cssVal(sys.prose.code.blockPadding)};`,
+  `--prose-code-block-radius: ${cssVal(sys.prose.code.blockRadius)};`,
 ].join('\n    ')
 
-/* ── Font faces ── */
-/* Only declare weights for files that exist on disk.
-   Missing weight files cause 404s that block the browser from falling back to nearby weights. */
-const fontFaces = `@font-face {
-    font-family: "PP Editorial New";
-    src: url("/fonts/trial/PPEditorialNew-Regular.otf") format("opentype");
-    font-weight: 100 900;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: "PP Neue Montreal";
-    src: url("/fonts/trial/PPNeueMontreal-Book.otf") format("opentype");
-    font-weight: 100 900;
-    font-display: swap;
-  }
-  `
-
 /* ── Typography role utility classes ── */
-/* Reverse lookup: resolved literal family → CSS var so role rules cascade with overrides */
+const typescale = sys.typescale as Record<string, { family: string; weight: number; scale: number | { min: number; max: number }; lineHeight: number; tracking: number }>
+
+/* Reverse lookup: resolved literal family → CSS var */
 const familyToVar = Object.fromEntries(
-  Object.entries(primitives.font.family).map(([key, val]) => [val, `var(--font-${key})`])
+  Object.entries(ref.font.family).map(([key, val]) => [val, `var(--font-${key})`])
 ) as Record<string, string>
 
-const roleRules = Object.entries(roles).map(([name, cfg]) => {
-  const c = cfg as { family: string; weight: number; scale: number | { min: number; max: number }; lineHeight: number; tracking: number }
-  const fontSize = typeof c.scale === 'number' ? `${c.scale}rem` : buildClamp(c.scale.min, c.scale.max)
-  const familyDefault = familyToVar[c.family] ?? c.family
+const roleRules = Object.entries(typescale).map(([name, cfg]) => {
+  const fontSize = typeof cfg.scale === 'number' ? `${cfg.scale}rem` : buildClamp(cfg.scale.min, cfg.scale.max)
+  const family = familyToVar[cfg.family] ?? cfg.family
   return `.typo-${name} {
-    font-family: ${familyDefault};
-    font-weight: ${c.weight};
+    font-family: ${family};
+    font-weight: ${cfg.weight};
     font-size: ${fontSize};
-    line-height: ${c.lineHeight};
-    letter-spacing: ${c.tracking}em;
+    line-height: ${cfg.lineHeight};
+    letter-spacing: ${cfg.tracking}em;
   }`
 }).join('\n  ')
 
+/* ── Old role name aliases (migration) ── */
+const roleAliases = [
+  `.typo-display { font-family: var(--font-serif); font-weight: 700; font-size: ${buildClamp(3.052, 3.815)}; line-height: 1.25; letter-spacing: 0em; }`,
+  `.typo-heading-lg { font-family: var(--font-serif); font-weight: 500; font-size: ${buildClamp(1.953, 2.441)}; line-height: 1.25; letter-spacing: 0em; }`,
+  `.typo-heading-sm { font-family: var(--font-serif); font-weight: 500; font-size: ${buildClamp(1.25, 1.563)}; line-height: 1.25; letter-spacing: 0em; }`,
+  `.typo-subhead { font-family: var(--font-sans); font-weight: 500; font-size: 1.25rem; line-height: 1.25; letter-spacing: 0em; }`,
+  `.typo-label { font-family: var(--font-sans); font-weight: 500; font-size: 0.8rem; line-height: 1.25; letter-spacing: 0em; }`,
+  `.typo-body { font-family: var(--font-sans); font-weight: 400; font-size: 1rem; line-height: 1.5; letter-spacing: 0em; }`,
+  `.typo-ui { font-family: var(--font-sans); font-weight: 600; font-size: 0.8rem; line-height: 1.25; letter-spacing: 0em; }`,
+  `.typo-ui-caps { font-family: var(--font-sans); font-weight: 600; font-size: 0.8rem; line-height: 1.25; letter-spacing: 0em; }`,
+].join('\n  ')
+
 /* ── Element-level base styles from elementMap ── */
-/* Reverse lookups: resolved primitive value → CSS var name */
-const scaleToVar = Object.fromEntries(
-  Object.entries(primitives.font.scale).map(([key, val]) => [JSON.stringify(val), `var(--text-${key})`])
-) as Record<string, string>
-
-const lineHeightToVar = Object.fromEntries(
-  Object.entries(primitives.font.lineHeight).map(([key, val]) => [String(val), `var(--line-height-${key})`])
-) as Record<string, string>
-
-const trackingToVar = Object.fromEntries(
-  Object.entries(primitives.font.tracking).map(([key, val]) => [String(val), `var(--tracking-${key})`])
-) as Record<string, string>
-
-const weightToVar = Object.fromEntries(
-  Object.entries(primitives.font.weight).map(([key, val]) => [String(val), `var(--font-weight-${key})`])
-) as Record<string, string>
-
 const elementRules = Object.entries(elementMap).map(([el, roleName]) => {
-  const cfg = roles[roleName] as { family: string; weight: number; scale: number | { min: number; max: number }; lineHeight: number; tracking: number }
+  const cfg = typescale[roleName]
   if (!cfg) return ''
+  const fontSize = typeof cfg.scale === 'number' ? `${cfg.scale}rem` : buildClamp(cfg.scale.min, cfg.scale.max)
   const family = familyToVar[cfg.family] ?? cfg.family
-  const weight = weightToVar[String(cfg.weight)] ?? String(cfg.weight)
-  const fontSize = scaleToVar[JSON.stringify(cfg.scale)] ?? (typeof cfg.scale === 'number' ? `${cfg.scale}rem` : buildClamp(cfg.scale.min, cfg.scale.max))
-  const lh = lineHeightToVar[String(cfg.lineHeight)] ?? String(cfg.lineHeight)
-  const ls = trackingToVar[String(cfg.tracking)] ?? `${cfg.tracking}em`
   return `${el} {
     font-family: ${family};
-    font-weight: ${weight};
+    font-weight: ${cfg.weight};
     font-size: ${fontSize};
-    line-height: ${lh};
-    letter-spacing: ${ls};
+    line-height: ${cfg.lineHeight};
+    letter-spacing: ${cfg.tracking}em;
   }`
 }).filter(Boolean).join('\n  ')
 
 /* ── Assemble the full :root block ── */
-const typoCss = `${fontFaces}
-  :root {
+const typoCss = `:root {
     ${fontVars}
     --font-primary: var(--font-sans);
     ${weightVars}
@@ -250,8 +251,14 @@ const typoCss = `${fontFaces}
     ${layoutVars}
     ${sizingVars}
     ${radiiVars}
+    ${radiiAliases}
     ${zVars}
-    ${transitionVars}
+    ${durationVars}
+    ${durationAliases}
+    ${easingVars}
+    ${easingAliases}
+    ${elevationRefVars}
+    ${elevationSysVars}
     ${borderWidthVars}
     ${focusRingVars}
     ${modalVars}
@@ -263,6 +270,7 @@ const typoCss = `${fontFaces}
     --border-light: var(--border-width-1) solid var(--color-rule);
   }
   ${roleRules}
+  ${roleAliases}
   ${elementRules}`
 ---
 
@@ -270,8 +278,9 @@ const typoCss = `${fontFaces}
 <html lang="en">
   <head>
     <SEO title={title} description={description} ogImage={ogImage} />
-    <link rel="preload" href="/fonts/trial/PPEditorialNew-Regular.otf" as="font" type="font/otf" crossorigin />
-    <link rel="preload" href="/fonts/trial/PPNeueMontreal-Book.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <style set:html={typoCss}></style>
     <noscript><style>.cmy-word { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
     <ViewTransitions fallback="swap" />
