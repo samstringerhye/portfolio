@@ -16,65 +16,85 @@ import HeroImage from '../../components/HeroImage.astro'
 import Meta from '../../components/Meta.astro'
 import LottiePlayer from '../../components/LottiePlayer.astro'
 import ProseGroup from '../../components/ProseGroup.astro'
+import Figure from '../../components/Figure.astro'
+import ZigzagSection from '../../components/ZigzagSection.astro'
+import AccentBand from '../../components/AccentBand.astro'
 import heroSrc from '../../assets/work/myfrontier-app/frontier-app-kv.png'
 
 <HeroImage src={heroSrc} alt="MyFrontier App Redesign — project showcase" />
-
-<Meta client="Frontier" role="Associate Design Director" agency="Razorfish" year={2024} />
 
 <ProseGroup>
 
 # MyFrontier App Redesign
 
-The MyFrontier app covered bill pay, account management, technician scheduling, and support — but the experience didn't hold together. Screens felt inconsistent, navigation was unclear, and users were hitting friction at exactly the moments they could least afford it. The redesign rebuilt it from the layout up.
+Motion that earns its place by solving specific user anxiety. The MyFrontier app covered bill pay, account management, technician scheduling, and support — but the experience didn't hold together. As ADD on a small team close to dev, I rebuilt the visual design, defined the layout system, and created a motion language from scratch to give users confidence at the moments they needed it most.
 
 </ProseGroup>
+
+<Meta client="Frontier" role="Associate Design Director" agency="Razorfish" year={2024} />
+
+<ZigzagSection>
+  <Fragment slot="media">
+    ![Frontier app introduction screens](../../assets/work/myfrontier-app/frontier-intro.png)
+  </Fragment>
+  <ProseGroup>
+
+  ### Interface Design
+
+  I designed every core screen — onboarding, dashboard, bill pay, and support. The layout system prioritised information hierarchy: the most important action on each screen got the most visual weight, and secondary actions were consistently grouped so users built muscle memory across flows.
+
+  </ProseGroup>
+</ZigzagSection>
 
 <ProseGroup>
 
 ## The Problem
 
-Utility apps live at the worst end of the emotional spectrum. Nobody opens a telecom app to browse. They open it because they have a question about their bill, because a technician is coming and they need to confirm the window, or because their internet is down and they need answers fast. In that context, the bar for design isn't delight — it's don't slow people down. The MyFrontier app had accumulated inconsistencies across years: menus that didn't follow a clear hierarchy, screen layouts that varied from flow to flow, and interactions that gave no feedback. There was no shared visual language, and no motion system at all. Every fix had to respect those real-world stakes — people in a bad moment shouldn't have to think about the interface.
+Nobody opens a telecom app to browse. They open it because they have a question about their bill, because a technician is coming and they need to confirm the window, or because their internet is down and they need answers fast. The MyFrontier app had accumulated inconsistencies across years: layouts that varied from flow to flow, controls that gave no feedback, and zero motion. Every fix had to respect those real-world stakes — people in a bad moment shouldn't have to think about the interface.
 
 </ProseGroup>
+
+<Figure caption="Dashboard">
+![Dashboard view](../../assets/work/myfrontier-app/frontier-dashboard.png)
+</Figure>
 
 <ProseGroup>
 
 ## The Work
 
-As ADD, I owned layout design across multiple screens and defined visual hierarchy for core UI components — navigation, appointment calendar, and selector patterns throughout bill pay and account management. The structural decisions (information priority per screen, element sizing matched to confidence not just thumb reach, consistent control grouping) were what made the app feel like a single product rather than a collection of screens, and I built a motion design system to run alongside it.
+I owned layout design across every screen and defined visual hierarchy for core UI components — navigation, appointment calendar, and selector patterns throughout bill pay and account management. The structural decisions (information priority per screen, element sizing matched to confidence rather than just thumb reach, consistent control grouping) were what made the app feel like a single product. Alongside that, I built a motion system by mapping the specific uncertainty moments — "did my payment go through?", "is my appointment confirmed?" — and designing animations to resolve each one.
 
 </ProseGroup>
 
-### Interface Design
-
-![Frontier app introduction screens](../../assets/work/myfrontier-app/frontier-intro.png)
-
-![Dashboard view](../../assets/work/myfrontier-app/frontier-dashboard.png)
-
+<Figure caption="Bill pay flow">
 ![Bill pay flow](../../assets/work/myfrontier-app/frontier-bill-pay.png)
+</Figure>
+
+<Figure caption="Support & scheduling">
+![Support flow — tracking technician status through installation](../../assets/work/myfrontier-app/frontier-bill-support.png)
+</Figure>
 
 <ProseGroup>
 
 ### Motion Design
 
-Motion gave users immediate feedback that their actions went through. A coin animation confirmed a payment, a leaf marked a completed setup, and the intro sequence covered the initial load so the app felt responsive from the first tap.
+I built every Lottie file personally — After Effects compositions exported through the Lottie pipeline. Each animation was mapped to a specific uncertainty moment: the coin confirmed a payment was processing, the leaf signalled setup completion, and the intro sequence covered the initial data load so the app felt responsive from the first tap. I delivered motion specs alongside the files — easing values, timing, and documentation so dev could implement without guesswork.
 
 </ProseGroup>
 
-<div style="display: flex; gap: var(--space-2); justify-content: center; padding: var(--content-inset);">
-  <LottiePlayer src="src/lottie/Lottie-Intro.json" label="App launch animation" />
-  <LottiePlayer src="src/lottie/Lottie-Coin.json" label="Payment confirmation" />
-  <LottiePlayer src="src/lottie/Lottie-Leaf.json" label="Setup completion" />
-  <LottiePlayer src="src/lottie/Lottie-Confirmation.json" label="General confirmation" />
-</div>
-
-![Support flow — tracking technician status through installation](../../assets/work/myfrontier-app/frontier-bill-support.png)
+<AccentBand color={1}>
+  <div class="lottie-grid">
+    <LottiePlayer src="src/lottie/Lottie-Intro.json" label="App launch" maxWidth="100%" />
+    <LottiePlayer src="src/lottie/Lottie-Coin.json" label="Payment confirmation" maxWidth="100%" />
+    <LottiePlayer src="src/lottie/Lottie-Leaf.json" label="Setup complete" maxWidth="100%" />
+    <LottiePlayer src="src/lottie/Lottie-Confirmation.json" label="Confirmation" maxWidth="100%" />
+  </div>
+</AccentBand>
 
 <ProseGroup>
 
 ## What I Learned
 
-In a utility app, the user's trust is already conditional — a telecom app can't afford animation that says "look at us." Each animation had to earn its place by solving a specific problem: the coin confirmed payment processing, the leaf signalled setup completion, and the intro sequence covered the initial data load so the first interaction felt instant. That constraint produced a tighter, more purposeful motion system than most projects get.
+In a utility app, the user's trust is already conditional — a telecom app can't afford animation that says "look at us." Each animation had to earn its place by solving a specific problem. That constraint produced a tighter, more purposeful motion system than most projects get. The motion specs and dev handoff documentation mattered as much as the animations themselves — without clear easing values and timing, the implementation would have drifted from the intent.
 
 </ProseGroup>

@@ -26,6 +26,7 @@
     "lottie-web": "^5.13.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "remark-unwrap-images": "^4.0.1",
     "three": "^0.170.0"
   },
   "devDependencies": {

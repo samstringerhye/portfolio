@@ -15,6 +15,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 ---
 
 <BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline}>
+  <div class="scroll-progress"></div>
   <article class="case-study-body">
     <slot />
   </article>
@@ -32,22 +33,26 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    row-gap: var(--cs-section-gap, var(--space-5));
+    row-gap: var(--cs-section-gap, var(--space-3));
   }
 
-  /* ── All children: full-width bordered frame (all 4 sides) ── */
+  /* ── All children: full-width, no universal border ── */
   .case-study-body > * {
     grid-column: 1 / -1;
-    border: var(--border-width-1) solid var(--color-text-primary);
     margin: 0;
   }
 
-  /* ── Collapse: standalone h3 stays connected to following visual ── */
-  .case-study-body > h3 + .carousel,
-  .case-study-body > h3 + .image-pair,
-  .case-study-body > h3 + p:has(> img) {
-    margin-top: calc(-1 * var(--cs-section-gap, var(--space-5)));
-    border-top: none;
+  /* ── Bordered frame only on visual elements ── */
+  .case-study-body .cs-hero-image,
+  .case-study-body .cs-hero-meta,
+  .case-study-body .image-pair,
+  .case-study-body .carousel,
+  .case-study-body .zigzag-section,
+  .case-study-body .cs-figure,
+  .case-study-body .image-grid,
+  .case-study-body > img,
+  .case-study-body .accent-band {
+    border: var(--border-width-1) solid var(--color-text-primary);
   }
 
   /* ── Hero image ── */
@@ -72,8 +77,8 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     flex: 1 1 0%;
     display: flex;
     flex-direction: column;
-    gap: var(--content-inset);
-    padding: var(--content-inset);
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-3);
   }
 
   .case-study-body .cs-meta-item + .cs-meta-item {
@@ -107,7 +112,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   /* ── Standalone images: breathing room inside bordered cell ── */
-  .case-study-body > p:has(> img) {
+  .case-study-body > img {
     padding: var(--space-3);
   }
 
@@ -115,6 +120,41 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     display: block;
     width: 100%;
     height: auto;
+    max-height: 85vh;
+    object-fit: contain;
+  }
+
+  /* ── Image hover: subtle scale + shadow lift + zoom cursor ── */
+  .case-study-body > img,
+  .case-study-body .cs-figure,
+  .case-study-body .image-pair > img,
+  .case-study-body .image-grid > .cs-figure,
+  .case-study-body .zigzag-media {
+    overflow: hidden;
+  }
+
+  .case-study-body > img,
+  .case-study-body .cs-figure img,
+  .case-study-body .image-pair img,
+  .case-study-body .image-grid img,
+  .case-study-body .zigzag-media img {
+    cursor: zoom-in;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .case-study-body > img:hover,
+  .case-study-body .cs-figure img:hover,
+  .case-study-body .image-pair img:hover,
+  .case-study-body .image-grid img:hover,
+  .case-study-body .zigzag-media img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case-study-body img {
+      transition: none;
+    }
   }
 
   /* ── Lists ── */
@@ -135,18 +175,13 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     column-gap: var(--border-width-1);
     padding: 0;
     background: var(--color-text-primary);
-    --pair-accent: var(--color-accent-1);
   }
 
-  .case-study-body :nth-child(3n+1 of .image-pair) { --pair-accent: var(--color-accent-1); }
-  .case-study-body :nth-child(3n+2 of .image-pair) { --pair-accent: var(--color-accent-2); }
-  .case-study-body :nth-child(3n of .image-pair) { --pair-accent: var(--color-accent-3); }
-
-  .case-study-body .image-pair p {
+  .case-study-body .image-pair > img {
     margin: 0;
     padding: 0;
     border: none;
-    background: var(--pair-accent);
+    background: var(--color-bg-primary);
     line-height: 0;
   }
 
@@ -154,6 +189,140 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     display: block;
     width: 100%;
     height: auto;
+  }
+
+  /* ── Zigzag: alternating image/text 2-col sections ── */
+  .case-study-body .zigzag-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0;
+  }
+
+  .case-study-body .zigzag-media {
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  .case-study-body .zigzag-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .case-study-body .zigzag-media .cs-figure {
+    border: none;
+    height: 100%;
+    padding: 0;
+  }
+
+  .case-study-body .zigzag-media .cs-figure > p,
+  .case-study-body .zigzag-media .cs-figure > img {
+    height: 100%;
+  }
+
+  .case-study-body .zigzag-media .cs-figure figcaption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-1) var(--space-3);
+    background: linear-gradient(transparent, rgba(0,0,0,0.5));
+    color: var(--color-bg-primary);
+  }
+
+  .case-study-body .zigzag-media .cs-figure {
+    position: relative;
+  }
+
+  .case-study-body .zigzag-prose {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--content-inset);
+    gap: var(--space-2);
+  }
+
+  .case-study-body .zigzag-prose .prose-group {
+    padding: 0;
+    border: none;
+  }
+
+  /* Alternate direction: even zigzags flip image to right */
+  .case-study-body :nth-child(even of .zigzag-section) {
+    direction: rtl;
+  }
+
+  .case-study-body :nth-child(even of .zigzag-section) > * {
+    direction: ltr;
+  }
+
+  /* ── Accent band: full-width color section ── */
+  .case-study-body .accent-band {
+    padding: var(--space-3);
+  }
+  .accent-band-1 { background: var(--color-accent-1); }
+  .accent-band-2 { background: var(--color-accent-2); }
+  .accent-band-3 { background: var(--color-accent-3); }
+
+  /* Children inside accent band lose their own border */
+  .case-study-body .accent-band > * {
+    border: none;
+  }
+
+  /* ── Figure: image + figcaption ── */
+  .case-study-body .cs-figure {
+    padding: var(--space-5) 0;
+  }
+
+  .case-study-body .cs-figure > p,
+  .case-study-body .cs-figure > img {
+    padding: 0;
+    margin: 0;
+    border: none;
+  }
+
+  .case-study-body .cs-figure figcaption {
+    padding: var(--space-2) 0 0;
+    font-size: var(--text-1x);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-normal);
+  }
+
+  /* ── Image grid: 2×2 (or n-column) layout ── */
+  .case-study-body .image-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols, 2), 1fr);
+    gap: var(--border-width-1);
+    padding: 0;
+    background: var(--color-text-primary);
+  }
+
+  .case-study-body .image-grid > .cs-figure,
+  .case-study-body .image-grid > img {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: var(--color-bg-primary);
+  }
+
+  .case-study-body .image-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    max-height: 60vh;
+  }
+
+  .case-study-body .image-grid .cs-figure figcaption {
+    background: var(--color-bg-primary);
+  }
+
+  /* ── Lottie grid: 4-col on desktop, 2-col on mobile ── */
+  .case-study-body .lottie-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-3);
   }
 
   /* ── Mobile ── */
@@ -172,10 +341,23 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
       padding-left: var(--content-inset);
     }
 
-    .case-study-body .image-pair {
+    .case-study-body .zigzag-section {
+      grid-template-columns: 1fr;
+    }
+
+    .case-study-body :nth-child(even of .zigzag-section) {
+      direction: ltr;
+    }
+
+    .case-study-body .image-pair,
+    .case-study-body .image-grid {
       grid-template-columns: 1fr;
       column-gap: 0;
       row-gap: var(--border-width-1);
+    }
+
+    .case-study-body .lottie-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .case-study-body .cs-hero-meta {
@@ -198,6 +380,125 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
       border-top: var(--border-width-1) solid var(--color-text-primary);
     }
 
+  }
+
+  /* ── Lightbox overlay ── */
+  .lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal, 200);
+  }
+
+  .lightbox-overlay.is-open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .lightbox-content {
+    position: relative;
+    z-index: 1;
+    max-width: 90vw;
+    max-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-img-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-img-container img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-primary);
+    border: var(--border-width-1) solid var(--color-text-primary);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .lightbox-close:hover {
+    background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+  }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-primary);
+    border: var(--border-width-1) solid var(--color-text-primary);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .lightbox-nav:hover {
+    background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+  }
+
+  .lightbox-nav-prev { left: var(--space-3); }
+  .lightbox-nav-next { right: var(--space-3); }
+
+  .lightbox-counter {
+    position: absolute;
+    bottom: var(--space-3);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    font-size: var(--text-1x);
+    color: var(--color-bg-primary);
+    background: rgba(0, 0, 0, 0.5);
+    padding: var(--space-1) var(--space-2);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  /* ── Scroll progress bar ── */
+  .scroll-progress {
+    position: fixed;
+    top: var(--nav-height, 4rem);
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--color-accent-1);
+    z-index: var(--z-nav, 100);
+    pointer-events: none;
+    transition: none;
   }
 </style>
 

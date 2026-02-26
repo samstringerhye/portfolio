@@ -1,0 +1,12 @@
+---
+interface Props {
+  caption: string
+}
+
+const { caption } = Astro.props
+---
+
+<figure class="cs-figure">
+  <slot />
+  <figcaption>{caption}</figcaption>
+</figure>

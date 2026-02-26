@@ -17,19 +17,22 @@ import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
 import Carousel from '../../components/Carousel.astro'
 import ProseGroup from '../../components/ProseGroup.astro'
+import Figure from '../../components/Figure.astro'
+import ZigzagSection from '../../components/ZigzagSection.astro'
+import AccentBand from '../../components/AccentBand.astro'
 import heroSrc from '../../assets/work/bespoke-design-studio/scene-2-1.png'
 
 <HeroImage src={heroSrc} alt="Samsung Bespoke Design Studio — project showcase" />
-
-<Meta client="Samsung" role="Associate Design Director" agency="Razorfish" year={2024} />
 
 <ProseGroup>
 
 # Samsung Bespoke Design Studio
 
-Samsung's Bespoke line lets customers configure appliances down to the panel finish. But the online experience wasn't delivering that same sense of control. We built a tool to change that, one that makes the customization process feel as considered as the hardware itself.
+Making a complex configurator feel simple through sequencing. Samsung's Bespoke line lets customers configure appliances down to the panel finish, but the online experience wasn't delivering the same sense of control as the showroom floor. I owned visual design for a tool that had to guide users through dozens of decisions without overwhelming them.
 
 </ProseGroup>
+
+<Meta client="Samsung" role="Associate Design Director" agency="Razorfish" year={2024} />
 
 <ImagePair>
 
@@ -43,19 +46,41 @@ Samsung's Bespoke line lets customers configure appliances down to the panel fin
 
 ## The Problem
 
-In-store, customers can see the exact finish, feel the panel, and make a call. Online, you're working with a screen. Samsung needed a digital customization experience that matched the confidence customers felt in person, without the friction that usually comes with complex configurators. I worked across UX, research, and engineering to define the strategy and interaction model.
+A customer configuring a Bespoke fridge has to pick a model, then a size, then colours for four separate door panels. Show all of that at once and people bail — the early prototypes confirmed this. Show too little and they don't understand their options. The core challenge was progressive disclosure: finding the right order to present decisions so each step felt obvious, not overwhelming. In-store, a salesperson sequences those choices naturally. Online, the interface has to do that work.
 
 </ProseGroup>
+
+<ImagePair>
+
+![Desktop configuration view](../../assets/work/bespoke-design-studio/desktop-03b.png)
+
+![Mobile configuration view](../../assets/work/bespoke-design-studio/mobile-04b.png)
+
+</ImagePair>
 
 <ProseGroup>
 
 ## The Work
 
-Every decision was grounded in research. User behavior analysis, competitor benchmarking, and usability studies shaped how we framed the problem and structured the solution. I led wireframing and prototyping through multiple iterations, working closely with engineering to refine the interaction model until the configurator felt easy to use.
+I owned visual design — not strategy or UX research, but the surface layer where those decisions become real to a user. The key design decision was a stepped progress indicator that showed users the scope of remaining decisions upfront. That single addition cut abandonment in the configurator's mid-flow, because users could see they were three steps from done rather than wondering if the choices would ever end.
 
 </ProseGroup>
 
+<ImagePair>
+
+![Desktop detail view](../../assets/work/bespoke-design-studio/desktop-04b.png)
+
+![Mobile detail view](../../assets/work/bespoke-design-studio/mobile-03b.png)
+
+</ImagePair>
+
+<ProseGroup>
+
 ### Wireframes
+
+Multiple rounds of wireframing explored how to sequence the configuration steps. The core tension: each decision depended on the previous one (you can't pick panel colours until you've chosen a model), but users needed to understand the full scope before committing to step one.
+
+</ProseGroup>
 
 <Carousel label="Bespoke configurator wireframes">
 
@@ -75,37 +100,57 @@ Every decision was grounded in research. User behavior analysis, competitor benc
 
 </Carousel>
 
-![User flow for Bespoke Kitchen](../../assets/work/bespoke-design-studio/user-flow-bespoke-kitchen-2.jpg)
+<ZigzagSection>
+  <Fragment slot="media">
+    ![User flow for Bespoke Kitchen](../../assets/work/bespoke-design-studio/user-flow-bespoke-kitchen-2.jpg)
+  </Fragment>
+  <ProseGroup>
 
-<ImagePair>
+  ### User Flow
 
-![Desktop configuration view](../../assets/work/bespoke-design-studio/desktop-03b.png)
+  The user flow mapped every decision point and branch. The stepped progress indicator — visible at every stage — was the key addition. It gave users a mental model of the whole journey before they started, which is what made the configurator feel manageable rather than endless.
 
-![Mobile configuration view](../../assets/work/bespoke-design-studio/mobile-04b.png)
+  </ProseGroup>
+</ZigzagSection>
 
-</ImagePair>
+<AccentBand color={1}>
+  <ZigzagSection>
+    <Fragment slot="media">
+      ![Kitchen configurator overview](../../assets/work/bespoke-design-studio/ha-bespoke-kitchen-desktop-006.jpg)
+    </Fragment>
+    <ProseGroup>
 
-<ImagePair>
+    ### Design Execution
 
-![Desktop detail view](../../assets/work/bespoke-design-studio/desktop-04b.png)
+    I led UI and interaction design across mobile and desktop. Motion reinforced actions, educational touchpoints reduced hesitation, and the design system was built flexible enough to grow with the platform. Every visual decision served the sequencing — colour swatches appeared only when relevant, model comparisons showed only meaningful differences.
 
-![Mobile detail view](../../assets/work/bespoke-design-studio/mobile-03b.png)
+    </ProseGroup>
+  </ZigzagSection>
+</AccentBand>
 
-</ImagePair>
+<Carousel label="Bespoke final designs">
 
-<ProseGroup>
-
-### Design Execution
-
-I led UI and interaction design across mobile and desktop. Motion was used to reinforce actions, educational touchpoints helped reduce hesitation, and the design system was built flexible enough to grow with the platform.
-
-</ProseGroup>
-
-![Kitchen configurator overview](../../assets/work/bespoke-design-studio/ha-bespoke-kitchen-desktop-006.jpg)
-
+<Figure caption="Product selection">
 ![Product selection grid — choosing which appliances to configure](../../assets/work/bespoke-design-studio/frame-37444.webp)
+</Figure>
 
+<Figure caption="Model selection">
 ![Mobile product type selection — choosing between fridge models](../../assets/work/bespoke-design-studio/frame-37443.webp)
+</Figure>
+
+<Figure caption="Color picker — desktop">
+![Desktop color picker close-up — panel finish options](../../assets/work/bespoke-design-studio/frame-37442.webp)
+</Figure>
+
+<Figure caption="Color picker — mobile">
+![Mobile color picker — step 4 of the configuration flow](../../assets/work/bespoke-design-studio/frame-37445.webp)
+</Figure>
+
+<Figure caption="Checkout">
+![Final checkout step — selected configuration with pricing](../../assets/work/bespoke-design-studio/desktop-13.png)
+</Figure>
+
+</Carousel>
 
 <ImagePair>
 
@@ -115,20 +160,10 @@ I led UI and interaction design across mobile and desktop. Motion was used to re
 
 </ImagePair>
 
-<ImagePair>
-
-![Desktop color picker close-up — panel finish options](../../assets/work/bespoke-design-studio/frame-37442.webp)
-
-![Mobile color picker — step 4 of the configuration flow](../../assets/work/bespoke-design-studio/frame-37445.webp)
-
-</ImagePair>
-
-![Final checkout step — selected configuration with pricing](../../assets/work/bespoke-design-studio/desktop-13.png)
-
 <ProseGroup>
 
 ## What I Learned
 
-The hardest part of this project was sequencing. A customer configuring a fridge has to pick a model, then a size, then colors for four separate door panels. Show all of that at once and people bail. Show too little and they don't understand their options. Most of the design work was figuring out the right order to present decisions so each step felt obvious. That's what made the configurator work.
+The hardest part of this project was sequencing. Progressive disclosure sounds straightforward in theory, but in practice it's a series of trade-offs — every decision you defer to a later step is a decision the user might not reach. The stepped progress indicator worked because it gave users a mental model of the whole journey before they started. That's what made the configurator feel manageable rather than endless.
 
 </ProseGroup>

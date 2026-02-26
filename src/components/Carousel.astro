@@ -1,8 +1,7 @@
 ---
 /**
  * Horizontal scroll carousel with CSS scroll-snap.
- * Images are displayed at their natural aspect ratio.
- * Dots indicate position, keyboard arrows navigate.
+ * Enhanced: prev/next arrows, slide counter, next-slide peek, touch drag.
  */
 interface Props {
   /** Optional label shown above the carousel */
@@ -16,12 +15,21 @@ const { label } = Astro.props
   <div class="carousel-track">
     <slot />
   </div>
-  <div class="carousel-dots" aria-hidden="true"></div>
+  <button class="carousel-arrow carousel-prev" aria-label="Previous slide">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </button>
+  <button class="carousel-arrow carousel-next" aria-label="Next slide">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="9 6 15 12 9 18"></polyline>
+    </svg>
+  </button>
+  <div class="carousel-counter" aria-live="polite"></div>
 </div>
 
 <style>
   .carousel {
-    overflow: hidden;
     position: relative;
     outline: none;
   }
@@ -32,51 +40,83 @@ const { label } = Astro.props
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    gap: 0;
+    gap: var(--space-5);
+    padding: var(--space-6);
   }
 
   .carousel-track::-webkit-scrollbar {
     display: none;
   }
 
-  /* Each image (rendered as <p><img></p> by markdown) is a slide */
-  .carousel-track > :global(p) {
-    flex: 0 0 100%;
-    scroll-snap-align: start;
+  /* Each slide: ~65% width so adjacent cards are clearly visible */
+  .carousel-track > :global(img),
+  .carousel-track > :global(.cs-figure) {
+    flex: 0 0 60%;
+    scroll-snap-align: center;
     padding: 0;
     margin: 0;
     border: none;
+    display: block;
   }
 
   .carousel-track :global(img) {
     display: block;
     width: 100%;
     height: auto;
+    border-radius: 1rem;
   }
 
-  /* Dots */
-  .carousel-dots {
+  /* ── Arrows ── */
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 40px;
+    height: 40px;
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: var(--space-1);
-    padding: var(--space-2) 0;
-  }
-
-  .carousel-dots :global(.dot) {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-text-secondary);
-    opacity: 0.3;
-    transition: opacity var(--transition-medium);
-    border: none;
-    padding: 0;
+    background: var(--color-bg-primary);
+    border: var(--border-width-1) solid var(--color-text-primary);
+    color: var(--color-text-primary);
     cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    padding: 0;
   }
 
-  .carousel-dots :global(.dot.active) {
+  .carousel:hover .carousel-arrow,
+  .carousel:focus-within .carousel-arrow {
     opacity: 1;
+  }
+
+  .carousel-arrow:hover {
     background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+  }
+
+  .carousel-arrow:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .carousel-prev { left: var(--space-2); }
+  .carousel-next { right: var(--space-2); }
+
+  /* ── Counter ── */
+  .carousel-counter {
+    position: absolute;
+    bottom: var(--space-2);
+    right: var(--space-2);
+    font-size: var(--text-1x);
+    color: var(--color-text-secondary);
+    background: var(--color-bg-primary);
+    padding: var(--space-1) var(--space-2);
+    border: var(--border-width-1) solid var(--color-text-primary);
+    line-height: 1;
+    z-index: 2;
+    font-variant-numeric: tabular-nums;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -84,61 +124,106 @@ const { label } = Astro.props
       scroll-behavior: auto;
     }
   }
+
+  @media (--2x) {
+    .carousel-track {
+      padding-inline: var(--content-inset);
+    }
+
+    .carousel-track > :global(img),
+    .carousel-track > :global(.cs-figure) {
+      flex: 0 0 82%;
+    }
+
+    .carousel-arrow {
+      width: 36px;
+      height: 36px;
+    }
+  }
 </style>
 
 <script>
   function initCarousels() {
     document.querySelectorAll('.carousel').forEach(carousel => {
-      const track = carousel.querySelector('.carousel-track')
-      const dotsContainer = carousel.querySelector('.carousel-dots')
-      if (!track || !dotsContainer) return
+      if ((carousel as HTMLElement).dataset.carouselInit === 'true') return
+      ;(carousel as HTMLElement).dataset.carouselInit = 'true'
 
-      const slides = track.querySelectorAll(':scope > p')
+      const track = carousel.querySelector('.carousel-track') as HTMLElement
+      const counter = carousel.querySelector('.carousel-counter') as HTMLElement
+      const prevBtn = carousel.querySelector('.carousel-prev') as HTMLButtonElement
+      const nextBtn = carousel.querySelector('.carousel-next') as HTMLButtonElement
+      if (!track || !counter) return
+
+      // Astro MDX wraps slot content in a <div> — unwrap it so slides
+      // become direct children of the track (fixes flex + scroll-snap)
+      const wrapper = track.querySelector(':scope > div')
+      if (wrapper && !wrapper.classList.contains('cs-figure')) {
+        while (wrapper.firstChild) {
+          track.appendChild(wrapper.firstChild)
+        }
+        wrapper.remove()
+      }
+
+      const slides = Array.from(track.querySelectorAll<HTMLElement>(':scope > img, :scope > .cs-figure'))
       if (slides.length <= 1) {
-        dotsContainer.style.display = 'none'
+        counter.style.display = 'none'
+        prevBtn?.remove()
+        nextBtn?.remove()
+        // Make single slide full width
+        if (slides[0]) slides[0].style.flex = '0 0 100%'
         return
       }
 
-      // Build dots
-      dotsContainer.innerHTML = ''
-      slides.forEach((_, i) => {
-        const dot = document.createElement('button')
-        dot.className = `dot${i === 0 ? ' active' : ''}`
-        dot.setAttribute('aria-label', `Go to slide ${i + 1}`)
-        dot.addEventListener('click', () => {
-          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-          slides[i].scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'nearest', inline: 'start' })
-        })
-        dotsContainer.appendChild(dot)
-      })
+      const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      let currentIndex = 0
 
-      // Update dots on scroll
+      function updateUI(index: number) {
+        currentIndex = Math.max(0, Math.min(index, slides.length - 1))
+        counter.textContent = `${currentIndex + 1} / ${slides.length}`
+        if (prevBtn) prevBtn.disabled = currentIndex === 0
+        if (nextBtn) nextBtn.disabled = currentIndex === slides.length - 1
+      }
+
+      // The scrollable element is the track itself
+      const scrollContainer = track
+
+      function goTo(index: number) {
+        const target = slides[Math.max(0, Math.min(index, slides.length - 1))]
+        if (!target) return
+        const targetLeft = target.offsetLeft - scrollContainer.offsetLeft
+        scrollContainer.scrollTo({
+          left: targetLeft,
+          behavior: prefersReduced() ? 'auto' : 'smooth',
+        })
+      }
+
+      // Initial state
+      updateUI(0)
+
+      // Track scroll position to update counter
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            const index = Array.from(slides).indexOf(entry.target as Element)
-            dotsContainer.querySelectorAll('.dot').forEach((d, i) => {
-              d.classList.toggle('active', i === index)
-            })
+            const index = slides.indexOf(entry.target as HTMLElement)
+            if (index >= 0) updateUI(index)
           }
         })
-      }, { root: track, threshold: 0.5 })
+      }, { root: scrollContainer, threshold: 0.5 })
 
       slides.forEach(slide => observer.observe(slide))
 
+      // Arrow buttons
+      prevBtn?.addEventListener('click', () => goTo(currentIndex - 1))
+      nextBtn?.addEventListener('click', () => goTo(currentIndex + 1))
+
       // Keyboard navigation
       carousel.addEventListener('keydown', (e) => {
-        const currentIndex = Array.from(slides).findIndex(
-          (_, i) => dotsContainer.querySelectorAll('.dot')[i]?.classList.contains('active')
-        )
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        const behavior = prefersReduced ? 'auto' : 'smooth'
-        if ((e as KeyboardEvent).key === 'ArrowRight' && currentIndex < slides.length - 1) {
-          slides[currentIndex + 1].scrollIntoView({ behavior, block: 'nearest', inline: 'start' })
-        } else if ((e as KeyboardEvent).key === 'ArrowLeft' && currentIndex > 0) {
-          slides[currentIndex - 1].scrollIntoView({ behavior, block: 'nearest', inline: 'start' })
-        }
+        if ((e as KeyboardEvent).key === 'ArrowRight') { goTo(currentIndex + 1); e.preventDefault() }
+        else if ((e as KeyboardEvent).key === 'ArrowLeft') { goTo(currentIndex - 1); e.preventDefault() }
       })
+
+      // Native CSS scroll-snap + touch handles swipe gestures;
+      // GSAP Draggable removed — it wraps content in a div that breaks flex layout.
     })
   }
 

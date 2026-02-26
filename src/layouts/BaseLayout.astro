@@ -105,7 +105,7 @@ const sizingVars = [
   `--nav-toggle-gap: ${primitives.sizing.navToggleGap};`,
   `--prose-measure: ${primitives.sizing.proseMeasure};`,
   `--prose-heading-measure: ${primitives.sizing.proseHeadingMeasure};`,
-  `--cs-section-gap: var(--space-5);`,
+  `--cs-section-gap: var(--space-3);`,
 ].join('\n    ')
 
 /* ── Inline spacing vars ── */
@@ -332,8 +332,27 @@ const typoCss = `${fontFaces}
       async function initInteractions() {
         const { initScrollReveals } = await import('../components/scroll-reveals.ts')
         const { initHoverEffects } = await import('../components/hover-effects.ts')
+        const { initLightbox } = await import('../components/Lightbox.ts')
         await initScrollReveals()
         initHoverEffects()
+        initLightbox()
+        initScrollProgress()
+      }
+
+      function initScrollProgress() {
+        const bar = document.querySelector<HTMLElement>('.scroll-progress')
+        if (!bar) return
+
+        gsap.to(bar, {
+          width: '100%',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: document.querySelector('.case-study-body') || document.body,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: true,
+          },
+        })
       }
 
       const globalState = window as GlobalInitState

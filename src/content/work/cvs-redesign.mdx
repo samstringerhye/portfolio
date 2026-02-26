@@ -16,45 +16,45 @@ import HeroImage from '../../components/HeroImage.astro'
 import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
 import ProseGroup from '../../components/ProseGroup.astro'
+import Figure from '../../components/Figure.astro'
+import ZigzagSection from '../../components/ZigzagSection.astro'
+import AccentBand from '../../components/AccentBand.astro'
 import heroSrc from '../../assets/work/cvs-redesign/cvs-header-2.jpg'
 
 <HeroImage src={heroSrc} alt="CVS Shop Website Redesign — project showcase" />
-
-<Meta client="CVS" role="Associate Design Director" agency="Razorfish" year={2023} />
 
 <ProseGroup>
 
 # CVS Shop Website Redesign
 
-When the system is right, everything downstream gets better. CVS.com is one of the largest pharmacy retailer e-commerce platforms in the US, serving customers who might be filling a prescription, buying skincare, or both in the same session. The shop had accumulated years of inconsistency — unclear hierarchy, fractured navigation, and a visual language that had drifted from the brand. The modernization was about restoring clarity, not reinventing the wheel.
+Building foundations that gave teams freedom rather than constraints. CVS.com is one of the largest pharmacy retailer e-commerce platforms in the US, and the platform had accumulated years of inconsistency across acquisitions. I owned the type system, the icon system, the component library, and the overall design direction — building composable primitives rather than page-specific components so teams could assemble freely.
 
 </ProseGroup>
+
+<Meta client="CVS" role="Associate Design Director" agency="Razorfish" year={2023} />
+
+<AccentBand color={1}>
+  <ZigzagSection>
+    <Fragment slot="media">
+      ![Brand visual language — CVS design elements and UI patterns](../../assets/work/cvs-redesign/group-10624.jpg)
+    </Fragment>
+    <ProseGroup>
+
+    ### Typography & Icons
+
+    I designed a type system with a rational scale and a grid-based icon and illustration system using CVS brand red. Each icon was constructed on a consistent grid so proportions held at any size — no one-off sizing decisions. The type scale and icon grid became the foundation everything else was built on.
+
+    </ProseGroup>
+  </ZigzagSection>
+</AccentBand>
 
 <ProseGroup>
 
 ## The Problem
 
-CVS sits at an unusual intersection — pharmacy and general retailer — which means the platform serves a wider range of intent than most e-commerce sites. Over time, the shop grew through acquisitions rather than deliberate system thinking, producing fractured type scales, inconsistent icons, and components built independently rather than from shared parts. And because CVS.com is a live platform with real customer volume, fixing it required a disciplined approach to foundations rather than a greenfield rebuild.
+CVS sits at an unusual intersection — pharmacy and general retailer — which means the platform serves a wider range of intent than most e-commerce sites. Over time, the shop grew through acquisitions rather than deliberate system thinking, producing fractured type scales, inconsistent icons, and components built independently rather than from shared parts. Because CVS.com is a live platform with real customer volume, fixing it required discipline: I couldn't redesign from scratch, I had to build foundations that improved everything downstream without breaking what was already working.
 
 </ProseGroup>
-
-<ProseGroup>
-
-## The Work
-
-I worked from the ground up — typographic framework first, then a grid-based icon system using CVS brand red, then a component library covering homepage modules, product pages, and category navigation. Starting with typography meant every downstream component inherited consistency rather than having to engineer it in later, and scoping everything to desktop and mobile from the start prevented the usual pattern of adapting after the fact.
-
-</ProseGroup>
-
-<ProseGroup>
-
-### Typography & Icons
-
-I designed a custom icon and illustration system for CVS using their brand red. Each icon was built on a grid to keep proportions consistent at any size.
-
-</ProseGroup>
-
-![Brand visual language — CVS design elements and UI patterns](../../assets/work/cvs-redesign/group-10624.jpg)
 
 <ImagePair>
 
@@ -66,13 +66,24 @@ I designed a custom icon and illustration system for CVS using their brand red. 
 
 <ProseGroup>
 
-### Components & Templates
+## The Work
 
-The component library covered everything from the homepage to product pages to category navigation. Each piece was built to work across desktop and mobile.
+I chose composable primitives over page-specific components. That was the key decision — rather than designing a "homepage hero" or a "category card," I built atomic pieces (type scale, icon grid, spacing system) that any team could assemble into what they needed. Starting with the typographic framework meant every downstream component inherited consistency rather than having to engineer it in later. The icon system followed the same principle: every icon built on a grid, using CVS brand red, so proportions held at any size without case-by-case adjustment.
 
 </ProseGroup>
 
-![CVS.com homepage — desktop and mobile responsive layout](../../assets/work/cvs-redesign/frame-10669.png)
+<ZigzagSection>
+  <Fragment slot="media">
+    ![CVS.com homepage — desktop and mobile responsive layout](../../assets/work/cvs-redesign/frame-10669.png)
+  </Fragment>
+  <ProseGroup>
+
+  ### Components & Templates
+
+  The component library covered homepage modules, product pages, and category navigation — each piece built to work across desktop and mobile from the start, preventing the usual pattern of designing desktop first and adapting after the fact.
+
+  </ProseGroup>
+</ZigzagSection>
 
 ![Shop navigation — category browsing on desktop and mobile](../../assets/work/cvs-redesign/frame-10672.png)
 
@@ -90,6 +101,6 @@ The component library covered everything from the homepage to product pages to c
 
 ## What I Learned
 
-Foundation work is where the most leverage is. When the typographic scale is resolved, product teams stop making ad hoc sizing decisions; when the icon system is consistent, no one debates stroke weight. What the system unlocked was speed downstream — consistent inputs produce consistent outputs, freeing design and engineering capacity for harder problems like checkout and pharmacy flows.
+Foundation work is where the most leverage is. When the typographic scale is resolved, product teams stop making ad hoc sizing decisions. When the icon system is consistent, no one debates stroke weight. What composable primitives unlocked was speed downstream — consistent inputs produce consistent outputs, freeing design and engineering capacity for harder problems like checkout and pharmacy flows. The system gave teams freedom by removing the decisions that shouldn't vary.
 
 </ProseGroup>

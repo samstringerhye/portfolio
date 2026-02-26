@@ -1,0 +1,16 @@
+---
+/**
+ * Alternating two-column section: image on one side, prose on the other.
+ * Odd instances show image-left/text-right; even instances flip.
+ * Uses named slots: "media" for images, default slot for prose.
+ */
+---
+
+<div class="zigzag-section">
+  <div class="zigzag-media">
+    <slot name="media" />
+  </div>
+  <div class="zigzag-prose">
+    <slot />
+  </div>
+</div>
