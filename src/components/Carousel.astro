@@ -1,10 +1,9 @@
 ---
 /**
- * Horizontal scroll carousel with CSS scroll-snap.
- * Enhanced: prev/next arrows, slide counter, next-slide peek, touch drag.
+ * GSAP Draggable + InertiaPlugin carousel.
+ * Pre-calculates snap points after layout, uses static config.
  */
 interface Props {
-  /** Optional label shown above the carousel */
   label?: string
 }
 
@@ -15,16 +14,6 @@ const { label } = Astro.props
   <div class="carousel-track">
     <slot />
   </div>
-  <button class="carousel-arrow carousel-prev" aria-label="Previous slide">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="15 18 9 12 15 6"></polyline>
-    </svg>
-  </button>
-  <button class="carousel-arrow carousel-next" aria-label="Next slide">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polyline points="9 6 15 12 9 18"></polyline>
-    </svg>
-  </button>
   <div class="carousel-counter" aria-live="polite"></div>
 </div>
 
@@ -32,79 +21,40 @@ const { label } = Astro.props
   .carousel {
     position: relative;
     outline: none;
+    overflow: hidden;
   }
 
   .carousel-track {
     display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: var(--space-5);
-    padding: var(--space-6);
+    padding: var(--space-4);
+    will-change: transform;
+    cursor: grab;
+    touch-action: pan-y;
   }
 
-  .carousel-track::-webkit-scrollbar {
-    display: none;
+  .carousel-track.is-dragging {
+    cursor: grabbing;
   }
 
-  /* Each slide: ~65% width so adjacent cards are clearly visible */
   .carousel-track > :global(img),
   .carousel-track > :global(.cs-figure) {
     flex: 0 0 60%;
-    scroll-snap-align: center;
     padding: 0;
     margin: 0;
     border: none;
     display: block;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   .carousel-track :global(img) {
     display: block;
     width: 100%;
     height: auto;
-    border-radius: 1rem;
-  }
-
-  /* ── Arrows ── */
-  .carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-bg-primary);
-    border: var(--border-width-1) solid var(--color-text-primary);
-    color: var(--color-text-primary);
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    padding: 0;
-  }
-
-  .carousel:hover .carousel-arrow,
-  .carousel:focus-within .carousel-arrow {
-    opacity: 1;
-  }
-
-  .carousel-arrow:hover {
-    background: var(--color-text-primary);
-    color: var(--color-bg-primary);
-  }
-
-  .carousel-arrow:disabled {
-    opacity: 0;
+    border-radius: var(--radius-lg);
     pointer-events: none;
   }
 
-  .carousel-prev { left: var(--space-2); }
-  .carousel-next { right: var(--space-2); }
-
-  /* ── Counter ── */
   .carousel-counter {
     position: absolute;
     bottom: var(--space-2);
@@ -119,12 +69,6 @@ const { label } = Astro.props
     font-variant-numeric: tabular-nums;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .carousel-track {
-      scroll-behavior: auto;
-    }
-  }
-
   @media (--2x) {
     .carousel-track {
       padding-inline: var(--content-inset-sm);
@@ -134,15 +78,15 @@ const { label } = Astro.props
     .carousel-track > :global(.cs-figure) {
       flex: 0 0 82%;
     }
-
-    .carousel-arrow {
-      width: 36px;
-      height: 36px;
-    }
   }
 </style>
 
 <script>
+  import gsap from 'gsap'
+  import { Observer } from 'gsap/Observer'
+
+  gsap.registerPlugin(Observer)
+
   function initCarousels() {
     document.querySelectorAll('.carousel').forEach(carousel => {
       if ((carousel as HTMLElement).dataset.carouselInit === 'true') return
@@ -150,80 +94,137 @@ const { label } = Astro.props
 
       const track = carousel.querySelector('.carousel-track') as HTMLElement
       const counter = carousel.querySelector('.carousel-counter') as HTMLElement
-      const prevBtn = carousel.querySelector('.carousel-prev') as HTMLButtonElement
-      const nextBtn = carousel.querySelector('.carousel-next') as HTMLButtonElement
       if (!track || !counter) return
 
-      // Astro MDX wraps slot content in a <div> — unwrap it so slides
-      // become direct children of the track (fixes flex + scroll-snap)
+      // Unwrap Astro MDX wrapper div
       const wrapper = track.querySelector(':scope > div')
       if (wrapper && !wrapper.classList.contains('cs-figure')) {
-        while (wrapper.firstChild) {
-          track.appendChild(wrapper.firstChild)
-        }
+        while (wrapper.firstChild) track.appendChild(wrapper.firstChild)
         wrapper.remove()
       }
 
       const slides = Array.from(track.querySelectorAll<HTMLElement>(':scope > img, :scope > .cs-figure'))
       if (slides.length <= 1) {
         counter.style.display = 'none'
-        prevBtn?.remove()
-        nextBtn?.remove()
-        // Make single slide full width
         if (slides[0]) slides[0].style.flex = '0 0 100%'
         return
       }
 
-      const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
       let currentIndex = 0
+      let snapPoints: number[] = []
 
-      function updateUI(index: number) {
-        currentIndex = Math.max(0, Math.min(index, slides.length - 1))
-        counter.textContent = `${currentIndex + 1} / ${slides.length}`
-        if (prevBtn) prevBtn.disabled = currentIndex === 0
-        if (nextBtn) nextBtn.disabled = currentIndex === slides.length - 1
+      function getGridMetrics() {
+        const cw = (carousel as HTMLElement).offsetWidth
+        // Resolve clamp() to px by measuring a temp element
+        const probe = document.createElement('div')
+        probe.style.cssText = 'position:absolute;width:var(--grid-gutter);visibility:hidden;'
+        carousel.appendChild(probe)
+        const gutter = probe.offsetWidth
+        carousel.removeChild(probe)
+        const col = (cw - 11 * gutter) / 12
+        return { col, gutter }
       }
 
-      // The scrollable element is the track itself
-      const scrollContainer = track
+      function applyGridSizing() {
+        const { col, gutter } = getGridMetrics()
+        const padLeft = col + gutter
+        const slideWidth = col * 6 + gutter * 5
+        const padRight = col + gutter
+        track.style.paddingLeft = `${padLeft}px`
+        track.style.paddingRight = `${padRight}px`
+        track.style.gap = `${gutter}px`
+        slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
+      }
+      applyGridSizing()
 
-      function goTo(index: number) {
-        const target = slides[Math.max(0, Math.min(index, slides.length - 1))]
-        if (!target) return
-        const targetLeft = target.offsetLeft - scrollContainer.offsetLeft
-        scrollContainer.scrollTo({
-          left: targetLeft,
-          behavior: prefersReduced() ? 'auto' : 'smooth',
+      function buildSnapPoints() {
+        const padLeft = parseFloat(getComputedStyle(track).paddingLeft)
+        const maxScroll = -(track.scrollWidth - (carousel as HTMLElement).offsetWidth)
+        snapPoints = slides.map(s => {
+          const snap = padLeft - s.offsetLeft
+          return Math.max(snap, maxScroll)
+        })
+        // Deduplicate snaps that collapsed to maxScroll
+        snapPoints = [...new Set(snapPoints)]
+      }
+      buildSnapPoints()
+
+      function nearestIndex(x: number): number {
+        let best = 0, bestD = Infinity
+        snapPoints.forEach((p, i) => {
+          const d = Math.abs(x - p)
+          if (d < bestD) { bestD = d; best = i }
+        })
+        return best
+      }
+
+      function animateTo(index: number) {
+        const i = Math.max(0, Math.min(index, snapPoints.length - 1))
+        currentIndex = i
+        counter.textContent = `${i + 1} / ${snapPoints.length}`
+        gsap.to(track, {
+          x: snapPoints[i],
+          duration: 0.5,
+          ease: 'power3.out',
+          overwrite: true,
         })
       }
 
-      // Initial state
-      updateUI(0)
+      // Init counter
+      counter.textContent = `1 / ${snapPoints.length}`
 
-      // Track scroll position to update counter
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const index = slides.indexOf(entry.target as HTMLElement)
-            if (index >= 0) updateUI(index)
+      // ── Observer: detect horizontal drag/swipe ──
+      Observer.create({
+        target: carousel,
+        type: 'touch,pointer',
+        dragMinimum: 5,
+        onPress() {
+          gsap.killTweensOf(track)
+          track.classList.add('is-dragging')
+        },
+        onDrag(self) {
+          const currentX = gsap.getProperty(track, 'x') as number
+          let newX = currentX + self.deltaX
+          // Rubber-band at edges
+          const minX = snapPoints[snapPoints.length - 1]
+          const maxX = snapPoints[0]
+          if (newX > maxX) newX = maxX + (newX - maxX) * 0.3
+          else if (newX < minX) newX = minX + (newX - minX) * 0.3
+          gsap.set(track, { x: newX })
+          counter.textContent = `${nearestIndex(newX) + 1} / ${snapPoints.length}`
+        },
+        onDragEnd(self) {
+          track.classList.remove('is-dragging')
+          const trackX = gsap.getProperty(track, 'x') as number
+          let targetIndex = nearestIndex(trackX)
+
+          // Flick detection: velocity-based advance
+          if (Math.abs(self.velocityX) > 300) {
+            targetIndex = self.velocityX > 0
+              ? Math.max(0, currentIndex - 1)
+              : Math.min(snapPoints.length - 1, currentIndex + 1)
           }
-        })
-      }, { root: scrollContainer, threshold: 0.5 })
 
-      slides.forEach(slide => observer.observe(slide))
-
-      // Arrow buttons
-      prevBtn?.addEventListener('click', () => goTo(currentIndex - 1))
-      nextBtn?.addEventListener('click', () => goTo(currentIndex + 1))
-
-      // Keyboard navigation
-      carousel.addEventListener('keydown', (e) => {
-        if ((e as KeyboardEvent).key === 'ArrowRight') { goTo(currentIndex + 1); e.preventDefault() }
-        else if ((e as KeyboardEvent).key === 'ArrowLeft') { goTo(currentIndex - 1); e.preventDefault() }
+          animateTo(targetIndex)
+        },
+        onRelease() {
+          track.classList.remove('is-dragging')
+        },
       })
 
-      // Native CSS scroll-snap + touch handles swipe gestures;
-      // GSAP Draggable removed — it wraps content in a div that breaks flex layout.
+      // ── Keyboard ──
+      carousel.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') { animateTo(currentIndex + 1); e.preventDefault() }
+        else if (e.key === 'ArrowLeft') { animateTo(currentIndex - 1); e.preventDefault() }
+      })
+
+      // Recalculate on resize, and snap to current slide
+      const ro = new ResizeObserver(() => {
+        applyGridSizing()
+        buildSnapPoints()
+        gsap.set(track, { x: snapPoints[currentIndex] })
+      })
+      ro.observe(carousel)
     })
   }
 

@@ -137,9 +137,9 @@
             "tracking": {
               "type": "object",
               "properties": {
-                "tight": { "type": "number" },
-                "normal": { "type": "number" },
-                "wide": { "type": "number" }
+                "tight": { "type": "string" },
+                "normal": { "type": "string" },
+                "wide": { "type": "string" }
               },
               "additionalProperties": false
             }

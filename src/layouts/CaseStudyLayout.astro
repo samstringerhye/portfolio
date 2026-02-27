@@ -16,6 +16,10 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
 <BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline}>
   <div class="scroll-progress"></div>
+  <div class="img-cursor" aria-hidden="true">
+    <svg class="cursor-icon-zoom" width="28" height="28" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="16" x2="7" y2="11"/><polyline points="2,12 2,16 6,16"/><line x1="16" y1="2" x2="11" y2="7"/><polyline points="16,6 16,2 12,2"/></svg>
+    <svg class="cursor-icon-drag" width="28" height="28" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none"><line x1="1" y1="9" x2="6" y2="9"/><polyline points="3,7 1,9 3,11"/><line x1="17" y1="9" x2="12" y2="9"/><polyline points="15,7 17,9 15,11"/></svg>
+  </div>
   <article class="case-study-body">
     <slot />
   </article>
@@ -33,7 +37,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    row-gap: var(--cs-section-gap, var(--space-3));
+    row-gap: 0;
   }
 
   /* ── All children: full-width, no universal border ── */
@@ -55,9 +59,11 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     border: var(--border-width-1) solid var(--color-text-primary);
   }
 
+
   /* ── Hero image ── */
   .case-study-body .cs-hero-image {
     overflow: hidden;
+    border: none;
   }
 
   .case-study-body .cs-hero-image img {
@@ -68,13 +74,15 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   /* ── Meta bar ── */
   .case-study-body .cs-hero-meta {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
     padding: 0;
+    margin-top: 0;
   }
 
   .case-study-body .cs-meta-item {
-    flex: 1 1 0%;
+    grid-column: span 3;
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
@@ -89,8 +97,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     margin: 0;
   }
 
-  /* ── Copy blocks: inset padding ── */
-  /* Standalone elements (sub-section h3s, orphan paragraphs) */
+  /* ── Copy blocks: align to column grid ── */
   .case-study-body > h1,
   .case-study-body > h2,
   .case-study-body > h3,
@@ -98,12 +105,14 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   .case-study-body > ul,
   .case-study-body > ol,
   .case-study-body > blockquote {
-    padding: var(--content-inset-md);
+    grid-column: 2 / 10;
+    padding: 0;
   }
 
-  /* Prose groups: inset the container, not individual children */
+  /* Prose groups: columns 2–10 (8 of 12 columns) */
   .case-study-body .prose-group {
-    padding: var(--content-inset-md);
+    grid-column: 2 / 10;
+    padding: 0;
   }
 
   /* ── Carousel: inherits bordered frame from > * rule ── */
@@ -111,9 +120,13 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     overflow: hidden;
   }
 
-  /* ── Standalone images: breathing room inside bordered cell ── */
+  .case-study-body .carousel-track {
+    cursor: none;
+  }
+
+  /* ── Standalone images ── */
   .case-study-body > img {
-    padding: var(--space-3);
+    padding: 0;
   }
 
   .case-study-body img {
@@ -124,31 +137,44 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     object-fit: contain;
   }
 
+  .case-study-body img.has-transparency {
+    background: #fff;
+    padding: var(--space-4);
+    object-fit: contain;
+  }
+
   /* ── Image hover: subtle scale + shadow lift + zoom cursor ── */
-  .case-study-body > img,
+  .case-study-body .cs-hero-image,
   .case-study-body .cs-figure,
+  .case-study-body .image-pair,
   .case-study-body .image-pair > img,
+  .case-study-body .image-grid,
   .case-study-body .image-grid > .cs-figure,
-  .case-study-body .zigzag-media {
+  .case-study-body .zigzag-media,
+  .case-study-body .carousel {
     overflow: hidden;
   }
 
-  .case-study-body > img,
   .case-study-body .cs-figure img,
   .case-study-body .image-pair img,
   .case-study-body .image-grid img,
-  .case-study-body .zigzag-media img {
-    cursor: zoom-in;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  .case-study-body .zigzag-media {
+    cursor: none;
+    transition: scale 0.3s ease;
   }
 
-  .case-study-body > img:hover,
+  .case-study-body .zigzag-media img {
+    cursor: none;
+  }
+
   .case-study-body .cs-figure img:hover,
   .case-study-body .image-pair img:hover,
-  .case-study-body .image-grid img:hover,
-  .case-study-body .zigzag-media img:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  .case-study-body .image-grid img:hover {
+    scale: 1.02;
+  }
+
+  .case-study-body .zigzag-media:hover {
+    scale: 1.02;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -160,7 +186,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   /* ── Lists ── */
   .case-study-body ul {
     list-style: disc;
-    padding-left: var(--content-inset-md);
+    padding-left: 1.25em;
   }
 
   .case-study-body li {
@@ -177,12 +203,14 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     background: var(--color-text-primary);
   }
 
-  .case-study-body .image-pair > img {
+  .case-study-body .image-pair > *,
+  .case-study-body .image-pair-cell {
     margin: 0;
     padding: 0;
     border: none;
     background: var(--color-bg-primary);
     line-height: 0;
+    overflow: hidden;
   }
 
   .case-study-body .image-pair img {
@@ -194,13 +222,32 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   /* ── Zigzag: alternating image/text 2-col sections ── */
   .case-study-body .zigzag-section {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0;
+    grid-template-columns: subgrid;
   }
+
+  .case-study-body .zigzag-media {
+    grid-column: 2 / 7;
+  }
+
+  .case-study-body .zigzag-prose {
+    grid-column: 7 / 12;
+  }
+
+  .case-study-body .zigzag-reversed .zigzag-media {
+    grid-column: 7 / 12;
+    grid-row: 1;
+  }
+
+  .case-study-body .zigzag-reversed .zigzag-prose {
+    grid-column: 2 / 7;
+    grid-row: 1;
+  }
+
 
   .case-study-body .zigzag-media {
     overflow: hidden;
     line-height: 0;
+    border-radius: var(--radius-lg);
   }
 
   .case-study-body .zigzag-media img {
@@ -238,7 +285,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: var(--content-inset-md);
+    padding: 0;
     gap: var(--space-2);
   }
 
@@ -247,18 +294,10 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     border: none;
   }
 
-  /* Alternate direction: even zigzags flip image to right */
-  .case-study-body :nth-child(even of .zigzag-section) {
-    direction: rtl;
-  }
-
-  .case-study-body :nth-child(even of .zigzag-section) > * {
-    direction: ltr;
-  }
 
   /* ── Accent band: full-width color section ── */
   .case-study-body .accent-band {
-    padding: var(--space-3);
+    padding-inline: var(--space-3);
   }
   .accent-band-1 { background: var(--color-accent-1); }
   .accent-band-2 { background: var(--color-accent-2); }
@@ -271,7 +310,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   /* ── Figure: image + figcaption ── */
   .case-study-body .cs-figure {
-    padding: var(--space-5) 0;
+    padding-inline: 0;
   }
 
   .case-study-body .cs-figure > p,
@@ -325,6 +364,22 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     padding: var(--space-3);
   }
 
+  /* ── Vertical rhythm: block padding on containers ── */
+  .case-study-body .zigzag-section,
+  .case-study-body .accent-band,
+  .case-study-body .cs-figure,
+  .case-study-body .prose-group {
+    padding-block: var(--space-7);
+  }
+
+  .case-study-body .cs-figure--flush {
+    padding-block: 0;
+  }
+
+  .case-study-body .carousel {
+    padding-block: var(--space-4);
+  }
+
   /* ── Mobile ── */
   @media (--2x) {
     .case-study-body > h1,
@@ -333,20 +388,14 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     .case-study-body > p,
     .case-study-body > ul,
     .case-study-body > ol,
-    .case-study-body > blockquote {
-      padding-inline: var(--content-inset-md);
+    .case-study-body > blockquote,
+    .case-study-body .prose-group {
+      grid-column: 1 / -1;
     }
 
-    .case-study-body > ul {
-      padding-left: var(--content-inset-md);
-    }
-
-    .case-study-body .zigzag-section {
-      grid-template-columns: 1fr;
-    }
-
-    .case-study-body :nth-child(even of .zigzag-section) {
-      direction: ltr;
+    .case-study-body .zigzag-media,
+    .case-study-body .zigzag-prose {
+      grid-column: 1 / -1;
     }
 
     .case-study-body .image-pair,
@@ -500,6 +549,50 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     pointer-events: none;
     transition: none;
   }
+
+  /* ── Custom image cursor ── */
+  .img-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--cursor-bg, var(--color-accent-1));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: var(--z-modal, 200);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition:
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.2s ease,
+      background 0.3s ease;
+    will-change: transform;
+  }
+
+  .img-cursor svg {
+    flex-shrink: 0;
+  }
+
+  .img-cursor.is-visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .img-cursor {
+      transition: none;
+    }
+  }
+
+  /* Hide on touch devices */
+  @media (pointer: coarse) {
+    .img-cursor { display: none; }
+  }
 </style>
 
 <script>
@@ -522,4 +615,129 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   sizeImagePairs()
   document.addEventListener('astro:page-load', sizeImagePairs)
+</script>
+
+<script>
+  function detectTransparentImages() {
+    const body = document.querySelector('.case-study-body')
+    if (!body) return
+
+    body.querySelectorAll<HTMLImageElement>('img').forEach(img => {
+      const check = () => {
+        if (!img.naturalWidth) return
+        const canvas = document.createElement('canvas')
+        canvas.width = Math.min(img.naturalWidth, 100)
+        canvas.height = Math.min(img.naturalHeight, 100)
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
+        // Sample corner pixels for alpha < 255
+        const corners = [
+          3,                                          // top-left
+          (canvas.width - 1) * 4 + 3,               // top-right
+          (canvas.height - 1) * canvas.width * 4 + 3, // bottom-left
+          ((canvas.height - 1) * canvas.width + canvas.width - 1) * 4 + 3, // bottom-right
+        ]
+        const hasAlpha = corners.some(i => data[i] < 250)
+        if (hasAlpha) {
+          img.classList.add('has-transparency')
+        }
+      }
+      if (img.complete) check()
+      else img.addEventListener('load', check, { once: true })
+    })
+  }
+
+  detectTransparentImages()
+  document.addEventListener('astro:page-load', detectTransparentImages)
+</script>
+
+<script>
+  function initImageCursor() {
+    const cursor = document.querySelector('.img-cursor') as HTMLElement
+    if (!cursor || window.matchMedia('(pointer: coarse)').matches) return
+
+    const icons = {
+      zoom: cursor.querySelector('.cursor-icon-zoom') as HTMLElement,
+      drag: cursor.querySelector('.cursor-icon-drag') as HTMLElement,
+    }
+    const allIcons = Object.values(icons)
+
+    const imageTargets = document.querySelectorAll(
+      '.case-study-body .cs-figure img, .case-study-body .image-pair img, .case-study-body .image-grid img, .case-study-body .zigzag-media img'
+    )
+    const carouselTargets = document.querySelectorAll(
+      '.case-study-body .carousel-track'
+    )
+
+    const accents = [
+      'var(--color-accent-1)',
+      'var(--color-accent-2)',
+      'var(--color-accent-3)',
+    ]
+    let colorIndex = 0
+    let raf = 0
+    let mx = 0
+    let my = 0
+    let cx = 0
+    let cy = 0
+    let active = false
+
+    function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
+
+    function tick() {
+      if (!active) return
+      cx = lerp(cx, mx, 0.15)
+      cy = lerp(cy, my, 0.15)
+      cursor.style.left = `${cx}px`
+      cursor.style.top = `${cy}px`
+      raf = requestAnimationFrame(tick)
+    }
+
+    function showIcon(type: 'zoom' | 'drag') {
+      allIcons.forEach(icon => icon.style.display = 'none')
+      icons[type].style.display = ''
+    }
+
+    function onEnter(type: 'zoom' | 'drag') {
+      return (e: MouseEvent) => {
+        mx = e.clientX; my = e.clientY
+        cx = mx; cy = my
+        cursor.style.left = `${cx}px`
+        cursor.style.top = `${cy}px`
+        cursor.style.setProperty('--cursor-bg', accents[colorIndex])
+        colorIndex = (colorIndex + 1) % accents.length
+        showIcon(type)
+        active = true
+        cursor.classList.add('is-visible')
+        raf = requestAnimationFrame(tick)
+      }
+    }
+
+    function onMove(e: MouseEvent) {
+      mx = e.clientX; my = e.clientY
+    }
+
+    function onLeave() {
+      active = false
+      cursor.classList.remove('is-visible')
+      cancelAnimationFrame(raf)
+    }
+
+    imageTargets.forEach(el => {
+      el.addEventListener('mouseenter', onEnter('zoom') as EventListener)
+      el.addEventListener('mousemove', onMove as EventListener)
+      el.addEventListener('mouseleave', onLeave)
+    })
+
+    carouselTargets.forEach(el => {
+      el.addEventListener('mouseenter', onEnter('drag') as EventListener)
+      el.addEventListener('mousemove', onMove as EventListener)
+      el.addEventListener('mouseleave', onLeave)
+    })
+
+  }
+
+  initImageCursor()
+  document.addEventListener('astro:page-load', initImageCursor)
 </script>

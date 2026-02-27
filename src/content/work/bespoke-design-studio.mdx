@@ -24,6 +24,8 @@ import heroSrc from '../../assets/work/bespoke-design-studio/scene-2-1.png'
 
 <HeroImage src={heroSrc} alt="Samsung Bespoke Design Studio — project showcase" />
 
+<Meta client="Samsung" role="Associate Design Director" agency="Razorfish" year={2024} />
+
 <ProseGroup>
 
 # Samsung Bespoke Design Studio
@@ -32,14 +34,9 @@ Making a complex configurator feel simple through sequencing. Samsung's Bespoke 
 
 </ProseGroup>
 
-<Meta client="Samsung" role="Associate Design Director" agency="Razorfish" year={2024} />
-
 <ImagePair>
-
-![Desktop view of the Bespoke Design Studio](../../assets/work/bespoke-design-studio/desktop-06.png)
-
-![Mobile view of the Bespoke Design Studio](../../assets/work/bespoke-design-studio/mobile-06.png)
-
+  <Fragment slot="left">![Desktop view of the Bespoke Design Studio](../../assets/work/bespoke-design-studio/desktop-06.png)</Fragment>
+  <Fragment slot="right">![Mobile view of the Bespoke Design Studio](../../assets/work/bespoke-design-studio/mobile-06.png)</Fragment>
 </ImagePair>
 
 <ProseGroup>
@@ -51,11 +48,8 @@ A customer configuring a Bespoke fridge has to pick a model, then a size, then c
 </ProseGroup>
 
 <ImagePair>
-
-![Desktop configuration view](../../assets/work/bespoke-design-studio/desktop-03b.png)
-
-![Mobile configuration view](../../assets/work/bespoke-design-studio/mobile-04b.png)
-
+  <Fragment slot="left">![Desktop configuration view](../../assets/work/bespoke-design-studio/desktop-03b.png)</Fragment>
+  <Fragment slot="right">![Mobile configuration view](../../assets/work/bespoke-design-studio/mobile-04b.png)</Fragment>
 </ImagePair>
 
 <ProseGroup>
@@ -67,16 +61,13 @@ I owned visual design — not strategy or UX research, but the surface layer whe
 </ProseGroup>
 
 <ImagePair>
-
-![Desktop detail view](../../assets/work/bespoke-design-studio/desktop-04b.png)
-
-![Mobile detail view](../../assets/work/bespoke-design-studio/mobile-03b.png)
-
+  <Fragment slot="left">![Desktop detail view](../../assets/work/bespoke-design-studio/desktop-04b.png)</Fragment>
+  <Fragment slot="right">![Mobile detail view](../../assets/work/bespoke-design-studio/mobile-03b.png)</Fragment>
 </ImagePair>
 
 <ProseGroup>
 
-### Wireframes
+## Wireframes
 
 Multiple rounds of wireframing explored how to sequence the configuration steps. The core tension: each decision depended on the previous one (you can't pick panel colours until you've chosen a model), but users needed to understand the full scope before committing to step one.
 
@@ -106,27 +97,25 @@ Multiple rounds of wireframing explored how to sequence the configuration steps.
   </Fragment>
   <ProseGroup>
 
-  ### User Flow
+  ## User Flow
 
   The user flow mapped every decision point and branch. The stepped progress indicator — visible at every stage — was the key addition. It gave users a mental model of the whole journey before they started, which is what made the configurator feel manageable rather than endless.
 
   </ProseGroup>
 </ZigzagSection>
 
-<AccentBand color={1}>
-  <ZigzagSection>
-    <Fragment slot="media">
-      ![Kitchen configurator overview](../../assets/work/bespoke-design-studio/ha-bespoke-kitchen-desktop-006.jpg)
-    </Fragment>
-    <ProseGroup>
+<ZigzagSection reversed>
+  <Fragment slot="media">
+    ![Kitchen configurator overview](../../assets/work/bespoke-design-studio/ha-bespoke-kitchen-desktop-006.jpg)
+  </Fragment>
+  <ProseGroup>
 
-    ### Design Execution
+  ## Design Execution
 
-    I led UI and interaction design across mobile and desktop. Motion reinforced actions, educational touchpoints reduced hesitation, and the design system was built flexible enough to grow with the platform. Every visual decision served the sequencing — colour swatches appeared only when relevant, model comparisons showed only meaningful differences.
+  I led UI and interaction design across mobile and desktop. Motion reinforced actions, educational touchpoints reduced hesitation, and the design system was built flexible enough to grow with the platform. Every visual decision served the sequencing — colour swatches appeared only when relevant, model comparisons showed only meaningful differences.
 
-    </ProseGroup>
-  </ZigzagSection>
-</AccentBand>
+  </ProseGroup>
+</ZigzagSection>
 
 <Carousel label="Bespoke final designs">
 
@@ -146,18 +135,15 @@ Multiple rounds of wireframing explored how to sequence the configuration steps.
 ![Mobile color picker — step 4 of the configuration flow](../../assets/work/bespoke-design-studio/frame-37445.webp)
 </Figure>
 
-<Figure caption="Checkout">
+</Carousel>
+
+<Figure flush>
 ![Final checkout step — selected configuration with pricing](../../assets/work/bespoke-design-studio/desktop-13.png)
 </Figure>
 
-</Carousel>
-
 <ImagePair>
-
-![Configurator color selection — choosing panel finishes by zone](../../assets/work/bespoke-design-studio/image-2.png)
-
-![Configurator with full color panel — all four door zones visible](../../assets/work/bespoke-design-studio/new-design.png)
-
+  <Fragment slot="left">![Configurator color selection — choosing panel finishes by zone](../../assets/work/bespoke-design-studio/image-2.png)</Fragment>
+  <Fragment slot="right">![Configurator with full color panel — all four door zones visible](../../assets/work/bespoke-design-studio/new-design.png)</Fragment>
 </ImagePair>
 
 <ProseGroup>

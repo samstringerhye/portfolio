@@ -7,6 +7,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--prose-gap, var(--space-3));
+    grid-column: span 8;
   }
 
   /* p sizing based on preceding heading level */
@@ -14,7 +15,6 @@
     font-weight: var(--prose-lede-weight, var(--font-weight-regular));
     font-size: var(--prose-lede-size, var(--text-300));
     line-height: var(--line-height-normal);
-    max-width: var(--prose-heading-measure, 42rem);
   }
 
   .prose-group > h2 + p {
@@ -23,16 +23,5 @@
 
   .prose-group > h3 + p {
     font-size: var(--h3-follow-size, var(--text-200));
-  }
-
-  /* Body-scale: ch-based measure */
-  .prose-group > p,
-  .prose-group > ul, .prose-group > ol, .prose-group > blockquote {
-    max-width: var(--prose-measure);
-  }
-
-  /* Headings: fixed measure aligned to body column */
-  .prose-group > h1, .prose-group > h2, .prose-group > h3 {
-    max-width: var(--prose-heading-measure, 42rem);
   }
 </style>

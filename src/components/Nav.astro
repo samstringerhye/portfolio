@@ -16,6 +16,12 @@ function isActive(href: string) {
 <header class="nav" id="site-nav">
   <nav class="nav-inner" aria-label="Main navigation">
     <a href="/" class="nav-logo typo-ui" aria-label="Sam Stringer-Hye — Home">
+      <svg class="nav-logo-icon" width="1100" height="1100" viewBox="0 0 1100 1100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M250.5 0C388.295 0 500 111.929 500 250V500H250.5C112.705 500 1 388.071 1 250C1 111.929 112.705 0 250.5 0Z" fill="#F22434"/>
+        <path d="M500 850C500 988.071 388.071 1100 250 1100C111.929 1100 -1.60836e-06 988.071 0 850C1.81059e-05 711.929 111.929 600 250 600H500V850Z" fill="#FBE91E"/>
+        <path d="M850 0C988.071 6.03528e-06 1100 111.929 1100 250C1100 388.071 988.071 500 850 500H600V250C600 111.929 711.929 2.21346e-06 850 0Z" fill="#24F266"/>
+        <path d="M850 600C988.071 600 1100 711.929 1100 850C1100 988.071 988.071 1100 850 1100C711.929 1100 600 988.071 600 850V600H850Z" fill="#2471F2"/>
+      </svg>
       Sam Stringer-Hye
     </a>
 
@@ -86,7 +92,59 @@ function isActive(href: string) {
     color: var(--color-text-primary);
     text-decoration: none;
     white-space: nowrap;
+    font-size: 1rem;
+    gap: var(--space-1);
     transition: background-color var(--transition-medium) ease;
+  }
+
+  .nav-logo-icon {
+    width: 1.5rem;
+    height: auto;
+    flex-shrink: 0;
+    overflow: visible;
+  }
+
+  .nav-logo-icon path {
+    transition: fill 0.2s ease;
+  }
+
+  .nav-logo:hover .nav-logo-icon path {
+    fill: #fff;
+    animation: 0.7s ease-out forwards;
+  }
+
+  .nav-logo:hover .nav-logo-icon path:nth-child(1) { animation-name: petal-tl; }
+  .nav-logo:hover .nav-logo-icon path:nth-child(3) { animation-name: petal-tr; }
+  .nav-logo:hover .nav-logo-icon path:nth-child(4) { animation-name: petal-br; }
+  .nav-logo:hover .nav-logo-icon path:nth-child(2) { animation-name: petal-bl; }
+
+  @keyframes petal-tl {
+    0% { translate: 0 0; }
+    20% { translate: 150px 150px; }
+    50% { translate: -300px -300px; }
+    75% { translate: 40px 40px; }
+    100% { translate: 0 0; }
+  }
+  @keyframes petal-tr {
+    0% { translate: 0 0; }
+    20% { translate: -150px 150px; }
+    50% { translate: 300px -300px; }
+    75% { translate: -40px 40px; }
+    100% { translate: 0 0; }
+  }
+  @keyframes petal-bl {
+    0% { translate: 0 0; }
+    20% { translate: 150px -150px; }
+    50% { translate: -300px 300px; }
+    75% { translate: 40px -40px; }
+    100% { translate: 0 0; }
+  }
+  @keyframes petal-br {
+    0% { translate: 0 0; }
+    20% { translate: -150px -150px; }
+    50% { translate: 300px 300px; }
+    75% { translate: -40px -40px; }
+    100% { translate: 0 0; }
   }
 
   .nav-links {

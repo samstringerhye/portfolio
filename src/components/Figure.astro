@@ -1,12 +1,13 @@
 ---
 interface Props {
-  caption: string
+  caption?: string
+  flush?: boolean
 }
 
-const { caption } = Astro.props
+const { caption, flush = false } = Astro.props
 ---
 
-<figure class="cs-figure">
+<figure class:list={['cs-figure', { 'cs-figure--flush': flush }]}>
   <slot />
-  <figcaption>{caption}</figcaption>
+  {caption && <figcaption>{caption}</figcaption>}
 </figure>

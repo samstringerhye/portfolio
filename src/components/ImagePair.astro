@@ -2,9 +2,11 @@
 /**
  * Two images side by side with automatic column ratio based on aspect ratios.
  * Uses CSS grid. The JS in CaseStudyLayout handles runtime sizing.
+ * Each image is wrapped in a .image-pair-cell for overflow clipping on hover.
  */
 ---
 
 <div class="image-pair">
-  <slot />
+  <div class="image-pair-cell"><slot name="left" /></div>
+  <div class="image-pair-cell"><slot name="right" /></div>
 </div>

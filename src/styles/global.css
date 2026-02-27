@@ -15,11 +15,12 @@ html {
 }
 
 body {
+  --ls-base: -0.02rem;
+  letter-spacing: calc(var(--ls-base) + var(--ls-adjust, 0rem));
   font-family: var(--font-primary);
   font-size: var(--text-100);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-normal);
-  letter-spacing: -0.02rem;
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
@@ -78,7 +79,13 @@ ol {
 /* Serif base letter-spacing (Playfair Display) */
 [class*="typo-display"],
 [class*="typo-headline"] {
-  letter-spacing: -0.1rem;
+  --ls-base: -0.1rem;
+  letter-spacing: calc(var(--ls-base) + var(--ls-adjust, 0rem));
+}
+
+/* SplitText word wrappers — keep inline after animation completes */
+.cmy-word {
+  display: inline-block;
 }
 
 /* Focus visible */
@@ -162,6 +169,11 @@ ol {
   margin-inline: auto;
   z-index: var(--z-debug);
   pointer-events: none;
+}
+
+.lightbox-overlay.is-open ~ .grid-overlay,
+body:has(.lightbox-overlay.is-open) .grid-overlay {
+  display: none;
 }
 
 .grid-overlay::before,

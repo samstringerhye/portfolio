@@ -1,12 +1,17 @@
 ---
 /**
- * Alternating two-column section: image on one side, prose on the other.
- * Odd instances show image-left/text-right; even instances flip.
+ * Two-column section: image on one side, prose on the other.
+ * Pass `reversed` to flip prose-left / image-right.
  * Uses named slots: "media" for images, default slot for prose.
  */
+interface Props {
+  reversed?: boolean
+}
+
+const { reversed = false } = Astro.props
 ---
 
-<div class="zigzag-section">
+<div class:list={['zigzag-section', { 'zigzag-reversed': reversed }]}>
   <div class="zigzag-media">
     <slot name="media" />
   </div>

@@ -157,7 +157,9 @@ export function createCmyAutoSplitReveal(
   const tl = gsap.timeline({
     ...timelineVars,
     onComplete() {
-      split.revert()
+      // Clear inline styles from words but keep SplitText wrappers
+      // to avoid layout reflow that causes letter-spacing snap
+      ;(split.words as HTMLElement[]).forEach(w => w.removeAttribute('style'))
       gsap.set(el, { opacity: 1, y: 0, filter: 'none', textShadow: 'none', visibility: 'visible' })
     },
   })
@@ -211,7 +213,7 @@ export function createCmyAutoSplitRevealGrouped(
   const tl = gsap.timeline({
     onComplete() {
       parentTl.remove(tl)
-      split.revert()
+      ;(split.words as HTMLElement[]).forEach(w => w.removeAttribute('style'))
       gsap.set(el, { opacity: 1, y: 0, filter: 'none', textShadow: 'none', visibility: 'visible' })
     },
   })

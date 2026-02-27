@@ -17,11 +17,15 @@ import Meta from '../../components/Meta.astro'
 import LottiePlayer from '../../components/LottiePlayer.astro'
 import ProseGroup from '../../components/ProseGroup.astro'
 import Figure from '../../components/Figure.astro'
+import Carousel from '../../components/Carousel.astro'
+import ImagePair from '../../components/ImagePair.astro'
 import ZigzagSection from '../../components/ZigzagSection.astro'
 import AccentBand from '../../components/AccentBand.astro'
 import heroSrc from '../../assets/work/myfrontier-app/frontier-app-kv.png'
 
 <HeroImage src={heroSrc} alt="MyFrontier App Redesign — project showcase" />
+
+<Meta client="Frontier" role="Associate Design Director" agency="Razorfish" year={2024} />
 
 <ProseGroup>
 
@@ -31,20 +35,25 @@ Motion that earns its place by solving specific user anxiety. The MyFrontier app
 
 </ProseGroup>
 
-<Meta client="Frontier" role="Associate Design Director" agency="Razorfish" year={2024} />
+<ProseGroup>
 
-<ZigzagSection>
-  <Fragment slot="media">
-    ![Frontier app introduction screens](../../assets/work/myfrontier-app/frontier-intro.png)
-  </Fragment>
-  <ProseGroup>
+## Interface Design
 
-  ### Interface Design
+I designed every core screen — onboarding, dashboard, bill pay, and support. The layout system prioritised information hierarchy: the most important action on each screen got the most visual weight, and secondary actions were consistently grouped so users built muscle memory across flows.
 
-  I designed every core screen — onboarding, dashboard, bill pay, and support. The layout system prioritised information hierarchy: the most important action on each screen got the most visual weight, and secondary actions were consistently grouped so users built muscle memory across flows.
+</ProseGroup>
 
-  </ProseGroup>
-</ZigzagSection>
+<Carousel label="Frontier app intro screens">
+
+![Splash screen](../../assets/work/myfrontier-app/screens/intro-1.png)
+
+![Sign in](../../assets/work/myfrontier-app/screens/intro-2.png)
+
+![Face ID prompt](../../assets/work/myfrontier-app/screens/intro-3.png)
+
+![Sign in confirmed](../../assets/work/myfrontier-app/screens/intro-4.png)
+
+</Carousel>
 
 <ProseGroup>
 
@@ -54,9 +63,10 @@ Nobody opens a telecom app to browse. They open it because they have a question 
 
 </ProseGroup>
 
-<Figure caption="Dashboard">
-![Dashboard view](../../assets/work/myfrontier-app/frontier-dashboard.png)
-</Figure>
+<ImagePair>
+  <Fragment slot="left">![Dashboard home](../../assets/work/myfrontier-app/screens/dashboard-1.png)</Fragment>
+  <Fragment slot="right">![Account overview](../../assets/work/myfrontier-app/screens/dashboard-2.png)</Fragment>
+</ImagePair>
 
 <ProseGroup>
 
@@ -66,30 +76,46 @@ I owned layout design across every screen and defined visual hierarchy for core 
 
 </ProseGroup>
 
-<Figure caption="Bill pay flow">
-![Bill pay flow](../../assets/work/myfrontier-app/frontier-bill-pay.png)
-</Figure>
+<Carousel label="Bill pay flow">
 
-<Figure caption="Support & scheduling">
-![Support flow — tracking technician status through installation](../../assets/work/myfrontier-app/frontier-bill-support.png)
-</Figure>
+![Bill overview](../../assets/work/myfrontier-app/screens/bill-pay-1.png)
+
+![Payment method](../../assets/work/myfrontier-app/screens/bill-pay-2.png)
+
+![Payment date](../../assets/work/myfrontier-app/screens/bill-pay-3.png)
+
+![Payment confirmed](../../assets/work/myfrontier-app/screens/bill-pay-4.png)
+
+</Carousel>
+
+<Carousel label="Support and scheduling flow">
+
+![Support home](../../assets/work/myfrontier-app/screens/support-1.png)
+
+![Tech on the way](../../assets/work/myfrontier-app/screens/support-2.png)
+
+![Installation in progress](../../assets/work/myfrontier-app/screens/support-3.png)
+
+![All set](../../assets/work/myfrontier-app/screens/support-4.png)
+
+![Modify appointment](../../assets/work/myfrontier-app/screens/support-5.png)
+
+</Carousel>
 
 <ProseGroup>
 
-### Motion Design
+## Motion Design
 
 I built every Lottie file personally — After Effects compositions exported through the Lottie pipeline. Each animation was mapped to a specific uncertainty moment: the coin confirmed a payment was processing, the leaf signalled setup completion, and the intro sequence covered the initial data load so the app felt responsive from the first tap. I delivered motion specs alongside the files — easing values, timing, and documentation so dev could implement without guesswork.
 
 </ProseGroup>
 
-<AccentBand color={1}>
-  <div class="lottie-grid">
-    <LottiePlayer src="src/lottie/Lottie-Intro.json" label="App launch" maxWidth="100%" />
-    <LottiePlayer src="src/lottie/Lottie-Coin.json" label="Payment confirmation" maxWidth="100%" />
-    <LottiePlayer src="src/lottie/Lottie-Leaf.json" label="Setup complete" maxWidth="100%" />
-    <LottiePlayer src="src/lottie/Lottie-Confirmation.json" label="Confirmation" maxWidth="100%" />
-  </div>
-</AccentBand>
+<div class="lottie-grid">
+  <LottiePlayer src="src/lottie/Lottie-Intro.json" label="App launch" maxWidth="100%" />
+  <LottiePlayer src="src/lottie/Lottie-Coin.json" label="Payment confirmation" maxWidth="100%" />
+  <LottiePlayer src="src/lottie/Lottie-Leaf.json" label="Setup complete" maxWidth="100%" />
+  <LottiePlayer src="src/lottie/Lottie-Confirmation.json" label="Confirmation" maxWidth="100%" />
+</div>
 
 <ProseGroup>
 

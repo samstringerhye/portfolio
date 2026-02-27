@@ -1,46 +1,34 @@
 ---
 ---
 
-<div class="rgb-shutter" id="rgb-shutter" aria-hidden="true" transition:persist="rgb-shutter">
-  <div class="rgb-shutter-bar" data-bar="0"></div>
-  <div class="rgb-shutter-bar" data-bar="1"></div>
-  <div class="rgb-shutter-bar" data-bar="2"></div>
+<div class="page-shutter" id="page-shutter" aria-hidden="true" transition:persist="page-shutter">
+  <div class="page-shutter-panel"></div>
 </div>
 
 <style>
-  .rgb-shutter {
+  .page-shutter {
     position: fixed;
     top: var(--nav-height);
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
-    max-width: calc(1440px + 4rem);
+    width: calc(100% - var(--page-margin) * 2);
+    max-width: 1440px;
     z-index: var(--z-shutter);
     pointer-events: none;
-    display: flex;
-    flex-direction: column;
     overflow: hidden;
   }
 
-  .rgb-shutter-bar {
-    flex: 1;
-    transform: translateX(-101%);
+  .page-shutter-panel {
+    position: absolute;
+    inset: 0;
+    transform: translateY(101%);
     will-change: transform;
-  }
-
-  .rgb-shutter-bar[data-bar="0"] {
     background-color: var(--color-accent-1);
-  }
-  .rgb-shutter-bar[data-bar="1"] {
-    background-color: var(--color-accent-2);
-  }
-  .rgb-shutter-bar[data-bar="2"] {
-    background-color: var(--color-accent-3);
   }
 
   /* Suppress default root view transition crossfade —
-     our RGB shutters handle the global page transition. */
+     our shutter handles the global page transition. */
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none !important;
@@ -54,15 +42,23 @@
 
   const cfg = animations.pageTransition
 
+  const accentColors = [
+    'var(--color-accent-1)',
+    'var(--color-accent-2)',
+    'var(--color-accent-3)',
+  ]
+
   type ShutterWindow = Window & {
     __shutterPrepHandler?: (e: Event) => void
     __shutterSwapHandler?: () => void
     __shutterActive?: boolean
+    __shutterColorIndex?: number
   }
 
   function initShutter() {
     const w = window as ShutterWindow
-    const bars = () => document.querySelectorAll<HTMLElement>('.rgb-shutter-bar')
+    if (w.__shutterColorIndex == null) w.__shutterColorIndex = 0
+    const panel = () => document.querySelector<HTMLElement>('.page-shutter-panel')
     const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     // Clean up previous handlers (idempotent)
@@ -76,46 +72,50 @@
     function coverAnimation(): Promise<void> {
       if (prefersReduced()) return Promise.resolve()
 
-      const barEls = bars()
-      if (!barEls.length) return Promise.resolve()
+      const el = panel()
+      if (!el) return Promise.resolve()
 
-      gsap.set(barEls, { x: '-101%' })
+      // Cycle to next accent color
+      const colorIdx = w.__shutterColorIndex! % accentColors.length
+      el.style.backgroundColor = accentColors[colorIdx]
+      w.__shutterColorIndex = colorIdx + 1
 
-      const container = document.getElementById('rgb-shutter')
+      // Start below, wipe up to cover
+      gsap.set(el, { y: '101%' })
+
+      const container = document.getElementById('page-shutter')
       if (container) container.style.pointerEvents = 'all'
 
       return new Promise((resolve) => {
-        gsap.to(barEls, {
-          x: '0%',
+        gsap.to(el, {
+          y: '0%',
           duration: cfg.duration,
           ease: cfg.ease,
-          stagger: cfg.stagger,
           onComplete: resolve,
         })
       })
     }
 
     function uncoverAnimation(): Promise<void> {
-      const barEls = bars()
-      const container = document.getElementById('rgb-shutter')
+      const el = panel()
+      const container = document.getElementById('page-shutter')
 
       if (prefersReduced()) {
-        gsap.set(barEls, { x: '-101%' })
+        if (el) gsap.set(el, { y: '101%' })
         if (container) container.style.pointerEvents = 'none'
         return Promise.resolve()
       }
 
-      if (!barEls.length) return Promise.resolve()
+      if (!el) return Promise.resolve()
 
       return new Promise((resolve) => {
-        gsap.to(barEls, {
-          x: '101%',
+        gsap.to(el, {
+          y: '-101%',
           duration: cfg.duration,
           ease: cfg.ease,
-          stagger: cfg.stagger,
           delay: cfg.exitDelay,
           onComplete: () => {
-            gsap.set(barEls, { x: '-101%' })
+            gsap.set(el, { y: '101%' })
             if (container) container.style.pointerEvents = 'none'
             resolve()
           },
