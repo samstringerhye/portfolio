@@ -135,9 +135,11 @@ function updateDots(matArr, total, posX, posY, dist, dotScales, time) {
 }
 
 /* -- Build the scene with 3 CMY InstancedMeshes -- */
-function createHeroScene() {
+function createHeroScene(mobile = false) {
   const gen = generators[cfg.arrangement] || generators.concentric
-  const { posX, posY, dist, total } = gen(cfg.numRays, cfg.dotsPerRay, cfg.spacing, cfg.innerRadius)
+  const numRays = mobile ? Math.round(cfg.numRays * 0.5) : cfg.numRays
+  const dotsPerRay = mobile ? Math.round(cfg.dotsPerRay * 0.5) : cfg.dotsPerRay
+  const { posX, posY, dist, total } = gen(numRays, dotsPerRay, cfg.spacing, cfg.innerRadius)
 
   let maxDist = 0
   for (let i = 0; i < total; i++) {
@@ -191,6 +193,7 @@ export default function HeroCanvas() {
   const [webglSupported, setWebglSupported] = useState(true)
 
   useEffect(() => {
+    // No longer skip on mobile — reduced dot count handles performance
     try {
       const testCanvas = document.createElement('canvas')
       const testGl = testCanvas.getContext('webgl2') || testCanvas.getContext('webgl')
@@ -203,9 +206,10 @@ export default function HeroCanvas() {
     if (!container || !webglSupported) return
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isMobile = window.matchMedia('(max-width: 768px)').matches
 
     // Renderer
-    const dpr = Math.min(window.devicePixelRatio, cfg.maxDpr)
+    const dpr = Math.min(window.devicePixelRatio, isMobile ? 1.5 : cfg.maxDpr)
     const renderer = new WebGLRenderer({ antialias: false, alpha: false })
     renderer.sortObjects = false
     renderer.outputColorSpace = SRGBColorSpace
@@ -219,8 +223,8 @@ export default function HeroCanvas() {
     camera.position.set(0, 0, 100)
     camera.zoom = cfg.zoom
 
-    // Scene + 3 CMY dot layers
-    const { scene, meshes, delays, posX, posY, dist, dotScales, total } = createHeroScene()
+    // Scene + 3 CMY dot layers — halve dot count on mobile
+    const { scene, meshes, delays, posX, posY, dist, dotScales, total } = createHeroScene(isMobile)
 
     // Post-processing: RenderPass → FXAA → OutputPass
     const composer = new EffectComposer(renderer)

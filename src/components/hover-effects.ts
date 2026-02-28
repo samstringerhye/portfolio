@@ -5,6 +5,8 @@ const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)
 
 export function initHoverEffects() {
   if (prefersReduced()) return
+  // Skip hover-only effects on touch devices
+  if (window.matchMedia('(pointer: coarse)').matches) return
 
   // Spectral links — shimmer underline
   document.querySelectorAll<HTMLElement>('[data-hover="spectral-link"]').forEach(initSpectralLink)

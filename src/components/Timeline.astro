@@ -153,27 +153,40 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     min-width: 0;
   }
 
-  /* ── Job cards row ── */
+  /* ── Job cards — vertical stack ── */
   .timeline-cards {
     display: flex;
-    border-top: var(--border-width-1) solid var(--color-text-primary);
+    flex-direction: column;
   }
 
   .timeline-card {
     position: relative;
     display: flex;
-    align-items: center;
-    padding: var(--content-inset-sm) 0;
-    border-right: var(--border-width-1) solid var(--color-text-primary);
+    align-items: baseline;
+    padding: var(--content-inset-sm);
+    border-bottom: var(--border-width-1) solid var(--color-text-primary);
     min-width: 0;
     overflow: hidden;
+    gap: var(--space-4);
+  }
+
+  .timeline-card:last-child {
+    border-bottom: none;
+  }
+
+  .timeline-card-year {
+    display: block;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .timeline-card-left {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    flex-shrink: 0;
+    align-items: baseline;
+    justify-content: space-between;
+    flex: 1;
+    gap: var(--space-2);
     min-width: 0;
   }
 
@@ -206,7 +219,6 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     position: relative;
     z-index: 1;
     color: var(--color-text-primary);
-    padding-inline: var(--content-inset-sm);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -216,82 +228,40 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     position: relative;
     z-index: 1;
     color: var(--color-text-primary);
-    padding-inline: var(--content-inset-sm);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* ── Year scale ── */
+  /* ── Year scale — hidden, using inline year labels instead ── */
   .timeline-years {
-    display: flex;
-    border-top: var(--border-width-1) solid var(--color-text-primary);
-  }
-
-  .timeline-year-group {
-    position: relative;
-    display: flex;
-    border-right: var(--border-width-1) solid var(--color-text-primary);
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  .timeline-year-group-wipe {
-    position: absolute;
-    inset: 0;
-    transform: scaleX(0);
-    transform-origin: left;
-    pointer-events: none;
-    will-change: transform;
-  }
-
-  .timeline-year {
-    flex: 1 1 0%;
-    text-align: center;
-    padding: var(--content-inset-sm) 0;
-    color: var(--color-text-primary);
-    position: relative;
-    z-index: 1;
-    min-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-
-  .timeline-year + .timeline-year {
-    border-left: var(--border-width-1) solid var(--color-text-primary);
-  }
-
-  /* ── Year label (mobile only) ── */
-  .timeline-card-year {
     display: none;
   }
 
   /* ── Mobile ── */
   @media (--2x) {
-    .timeline-cards {
-      flex-direction: column;
-    }
-
     .timeline-card {
-      flex: none !important;
-      border-right: none;
-      border-bottom: var(--border-width-1) solid var(--color-text-primary);
-      gap: var(--content-inset-sm);
+      padding: var(--page-margin);
+      gap: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      border-bottom-color: var(--color-rule);
     }
 
-    .timeline-card:last-child {
-      border-bottom: none;
+    .timeline-title,
+    .timeline-company {
+      padding-inline: 0;
+    }
+
+    .experience-heading {
+      padding: var(--space-4) var(--page-margin);
     }
 
     .timeline-card-year {
-      display: block;
-      color: var(--color-text-primary);
-      white-space: nowrap;
-      flex-shrink: 0;
-      padding-inline: var(--content-inset-sm);
+      padding-inline: 0;
     }
 
-    .timeline-years {
+    .experience-download {
       display: none;
     }
   }
@@ -309,107 +279,34 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     const timeline = document.querySelector<HTMLElement>('[data-timeline]')
     if (!timeline) return
 
-    const totalSpan = parseInt(timeline.dataset.totalSpan!, 10)
     const cards = Array.from(timeline.querySelectorAll<HTMLElement>('.timeline-card'))
-    const yearGroups = Array.from(timeline.querySelectorAll<HTMLElement>('.timeline-year-group'))
-    const allText = timeline.querySelectorAll('.timeline-title, .timeline-company')
-    const allYearText = timeline.querySelectorAll('.timeline-year p')
-    const allHighlights = timeline.querySelectorAll('.timeline-highlights')
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    const isMobile = window.matchMedia('(max-width: 768px)')
-    if (isMobile.matches) return
-
     cards.forEach((card) => {
-      const cardIdx = parseInt(card.dataset.cardIndex!, 10)
-      const span = parseInt(card.dataset.cardSpan!, 10)
+      if (card.dataset.hoverBound === 'true') return
+      card.dataset.hoverBound = 'true'
+
       const wipe = card.querySelector<HTMLElement>('.timeline-card-wipe')!
       const highlights = card.querySelector<HTMLElement>('.timeline-highlights')
-      const yearGroup = timeline.querySelector<HTMLElement>(`[data-year-group="${cardIdx}"]`)
-      const yearGroupWipe = yearGroup?.querySelector<HTMLElement>('.timeline-year-group-wipe')
 
       card.addEventListener('mouseenter', () => {
-        if (isMobile.matches) return
-
-        // Kill all running tweens on timeline elements to prevent conflicts
-        gsap.killTweensOf(cards)
-        gsap.killTweensOf(yearGroups)
-        gsap.killTweensOf(allText)
-        gsap.killTweensOf(allYearText)
-        gsap.killTweensOf(allHighlights)
-
         const color = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
-        const hoverGrow = totalSpan - span
 
-        // ── Hovered card: expand to 50% + color wipe + show text ──
-        gsap.to(card, { flexGrow: hoverGrow, duration: h.expandDuration, ease: h.expandEase })
-        gsap.to(card.querySelectorAll('.timeline-title, .timeline-company'), { opacity: 1, duration: h.textShowDuration })
         gsap.set(wipe, { backgroundColor: color, scaleX: 0 })
         gsap.to(wipe, { scaleX: 1, duration: h.wipeDuration, ease: h.wipeEase })
 
-        // ── Show highlights ──
         if (highlights) {
           gsap.to(highlights, { opacity: 1, duration: h.highlightsShowDuration, delay: h.highlightsShowDelay, ease: h.highlightsShowEase })
         }
-
-        // ── Hovered year group: expand + show text + color ──
-        if (yearGroup && yearGroupWipe) {
-          gsap.to(yearGroup, { flexGrow: hoverGrow, duration: h.expandDuration, ease: h.expandEase })
-          gsap.to(yearGroup.querySelectorAll('.timeline-year p'), { opacity: 1, duration: h.textShowDuration })
-          gsap.set(yearGroupWipe, { backgroundColor: color, scaleX: 0 })
-          gsap.to(yearGroupWipe, { scaleX: 1, duration: h.wipeDuration, ease: h.wipeEase })
-        }
-
-        // ── Other cards: hide text + highlights, reset flex ──
-        cards.forEach((c) => {
-          if (parseInt(c.dataset.cardIndex!, 10) === cardIdx) return
-          const cSpan = parseInt(c.dataset.cardSpan!, 10)
-          gsap.to(c, { flexGrow: cSpan, duration: h.expandDuration, ease: h.expandEase })
-          gsap.to(c.querySelectorAll('.timeline-title, .timeline-company'), { opacity: 0, duration: h.textHideDuration })
-          const cHighlights = c.querySelector('.timeline-highlights')
-          if (cHighlights) gsap.set(cHighlights, { opacity: 0 })
-          const cWipe = c.querySelector('.timeline-card-wipe')
-          if (cWipe) gsap.to(cWipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
-        })
-
-        // ── Other year groups: hide text, reset flex ──
-        yearGroups.forEach((yg) => {
-          if (parseInt(yg.dataset.yearGroup!, 10) === cardIdx) return
-          const ygSpan = parseInt(yg.dataset.yearGroupSpan!, 10)
-          gsap.to(yg, { flexGrow: ygSpan, duration: h.expandDuration, ease: h.expandEase })
-          gsap.to(yg.querySelectorAll('.timeline-year p'), { opacity: 0, duration: h.textHideDuration })
-          const ygWipe = yg.querySelector('.timeline-year-group-wipe')
-          if (ygWipe) gsap.to(ygWipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
-        })
       })
 
       card.addEventListener('mouseleave', () => {
-        // Kill all running tweens
-        gsap.killTweensOf(cards)
-        gsap.killTweensOf(yearGroups)
-        gsap.killTweensOf(allText)
-        gsap.killTweensOf(allYearText)
-        gsap.killTweensOf(allHighlights)
+        gsap.to(wipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
 
-        // ── Reset everything to default ──
-        cards.forEach((c) => {
-          const cSpan = parseInt(c.dataset.cardSpan!, 10)
-          gsap.to(c, { flexGrow: cSpan, duration: h.collapseDuration, ease: h.collapseEase })
-          gsap.to(c.querySelectorAll('.timeline-title, .timeline-company'), { opacity: 1, duration: h.collapseTextDuration })
-          const cWipe = c.querySelector('.timeline-card-wipe')
-          if (cWipe) gsap.to(cWipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
-          const cHighlights = c.querySelector('.timeline-highlights')
-          if (cHighlights) gsap.to(cHighlights, { opacity: 0, duration: h.highlightsHideDuration, ease: h.highlightsHideEase })
-        })
-
-        yearGroups.forEach((yg) => {
-          const ygSpan = parseInt(yg.dataset.yearGroupSpan!, 10)
-          gsap.to(yg, { flexGrow: ygSpan, duration: h.collapseDuration, ease: h.collapseEase })
-          gsap.to(yg.querySelectorAll('.timeline-year p'), { opacity: 1, duration: h.collapseTextDuration })
-          const ygWipe = yg.querySelector('.timeline-year-group-wipe')
-          if (ygWipe) gsap.to(ygWipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
-        })
+        if (highlights) {
+          gsap.to(highlights, { opacity: 0, duration: h.highlightsHideDuration, ease: h.highlightsHideEase })
+        }
       })
     })
   }

@@ -1,0 +1,10 @@
+[ 3910177ms] [ERROR] WebSocket connection to 'ws://localhost:4321/?token=H62SxqFZmFlf' failed:  @ http://localhost:4321/@vite/client:1533
+[ 3910224ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[ 3911226ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[ 3912228ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[24143309ms] [ERROR] WebSocket connection to 'ws://localhost:4321/?token=0byDQICf7KHF' failed:  @ http://localhost:4321/@vite/client:1533
+[24143352ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET @ http://localhost:4321/@vite/client:1766
+[24144355ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[24145356ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
+[29113193ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET @ http://localhost:4321/@vite/client:1766
+[29114195ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766

@@ -59,6 +59,13 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     border: var(--border-width-1) solid var(--color-text-primary);
   }
 
+  /* Collapse doubled borders: when two bordered siblings are adjacent,
+     pull the second one up by 1px so the borders overlap instead of stacking. */
+  .case-study-body :is(.cs-hero-image, .cs-hero-meta, .image-pair, .carousel, .zigzag-section, .cs-figure, .image-grid, .accent-band, .lottie-grid)
+  + :is(.cs-hero-meta, .image-pair, .carousel, .zigzag-section, .cs-figure, .image-grid, .accent-band, .lottie-grid) {
+    margin-top: calc(-1 * var(--border-width-1));
+  }
+
 
   /* ── Hero image ── */
   .case-study-body .cs-hero-image {
@@ -139,8 +146,12 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   .case-study-body img.has-transparency {
     background: #fff;
-    padding: var(--space-4);
+    padding: var(--space-6);
     object-fit: contain;
+  }
+
+  .case-study-body .carousel-track img.has-transparency {
+    padding: var(--space-5) var(--space-7);
   }
 
   /* ── Image hover: subtle scale + shadow lift + zoom cursor ── */
@@ -217,6 +228,24 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     display: block;
     width: 100%;
     height: auto;
+  }
+
+  .case-study-body .image-pair:has(img.has-transparency) {
+    background: #fff;
+    column-gap: 0;
+  }
+
+  .case-study-body .image-pair-cell:has(img.has-transparency) + .image-pair-cell {
+    border-left: var(--border-width-1) solid var(--color-rule);
+  }
+
+  .case-study-body .image-pair-cell:has(img.has-transparency) {
+    background: #fff;
+  }
+
+  .case-study-body .image-pair img.has-transparency {
+    object-fit: contain;
+    background: transparent;
   }
 
   /* ── Zigzag: alternating image/text 2-col sections ── */
@@ -356,12 +385,26 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     background: var(--color-bg-primary);
   }
 
-  /* ── Lottie grid: 4-col on desktop, 2-col on mobile ── */
+  /* ── Lottie grid: 4-col full-width with dividers ── */
   .case-study-body .lottie-grid {
+    grid-column: 1 / -1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-3);
-    padding: var(--space-3);
+    background: var(--color-accent-1);
+    border-top: var(--border-width-1) solid var(--color-text-primary);
+    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  .case-study-body .lottie-grid .lottie-player {
+    padding: var(--space-6);
+    border-right: var(--border-width-1) solid var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .case-study-body .lottie-grid .lottie-player:last-child {
+    border-right: none;
   }
 
   /* ── Vertical rhythm: block padding on containers ── */
@@ -391,42 +434,92 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     .case-study-body > blockquote,
     .case-study-body .prose-group {
       grid-column: 1 / -1;
+      padding-inline: var(--page-margin);
+    }
+
+    .case-study-body .zigzag-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
     }
 
     .case-study-body .zigzag-media,
     .case-study-body .zigzag-prose {
-      grid-column: 1 / -1;
+      padding-inline: var(--page-margin);
+    }
+
+    .case-study-body .zigzag-prose {
+      padding: 0 var(--page-margin);
+    }
+
+    /* Remove box borders on mobile — use horizontal dividers instead */
+    .case-study-body .cs-hero-meta,
+    .case-study-body .image-pair,
+    .case-study-body .carousel,
+    .case-study-body .zigzag-section,
+    .case-study-body > .cs-figure,
+    .case-study-body .image-grid,
+    .case-study-body > img,
+    .case-study-body .accent-band {
+      border: none;
+      border-top: var(--border-width-1) solid var(--color-rule);
+      border-bottom: var(--border-width-1) solid var(--color-rule);
+    }
+
+    /* Collapse doubled borders on mobile too */
+    .case-study-body :is(.cs-hero-image, .cs-hero-meta, .image-pair, .carousel, .zigzag-section, .cs-figure, .image-grid, .accent-band, .lottie-grid)
+    + :is(.cs-hero-meta, .image-pair, .carousel, .zigzag-section, .cs-figure, .image-grid, .accent-band, .lottie-grid) {
+      margin-top: calc(-1 * var(--border-width-1));
+    }
+
+    /* Figures inside grids/zigzags: no extra borders */
+    .case-study-body .image-grid .cs-figure,
+    .case-study-body .zigzag-media .cs-figure {
+      border: none;
     }
 
     .case-study-body .image-pair,
     .case-study-body .image-grid {
       grid-template-columns: 1fr;
       column-gap: 0;
-      row-gap: var(--border-width-1);
+      row-gap: 0;
+      background: none;
+    }
+
+    /* Divider line between stacked images */
+    .case-study-body .image-pair > *:not(:first-child),
+    .case-study-body .image-pair-cell:not(:first-child),
+    .case-study-body .image-grid > *:not(:first-child) {
+      border-top: var(--border-width-1) solid var(--color-rule);
+      border-left: none;
     }
 
     .case-study-body .lottie-grid {
       grid-template-columns: repeat(2, 1fr);
+      border-left: none;
+      border-right: none;
+    }
+
+    .case-study-body .lottie-grid .lottie-player:nth-child(2) {
+      border-right: none;
+    }
+
+    .case-study-body .lottie-grid .lottie-player:nth-child(n+3) {
+      border-top: var(--border-width-1) solid var(--color-text-primary);
     }
 
     .case-study-body .cs-hero-meta {
-      flex-wrap: wrap;
+      display: flex;
+      flex-direction: column;
     }
 
     .case-study-body .cs-meta-item {
-      flex: 1 1 45%;
+      flex: none;
     }
 
     .case-study-body .cs-meta-item + .cs-meta-item {
       border-left: none;
-    }
-
-    .case-study-body .cs-meta-item:nth-child(even) {
-      border-left: var(--border-width-1) solid var(--color-text-primary);
-    }
-
-    .case-study-body .cs-meta-item:nth-child(n+3) {
-      border-top: var(--border-width-1) solid var(--color-text-primary);
+      border-top: var(--border-width-1) solid var(--color-rule);
     }
 
   }
@@ -473,6 +566,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     max-width: 90vw;
     max-height: 85vh;
     object-fit: contain;
+    border-radius: var(--radius-lg);
     display: block;
   }
 
@@ -481,8 +575,8 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     top: var(--space-3);
     right: var(--space-3);
     z-index: 2;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -596,10 +690,18 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 </style>
 
 <script>
+  const mobileQuery = window.matchMedia('(max-width: 768px)')
+
   function sizeImagePairs() {
+    const isMobile = mobileQuery.matches
     document.querySelectorAll('.image-pair').forEach(pair => {
       const imgs = pair.querySelectorAll('img')
       if (imgs.length !== 2) return
+
+      if (isMobile) {
+        pair.style.gridTemplateColumns = ''
+        return
+      }
 
       const ratios = Array.from(imgs).map(img => {
         const w = parseInt(img.getAttribute('width')) || img.naturalWidth
@@ -614,6 +716,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   sizeImagePairs()
+  mobileQuery.addEventListener('change', sizeImagePairs)
   document.addEventListener('astro:page-load', sizeImagePairs)
 </script>
 

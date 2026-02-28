@@ -12,6 +12,8 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -25,9 +27,8 @@ body {
   background-color: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  max-width: calc(1440px + 4rem);
-  margin-inline: auto;
+  overflow-x: clip;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -155,6 +156,8 @@ ol {
   grid-template-columns: repeat(12, 1fr);
   column-gap: var(--grid-gutter);
   padding-inline: var(--page-margin);
+  max-width: calc(1440px + 4rem);
+  margin-inline: auto;
 }
 
 .grid-12 > * {

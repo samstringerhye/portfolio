@@ -5,12 +5,13 @@
  */
 interface Props {
   label?: string
+  fullBleed?: boolean
 }
 
-const { label } = Astro.props
+const { label, fullBleed = false } = Astro.props
 ---
 
-<div class="carousel" tabindex="0" role="region" aria-label={label || 'Image carousel'}>
+<div class:list={['carousel', { 'carousel--full-bleed': fullBleed }]} tabindex="0" role="region" aria-label={label || 'Image carousel'}>
   <div class="carousel-track">
     <slot />
   </div>
@@ -28,12 +29,16 @@ const { label } = Astro.props
     display: flex;
     padding: var(--space-4);
     will-change: transform;
-    cursor: grab;
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
   }
 
-  .carousel-track.is-dragging {
-    cursor: grabbing;
+  @media (pointer: fine) {
+    .carousel-track {
+      cursor: grab;
+    }
+    .carousel-track.is-dragging {
+      cursor: grabbing;
+    }
   }
 
   .carousel-track > :global(img),
@@ -52,7 +57,6 @@ const { label } = Astro.props
     width: 100%;
     height: auto;
     border-radius: var(--radius-lg);
-    pointer-events: none;
   }
 
   .carousel-counter {
@@ -69,14 +73,25 @@ const { label } = Astro.props
     font-variant-numeric: tabular-nums;
   }
 
+  .carousel--full-bleed .carousel-track :global(img) {
+    border-radius: 0;
+    padding: 0 !important;
+    background: transparent !important;
+    object-fit: cover !important;
+  }
+
   @media (--2x) {
     .carousel-track {
-      padding-inline: var(--content-inset-sm);
+      padding-inline: var(--page-margin);
     }
 
     .carousel-track > :global(img),
     .carousel-track > :global(.cs-figure) {
       flex: 0 0 82%;
+    }
+
+    .carousel-counter {
+      display: none;
     }
   }
 </style>
@@ -126,6 +141,20 @@ const { label } = Astro.props
       }
 
       function applyGridSizing() {
+        const cw = (carousel as HTMLElement).offsetWidth
+        if (cw <= 768) {
+          const probe = document.createElement('div')
+          probe.style.cssText = 'position:absolute;width:var(--page-margin);visibility:hidden;'
+          carousel.appendChild(probe)
+          const padSide = probe.offsetWidth || 16
+          carousel.removeChild(probe)
+          const slideWidth = cw - (padSide * 2)
+          track.style.paddingLeft = `${padSide}px`
+          track.style.paddingRight = `${padSide}px`
+          track.style.gap = `${padSide}px`
+          slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
+          return
+        }
         const { col, gutter } = getGridMetrics()
         const padLeft = col + gutter
         const slideWidth = col * 6 + gutter * 5
@@ -173,16 +202,30 @@ const { label } = Astro.props
       // Init counter
       counter.textContent = `1 / ${snapPoints.length}`
 
+      // Suppress click after drag so lightbox doesn't open
+      let didDrag = false
+      track.addEventListener('click', (e) => {
+        if (didDrag) { e.stopPropagation(); didDrag = false }
+      }, true)
+
       // ── Observer: detect horizontal drag/swipe ──
+      const isTouch = window.matchMedia('(pointer: coarse)').matches
+
       Observer.create({
         target: carousel,
         type: 'touch,pointer',
-        dragMinimum: 5,
+        dragMinimum: isTouch ? 15 : 5,
+        tolerance: isTouch ? 10 : 0,
         onPress() {
+          didDrag = false
           gsap.killTweensOf(track)
           track.classList.add('is-dragging')
         },
         onDrag(self) {
+          // On touch, ignore if vertical intent is stronger than horizontal
+          if (isTouch && Math.abs(self.deltaY) > Math.abs(self.deltaX) * 1.5 && !didDrag) return
+
+          didDrag = true
           const currentX = gsap.getProperty(track, 'x') as number
           let newX = currentX + self.deltaX
           // Rubber-band at edges
@@ -198,8 +241,9 @@ const { label } = Astro.props
           const trackX = gsap.getProperty(track, 'x') as number
           let targetIndex = nearestIndex(trackX)
 
-          // Flick detection: velocity-based advance
-          if (Math.abs(self.velocityX) > 300) {
+          // Flick detection: lower threshold on touch for easier swiping
+          const flickThreshold = isTouch ? 200 : 300
+          if (Math.abs(self.velocityX) > flickThreshold) {
             targetIndex = self.velocityX > 0
               ? Math.max(0, currentIndex - 1)
               : Math.min(snapPoints.length - 1, currentIndex + 1)

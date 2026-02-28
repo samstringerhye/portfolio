@@ -1,11 +1,11 @@
 {
   "$schema": "./animation.config.schema.json",
   "textReveal": {
-    "duration": 0.5,
-    "wordStagger": 0.1,
-    "blockStagger": 0.1,
-    "slideUp": 100,
-    "initialBlur": 20,
+    "duration": 0.4,
+    "wordStagger": 0.08,
+    "blockStagger": 0.06,
+    "slideUp": 20,
+    "initialBlur": 6,
     "ease": { "$ref": "sys.motion.gsapEasing.enter" },
     "scrollStart": "top 70%",
     "cmyStagger": 0.04,

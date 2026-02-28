@@ -218,8 +218,8 @@ const roleAliases = [
   `.typo-subhead { font-family: var(--font-sans); font-weight: 400; font-size: 1.333rem; line-height: 1.25; }`,
   `.typo-label { font-family: var(--font-sans); font-weight: 400; font-size: 0.75rem; line-height: 1.25; }`,
   `.typo-body { font-family: var(--font-sans); font-weight: 400; font-size: 1rem; line-height: 1.5; }`,
-  `.typo-ui { font-family: var(--font-sans); font-weight: 400; font-size: 0.875rem; line-height: 1.25; }`,
-  `.typo-ui-caps { font-family: var(--font-sans); font-weight: 400; font-size: 0.875rem; line-height: 1.25; }`,
+  `.typo-ui { font-family: var(--font-sans); font-weight: 500; font-size: 0.875rem; line-height: 1.25; }`,
+  `.typo-ui-caps { font-family: var(--font-sans); font-weight: 500; font-size: 0.875rem; line-height: 1.25; }`,
 ].join('\n  ')
 
 /* ── Element-level base styles from elementMap ── */
@@ -279,7 +279,8 @@ const typoCss = `:root {
     <SEO title={title} description={description} ogImage={ogImage} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
     <style set:html={typoCss}></style>
     <noscript><style>.cmy-word { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
     <ViewTransitions fallback="swap" />

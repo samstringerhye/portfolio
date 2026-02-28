@@ -208,8 +208,18 @@ const workInitBlur = `${revealCfg.initialBlur}px`
   .trim-tr-h, .trim-br-h { transform-origin: left; transform: scaleX(0); }
 
   @media (--2x) {
+    .work-label {
+      padding: var(--space-4) var(--page-margin);
+    }
+
+    .work-card-info {
+      padding: var(--page-margin);
+    }
+
     .work-grid {
       grid-template-columns: 1fr;
+      border-top: var(--border-width-1) solid var(--color-rule);
+      border-bottom: var(--border-width-1) solid var(--color-rule);
     }
 
     .work-card:nth-child(odd) {
@@ -218,7 +228,7 @@ const workInitBlur = `${revealCfg.initialBlur}px`
 
     /* All cards except last get a bottom border */
     .work-card:nth-child(-n+3) {
-      border-bottom: var(--border-width-1) solid var(--color-text-primary);
+      border-bottom: var(--border-width-1) solid var(--color-rule);
     }
   }
 

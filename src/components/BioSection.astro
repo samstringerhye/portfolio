@@ -32,10 +32,6 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
     </div>
     <div class="bio-divider"></div>
     <div class="bio-right">
-      <svg class="bio-crosshair bio-crosshair-tl" aria-hidden="true" viewBox="0 0 20 20"><circle cx="10" cy="10" r="5" fill="none" /><line x1="10" y1="0" x2="10" y2="20" /><line x1="0" y1="10" x2="20" y2="10" /></svg>
-      <svg class="bio-crosshair bio-crosshair-tr" aria-hidden="true" viewBox="0 0 20 20"><circle cx="10" cy="10" r="5" fill="none" /><line x1="10" y1="0" x2="10" y2="20" /><line x1="0" y1="10" x2="20" y2="10" /></svg>
-      <svg class="bio-crosshair bio-crosshair-bl" aria-hidden="true" viewBox="0 0 20 20"><circle cx="10" cy="10" r="5" fill="none" /><line x1="10" y1="0" x2="10" y2="20" /><line x1="0" y1="10" x2="20" y2="10" /></svg>
-      <svg class="bio-crosshair bio-crosshair-br" aria-hidden="true" viewBox="0 0 20 20"><circle cx="10" cy="10" r="5" fill="none" /><line x1="10" y1="0" x2="10" y2="20" /><line x1="0" y1="10" x2="20" y2="10" /></svg>
       <BodyTag class:list={["bio-text", `typo-${bodyRole}`]} data-reveal>{body}</BodyTag>
     </div>
   </div>
@@ -79,34 +75,6 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
     padding: var(--content-inset-md);
   }
 
-  .bio-crosshair {
-    position: absolute;
-    width: 1.5rem;
-    height: 1.5rem;
-    stroke: var(--color-rule);
-    stroke-width: var(--border-width-1);
-  }
-
-  .bio-crosshair-tl {
-    top: var(--space-2);
-    left: var(--space-2);
-  }
-
-  .bio-crosshair-tr {
-    top: var(--space-2);
-    right: var(--space-2);
-  }
-
-  .bio-crosshair-bl {
-    bottom: var(--space-2);
-    left: var(--space-2);
-  }
-
-  .bio-crosshair-br {
-    bottom: var(--space-2);
-    right: var(--space-2);
-  }
-
   .bio-text {
     color: var(--color-text-primary);
     margin: 0;
@@ -125,11 +93,12 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
     }
 
     .bio-left {
-      padding: var(--content-inset-md);
+      justify-content: flex-start;
+      padding: var(--space-4) var(--page-margin);
     }
 
     .bio-right {
-      padding-inline: var(--content-inset-md);
+      padding-inline: var(--page-margin);
     }
 
     .bio-divider {

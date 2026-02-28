@@ -58,7 +58,7 @@ const dgCenter = dg.spacing / 2
   <p class="visually-hidden">{interests.join(', ')}</p>
 </section>
 
-<style define:vars={{ dotGridOpacity: dg.opacity }}>
+<style define:vars={{ dotGridOpacity: dg.opacity, dotSpacing: `${dg.spacing}px` }}>
   .interests-section {
     position: relative;
     display: flex;
@@ -77,6 +77,16 @@ const dgCenter = dg.spacing / 2
     color: var(--color-text-primary);
     opacity: var(--dotGridOpacity);
     pointer-events: none;
+    animation: dot-drift 5s linear infinite;
+  }
+
+  @keyframes dot-drift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(var(--dotSpacing), var(--dotSpacing)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot-grid { animation: none; }
   }
 
   .interests-row {
@@ -107,6 +117,12 @@ const dgCenter = dg.spacing / 2
     flex-shrink: 0;
     margin: 0;
   }
+
+  @media (--2x) {
+    .interests-section {
+      padding-block: calc(var(--section-padding) * 4);
+    }
+  }
 </style>
 
 <script>
@@ -135,7 +151,12 @@ const dgCenter = dg.spacing / 2
       const direction = row.getAttribute('data-direction')
       const filterId = `distort-${i + 1}`
 
-      ;(track as HTMLElement).style.filter = `url(#${filterId})`
+      // SVG feDisplacementMap filters break GSAP transforms on mobile Safari —
+      // only apply on non-touch (pointer: fine) devices
+      const canFilter = window.matchMedia('(pointer: fine)').matches
+      if (canFilter) {
+        ;(track as HTMLElement).style.filter = `url(#${filterId})`
+      }
 
       let tween: gsap.core.Tween
 

@@ -68,6 +68,9 @@ export async function initScrollReveals() {
 
     // ── Image reveals: case study visual elements ──
     initImageReveals()
+
+    // ── Home page reveals ──
+    initHomeReveals()
   })
 }
 
@@ -90,6 +93,7 @@ function initImageReveals() {
     gsap.to(el, {
       ...blurUpTo,
       scrollTrigger: { trigger: el, start: imgStart, toggleActions: 'play none none none' },
+      onComplete() { gsap.set(el, { clearProps: 'transform,translate,rotate,scale' }) },
     })
   })
 
@@ -102,6 +106,7 @@ function initImageReveals() {
       ...blurUpTo,
       stagger: 0.15,
       scrollTrigger: { trigger: pair, start: imgStart, toggleActions: 'play none none none' },
+      onComplete() { gsap.set(imgs, { clearProps: 'transform,translate,rotate,scale' }) },
     })
   })
 
@@ -124,6 +129,7 @@ function initImageReveals() {
     gsap.to(el, {
       ...blurUpTo,
       scrollTrigger: { trigger: el, start: imgStart, toggleActions: 'play none none none' },
+      onComplete() { gsap.set(el, { clearProps: 'transform,translate,rotate,scale' }) },
     })
   })
 
@@ -137,6 +143,7 @@ function initImageReveals() {
       gsap.to(media, {
         ...blurUpTo,
         scrollTrigger: { trigger: section, start: imgStart, toggleActions: 'play none none none' },
+        onComplete() { gsap.set(media, { clearProps: 'transform,translate,rotate,scale' }) },
       })
     }
 
@@ -180,4 +187,90 @@ function initImageReveals() {
       },
     })
   })
+}
+
+/* ── Home page reveal animations ── */
+
+function initHomeReveals() {
+  const start = 'top 70%'
+  const duration = 0.9
+  const ease = 'power3.out'
+
+  // ── Work cards: each card triggers independently ──
+  const workCards = document.querySelectorAll<HTMLElement>('[data-work-card]')
+  workCards.forEach((card) => {
+    gsap.set(card, { opacity: 0, y: 40 })
+    gsap.to(card, {
+      opacity: 1, y: 0,
+      duration, ease,
+      scrollTrigger: {
+        trigger: card,
+        start,
+        toggleActions: 'play none none none',
+      },
+      onComplete() { gsap.set(card, { clearProps: 'transform,translate,rotate,scale' }) },
+    })
+  })
+
+  // ── Timeline: cards reveal left to right ──
+  const timelineCards = document.querySelectorAll<HTMLElement>('.timeline-card')
+  if (timelineCards.length) {
+    gsap.set(timelineCards, { opacity: 0, y: 20 })
+    gsap.to(timelineCards, {
+      opacity: 1, y: 0,
+      duration: 0.7, ease,
+      stagger: 0.1,
+      scrollTrigger: {
+        trigger: document.querySelector('.experience-timeline'),
+        start,
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+
+  // ── Timeline year groups ──
+  const yearGroups = document.querySelectorAll<HTMLElement>('.timeline-year-group')
+  if (yearGroups.length) {
+    gsap.set(yearGroups, { opacity: 0 })
+    gsap.to(yearGroups, {
+      opacity: 1,
+      duration: 0.7, ease,
+      stagger: 0.1,
+      delay: 0.3,
+      scrollTrigger: {
+        trigger: document.querySelector('.experience-timeline'),
+        start,
+        toggleActions: 'play none none none',
+      },
+    })
+  }
+
+  // ── Scrolling interests: each row triggers independently ──
+  document.querySelectorAll<HTMLElement>('.interests-row').forEach((row) => {
+    gsap.set(row, { opacity: 0, y: 30 })
+    gsap.to(row, {
+      opacity: 1, y: 0,
+      duration, ease,
+      scrollTrigger: {
+        trigger: row,
+        start,
+        toggleActions: 'play none none none',
+      },
+    })
+  })
+
+  // ── Footer: fade up (use bottom-of-viewport trigger since footer is at page end) ──
+  const footer = document.querySelector<HTMLElement>('.footer')
+  if (footer) {
+    gsap.set(footer, { opacity: 0, y: 20 })
+    gsap.to(footer, {
+      opacity: 1, y: 0,
+      duration: 0.7, ease,
+      scrollTrigger: {
+        trigger: footer,
+        start: 'top 95%',
+        toggleActions: 'play none none none',
+      },
+    })
+  }
 }

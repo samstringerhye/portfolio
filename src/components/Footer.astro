@@ -7,6 +7,14 @@ const year = new Date().getFullYear()
   <div class="footer-container">
     <!-- Name bar -->
     <div class="footer-bar">
+      <div class="footer-palette" aria-hidden="true">
+        <span style="background:#24F266"></span>
+        <span style="background:#F22434"></span>
+        <span style="background:#FBE91E"></span>
+        <span style="background:#2471F2"></span>
+        <span style="background:#0B0D1B"></span>
+        <span style="background:white"></span>
+      </div>
       <div class="footer-bar-text">
         <p class="footer-wordmark-text">Sam Stringer-Hye</p>
       </div>
@@ -32,21 +40,23 @@ const year = new Date().getFullYear()
   .footer {
     margin-top: 0;
     position: relative;
+    overflow: visible;
   }
 
   .footer::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
+    left: 0;
+    right: 0;
     height: var(--border-width-1);
     background-color: var(--color-text-primary);
   }
 
   .footer-container {
-    margin-inline: var(--page-margin);
+    max-width: calc(1440px + 4rem);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
   }
 
   /* ── Top utility bar ── */
@@ -56,11 +66,23 @@ const year = new Date().getFullYear()
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
   }
 
+  .footer-palette {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+  }
+
+  .footer-palette span {
+    width: calc(var(--nav-height) / 6);
+    height: calc(var(--nav-height) / 6);
+  }
+
   .footer-bar-text {
     flex: 1;
     display: flex;
     align-items: center;
-    padding-inline: var(--content-inset-md);
+    padding-left: var(--space-2);
+    padding-right: var(--content-inset-md);
   }
 
   .footer-bar-icons {
@@ -120,8 +142,19 @@ const year = new Date().getFullYear()
 
   /* ── Mobile ── */
   @media (--2x) {
-.footer-wordmark-text {
+    .footer-bar-text {
+      padding-left: var(--page-margin);
+      padding-right: var(--page-margin);
+    }
+
+    .footer-bottom {
+      padding: var(--space-3) var(--page-margin);
+    }
+
+    .footer-wordmark-text {
       font-size: var(--wordmark-size-mobile);
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 </style>
@@ -144,6 +177,30 @@ const year = new Date().getFullYear()
     })
   }
 
+  const PALETTE_COLORS = [
+    '#24F266', '#F22434', '#FBE91E', '#2471F2', '#0B0D1B', '#ffffff',
+  ]
+
+  function initPaletteCycle() {
+    const spans = document.querySelectorAll<HTMLSpanElement>('.footer-palette span')
+    if (!spans.length) return
+
+    let offset = 0
+    function paint() {
+      spans.forEach((span, i) => {
+        span.style.background = PALETTE_COLORS[((i + offset) % PALETTE_COLORS.length + PALETTE_COLORS.length) % PALETTE_COLORS.length]
+      })
+    }
+    paint()
+
+    // Shift all colors down by one position each tick
+    setInterval(() => { offset--; paint() }, 200)
+  }
+
   initFooterHover()
-  document.addEventListener('astro:page-load', initFooterHover)
+  initPaletteCycle()
+  document.addEventListener('astro:page-load', () => {
+    initFooterHover()
+    initPaletteCycle()
+  })
 </script>

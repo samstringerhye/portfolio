@@ -18,8 +18,8 @@ function isActive(href: string) {
     <a href="/" class="nav-logo typo-ui" aria-label="Sam Stringer-Hye — Home">
       <svg class="nav-logo-icon" width="1100" height="1100" viewBox="0 0 1100 1100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M250.5 0C388.295 0 500 111.929 500 250V500H250.5C112.705 500 1 388.071 1 250C1 111.929 112.705 0 250.5 0Z" fill="#F22434"/>
-        <path d="M500 850C500 988.071 388.071 1100 250 1100C111.929 1100 -1.60836e-06 988.071 0 850C1.81059e-05 711.929 111.929 600 250 600H500V850Z" fill="#FBE91E"/>
-        <path d="M850 0C988.071 6.03528e-06 1100 111.929 1100 250C1100 388.071 988.071 500 850 500H600V250C600 111.929 711.929 2.21346e-06 850 0Z" fill="#24F266"/>
+        <path d="M500 850C500 988.071 388.071 1100 250 1100C111.929 1100 -1.60836e-06 988.071 0 850C1.81059e-05 711.929 111.929 600 250 600H500V850Z" fill="#E5C800"/>
+        <path d="M850 0C988.071 6.03528e-06 1100 111.929 1100 250C1100 388.071 988.071 500 850 500H600V250C600 111.929 711.929 2.21346e-06 850 0Z" fill="#00CC55"/>
         <path d="M850 600C988.071 600 1100 711.929 1100 850C1100 988.071 988.071 1100 850 1100C711.929 1100 600 988.071 600 850V600H850Z" fill="#2471F2"/>
       </svg>
       Sam Stringer-Hye
@@ -64,15 +64,15 @@ function isActive(href: string) {
     top: 0;
     z-index: var(--z-nav);
     background: var(--color-bg-primary);
+    padding-top: env(safe-area-inset-top);
   }
 
   .nav::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
+    left: 0;
+    right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
   }
@@ -81,7 +81,9 @@ function isActive(href: string) {
     display: flex;
     align-items: stretch;
     height: var(--nav-height);
-    margin-inline: var(--page-margin);
+    max-width: calc(1440px + 4rem);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
   }
 
   .nav-logo {
@@ -93,7 +95,7 @@ function isActive(href: string) {
     text-decoration: none;
     white-space: nowrap;
     font-size: 1rem;
-    gap: var(--space-1);
+    gap: var(--space-2);
     transition: background-color var(--transition-medium) ease;
   }
 
@@ -104,48 +106,6 @@ function isActive(href: string) {
     overflow: visible;
   }
 
-  .nav-logo-icon path {
-    transition: fill 0.2s ease;
-  }
-
-  .nav-logo:hover .nav-logo-icon path {
-    fill: #fff;
-    animation: 0.7s ease-out forwards;
-  }
-
-  .nav-logo:hover .nav-logo-icon path:nth-child(1) { animation-name: petal-tl; }
-  .nav-logo:hover .nav-logo-icon path:nth-child(3) { animation-name: petal-tr; }
-  .nav-logo:hover .nav-logo-icon path:nth-child(4) { animation-name: petal-br; }
-  .nav-logo:hover .nav-logo-icon path:nth-child(2) { animation-name: petal-bl; }
-
-  @keyframes petal-tl {
-    0% { translate: 0 0; }
-    20% { translate: 150px 150px; }
-    50% { translate: -300px -300px; }
-    75% { translate: 40px 40px; }
-    100% { translate: 0 0; }
-  }
-  @keyframes petal-tr {
-    0% { translate: 0 0; }
-    20% { translate: -150px 150px; }
-    50% { translate: 300px -300px; }
-    75% { translate: -40px 40px; }
-    100% { translate: 0 0; }
-  }
-  @keyframes petal-bl {
-    0% { translate: 0 0; }
-    20% { translate: 150px -150px; }
-    50% { translate: -300px 300px; }
-    75% { translate: 40px -40px; }
-    100% { translate: 0 0; }
-  }
-  @keyframes petal-br {
-    0% { translate: 0 0; }
-    20% { translate: -150px -150px; }
-    50% { translate: 300px 300px; }
-    75% { translate: -40px -40px; }
-    100% { translate: 0 0; }
-  }
 
   .nav-links {
     display: flex;
@@ -202,17 +162,28 @@ function isActive(href: string) {
   }
 
   @media (--2x) {
+    .nav::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--border-width-1);
+      background: var(--color-rule);
+    }
+
     .nav-logo {
       border-right: none;
+      flex: 1;
     }
 
     .nav-toggle {
       display: flex;
       margin-left: auto;
       border-left: var(--border-width-1) solid var(--color-rule);
-      border-right: var(--border-width-1) solid var(--color-rule);
-      width: var(--nav-height);
+      aspect-ratio: 1;
       height: var(--nav-height);
+      width: auto;
       min-width: unset;
       min-height: unset;
       padding: 0;
@@ -220,21 +191,27 @@ function isActive(href: string) {
 
     .nav-links {
       position: fixed;
-      top: var(--nav-height);
+      top: calc(var(--nav-height) + env(safe-area-inset-top));
       left: 0;
       right: 0;
       bottom: 0;
       flex-direction: column;
       align-items: stretch;
-      padding: var(--space-5) var(--space-4);
+      padding: 0;
+      padding-bottom: env(safe-area-inset-bottom);
       background: var(--color-bg-primary);
       transform: translateX(100%);
       transition: transform var(--transition-1x) ease;
     }
 
     .nav-links li {
+      flex: none;
       border-left: none;
-      border-bottom: var(--border-width-1) solid var(--color-text-primary);
+      border-bottom: var(--border-width-1) solid var(--color-rule);
+    }
+
+    .nav-links li:last-child {
+      border-bottom: none;
     }
 
     .nav-links.open {
@@ -242,7 +219,9 @@ function isActive(href: string) {
     }
 
     .nav-link {
-      padding: var(--space-2) 0;
+      width: 100%;
+      padding: var(--space-3) var(--page-margin) var(--space-3) var(--space-6);
+      font-size: var(--text-400);
     }
 
     .nav-toggle[aria-expanded="true"] .nav-toggle-bar:first-child {
@@ -256,10 +235,19 @@ function isActive(href: string) {
 </style>
 
 <script>
+  import gsap from 'gsap'
   import { cmyRgba } from '../data/tokens'
 
   const CMY_COLORS = cmyRgba(1)
   let colorIndex = 0
+
+  // Petal directions: top-left, bottom-left, top-right, bottom-right (DOM order)
+  const petalOffsets = [
+    { x: -60, y: -60 },  // path 1: red top-left
+    { x: -60, y: 60 },   // path 2: yellow bottom-left
+    { x: 60, y: -60 },   // path 3: green top-right
+    { x: 60, y: 60 },    // path 4: blue bottom-right
+  ]
 
   function initNavHover() {
     const items = document.querySelectorAll<HTMLElement>('.nav-link, .nav-logo')
@@ -273,6 +261,51 @@ function isActive(href: string) {
         el.style.backgroundColor = ''
       })
     })
+
+    // Logo petal animation
+    const logo = document.querySelector('.nav-logo')
+    if (logo && !logo.dataset.petalBound) {
+      logo.dataset.petalBound = 'true'
+      const paths = logo.querySelectorAll<SVGPathElement>('.nav-logo-icon path')
+      const originalFills = Array.from(paths).map(p => p.getAttribute('fill'))
+
+      logo.addEventListener('mouseenter', () => {
+        paths.forEach((path, i) => {
+          gsap.killTweensOf(path)
+          const { x, y } = petalOffsets[i]
+          gsap.to(path, { attr: { fill: '#ffffff' }, duration: 0.2, ease: 'power2.out' })
+
+          const tl = gsap.timeline()
+          // 1. Anticipation: pull toward center
+          tl.to(path, {
+            x: -x * 0.3,
+            y: -y * 0.3,
+            duration: 0.15,
+            ease: 'back.in(4)',
+          })
+          // 2. Burst outward
+          .to(path, {
+            x, y,
+            duration: 0.25,
+            ease: 'power4.out',
+          })
+          // 3. Spring settle back to rest
+          .to(path, {
+            x: 0, y: 0,
+            duration: 0.6,
+            ease: 'elastic.out(1, 0.4)',
+          })
+        })
+      })
+
+      logo.addEventListener('mouseleave', () => {
+        paths.forEach((path, i) => {
+          gsap.killTweensOf(path)
+          gsap.to(path, { attr: { fill: originalFills[i] }, duration: 0.3, ease: 'power2.out' })
+          gsap.to(path, { x: 0, y: 0, duration: 0.3, ease: 'back.out(2)' })
+        })
+      })
+    }
   }
 
   initNavHover()
