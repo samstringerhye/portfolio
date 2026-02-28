@@ -11,7 +11,7 @@ interface Props {
 const { label, fullBleed = false } = Astro.props
 ---
 
-<div class:list={['carousel', { 'carousel--full-bleed': fullBleed }]} tabindex="0" role="region" aria-label={label || 'Image carousel'}>
+<div class:list={['carousel', { 'carousel--full-bleed': fullBleed }]} tabindex="0" role="region" aria-roledescription="carousel" aria-label={label || 'Image carousel'}>
   <div class="carousel-track">
     <slot />
   </div>

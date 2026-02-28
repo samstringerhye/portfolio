@@ -219,7 +219,7 @@ const roleAliases = [
   `.typo-label { font-family: var(--font-sans); font-weight: 400; font-size: 0.75rem; line-height: 1.25; }`,
   `.typo-body { font-family: var(--font-sans); font-weight: 400; font-size: 1rem; line-height: 1.5; }`,
   `.typo-ui { font-family: var(--font-sans); font-weight: 500; font-size: 0.875rem; line-height: 1.25; }`,
-  `.typo-ui-caps { font-family: var(--font-sans); font-weight: 500; font-size: 0.875rem; line-height: 1.25; }`,
+  `.typo-ui-caps { font-family: var(--font-sans); font-weight: 500; font-size: 0.75rem; line-height: 1.25; text-transform: uppercase; letter-spacing: 0.08em; }`,
 ].join('\n  ')
 
 /* ── Element-level base styles from elementMap ── */
@@ -265,6 +265,7 @@ const typoCss = `:root {
     ${opacityVars}
     ${hoverVars}
     ${proseVars}
+    --max-content-width: calc(1440px + 4rem);
     --focus-ring: 0 0 0 var(--focus-ring-width) var(--color-bg-primary), 0 0 0 calc(var(--focus-ring-width) + var(--focus-ring-offset)) var(--focus-ring-color);
     --border-light: var(--border-width-1) solid var(--color-rule);
   }
@@ -282,7 +283,7 @@ const typoCss = `:root {
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
     <style set:html={typoCss}></style>
-    <noscript><style>.cmy-word { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
+    <noscript><style>.cmy-word, .hero-block { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
     <ViewTransitions fallback="swap" />
   </head>
   <body>
@@ -348,11 +349,17 @@ const typoCss = `:root {
         initScrollProgress()
       }
 
-      function initScrollProgress() {
-        const bar = document.querySelector<HTMLElement>('.scroll-progress')
-        if (!bar) return
+      let scrollProgressTrigger: ScrollTrigger | null = null
 
-        gsap.to(bar, {
+      function initScrollProgress() {
+        // Kill previous trigger to prevent accumulation across page navigations
+        scrollProgressTrigger?.kill()
+        scrollProgressTrigger = null
+
+        const bar = document.querySelector<HTMLElement>('.scroll-progress')
+        if (!bar) { bar && gsap.set(bar, { width: 0 }); return }
+
+        const tween = gsap.to(bar, {
           width: '100%',
           ease: 'none',
           scrollTrigger: {
@@ -362,6 +369,7 @@ const typoCss = `:root {
             scrub: true,
           },
         })
+        scrollProgressTrigger = tween.scrollTrigger ?? null
       }
 
       const globalState = window as GlobalInitState

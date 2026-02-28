@@ -133,7 +133,7 @@ ol {
   transition: top var(--transition-fast) ease;
 }
 
-.skip-to-content:focus {
+.skip-to-content:focus-visible {
   top: var(--space-2);
 }
 
@@ -156,7 +156,7 @@ ol {
   grid-template-columns: repeat(12, 1fr);
   column-gap: var(--grid-gutter);
   padding-inline: var(--page-margin);
-  max-width: calc(1440px + 4rem);
+  max-width: var(--max-content-width);
   margin-inline: auto;
 }
 
@@ -168,7 +168,7 @@ ol {
 .grid-overlay {
   position: fixed;
   inset: 0;
-  max-width: calc(1440px + 4rem);
+  max-width: var(--max-content-width);
   margin-inline: auto;
   z-index: var(--z-debug);
   pointer-events: none;

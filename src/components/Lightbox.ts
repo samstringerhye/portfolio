@@ -16,6 +16,8 @@ interface LightboxState {
   currentIndex: number
   sectionImages: HTMLImageElement[]
   isOpen: boolean
+  triggerElement: HTMLElement | null
+  removeTrap: (() => void) | null
 }
 
 const state: LightboxState = {
@@ -29,6 +31,8 @@ const state: LightboxState = {
   currentIndex: 0,
   sectionImages: [],
   isOpen: false,
+  triggerElement: null,
+  removeTrap: null,
 }
 
 function createOverlay() {
@@ -36,6 +40,9 @@ function createOverlay() {
 
   const overlay = document.createElement('div')
   overlay.className = 'lightbox-overlay'
+  overlay.setAttribute('role', 'dialog')
+  overlay.setAttribute('aria-modal', 'true')
+  overlay.setAttribute('aria-label', 'Image lightbox')
   overlay.innerHTML = `
     <div class="lightbox-backdrop"></div>
     <div class="lightbox-content">
@@ -57,7 +64,7 @@ function createOverlay() {
         <polyline points="9 6 15 12 9 18"></polyline>
       </svg>
     </button>
-    <div class="lightbox-counter"></div>
+    <div class="lightbox-counter" aria-live="polite"></div>
   `
   document.body.appendChild(overlay)
 
@@ -75,12 +82,34 @@ function createOverlay() {
   overlay.querySelector('.lightbox-backdrop')?.addEventListener('click', close)
 }
 
+function installFocusTrap() {
+  if (!state.overlay) return
+
+  const focusable = state.overlay.querySelectorAll<HTMLElement>(
+    'button:not([style*="display: none"]), [tabindex]:not([tabindex="-1"])'
+  )
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+
+  function handler(e: KeyboardEvent) {
+    if (e.key !== 'Tab') return
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault()
+      last?.focus()
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault()
+      first?.focus()
+    }
+  }
+
+  state.overlay.addEventListener('keydown', handler)
+  state.removeTrap = () => state.overlay?.removeEventListener('keydown', handler)
+}
+
 function getSectionImages(clickedImg: HTMLImageElement): HTMLImageElement[] {
-  // Find the nearest section-level parent (zigzag-section, image-pair, carousel, image-grid, or standalone)
   const body = document.querySelector('.case-study-body')
   if (!body) return [clickedImg]
 
-  // Check if the image is inside a carousel or image-grid (group all images within)
   const carousel = clickedImg.closest('.carousel')
   if (carousel) return Array.from(carousel.querySelectorAll<HTMLImageElement>('img'))
 
@@ -93,7 +122,6 @@ function getSectionImages(clickedImg: HTMLImageElement): HTMLImageElement[] {
   const zigzag = clickedImg.closest('.zigzag-section')
   if (zigzag) return Array.from(zigzag.querySelectorAll<HTMLImageElement>('img'))
 
-  // Standalone image — just itself
   return [clickedImg]
 }
 
@@ -101,6 +129,7 @@ function open(img: HTMLImageElement) {
   createOverlay()
   if (!state.overlay || !state.imgContainer) return
 
+  state.triggerElement = img
   state.sectionImages = getSectionImages(img)
   state.currentIndex = state.sectionImages.indexOf(img)
   if (state.currentIndex < 0) state.currentIndex = 0
@@ -123,6 +152,10 @@ function open(img: HTMLImageElement) {
   }
 
   updateNav()
+
+  // Focus management: move focus into lightbox
+  installFocusTrap()
+  state.closeBtn?.focus()
 }
 
 function showImage(img: HTMLImageElement) {
@@ -180,9 +213,19 @@ function close() {
   state.isOpen = false
   document.body.style.overflow = ''
 
+  // Remove focus trap
+  state.removeTrap?.()
+  state.removeTrap = null
+
   const done = () => {
     state.overlay?.classList.remove('is-open')
     if (state.imgContainer) state.imgContainer.innerHTML = ''
+
+    // Restore focus to trigger element
+    if (state.triggerElement) {
+      state.triggerElement.focus()
+      state.triggerElement = null
+    }
   }
 
   if (!prefersReduced()) {
@@ -207,13 +250,23 @@ export function initLightbox() {
   const body = document.querySelector('.case-study-body')
   if (!body) return
 
-  // Attach click handlers to all case study images
+  // Attach click + keyboard handlers to all case study images
   body.querySelectorAll<HTMLImageElement>('img').forEach(img => {
     if (img.closest('.cs-hero-image')) return // Skip hero image
     if (img.dataset.lightboxBound === 'true') return
     img.dataset.lightboxBound = 'true'
 
+    img.setAttribute('tabindex', '0')
+    img.setAttribute('role', 'button')
+    img.setAttribute('aria-label', `View ${img.alt || 'image'} in lightbox`)
+
     img.addEventListener('click', () => open(img))
+    img.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        open(img)
+      }
+    })
   })
 
   document.addEventListener('keydown', handleKeydown)

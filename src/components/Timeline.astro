@@ -61,9 +61,9 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   </div>
   <div class="experience-timeline" data-timeline data-total-span={totalSpan}>
     <!-- Job cards row -->
-    <div class="timeline-cards">
+    <ul class="timeline-cards" role="list">
       {jobsChronological.map((job) => (
-        <div
+        <li
           class="timeline-card"
           style={`flex: ${job.span} 1 0%;`}
           data-card-index={job.index}
@@ -71,6 +71,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
         >
           <div class="timeline-card-wipe" aria-hidden="true"></div>
           <p class="timeline-card-year typo-ui-caps" aria-hidden="true">{job.yearLabel}</p>
+          <span class="visually-hidden">{job.yearLabel}</span>
           <div class="timeline-card-left">
             <JobTitleTag class:list={["timeline-title", `typo-${jobTitleRole}`]}>{job.title}</JobTitleTag>
             <CompanyTag class:list={["timeline-company", `typo-${companyRole}`]}>{job.company}</CompanyTag>
@@ -82,9 +83,9 @@ for (let y = timelineStart; y < timelineEnd; y++) {
               ))}
             </div>
           )}
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
 
     <!-- Year scale — grouped by card for alignment -->
     <div class="timeline-years">

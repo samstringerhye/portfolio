@@ -81,7 +81,7 @@ function isActive(href: string) {
     display: flex;
     align-items: stretch;
     height: var(--nav-height);
-    max-width: calc(1440px + 4rem);
+    max-width: var(--max-content-width);
     margin-inline: auto;
     padding-inline: var(--page-margin);
   }
@@ -94,7 +94,7 @@ function isActive(href: string) {
     color: var(--color-text-primary);
     text-decoration: none;
     white-space: nowrap;
-    font-size: 1rem;
+    font-size: var(--text-100);
     gap: var(--space-2);
     transition: background-color var(--transition-medium) ease;
   }
@@ -262,9 +262,9 @@ function isActive(href: string) {
       })
     })
 
-    // Logo petal animation
+    // Logo petal animation (skip if user prefers reduced motion)
     const logo = document.querySelector('.nav-logo')
-    if (logo && !logo.dataset.petalBound) {
+    if (logo && !logo.dataset.petalBound && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       logo.dataset.petalBound = 'true'
       const paths = logo.querySelectorAll<SVGPathElement>('.nav-logo-icon path')
       const originalFills = Array.from(paths).map(p => p.getAttribute('fill'))
@@ -325,9 +325,27 @@ function isActive(href: string) {
 
     let removeTrap: (() => void) | null = null
 
+    // Disable tab access to hidden mobile nav links
+    function setNavLinksTabindex(enabled: boolean) {
+      links!.querySelectorAll<HTMLElement>('a, button').forEach(el => {
+        if (enabled) el.removeAttribute('tabindex')
+        else el.setAttribute('tabindex', '-1')
+      })
+    }
+
+    // Start with links hidden from tab order on mobile
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      setNavLinksTabindex(false)
+    }
+    window.matchMedia('(max-width: 768px)').addEventListener('change', (e) => {
+      if (!e.matches) setNavLinksTabindex(true)
+      else if (toggle!.getAttribute('aria-expanded') !== 'true') setNavLinksTabindex(false)
+    })
+
     function openNav() {
       toggle!.setAttribute('aria-expanded', 'true')
       links!.classList.add('open')
+      setNavLinksTabindex(true)
 
       // Focus trap for mobile nav
       const focusable = links!.querySelectorAll<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])')
@@ -349,6 +367,7 @@ function isActive(href: string) {
     function closeNav() {
       toggle!.setAttribute('aria-expanded', 'false')
       links!.classList.remove('open')
+      setNavLinksTabindex(false)
       removeTrap?.()
       removeTrap = null
       toggle!.focus()

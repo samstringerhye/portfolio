@@ -54,7 +54,7 @@ const year = new Date().getFullYear()
   }
 
   .footer-container {
-    max-width: calc(1440px + 4rem);
+    max-width: var(--max-content-width);
     margin-inline: auto;
     padding-inline: var(--page-margin);
   }
@@ -181,9 +181,20 @@ const year = new Date().getFullYear()
     '#24F266', '#F22434', '#FBE91E', '#2471F2', '#0B0D1B', '#ffffff',
   ]
 
+  let paletteIntervalId: ReturnType<typeof setInterval> | null = null
+
   function initPaletteCycle() {
+    // Clear previous interval to prevent accumulation across page navigations
+    if (paletteIntervalId !== null) {
+      clearInterval(paletteIntervalId)
+      paletteIntervalId = null
+    }
+
     const spans = document.querySelectorAll<HTMLSpanElement>('.footer-palette span')
     if (!spans.length) return
+
+    // Respect reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     let offset = 0
     function paint() {
@@ -194,7 +205,7 @@ const year = new Date().getFullYear()
     paint()
 
     // Shift all colors down by one position each tick
-    setInterval(() => { offset--; paint() }, 200)
+    paletteIntervalId = setInterval(() => { offset--; paint() }, 200)
   }
 
   initFooterHover()

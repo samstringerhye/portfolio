@@ -128,7 +128,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   .case-study-body .carousel-track {
-    cursor: none;
+    cursor: grab;
   }
 
   /* ── Standalone images ── */
@@ -145,7 +145,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   .case-study-body img.has-transparency {
-    background: #fff;
+    background: var(--color-bg-primary);
     padding: var(--space-6);
     object-fit: contain;
   }
@@ -170,12 +170,12 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   .case-study-body .image-pair img,
   .case-study-body .image-grid img,
   .case-study-body .zigzag-media {
-    cursor: none;
+    cursor: zoom-in;
     transition: scale 0.3s ease;
   }
 
   .case-study-body .zigzag-media img {
-    cursor: none;
+    cursor: zoom-in;
   }
 
   .case-study-body .cs-figure img:hover,
@@ -231,7 +231,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   .case-study-body .image-pair:has(img.has-transparency) {
-    background: #fff;
+    background: var(--color-bg-primary);
     column-gap: 0;
   }
 
@@ -240,7 +240,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   .case-study-body .image-pair-cell:has(img.has-transparency) {
-    background: #fff;
+    background: var(--color-bg-primary);
   }
 
   .case-study-body .image-pair img.has-transparency {
@@ -542,8 +542,8 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(var(--modal-backdrop-blur));
+    -webkit-backdrop-filter: blur(var(--modal-backdrop-blur));
   }
 
   .lightbox-content {
@@ -575,8 +575,8 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     top: var(--space-3);
     right: var(--space-3);
     z-index: 2;
-    width: 44px;
-    height: 44px;
+    width: var(--touch-target);
+    height: var(--touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -597,8 +597,8 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     top: 50%;
     transform: translateY(-50%);
     z-index: 2;
-    width: 44px;
-    height: 44px;
+    width: var(--touch-target);
+    height: var(--touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -634,7 +634,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   /* ── Scroll progress bar ── */
   .scroll-progress {
     position: fixed;
-    top: var(--nav-height, 4rem);
+    top: var(--nav-height);
     left: 0;
     width: 0%;
     height: 2px;
@@ -653,7 +653,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     height: 80px;
     border-radius: 50%;
     background: var(--cursor-bg, var(--color-accent-1));
-    color: white;
+    color: var(--color-bg-primary);
     display: flex;
     align-items: center;
     justify-content: center;

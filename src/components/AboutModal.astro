@@ -66,14 +66,19 @@
 
   .about-close {
     position: absolute;
-    top: var(--space-3);
-    right: var(--space-3);
+    top: var(--space-4);
+    right: var(--space-4);
     color: var(--color-text-secondary);
     transition: color var(--transition-fast) ease;
   }
 
   .about-close:hover {
     color: var(--color-text-primary);
+  }
+
+  .about-close svg {
+    width: 3rem;
+    height: 3rem;
   }
 
   .about-body {
@@ -99,9 +104,31 @@
   }
 
   @media (--2x) {
+    .about-modal {
+      align-items: stretch;
+      justify-content: stretch;
+    }
+
     .about-content {
-      max-width: 100%;
-      margin-inline: var(--page-margin);
+      max-width: none;
+      max-height: none;
+      width: 100vw;
+      min-height: 100dvh;
+      margin: 0;
+      border-radius: 0;
+      padding:
+        calc(var(--space-6) + env(safe-area-inset-top))
+        var(--page-margin)
+        calc(var(--space-6) + env(safe-area-inset-bottom));
+    }
+
+    .about-close {
+      top: calc(var(--space-4) + env(safe-area-inset-top));
+      right: calc(var(--page-margin) + var(--space-1));
+    }
+
+    .about-body {
+      padding-inline: var(--space-2);
     }
   }
 </style>
