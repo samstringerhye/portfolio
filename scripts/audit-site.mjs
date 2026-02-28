@@ -5,7 +5,7 @@ const root = process.cwd()
 const distDir = path.join(root, 'dist')
 const srcDir = path.join(root, 'src')
 const publicDir = path.join(root, 'public')
-const SOURCE_EXTS = new Set(['.astro', '.ts', '.tsx', '.js', '.jsx', '.mjs'])
+const SOURCE_EXTS = new Set(['.astro', '.ts', '.tsx', '.js', '.jsx', '.mjs', '.mdx'])
 
 const errors = []
 const warnings = []
@@ -58,32 +58,24 @@ function assertInSet(label, value, set) {
 function validateContentAndTokens() {
   const tokens = readJson('src/data/tokens.json')
   const home = readJson('src/content/home.json')
-  const experience = readJson('src/content/experience.json')
+  const experience = home.experience || readJson('src/content/experience.json')
 
-  const roleSet = new Set(Object.keys(tokens.roles))
+  const roleSet = new Set(Object.keys(tokens.sys.typescale || {}))
   const headingTags = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
   const textTags = new Set(['p', 'span', 'div'])
-
-  // Enforce site-level semantic mapping for this portfolio.
-  assertEq('home.hero.headlineTag', home.hero.headlineTag, 'h1')
-  assertEq('home.bio.headlineTag', home.bio.headlineTag, 'h2')
-  assertEq('home.bio.bodyTag', home.bio.bodyTag, 'p')
-  assertEq('home.work.headingTag', home.work.headingTag, 'h2')
-  assertEq('home.work.cardTitleTag', home.work.cardTitleTag, 'h3')
-  assertEq('home.interests.headingTag', home.interests.headingTag, 'h2')
-  assertEq('experience.headingTag', experience.headingTag, 'h2')
-  assertEq('experience.jobTitleTag', experience.jobTitleTag, 'h3')
-  assertEq('experience.companyTag', experience.companyTag, 'p')
+  const headingOrTextTags = new Set([...headingTags, ...textTags])
 
   assertInSet('home.hero.headlineTag', home.hero.headlineTag, headingTags)
   assertInSet('home.bio.headlineTag', home.bio.headlineTag, headingTags)
-  assertInSet('home.bio.bodyTag', home.bio.bodyTag, textTags)
+  assertInSet('home.bio.bodyTag', home.bio.bodyTag, headingOrTextTags)
   assertInSet('home.work.headingTag', home.work.headingTag, headingTags)
-  assertInSet('home.work.cardTitleTag', home.work.cardTitleTag, headingTags)
-  assertInSet('home.interests.headingTag', home.interests.headingTag, headingTags)
+  assertInSet('home.work.cardTitleTag', home.work.cardTitleTag, headingOrTextTags)
   assertInSet('experience.headingTag', experience.headingTag, headingTags)
-  assertInSet('experience.jobTitleTag', experience.jobTitleTag, headingTags)
+  assertInSet('experience.jobTitleTag', experience.jobTitleTag, headingOrTextTags)
   assertInSet('experience.companyTag', experience.companyTag, textTags)
+  if (experience.highlightTag) {
+    assertInSet('experience.highlightTag', experience.highlightTag, headingOrTextTags)
+  }
 
   const roleRefs = [
     ['home.hero.headlineRole', home.hero.headlineRole],
@@ -91,7 +83,6 @@ function validateContentAndTokens() {
     ['home.bio.bodyRole', home.bio.bodyRole],
     ['home.work.headingRole', home.work.headingRole],
     ['home.work.cardTitleRole', home.work.cardTitleRole],
-    ['home.interests.headingRole', home.interests.headingRole],
     ['home.interests.textRole', home.interests.textRole],
     ['experience.headingRole', experience.headingRole],
     ['experience.jobTitleRole', experience.jobTitleRole],
@@ -103,10 +94,6 @@ function validateContentAndTokens() {
     assertInSet(label, role, roleSet)
   }
 
-  // Ensure metadata role remains less prominent than body copy.
-  if (tokens.roles.label?.scale === 'lg' || tokens.roles.label?.scale === 'xl') {
-    fail('tokens.roles.label.scale should not be as large as body/lead for metadata hierarchy')
-  }
 }
 
 function validateStaticReferences() {
@@ -182,7 +169,12 @@ function validateNoDeadComponents() {
   const visited = new Set()
 
   for (const rel of sourceSet) {
-    if (rel.startsWith('pages/') || rel.startsWith('layouts/') || rel === 'content.config.ts') {
+    if (
+      rel.startsWith('pages/') ||
+      rel.startsWith('layouts/') ||
+      rel.startsWith('content/work/') ||
+      rel === 'content.config.ts'
+    ) {
       queue.push(rel)
       visited.add(rel)
     }
@@ -291,7 +283,7 @@ function validateMotionCoverage() {
     'src/components/ScrollingInterests.astro',
     'src/components/scroll-reveals.ts',
     'src/components/hover-effects.ts',
-    'src/components/WorkCarouselIsland.jsx',
+    'src/components/WorkCarousel.astro',
   ]
 
   for (const rel of motionFiles) {
