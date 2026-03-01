@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 ---
 
 <BaseLayout title="Colophon — Sam Stringer-Hye" description="How this site was built.">
-  <section class="colophon-page">
+  <section class="colophon-page" aria-label="Colophon">
     <div class="colophon-header">
       <p class="typo-ui-caps" style="color: var(--color-text-secondary);">About this site</p>
       <h1 class="typo-display">Colophon</h1>
@@ -13,9 +13,8 @@ import BaseLayout from '../layouts/BaseLayout.astro'
       <h2 class="typo-display-sm">Tech Stack</h2>
       <p>
         Built with <strong>Astro</strong> for static-first delivery with selective React hydration for interactive components.
-        3D hero animation rendered with <strong>Three.js</strong>.
-        Animations powered by <strong>GSAP</strong> (ScrollTrigger, Draggable, SplitText).
-        Smooth scrolling via <strong>Lenis</strong>. Deployed on <strong>Vercel</strong>.
+        Animations powered by <strong>GSAP</strong> (ScrollTrigger, SplitText).
+        Smooth scrolling via <strong>Lenis</strong>. Deployed on <strong>Cloudflare Workers</strong>.
       </p>
 
       <h2 class="typo-display-sm">Typography</h2>
@@ -35,8 +34,8 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
       <h2 class="typo-display-sm">Accessibility</h2>
       <p>
-        This site respects <code>prefers-reduced-motion</code> — all animations are disabled or minimized when the user has requested reduced motion.
-        Navigation is fully keyboard-accessible, the about modal includes a focus trap, and all images include alt text.
+        This site respects <code>prefers-reduced-motion</code>: all animations are disabled or minimized when the user has requested reduced motion.
+        Navigation is fully keyboard-accessible with focus trapping on mobile, and all images include alt text.
       </p>
     </div>
   </section>

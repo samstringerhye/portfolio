@@ -62,8 +62,10 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     min-height: 44px;
   }
 
-  .about-link:hover {
-    text-decoration: underline;
+  @media (hover: hover) {
+    .about-link:hover {
+      text-decoration: underline;
+    }
   }
 
   @media (--2x) {

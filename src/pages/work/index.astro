@@ -137,6 +137,12 @@ const allWork = (await getCollection('work'))
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .work-row-image img {
+      transition: none;
+    }
+  }
+
   /* ── Mobile ── */
   @media (--2x) {
     .work-row {

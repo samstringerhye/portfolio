@@ -46,7 +46,9 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     transition: box-shadow var(--duration-long) ease, transform var(--duration-short) ease;
   }
 
-  .not-found-link:hover {
-    transform: translateY(var(--hover-lift));
+  @media (hover: hover) {
+    .not-found-link:hover {
+      transform: translateY(var(--hover-lift));
+    }
   }
 </style>
