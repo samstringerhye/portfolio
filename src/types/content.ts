@@ -1,4 +1,4 @@
-import type { HeadingTag, TextTag, TypographyRole } from './typography'
+import type { HeadingTag, TextTag, TypographyRole, TypographyTag } from './typography'
 
 export type ContentInset = 'sm' | 'md' | 'lg'
 
@@ -21,7 +21,7 @@ export interface HomeContent {
     headline: string
     headingTag: HeadingTag
     headingRole: TypographyRole
-    cardTitleTag: HeadingTag
+    cardTitleTag: TypographyTag
     cardTitleRole: TypographyRole
     contentInset?: ContentInset
   }

@@ -277,9 +277,11 @@ const featured = allWork
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
   import { cmyRgba } from '../data/tokens'
   import { tightenSingleLineHeadings } from './tighten-headings'
+  import { initCarouselDrag } from './carousel-core'
 
   gsap.registerPlugin(ScrollTrigger)
 
+  const workRoMap = new WeakMap<Element, ResizeObserver>()
   const CMY_COLORS = cmyRgba(1)
   let colorIndex = 0
 
@@ -309,8 +311,14 @@ const featured = allWork
       const slides = Array.from(track.querySelectorAll<HTMLElement>('.work-card'))
       if (slides.length <= 1) return
 
-      let currentIndex = 0
-      let snapPoints: number[] = []
+      const dotsContainer = carousel.querySelector('.work-carousel-dots') as HTMLElement
+
+      const ctrl = initCarouselDrag({
+        carousel,
+        track,
+        dotsContainer,
+        dotClassName: 'work-dot',
+      })
 
       function getGridMetrics() {
         const cw = carousel.offsetWidth
@@ -326,11 +334,6 @@ const featured = allWork
       function applyGridSizing() {
         const cw = carousel.offsetWidth
         if (cw <= 768) {
-          const probe = document.createElement('div')
-          probe.style.cssText = 'position:absolute;width:var(--page-margin);visibility:hidden;'
-          carousel.appendChild(probe)
-          const padSide = probe.offsetWidth || 16
-          carousel.removeChild(probe)
           const slideWidth = cw
           track!.style.paddingLeft = '0'
           track!.style.paddingRight = '0'
@@ -345,159 +348,20 @@ const featured = allWork
         track!.style.gap = '0'
         slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
       }
-      applyGridSizing()
 
-      function buildSnapPoints() {
+      function buildSnapPoints(): number[] {
         const padLeft = parseFloat(getComputedStyle(track!).paddingLeft)
         const lastSlide = slides[slides.length - 1]
         const maxScroll = -(lastSlide.offsetLeft + lastSlide.offsetWidth - carousel.offsetWidth)
-        snapPoints = slides.map(s => {
+        const pts = slides.map(s => {
           const snap = padLeft - s.offsetLeft
           return Math.max(snap, maxScroll)
         })
-        snapPoints = [...new Set(snapPoints)]
-      }
-      buildSnapPoints()
-
-      function nearestIndex(x: number): number {
-        let best = 0, bestD = Infinity
-        snapPoints.forEach((p, i) => {
-          const d = Math.abs(x - p)
-          if (d < bestD) { bestD = d; best = i }
-        })
-        return best
+        return [...new Set(pts)]
       }
 
-      const dotsContainer = carousel.querySelector('.work-carousel-dots') as HTMLElement
-
-      function renderDots() {
-        if (!dotsContainer) return
-        dotsContainer.innerHTML = ''
-        snapPoints.forEach((_, i) => {
-          const dot = document.createElement('span')
-          dot.className = 'work-dot' + (i === 0 ? ' is-active' : '')
-          dot.setAttribute('aria-hidden', 'true')
-          dotsContainer.appendChild(dot)
-        })
-      }
-
-      function updateDots(index: number) {
-        if (!dotsContainer) return
-        dotsContainer.querySelectorAll('.work-dot').forEach((dot, i) => {
-          dot.classList.toggle('is-active', i === index)
-        })
-      }
-
-      renderDots()
-
-      function animateTo(index: number) {
-        const i = Math.max(0, Math.min(index, snapPoints.length - 1))
-        currentIndex = i
-        updateDots(i)
-        gsap.to(track, {
-          x: snapPoints[i],
-          duration: 0.5,
-          ease: 'power3.out',
-          overwrite: true,
-        })
-      }
-
-      // ── Native pointer event drag ──
-      let didDrag = false
-      let dragging = false
-      let startX = 0
-      let startY = 0
-      let trackStartX = 0
-      let lastX = 0
-      let lastTime = 0
-      let velocityX = 0
-
-      // Suppress click after drag
-      track!.addEventListener('click', (e) => {
-        if (didDrag) { e.stopPropagation(); e.preventDefault(); didDrag = false }
-      }, true)
-
-      let pointerId = -1
-
-      track!.addEventListener('pointerdown', (e: PointerEvent) => {
-        if (e.button !== 0) return
-        dragging = true
-        didDrag = false
-        pointerId = e.pointerId
-        startX = e.clientX
-        startY = e.clientY
-        lastX = e.clientX
-        lastTime = Date.now()
-        velocityX = 0
-        trackStartX = (gsap.getProperty(track, 'x') as number) || 0
-        gsap.killTweensOf(track)
-      })
-
-      track!.addEventListener('pointermove', (e: PointerEvent) => {
-        if (!dragging) return
-        const dx = e.clientX - startX
-        const dy = e.clientY - startY
-
-        if (!didDrag) {
-          const absDx = Math.abs(dx)
-          const absDy = Math.abs(dy)
-          if (absDx < 5 && absDy < 5) return
-          if (absDy > absDx * 1.2) {
-            dragging = false
-            return
-          }
-          didDrag = true
-          track!.setPointerCapture(pointerId)
-          track!.classList.add('is-dragging')
-        }
-
-        e.preventDefault()
-
-        const now = Date.now()
-        const dt = now - lastTime
-        if (dt > 0) {
-          velocityX = (e.clientX - lastX) / dt * 1000
-          lastX = e.clientX
-          lastTime = now
-        }
-
-        let newX = trackStartX + dx
-        const minX = snapPoints[snapPoints.length - 1]
-        const maxX = snapPoints[0]
-        if (newX > maxX) newX = maxX + (newX - maxX) * 0.3
-        else if (newX < minX) newX = minX + (newX - minX) * 0.3
-        gsap.set(track, { x: newX })
-        updateDots(nearestIndex(newX))
-      })
-
-      function onPointerEnd(e: PointerEvent) {
-        if (!dragging) return
-        dragging = false
-        track!.classList.remove('is-dragging')
-
-        if (!didDrag) return
-
-        const trackX = gsap.getProperty(track, 'x') as number
-        let targetIndex = nearestIndex(trackX)
-
-        if (Math.abs(velocityX) > 300) {
-          targetIndex = velocityX > 0
-            ? Math.max(0, currentIndex - 1)
-            : Math.min(snapPoints.length - 1, currentIndex + 1)
-        }
-
-        animateTo(targetIndex)
-      }
-
-      track!.addEventListener('pointerup', onPointerEnd)
-      track!.addEventListener('pointercancel', onPointerEnd)
-      track!.addEventListener('dragstart', (e) => e.preventDefault())
-
-      // Keyboard navigation
-      carousel.addEventListener('keydown', (e) => {
-        if ((e as KeyboardEvent).key === 'ArrowRight') { animateTo(currentIndex + 1); e.preventDefault() }
-        else if ((e as KeyboardEvent).key === 'ArrowLeft') { animateTo(currentIndex - 1); e.preventDefault() }
-      })
+      applyGridSizing()
+      ctrl.setSnapPoints(buildSnapPoints())
 
       // Scroll-triggered slide-in entrance
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -512,7 +376,7 @@ const featured = allWork
           once: true,
           onEnter() {
             gsap.to(track, {
-              x: snapPoints[0],
+              x: ctrl.snapPoints[0],
               opacity: 1,
               duration: 0.8,
               ease: 'power4.out',
@@ -525,18 +389,16 @@ const featured = allWork
       }
 
       // Recalculate on resize — disconnect previous observer to prevent leaks
-      if ((carousel as any).__workRo) (carousel as any).__workRo.disconnect()
+      workRoMap.get(carousel)?.disconnect()
       const ro = new ResizeObserver(() => {
         applyGridSizing()
-        buildSnapPoints()
-        renderDots()
-        updateDots(Math.min(currentIndex, snapPoints.length - 1))
+        ctrl.setSnapPoints(buildSnapPoints())
         if (entranceDone) {
-          const safeIndex = Math.min(currentIndex, snapPoints.length - 1)
-          gsap.set(track, { x: snapPoints[safeIndex] })
+          const safeIndex = Math.min(ctrl.currentIndex, ctrl.snapPoints.length - 1)
+          gsap.set(track, { x: ctrl.snapPoints[safeIndex] })
         }
       })
-      ;(carousel as any).__workRo = ro
+      workRoMap.set(carousel, ro)
       ro.observe(carousel)
     })
   }
