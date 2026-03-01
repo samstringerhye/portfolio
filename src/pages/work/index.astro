@@ -26,8 +26,8 @@ const allWork = (await getCollection('work'))
         <div class="work-row-info">
           <p class="work-row-year typo-ui-caps">{entry.data.year}</p>
           <h2 class="work-row-title typo-headline-sm">{entry.data.title}</h2>
-          <p class="work-row-tagline typo-body">{entry.data.tagline}</p>
-          <a href={`/work/${entry.id}`} class="work-row-link typo-body" aria-label={`View ${entry.data.title} project`}>
+          <p class="work-row-tagline typo-body-lg">{entry.data.tagline}</p>
+          <a href={`/work/${entry.id}`} class="work-row-link typo-body-lg" aria-label={`View ${entry.data.title} project`}>
             View project <Icon name="material-symbols:arrow-forward-sharp" class="work-row-arrow" />
           </a>
         </div>

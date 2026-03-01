@@ -15,20 +15,20 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
       {prevSlug ? (
         <a href={`/work/${prevSlug}`} class="cs-nav-link cs-nav-prev">
           <span class="cs-nav-label typo-ui-caps">Previous</span>
-          <span class="cs-nav-title typo-heading-sm">{prevTitle}</span>
+          <span class="cs-nav-title typo-headline-sm">{prevTitle}</span>
         </a>
       ) : <div />}
 
       {nextSlug ? (
         <a href={`/work/${nextSlug}`} class="cs-nav-link cs-nav-next">
           <span class="cs-nav-label typo-ui-caps">Next</span>
-          <span class="cs-nav-title typo-heading-sm">{nextTitle}</span>
+          <span class="cs-nav-title typo-headline-sm">{nextTitle}</span>
         </a>
       ) : <div />}
 
       <a href="/work" class="cs-nav-link cs-nav-all">
         <span class="cs-nav-label typo-ui-caps">Browse</span>
-        <span class="cs-nav-title typo-heading-sm">All work</span>
+        <span class="cs-nav-title typo-headline-sm">All work</span>
       </a>
     </div>
   </nav>

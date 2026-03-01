@@ -176,7 +176,7 @@ const proseVars = [
 ].join('\n    ')
 
 /* ── Typography role utility classes ── */
-const typescale = sys.typescale as Record<string, { family: string; weight: number; scale: number | { min: number; max: number }; lineHeight: number; tracking: number }>
+const typescale = sys.typescale as Record<string, { family: string; weight: number; scale: number | { min: number; max: number }; lineHeight: number; tracking: string; textTransform?: string }>
 
 /* Reverse lookup: resolved literal family → CSS var */
 const familyToVar = Object.fromEntries(
@@ -187,25 +187,14 @@ const roleRules = Object.entries(typescale).map(([name, cfg]) => {
   const fontSize = typeof cfg.scale === 'number' ? `${cfg.scale}rem` : buildClamp(cfg.scale.min, cfg.scale.max)
   const family = familyToVar[cfg.family] ?? cfg.family
   const trackingLine = cfg.tracking && cfg.tracking !== '0rem' ? `\n    --ls-adjust: ${cfg.tracking};` : ''
+  const transformLine = cfg.textTransform ? `\n    text-transform: ${cfg.textTransform};` : ''
   return `.typo-${name} {
     font-family: ${family};
     font-weight: ${cfg.weight};
     font-size: ${fontSize};
-    line-height: ${cfg.lineHeight};${trackingLine}
+    line-height: ${cfg.lineHeight};${trackingLine}${transformLine}
   }`
 }).join('\n  ')
-
-/* ── Old role name aliases (migration) ── */
-const roleAliases = [
-  `.typo-display { font-family: var(--font-serif); font-weight: 500; font-size: ${buildClamp(4.209, 5.61)}; line-height: 1.25; }`,
-  `.typo-heading-lg { font-family: var(--font-serif); font-weight: 500; font-size: ${buildClamp(2.369, 3.157)}; line-height: 1.25; }`,
-  `.typo-heading-sm { font-family: var(--font-serif); font-weight: 500; font-size: ${buildClamp(1.333, 1.777)}; line-height: 1.25; }`,
-  `.typo-subhead { font-family: var(--font-sans); font-weight: 400; font-size: 1.333rem; line-height: 1.25; }`,
-  `.typo-label { font-family: var(--font-sans); font-weight: 400; font-size: 0.75rem; line-height: 1.25; }`,
-  `.typo-body { font-family: var(--font-sans); font-weight: 400; font-size: 1rem; line-height: 1.5; }`,
-  `.typo-ui { font-family: var(--font-sans); font-weight: 500; font-size: 0.875rem; line-height: 1.25; }`,
-  `.typo-ui-caps { font-family: var(--font-sans); font-weight: 500; font-size: 0.75rem; line-height: 1.25; text-transform: uppercase; letter-spacing: 0.08em; }`,
-].join('\n  ')
 
 /* ── Element-level base styles from elementMap ── */
 const elementRules = Object.entries(elementMap).map(([el, roleName]) => {
@@ -252,7 +241,6 @@ const typoCss = `:root {
     --border-light: var(--border-width-1) solid var(--color-rule);
   }
   ${roleRules}
-  ${roleAliases}
   ${elementRules}`
 ---
 

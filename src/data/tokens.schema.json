@@ -507,14 +507,13 @@
             "headline-md": { "$ref": "#/definitions/typographyRole" },
             "headline-sm": { "$ref": "#/definitions/typographyRole" },
             "title-lg": { "$ref": "#/definitions/typographyRole" },
-            "title-md": { "$ref": "#/definitions/typographyRole" },
             "title-sm": { "$ref": "#/definitions/typographyRole" },
             "body-lg": { "$ref": "#/definitions/typographyRole" },
             "body-md": { "$ref": "#/definitions/typographyRole" },
-            "body-sm": { "$ref": "#/definitions/typographyRole" },
             "label-lg": { "$ref": "#/definitions/typographyRole" },
-            "label-md": { "$ref": "#/definitions/typographyRole" },
-            "label-sm": { "$ref": "#/definitions/typographyRole" }
+            "label-sm": { "$ref": "#/definitions/typographyRole" },
+            "ui-lg": { "$ref": "#/definitions/typographyRole" },
+            "ui-caps": { "$ref": "#/definitions/typographyRole" }
           },
           "additionalProperties": false
         },

@@ -11,7 +11,7 @@
     "headlineRole": "display-md",
     "body": "Associate Design Director at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll past.",
     "bodyTag": "p",
-    "bodyRole": "title-lg",
+    "bodyRole": "body-lg",
     "contentInset": "md"
   },
   "work": {
@@ -28,11 +28,11 @@
     "headingRole": "display-md",
     "contentInset": "md",
     "jobTitleTag": "p",
-    "jobTitleRole": "subhead",
+    "jobTitleRole": "title-lg",
     "companyTag": "p",
-    "companyRole": "body",
+    "companyRole": "body-lg",
     "highlightTag": "p",
-    "highlightRole": "body",
+    "highlightRole": "body-lg",
     "jobs": [
       {
         "title": "Associate Design Director",
