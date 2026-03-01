@@ -191,8 +191,6 @@ function createHeroScene(mobile = false) {
 export default function HeroCanvas() {
   const containerRef = useRef(null)
   const [webglSupported, setWebglSupported] = useState(true)
-  const [ready, setReady] = useState(false)
-
   useEffect(() => {
     // No longer skip on mobile — reduced dot count handles performance
     try {
@@ -200,20 +198,11 @@ export default function HeroCanvas() {
       const testGl = testCanvas.getContext('webgl2') || testCanvas.getContext('webgl')
       if (!testGl) { setWebglSupported(false); return }
     } catch { setWebglSupported(false); return }
-
-    // Defer heavy Three.js init until browser is idle
-    if ('requestIdleCallback' in window) {
-      const id = requestIdleCallback(() => setReady(true), { timeout: 3000 })
-      return () => cancelIdleCallback(id)
-    } else {
-      const id = setTimeout(() => setReady(true), 2000)
-      return () => clearTimeout(id)
-    }
   }, [])
 
   useEffect(() => {
     const container = containerRef.current
-    if (!container || !webglSupported || !ready) return
+    if (!container || !webglSupported) return
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isMobile = window.matchMedia('(max-width: 768px)').matches
@@ -334,7 +323,7 @@ export default function HeroCanvas() {
         renderer.domElement.parentNode.removeChild(renderer.domElement)
       }
     }
-  }, [webglSupported, ready])
+  }, [webglSupported])
 
   if (!webglSupported) return null
 

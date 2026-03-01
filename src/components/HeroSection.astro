@@ -1,5 +1,5 @@
 ---
-import HeroCanvas from './HeroCanvas.jsx'
+import HeroCanvasLazy from './HeroCanvasLazy.jsx'
 import type { HeadingTag, TypographyRole } from '../types/typography'
 import { animations } from '../data/tokens'
 
@@ -19,7 +19,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
 
 <section class="hero" aria-label="Introduction">
   <div class="hero-canvas-fallback" aria-hidden="true"></div>
-  <HeroCanvas client:only="react" />
+  <HeroCanvasLazy client:only="react" />
   <div class="hero-text">
     <HeroTag class:list={["hero-block", heroRole]} data-hero-text>{headline}</HeroTag>
   </div>
