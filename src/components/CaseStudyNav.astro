@@ -9,46 +9,44 @@ interface Props {
 const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 ---
 
-{(prevSlug || nextSlug) && (
-  <nav class="cs-nav" aria-label="Case study navigation">
-    <div class="cs-nav-inner">
-      {prevSlug ? (
-        <a href={`/work/${prevSlug}`} class="cs-nav-link cs-nav-prev">
-          <span class="cs-nav-label typo-ui-caps">Previous</span>
-          <span class="cs-nav-title typo-headline-sm">{prevTitle}</span>
-        </a>
-      ) : <div />}
+<nav class="cs-nav" aria-label="Case study navigation">
+  <div class="cs-nav-inner">
+    {prevSlug ? (
+      <a href={`/work/${prevSlug}`} class="cs-nav-link cs-nav-prev">
+        <span class="cs-nav-label typo-ui-caps">Previous</span>
+        <span class="cs-nav-title typo-headline-sm">{prevTitle}</span>
+      </a>
+    ) : <div />}
 
-      {nextSlug ? (
-        <a href={`/work/${nextSlug}`} class="cs-nav-link cs-nav-next">
-          <span class="cs-nav-label typo-ui-caps">Next</span>
-          <span class="cs-nav-title typo-headline-sm">{nextTitle}</span>
-        </a>
-      ) : <div />}
-
-      <a href="/work" class="cs-nav-link cs-nav-all">
+    {nextSlug ? (
+      <a href={`/work/${nextSlug}`} class="cs-nav-link cs-nav-next">
+        <span class="cs-nav-label typo-ui-caps">Next</span>
+        <span class="cs-nav-title typo-headline-sm">{nextTitle}</span>
+      </a>
+    ) : (
+      <a href="/work" class="cs-nav-link cs-nav-next">
         <span class="cs-nav-label typo-ui-caps">Browse</span>
         <span class="cs-nav-title typo-headline-sm">All work</span>
       </a>
-    </div>
-  </nav>
-)}
+    )}
+  </div>
+</nav>
 
 <style>
   .cs-nav {
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    padding: var(--space-6) 0;
+    padding: 0;
   }
 
   .cs-nav-inner {
-    grid-column: 2 / 12;
+    grid-column: 1 / -1;
     display: flex;
     align-items: flex-start;
     gap: var(--grid-gutter);
     border-top: var(--border-width-1) solid var(--color-rule);
-    padding-top: var(--space-6);
+    padding: var(--space-6);
   }
 
   .cs-nav-link {
@@ -63,24 +61,10 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   .cs-nav-next {
     text-align: right;
-  }
-
-  .cs-nav-all {
     margin-left: auto;
-    display: flex;
-    align-items: center;
-    padding: var(--space-2) 0;
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    white-space: nowrap;
-    transition: color var(--duration-short) ease;
   }
 
-  .cs-nav-all:hover {
-    color: var(--color-text-primary);
-  }
-
-  .cs-nav-label {
+.cs-nav-label {
     display: block;
     margin-bottom: var(--space-1);
   }
@@ -94,7 +78,8 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   @media (--2x) {
     .cs-nav-inner {
       grid-column: 1 / -1;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       padding-inline: var(--page-margin);
     }
 
@@ -102,8 +87,13 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
       min-height: 44px;
     }
 
-    .cs-nav-all {
-      min-height: 44px;
+    .cs-nav-prev {
+      margin-right: 0;
     }
+
+    .cs-nav-next {
+      text-align: right;
+    }
+
   }
 </style>

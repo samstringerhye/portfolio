@@ -18,10 +18,6 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
 <BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline} ogImage={ogImage} jsonLd={jsonLd}>
   <div class="scroll-progress"></div>
-  <div class="img-cursor" aria-hidden="true">
-    <svg class="cursor-icon-zoom" width="28" height="28" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="16" x2="7" y2="11"/><polyline points="2,12 2,16 6,16"/><line x1="16" y1="2" x2="11" y2="7"/><polyline points="16,6 16,2 12,2"/></svg>
-    <svg class="cursor-icon-drag" width="28" height="28" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none"><line x1="1" y1="9" x2="6" y2="9"/><polyline points="3,7 1,9 3,11"/><line x1="17" y1="9" x2="12" y2="9"/><polyline points="15,7 17,9 15,11"/></svg>
-  </div>
   <article class="case-study-body">
     <slot />
   </article>
@@ -80,6 +76,8 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     width: 100%;
     height: auto;
     display: block;
+    max-height: none;
+    object-fit: cover;
   }
 
   /* ── Meta bar ── */
@@ -133,10 +131,14 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
   .case-study-body .carousel-track {
     cursor: grab;
   }
+  .case-study-body .carousel-track.is-dragging {
+    cursor: grabbing;
+  }
 
   /* ── Standalone images ── */
   .case-study-body > img {
     padding: 0;
+    object-fit: cover;
   }
 
   .case-study-body img {
@@ -174,12 +176,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
   .case-study-body .image-pair img,
   .case-study-body .image-grid img,
   .case-study-body .zigzag-media {
-    cursor: zoom-in;
     transition: scale 0.3s ease;
-  }
-
-  .case-study-body .zigzag-media img {
-    cursor: zoom-in;
   }
 
   @media (hover: hover) {
@@ -190,10 +187,9 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     }
   }
 
-  /* Carousel images: no zoom hover/cursor — drag only */
+  /* Carousel images: no zoom hover */
   .case-study-body .carousel .cs-figure img,
   .case-study-body .carousel img {
-    cursor: grab;
     transition: none;
   }
   .case-study-body .carousel .cs-figure img:hover,
@@ -368,6 +364,12 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     border: none;
   }
 
+  /* Flush figures: full-bleed, no height cap */
+  .case-study-body .cs-figure--flush img {
+    max-height: none;
+    object-fit: cover;
+  }
+
   .case-study-body .cs-figure figcaption {
     padding: var(--space-2) 0 0;
     font-size: var(--text-100);
@@ -439,7 +441,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
   }
 
   .case-study-body .carousel {
-    padding-block: var(--space-4);
+    padding-block: 0;
   }
 
   /* ── Mobile ── */
@@ -464,11 +466,19 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
     .case-study-body .zigzag-media,
     .case-study-body .zigzag-prose {
-      padding-inline: var(--page-margin);
+      padding-inline: 0;
+    }
+
+    .case-study-body .zigzag-media {
+      border-radius: 0;
     }
 
     .case-study-body .zigzag-prose {
       padding: 0 var(--page-margin);
+    }
+
+    .case-study-body img {
+      max-height: none;
     }
 
     /* Remove box borders on mobile — use horizontal dividers instead */
@@ -663,57 +673,8 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     transition: none;
   }
 
-  /* ── Custom image cursor ── */
-  .img-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: var(--cursor-bg, var(--color-accent-1));
-    color: var(--color-bg-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: var(--z-modal, 200);
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0;
-    transition:
-      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.2s ease,
-      background 0.3s ease;
-    will-change: transform;
-  }
-
-  .img-cursor svg {
-    flex-shrink: 0;
-  }
-
-  .img-cursor.is-visible {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .img-cursor {
-      transition: none;
-    }
-  }
-
-  /* Hide on touch devices */
-  @media (pointer: coarse) {
-    .img-cursor { display: none; }
-  }
 </style>
 
-<style is:global>
-  html.custom-cursor-active,
-  html.custom-cursor-active * {
-    cursor: none !important;
-  }
-</style>
 
 <script>
   const mobileQuery = window.matchMedia('(max-width: 768px)')
@@ -782,98 +743,3 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
   document.addEventListener('astro:page-load', detectTransparentImages)
 </script>
 
-<script>
-  function initImageCursor() {
-    const cursor = document.querySelector('.img-cursor') as HTMLElement
-    if (!cursor || window.matchMedia('(pointer: coarse)').matches) return
-
-    const icons = {
-      zoom: cursor.querySelector('.cursor-icon-zoom') as HTMLElement,
-      drag: cursor.querySelector('.cursor-icon-drag') as HTMLElement,
-    }
-    const allIcons = Object.values(icons)
-
-    const imageTargets = Array.from(document.querySelectorAll(
-      '.case-study-body .cs-figure img, .case-study-body .image-pair img, .case-study-body .image-grid img, .case-study-body .zigzag-media img'
-    )).filter(el => !el.closest('.carousel-track'))
-    const carouselTargets = document.querySelectorAll(
-      '.case-study-body .carousel-track'
-    )
-
-    const accents = [
-      'var(--color-accent-1)',
-      'var(--color-accent-2)',
-      'var(--color-accent-3)',
-    ]
-    let colorIndex = 0
-    let raf = 0
-    let mx = 0
-    let my = 0
-    let cx = 0
-    let cy = 0
-    let active = false
-
-    function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
-
-    function tick() {
-      if (!active) return
-      cx = lerp(cx, mx, 0.15)
-      cy = lerp(cy, my, 0.15)
-      cursor.style.left = `${cx}px`
-      cursor.style.top = `${cy}px`
-      raf = requestAnimationFrame(tick)
-    }
-
-    function showIcon(type: 'zoom' | 'drag') {
-      allIcons.forEach(icon => icon.style.display = 'none')
-      icons[type].style.display = ''
-    }
-
-    function onEnter(type: 'zoom' | 'drag') {
-      return (e: MouseEvent) => {
-        mx = e.clientX; my = e.clientY
-        cx = mx; cy = my
-        cursor.style.left = `${cx}px`
-        cursor.style.top = `${cy}px`
-        cursor.style.setProperty('--cursor-bg', accents[colorIndex])
-        colorIndex = (colorIndex + 1) % accents.length
-        showIcon(type)
-        active = true
-        cursor.classList.add('is-visible')
-        document.documentElement.classList.add('custom-cursor-active')
-        raf = requestAnimationFrame(tick)
-      }
-    }
-
-    function onMove(e: MouseEvent) {
-      mx = e.clientX; my = e.clientY
-    }
-
-    function onLeave(e: Event) {
-      active = false
-      cursor.classList.remove('is-visible')
-      document.documentElement.classList.remove('custom-cursor-active')
-      cancelAnimationFrame(raf)
-    }
-
-    imageTargets.forEach(el => {
-      if ((el as HTMLElement).dataset.cursorBound) return
-      ;(el as HTMLElement).dataset.cursorBound = 'true'
-      el.addEventListener('mouseenter', onEnter('zoom') as EventListener)
-      el.addEventListener('mousemove', onMove as EventListener)
-      el.addEventListener('mouseleave', onLeave)
-    })
-
-    carouselTargets.forEach(el => {
-      if ((el as HTMLElement).dataset.cursorBound) return
-      ;(el as HTMLElement).dataset.cursorBound = 'true'
-      el.addEventListener('mouseenter', onEnter('drag') as EventListener)
-      el.addEventListener('mousemove', onMove as EventListener)
-      el.addEventListener('mouseleave', onLeave)
-    })
-
-  }
-
-  initImageCursor()
-  document.addEventListener('astro:page-load', initImageCursor)
-</script>

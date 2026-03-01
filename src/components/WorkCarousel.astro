@@ -47,10 +47,6 @@ const featured = allWork
       </a>
     </div>
 
-    <div class="work-drag-cursor" aria-hidden="true">
-      <svg width="28" height="28" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="9" x2="6" y2="9"/><polyline points="3,7 1,9 3,11"/><line x1="17" y1="9" x2="12" y2="9"/><polyline points="15,7 17,9 15,11"/></svg>
-    </div>
-
     <div class="work-carousel" data-work-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="Selected work carousel">
       <div class="work-track">
         {featured.map(card => (
@@ -158,49 +154,19 @@ const featured = allWork
     touch-action: pan-y pinch-zoom;
   }
 
-  .work-drag-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: var(--cursor-bg, var(--color-accent-1));
-    color: var(--color-bg-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: var(--z-modal, 200);
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0;
-    transition:
-      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-      opacity 0.2s ease,
-      background 0.3s ease;
-    will-change: transform;
+  .work-track {
+    cursor: grab;
+  }
+  .work-track.is-dragging {
+    cursor: grabbing;
   }
 
-  .work-drag-cursor.is-visible {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
+  .work-card {
+    cursor: grab;
   }
 
-  @media (pointer: coarse) {
-    .work-drag-cursor { display: none; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .work-drag-cursor { transition: none; }
-  }
-
-  @media (pointer: fine) {
-    .work-track {
-      cursor: none;
-    }
-    .work-track.is-dragging {
-      cursor: none;
-    }
+  .work-card-label {
+    cursor: pointer;
   }
 
   .work-card {
@@ -308,12 +274,11 @@ const featured = allWork
 
 <script>
   import gsap from 'gsap'
-  import { Observer } from 'gsap/Observer'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
   import { cmyRgba } from '../data/tokens'
   import { tightenSingleLineHeadings } from './tighten-headings'
 
-  gsap.registerPlugin(Observer, ScrollTrigger)
+  gsap.registerPlugin(ScrollTrigger)
 
   const CMY_COLORS = cmyRgba(1)
   let colorIndex = 0
@@ -437,55 +402,96 @@ const featured = allWork
         })
       }
 
-      // Suppress click after drag
+      // ── Native pointer event drag ──
       let didDrag = false
+      let dragging = false
+      let startX = 0
+      let startY = 0
+      let trackStartX = 0
+      let lastX = 0
+      let lastTime = 0
+      let velocityX = 0
+
+      // Suppress click after drag
       track!.addEventListener('click', (e) => {
         if (didDrag) { e.stopPropagation(); e.preventDefault(); didDrag = false }
       }, true)
 
-      const isTouch = window.matchMedia('(pointer: coarse)').matches
+      let pointerId = -1
 
-      Observer.create({
-        target: carousel,
-        type: 'touch,pointer',
-        dragMinimum: isTouch ? 15 : 5,
-        tolerance: isTouch ? 10 : 0,
-        onPress() {
-          didDrag = false
-          gsap.killTweensOf(track)
-          track!.classList.add('is-dragging')
-        },
-        onDrag(self) {
-          if (isTouch && Math.abs(self.deltaY) > Math.abs(self.deltaX) * 1.5 && !didDrag) return
-
-          didDrag = true
-          const currentX = gsap.getProperty(track, 'x') as number
-          let newX = currentX + self.deltaX
-          const minX = snapPoints[snapPoints.length - 1]
-          const maxX = snapPoints[0]
-          if (newX > maxX) newX = maxX + (newX - maxX) * 0.3
-          else if (newX < minX) newX = minX + (newX - minX) * 0.3
-          gsap.set(track, { x: newX })
-          updateDots(nearestIndex(newX))
-        },
-        onDragEnd(self) {
-          track!.classList.remove('is-dragging')
-          const trackX = gsap.getProperty(track, 'x') as number
-          let targetIndex = nearestIndex(trackX)
-
-          const flickThreshold = isTouch ? 200 : 300
-          if (Math.abs(self.velocityX) > flickThreshold) {
-            targetIndex = self.velocityX > 0
-              ? Math.max(0, currentIndex - 1)
-              : Math.min(snapPoints.length - 1, currentIndex + 1)
-          }
-
-          animateTo(targetIndex)
-        },
-        onRelease() {
-          track!.classList.remove('is-dragging')
-        },
+      track!.addEventListener('pointerdown', (e: PointerEvent) => {
+        if (e.button !== 0) return
+        dragging = true
+        didDrag = false
+        pointerId = e.pointerId
+        startX = e.clientX
+        startY = e.clientY
+        lastX = e.clientX
+        lastTime = Date.now()
+        velocityX = 0
+        trackStartX = (gsap.getProperty(track, 'x') as number) || 0
+        gsap.killTweensOf(track)
       })
+
+      track!.addEventListener('pointermove', (e: PointerEvent) => {
+        if (!dragging) return
+        const dx = e.clientX - startX
+        const dy = e.clientY - startY
+
+        if (!didDrag) {
+          const absDx = Math.abs(dx)
+          const absDy = Math.abs(dy)
+          if (absDx < 5 && absDy < 5) return
+          if (absDy > absDx * 1.2) {
+            dragging = false
+            return
+          }
+          didDrag = true
+          track!.setPointerCapture(pointerId)
+          track!.classList.add('is-dragging')
+        }
+
+        e.preventDefault()
+
+        const now = Date.now()
+        const dt = now - lastTime
+        if (dt > 0) {
+          velocityX = (e.clientX - lastX) / dt * 1000
+          lastX = e.clientX
+          lastTime = now
+        }
+
+        let newX = trackStartX + dx
+        const minX = snapPoints[snapPoints.length - 1]
+        const maxX = snapPoints[0]
+        if (newX > maxX) newX = maxX + (newX - maxX) * 0.3
+        else if (newX < minX) newX = minX + (newX - minX) * 0.3
+        gsap.set(track, { x: newX })
+        updateDots(nearestIndex(newX))
+      })
+
+      function onPointerEnd(e: PointerEvent) {
+        if (!dragging) return
+        dragging = false
+        track!.classList.remove('is-dragging')
+
+        if (!didDrag) return
+
+        const trackX = gsap.getProperty(track, 'x') as number
+        let targetIndex = nearestIndex(trackX)
+
+        if (Math.abs(velocityX) > 300) {
+          targetIndex = velocityX > 0
+            ? Math.max(0, currentIndex - 1)
+            : Math.min(snapPoints.length - 1, currentIndex + 1)
+        }
+
+        animateTo(targetIndex)
+      }
+
+      track!.addEventListener('pointerup', onPointerEnd)
+      track!.addEventListener('pointercancel', onPointerEnd)
+      track!.addEventListener('dragstart', (e) => e.preventDefault())
 
       // Keyboard navigation
       carousel.addEventListener('keydown', (e) => {
@@ -535,72 +541,10 @@ const featured = allWork
     })
   }
 
-  function initDragCursor() {
-    const cursor = document.querySelector('.work-drag-cursor') as HTMLElement
-    if (!cursor || window.matchMedia('(pointer: coarse)').matches) return
-
-    const track = document.querySelector('.work-track') as HTMLElement
-    if (!track) return
-
-    const accents = [
-      'var(--color-accent-1)',
-      'var(--color-accent-2)',
-      'var(--color-accent-3)',
-    ]
-    let colorIdx = 0
-    let raf = 0
-    let mx = 0, my = 0, cx = 0, cy = 0
-    let active = false
-
-    function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
-
-    function tick() {
-      if (!active) return
-      cx = lerp(cx, mx, 0.15)
-      cy = lerp(cy, my, 0.15)
-      cursor.style.left = `${cx}px`
-      cursor.style.top = `${cy}px`
-      raf = requestAnimationFrame(tick)
-    }
-
-    // Hide cursor when over card labels
-    track.querySelectorAll('.work-card-label').forEach(label => {
-      label.addEventListener('mouseenter', () => {
-        cursor.classList.remove('is-visible')
-      })
-      label.addEventListener('mouseleave', () => {
-        if (active) cursor.classList.add('is-visible')
-      })
-    })
-
-    track.addEventListener('mouseenter', (e: MouseEvent) => {
-      mx = e.clientX; my = e.clientY
-      cx = mx; cy = my
-      cursor.style.left = `${cx}px`
-      cursor.style.top = `${cy}px`
-      cursor.style.setProperty('--cursor-bg', accents[colorIdx])
-      colorIdx = (colorIdx + 1) % accents.length
-      active = true
-      cursor.classList.add('is-visible')
-      raf = requestAnimationFrame(tick)
-    })
-
-    track.addEventListener('mousemove', (e: MouseEvent) => {
-      mx = e.clientX; my = e.clientY
-    })
-
-    track.addEventListener('mouseleave', () => {
-      active = false
-      cursor.classList.remove('is-visible')
-      cancelAnimationFrame(raf)
-    })
-  }
-
   function init() {
     tightenSingleLineHeadings('.work-label, .work-card-title')
     initWorkHover()
     initWorkCarousel()
-    initDragCursor()
   }
 
   init()

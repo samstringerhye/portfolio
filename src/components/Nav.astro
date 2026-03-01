@@ -76,6 +76,7 @@ function isActive(href: string) {
   .nav-inner {
     display: flex;
     align-items: stretch;
+    gap: var(--space-1);
     height: var(--nav-height);
     max-width: var(--max-content-width);
     margin-inline: auto;
@@ -129,9 +130,6 @@ function isActive(href: string) {
     transition: background-color var(--duration-medium) ease;
   }
 
-  .nav-link.active {
-    color: var(--nav-active-color, var(--color-text-secondary));
-  }
 
 
   .nav-toggle {
@@ -263,7 +261,7 @@ function isActive(href: string) {
         el.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
       })
       el.addEventListener('mouseleave', () => {
-        el.style.backgroundColor = ''
+        el.style.backgroundColor = el.dataset.activeBg || ''
       })
     })
 
@@ -409,18 +407,16 @@ function isActive(href: string) {
   document.addEventListener('astro:after-swap', navWindow.__navAfterSwapHandler)
 
   // Cycle accent color on the active nav link
-  const ACCENT_COLORS = [
-    'var(--color-accent-1)',
-    'var(--color-accent-2)',
-    'var(--color-accent-3)',
-  ]
-  let activeColorIndex = Math.floor(Math.random() * ACCENT_COLORS.length)
+  const ACTIVE_COLORS = cmyRgba(1)
+  let activeColorIndex = Math.floor(Math.random() * ACTIVE_COLORS.length)
 
   function setActiveNavColor() {
     const activeLink = document.querySelector<HTMLElement>('.nav-link.active')
     if (activeLink) {
-      activeLink.style.setProperty('--nav-active-color', ACCENT_COLORS[activeColorIndex])
-      activeColorIndex = (activeColorIndex + 1) % ACCENT_COLORS.length
+      const color = ACTIVE_COLORS[activeColorIndex]
+      activeLink.style.backgroundColor = color
+      activeLink.dataset.activeBg = color
+      activeColorIndex = (activeColorIndex + 1) % ACTIVE_COLORS.length
     }
   }
 
