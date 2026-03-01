@@ -273,14 +273,10 @@ const featured = allWork
 </style>
 
 <script>
-  import gsap from 'gsap'
-  import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  import { cmyRgba } from '../data/tokens'
-  import { tightenSingleLineHeadings } from './tighten-headings'
-
-  gsap.registerPlugin(ScrollTrigger)
-
-  const CMY_COLORS = cmyRgba(1)
+  let gsap: any
+  let ScrollTrigger: any
+  let CMY_COLORS: string[]
+  let tightenSingleLineHeadings: any
   let colorIndex = 0
 
   function initWorkHover() {
@@ -541,7 +537,19 @@ const featured = allWork
     })
   }
 
-  function init() {
+  async function init() {
+    const [gsapMod, stMod, tokensMod, tightenMod] = await Promise.all([
+      import('gsap'),
+      import('gsap/ScrollTrigger'),
+      import('../data/tokens'),
+      import('./tighten-headings'),
+    ])
+    gsap = gsapMod.default
+    ScrollTrigger = stMod.ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger)
+    CMY_COLORS = tokensMod.cmyRgba(1)
+    tightenSingleLineHeadings = tightenMod.tightenSingleLineHeadings
+
     tightenSingleLineHeadings('.work-label, .work-card-title')
     initWorkHover()
     initWorkCarousel()

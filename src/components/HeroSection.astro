@@ -81,12 +81,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
 </style>
 
 <script>
-  import gsap from 'gsap'
-  import { animations } from '../data/tokens'
-  import { createCmyAutoSplitReveal, type CmyAutoSplitHandle } from './cmy-animate'
-
-  const cfg = animations.textReveal
-  const startDelay = animations.hero.text.startDelay
+  import type { CmyAutoSplitHandle } from './cmy-animate'
 
   let heroHandles: CmyAutoSplitHandle[] = []
 
@@ -99,10 +94,19 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+    const [{ default: gsap }, { animations }, { createCmyAutoSplitReveal }] = await Promise.all([
+      import('gsap'),
+      import('../data/tokens'),
+      import('./cmy-animate'),
+    ])
+
     if (prefersReduced) {
       gsap.set(els, { opacity: 1, y: 0, filter: 'none', textShadow: 'none' })
       return
     }
+
+    const cfg = animations.textReveal
+    const startDelay = animations.hero.text.startDelay
 
     await document.fonts.ready
 
