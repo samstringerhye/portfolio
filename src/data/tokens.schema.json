@@ -503,7 +503,6 @@
           "properties": {
             "display-lg": { "$ref": "#/definitions/typographyRole" },
             "display-md": { "$ref": "#/definitions/typographyRole" },
-            "display-sm": { "$ref": "#/definitions/typographyRole" },
             "headline-lg": { "$ref": "#/definitions/typographyRole" },
             "headline-md": { "$ref": "#/definitions/typographyRole" },
             "headline-sm": { "$ref": "#/definitions/typographyRole" },

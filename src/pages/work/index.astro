@@ -1,0 +1,215 @@
+---
+import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
+import { Icon } from 'astro-icon/components'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const allWork = (await getCollection('work'))
+  .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+---
+
+<BaseLayout title="Work — Sam Stringer-Hye" description="Selected work from Samsung, Frontier, CVS, and more.">
+  <section class="work-index" aria-label="All work">
+    <h1 class="work-index-heading typo-display-md">Work</h1>
+    {allWork.map((entry, i) => (
+      <article class:list={['work-row', { 'work-row--reversed': i % 2 !== 0 }]}>
+        <div class="work-row-image">
+          <Image
+            src={entry.data.thumbnail}
+            alt={entry.data.title}
+            width={1600}
+            format="webp"
+            quality={90}
+            loading={i === 0 ? 'eager' : 'lazy'}
+          />
+        </div>
+        <div class="work-row-info">
+          <p class="work-row-year typo-ui-caps">{entry.data.year}</p>
+          <h2 class="work-row-title typo-headline-sm">{entry.data.title}</h2>
+          <p class="work-row-tagline typo-body">{entry.data.tagline}</p>
+          <a href={`/work/${entry.id}`} class="work-row-link typo-body" aria-label={`View ${entry.data.title} project`}>
+            View project <Icon name="material-symbols:arrow-forward-sharp" class="work-row-arrow" />
+          </a>
+        </div>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .work-index {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .work-index-heading {
+    grid-column: 1 / -1;
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: var(--content-inset-md);
+  }
+
+  .work-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    border-top: var(--border-width-1) solid var(--color-rule);
+    padding: var(--space-6) 0;
+  }
+
+  .work-row:last-child {
+    border-bottom: var(--border-width-1) solid var(--color-rule);
+  }
+
+
+  /* Default: image left (2–8), text right (8–12) = centered 10 cols */
+  .work-row-image {
+    grid-column: 2 / 8;
+    grid-row: 1;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+  }
+
+  .work-row-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+
+  .work-row-info {
+    grid-column: 8 / 12;
+    grid-row: 1;
+    padding-left: var(--grid-gutter);
+  }
+
+  /* Reversed: text left (2–6), image right (6–12) = centered 10 cols */
+  .work-row--reversed .work-row-info {
+    grid-column: 2 / 6;
+    padding-left: 0;
+    padding-right: var(--grid-gutter);
+  }
+
+  .work-row--reversed .work-row-image {
+    grid-column: 6 / 12;
+  }
+
+  .work-row-year {
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-2);
+  }
+
+  .work-row-title {
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-2);
+    text-wrap: balance;
+  }
+
+  .work-row-tagline {
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-4);
+    text-wrap: pretty;
+  }
+
+  .work-row-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .work-row-arrow {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform var(--duration-short) ease;
+  }
+
+  @media (hover: hover) {
+    .work-row-link:hover .work-row-arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-row-image {
+      transition: none;
+    }
+  }
+
+  /* ── Mobile ── */
+  @media (--2x) {
+    .work-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      padding: var(--page-margin) 0;
+    }
+
+    .work-row-image,
+    .work-row--reversed .work-row-image {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      padding: 0 var(--page-margin);
+    }
+
+    .work-row-info,
+    .work-row--reversed .work-row-info {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      padding: 0 var(--page-margin);
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap'
+
+  function initWorkRowHover() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (!window.matchMedia('(hover: hover)').matches) return
+
+    const rows = document.querySelectorAll<HTMLElement>('.work-row')
+    if (!rows.length) return
+
+    // Delay activation so page-load cursor position doesn't trigger the effect.
+    // CSS :hover fires instantly on render; JS mouseenter only fires on actual
+    // boundary crossing — but only if we attach AFTER the initial frame settles.
+    setTimeout(() => {
+      rows.forEach(row => {
+        if (row.dataset.hoverBound) return
+        row.dataset.hoverBound = 'true'
+
+        const img = row.querySelector<HTMLElement>('.work-row-image')
+        if (!img) return
+
+        img.addEventListener('mouseenter', () => {
+          gsap.killTweensOf(img)
+          gsap.to(img, {
+            scale: 1.04,
+            y: -4,
+            boxShadow: '0 20px 60px rgba(0,0,0,0.2), 0 8px 20px rgba(0,0,0,0.12)',
+            duration: 0.35,
+            ease: 'back.out(1.4)',
+          })
+        })
+
+        img.addEventListener('mouseleave', () => {
+          gsap.killTweensOf(img)
+          gsap.to(img, {
+            scale: 1,
+            y: 0,
+            boxShadow: '0 0px 0px rgba(0,0,0,0), 0 0px 0px rgba(0,0,0,0)',
+            duration: 0.35,
+            ease: 'power2.out',
+          })
+        })
+      })
+    }, 100)
+  }
+
+  initWorkRowHover()
+  document.addEventListener('astro:page-load', initWorkRowHover)
+</script>

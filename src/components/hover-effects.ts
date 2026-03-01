@@ -1,4 +1,3 @@
-import gsap from 'gsap'
 import { hover } from '../data/tokens'
 
 const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -25,7 +24,7 @@ function initSpectralLink(el: HTMLElement) {
     line.style.cssText = `
       position: absolute; bottom: 0; left: 0; right: 0;
       height: ${hover.underlineHeight}; background: currentColor; opacity: ${hover.underlineOpacity};
-      border-radius: var(--radius-1x); transition: height var(--transition-1x) ease, opacity var(--transition-1x) ease;
+      border-radius: var(--radius-xs); transition: height var(--duration-long) ease, opacity var(--duration-long) ease;
     `
     el.appendChild(line)
   }

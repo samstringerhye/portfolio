@@ -6,10 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "audit:site": "node scripts/audit-site.mjs",
-    "perf:check": "node scripts/check-bundle-size.mjs",
-    "verify:site": "npm run build && npm run audit:site && npm run perf:check"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -20,7 +17,6 @@
     "@iconify-json/simple-icons": "^1.2.71",
     "astro": "^5.7.0",
     "astro-icon": "^1.1.5",
-    "concurrently": "^9.2.1",
     "gsap": "^3.12.7",
     "lenis": "^1.1.18",
     "lottie-web": "^5.13.0",

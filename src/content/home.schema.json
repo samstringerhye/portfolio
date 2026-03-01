@@ -10,7 +10,6 @@
       "enum": [
         "display-lg",
         "display-md",
-        "display-sm",
         "headline-lg",
         "headline-md",
         "headline-sm",

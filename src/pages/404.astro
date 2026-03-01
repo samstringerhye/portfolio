@@ -2,12 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 ---
 
-<BaseLayout title="404 — Page Not Found" hideFooter={true}>
-  <section class="not-found">
+<BaseLayout title="404 — Page Not Found" description="Page not found." hideFooter={true}>
+  <meta slot="head" name="robots" content="noindex" />
+  <section class="not-found" aria-label="Page not found">
     <p class="typo-ui-caps" style="color: var(--color-text-secondary);">404</p>
     <h1 class="typo-display">Page not found</h1>
-    <p class="typo-body">The page you're looking for doesn't exist or has been moved.</p>
-    <a href="/" class="not-found-link typo-body">Back to home</a>
+    <p class="typo-body">Nothing here. Just empty pixels.</p>
+    <div class="not-found-actions">
+      <a href="/" class="not-found-link typo-body">Back to home</a>
+      <a href="/work" class="not-found-link typo-body">See work</a>
+      <a href="/about" class="not-found-link typo-body">About</a>
+    </div>
   </section>
 </BaseLayout>
 
@@ -23,12 +28,22 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     gap: var(--space-2);
   }
 
-  .not-found-link {
+  .not-found-actions {
+    display: flex;
+    gap: var(--space-2);
     margin-top: var(--space-3);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .not-found-link {
     padding: var(--space-1) var(--space-4);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
     border: var(--border-light);
-    border-radius: var(--radius-2x);
-    transition: box-shadow var(--transition-1x) ease, transform var(--transition-fast) ease;
+    border-radius: var(--radius-sm);
+    transition: box-shadow var(--duration-long) ease, transform var(--duration-short) ease;
   }
 
   .not-found-link:hover {

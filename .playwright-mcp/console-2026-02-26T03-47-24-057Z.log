@@ -1,3 +1,0 @@
-[  297012ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
-[  298014ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766
-[  299015ms] [ERROR] WebSocket connection to 'ws://localhost:4321/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4321/@vite/client:1766

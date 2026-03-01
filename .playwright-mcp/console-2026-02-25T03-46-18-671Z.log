@@ -1,4 +1,0 @@
-[    8475ms] [WARNING] "setAttributes" is deprecated, please use "setAttributeForElements" instead. @ https://www.apple.com/v/iphone/home/ci/built/scripts/overview/main.built.js:0
-[   27501ms] [WARNING] Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive technology users. Avoid using aria-hidden on a focused element or its ancestor. Consider using the inert attribute instead, which will also prevent focus. For more details, see the aria-hidden section of the WAI-ARIA specification at https://w3c.github.io/aria/#aria-hidden.
-Element with focus: <a.banner-card-active-area#film-guided tour>
-Ancestor with aria-hidden: <a.banner-card-active-area#film-guided tour> @ https://www.apple.com/iphone/:0

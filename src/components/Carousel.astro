@@ -15,14 +15,22 @@ const { label, fullBleed = false } = Astro.props
   <div class="carousel-track">
     <slot />
   </div>
-  <div class="carousel-counter" aria-live="polite"></div>
+  <div class="carousel-dots" aria-live="polite"></div>
 </div>
 
 <style>
   .carousel {
     position: relative;
-    outline: none;
     overflow: hidden;
+  }
+
+  .carousel:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  .carousel:focus:not(:focus-visible) {
+    outline: none;
   }
 
   .carousel-track {
@@ -59,18 +67,26 @@ const { label, fullBleed = false } = Astro.props
     border-radius: var(--radius-lg);
   }
 
-  .carousel-counter {
-    position: absolute;
-    bottom: var(--space-2);
-    right: var(--space-2);
-    font-size: var(--text-100);
-    color: var(--color-text-secondary);
-    background: var(--color-bg-primary);
-    padding: var(--space-1) var(--space-2);
-    border: var(--border-width-1) solid var(--color-text-primary);
-    line-height: 1;
-    z-index: 2;
-    font-variant-numeric: tabular-nums;
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: var(--space-2) 0;
+    border-top: var(--border-width-1) solid var(--color-rule);
+  }
+
+  .carousel-dots :global(.carousel-dot) {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--color-text-primary);
+    opacity: 0.3;
+    transition: width 0.3s ease, opacity 0.3s ease;
+  }
+
+  .carousel-dots :global(.carousel-dot.is-active) {
+    width: 16px;
+    opacity: 1;
   }
 
   .carousel--full-bleed .carousel-track :global(img) {
@@ -90,7 +106,7 @@ const { label, fullBleed = false } = Astro.props
       flex: 0 0 82%;
     }
 
-    .carousel-counter {
+    .carousel-dots {
       display: none;
     }
   }
@@ -108,8 +124,8 @@ const { label, fullBleed = false } = Astro.props
       ;(carousel as HTMLElement).dataset.carouselInit = 'true'
 
       const track = carousel.querySelector('.carousel-track') as HTMLElement
-      const counter = carousel.querySelector('.carousel-counter') as HTMLElement
-      if (!track || !counter) return
+      const dotsContainer = carousel.querySelector('.carousel-dots') as HTMLElement
+      if (!track || !dotsContainer) return
 
       // Unwrap Astro MDX wrapper div
       const wrapper = track.querySelector(':scope > div')
@@ -120,7 +136,7 @@ const { label, fullBleed = false } = Astro.props
 
       const slides = Array.from(track.querySelectorAll<HTMLElement>(':scope > img, :scope > .cs-figure'))
       if (slides.length <= 1) {
-        counter.style.display = 'none'
+        dotsContainer.style.display = 'none'
         if (slides[0]) slides[0].style.flex = '0 0 100%'
         return
       }
@@ -187,10 +203,28 @@ const { label, fullBleed = false } = Astro.props
         return best
       }
 
+      function renderDots() {
+        dotsContainer.innerHTML = ''
+        snapPoints.forEach((_, i) => {
+          const dot = document.createElement('span')
+          dot.className = 'carousel-dot' + (i === 0 ? ' is-active' : '')
+          dot.setAttribute('aria-hidden', 'true')
+          dotsContainer.appendChild(dot)
+        })
+      }
+
+      function updateDots(index: number) {
+        dotsContainer.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+          dot.classList.toggle('is-active', i === index)
+        })
+      }
+
+      renderDots()
+
       function animateTo(index: number) {
         const i = Math.max(0, Math.min(index, snapPoints.length - 1))
         currentIndex = i
-        counter.textContent = `${i + 1} / ${snapPoints.length}`
+        updateDots(i)
         gsap.to(track, {
           x: snapPoints[i],
           duration: 0.5,
@@ -198,9 +232,6 @@ const { label, fullBleed = false } = Astro.props
           overwrite: true,
         })
       }
-
-      // Init counter
-      counter.textContent = `1 / ${snapPoints.length}`
 
       // Suppress click after drag so lightbox doesn't open
       let didDrag = false
@@ -234,7 +265,7 @@ const { label, fullBleed = false } = Astro.props
           if (newX > maxX) newX = maxX + (newX - maxX) * 0.3
           else if (newX < minX) newX = minX + (newX - minX) * 0.3
           gsap.set(track, { x: newX })
-          counter.textContent = `${nearestIndex(newX) + 1} / ${snapPoints.length}`
+          updateDots(nearestIndex(newX))
         },
         onDragEnd(self) {
           track.classList.remove('is-dragging')
@@ -262,12 +293,16 @@ const { label, fullBleed = false } = Astro.props
         else if (e.key === 'ArrowLeft') { animateTo(currentIndex - 1); e.preventDefault() }
       })
 
-      // Recalculate on resize, and snap to current slide
+      // Recalculate on resize — disconnect previous observer to prevent leaks
+      if ((carousel as any).__carouselRo) (carousel as any).__carouselRo.disconnect()
       const ro = new ResizeObserver(() => {
         applyGridSizing()
         buildSnapPoints()
+        renderDots()
+        updateDots(Math.min(currentIndex, snapPoints.length - 1))
         gsap.set(track, { x: snapPoints[currentIndex] })
       })
+      ;(carousel as any).__carouselRo = ro
       ro.observe(carousel)
     })
   }

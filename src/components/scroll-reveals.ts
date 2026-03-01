@@ -196,21 +196,7 @@ function initHomeReveals() {
   const duration = 0.9
   const ease = 'power3.out'
 
-  // ── Work cards: each card triggers independently ──
-  const workCards = document.querySelectorAll<HTMLElement>('[data-work-card]')
-  workCards.forEach((card) => {
-    gsap.set(card, { opacity: 0, y: 40 })
-    gsap.to(card, {
-      opacity: 1, y: 0,
-      duration, ease,
-      scrollTrigger: {
-        trigger: card,
-        start,
-        toggleActions: 'play none none none',
-      },
-      onComplete() { gsap.set(card, { clearProps: 'transform,translate,rotate,scale' }) },
-    })
-  })
+  // ── Work cards: handled by WorkCarousel.astro's own entrance animation ──
 
   // ── Timeline: cards reveal left to right ──
   const timelineCards = document.querySelectorAll<HTMLElement>('.timeline-card')

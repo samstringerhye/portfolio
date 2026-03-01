@@ -3,7 +3,6 @@ import { ViewTransitions } from 'astro:transitions'
 import SEO from '../components/SEO.astro'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
-import AboutModal from '../components/AboutModal.astro'
 import RGBShutter from '../components/RGBShutter.astro'
 import { ref, sys, elementMap, animations } from '../data/tokens'
 import '../styles/global.css'
@@ -12,10 +11,11 @@ interface Props {
   title?: string
   description?: string
   ogImage?: string
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   hideFooter?: boolean
 }
 
-const { title, description, ogImage, hideFooter = false } = Astro.props
+const { title, description, ogImage, jsonLd, hideFooter = false } = Astro.props
 
 /* ── Helper: fluid clamp from min→max rem across 480→1140px ── */
 function buildClamp(min: number, max: number): string {
@@ -116,12 +116,6 @@ const inlineSpacingVars = Object.entries(ref.inlineSpacing)
 /* ── Radii vars (new semantic names + old aliases) ── */
 const radiiVars = Object.entries(ref.radii)
   .map(([key, val]) => `--radius-${key}: ${val};`).join('\n    ')
-const radiiAliases = [
-  `--radius-1x: var(--radius-xs);`,
-  `--radius-2x: var(--radius-sm);`,
-  `--radius-3x: var(--radius-md);`,
-  `--radius-pill: var(--radius-full);`,
-].join('\n    ')
 
 /* ── Z-index vars (from sys.layer) ── */
 const zVars = Object.entries(sys.layer)
@@ -130,19 +124,10 @@ const zVars = Object.entries(sys.layer)
 /* ── Duration vars (new names + old aliases) ── */
 const durationVars = Object.entries(ref.motion.duration)
   .map(([key, val]) => `--duration-${key}: ${val};`).join('\n    ')
-const durationAliases = [
-  `--transition-fast: var(--duration-short);`,
-  `--transition-medium: var(--duration-medium);`,
-  `--transition-1x: var(--duration-long);`,
-].join('\n    ')
 
 /* ── Easing vars ── */
 const easingVars = Object.entries(ref.motion.easing)
   .map(([key, val]) => `--easing-${key}: ${val};`).join('\n    ')
-const easingAliases = [
-  `--ease-bounce-out: var(--easing-emphasized);`,
-  `--ease-decel: var(--easing-standard);`,
-].join('\n    ')
 
 /* ── Elevation vars ── */
 const elevationRefVars = Object.entries(ref.elevation)
@@ -250,12 +235,9 @@ const typoCss = `:root {
     ${layoutVars}
     ${sizingVars}
     ${radiiVars}
-    ${radiiAliases}
     ${zVars}
     ${durationVars}
-    ${durationAliases}
     ${easingVars}
-    ${easingAliases}
     ${elevationRefVars}
     ${elevationSysVars}
     ${borderWidthVars}
@@ -277,24 +259,24 @@ const typoCss = `:root {
 <!doctype html>
 <html lang="en">
   <head>
-    <SEO title={title} description={description} ogImage={ogImage} />
+    <SEO title={title} description={description} ogImage={ogImage} jsonLd={jsonLd} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&subset=latin&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&subset=latin&display=swap" rel="stylesheet" /></noscript>
     <style set:html={typoCss}></style>
     <noscript><style>.cmy-word, .hero-block { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
     <ViewTransitions fallback="swap" />
+    <slot name="head" />
   </head>
   <body>
     <a href="#main" class="skip-to-content">Skip to content</a>
-    <div class="grid-overlay" aria-hidden="true"></div>
+    {import.meta.env.DEV && <div class="grid-overlay" aria-hidden="true"></div>}
     <Nav />
     <main id="main" class="grid-12" tabindex="-1">
       <slot />
     </main>
     {!hideFooter && <Footer />}
-    <AboutModal />
     <RGBShutter />
     <script>
       import Lenis from 'lenis'
@@ -340,13 +322,17 @@ const typoCss = `:root {
       }
 
       async function initInteractions() {
-        const { initScrollReveals } = await import('../components/scroll-reveals.ts')
-        const { initHoverEffects } = await import('../components/hover-effects.ts')
-        const { initLightbox } = await import('../components/Lightbox.ts')
-        await initScrollReveals()
-        initHoverEffects()
-        initLightbox()
-        initScrollProgress()
+        try {
+          const { initScrollReveals } = await import('../components/scroll-reveals.ts')
+          const { initHoverEffects } = await import('../components/hover-effects.ts')
+          const { initLightbox } = await import('../components/Lightbox.ts')
+          await initScrollReveals()
+          initHoverEffects()
+          initLightbox()
+          initScrollProgress()
+        } catch (e) {
+          console.warn('Failed to init interactions', e)
+        }
       }
 
       let scrollProgressTrigger: ScrollTrigger | null = null
@@ -357,7 +343,7 @@ const typoCss = `:root {
         scrollProgressTrigger = null
 
         const bar = document.querySelector<HTMLElement>('.scroll-progress')
-        if (!bar) { bar && gsap.set(bar, { width: 0 }); return }
+        if (!bar) return
 
         const tween = gsap.to(bar, {
           width: '100%',
@@ -402,6 +388,5 @@ const typoCss = `:root {
       document.addEventListener('astro:page-load', handlePageLoad)
     </script>
 
-    <script src="../components/about-modal.ts"></script>
   </body>
 </html>

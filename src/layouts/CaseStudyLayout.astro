@@ -5,16 +5,18 @@ import CaseStudyNav from '../components/CaseStudyNav.astro'
 interface Props {
   title: string
   tagline?: string
+  ogImage?: string
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   prevSlug?: string
   prevTitle?: string
   nextSlug?: string
   nextTitle?: string
 }
 
-const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
+const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 ---
 
-<BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline}>
+<BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline} ogImage={ogImage} jsonLd={jsonLd}>
   <div class="scroll-progress"></div>
   <div class="img-cursor" aria-hidden="true">
     <svg class="cursor-icon-zoom" width="28" height="28" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="16" x2="7" y2="11"/><polyline points="2,12 2,16 6,16"/><line x1="16" y1="2" x2="11" y2="7"/><polyline points="16,6 16,2 12,2"/></svg>
@@ -71,12 +73,13 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   .case-study-body .cs-hero-image {
     overflow: hidden;
     border: none;
+    border-bottom: var(--border-width-1) solid var(--color-rule);
   }
 
   .case-study-body .cs-hero-image img {
     width: 100%;
+    height: auto;
     display: block;
-    aspect-ratio: 16/9;
   }
 
   /* ── Meta bar ── */
@@ -142,6 +145,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     height: auto;
     max-height: 85vh;
     object-fit: contain;
+    background: var(--color-bg-primary);
   }
 
   .case-study-body img.has-transparency {
@@ -178,14 +182,29 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     cursor: zoom-in;
   }
 
-  .case-study-body .cs-figure img:hover,
-  .case-study-body .image-pair img:hover,
-  .case-study-body .image-grid img:hover {
-    scale: 1.02;
+  @media (hover: hover) {
+    .case-study-body .cs-figure img:hover,
+    .case-study-body .image-pair img:hover,
+    .case-study-body .image-grid img:hover {
+      scale: 1.02;
+    }
   }
 
-  .case-study-body .zigzag-media:hover {
-    scale: 1.02;
+  /* Carousel images: no zoom hover/cursor — drag only */
+  .case-study-body .carousel .cs-figure img,
+  .case-study-body .carousel img {
+    cursor: grab;
+    transition: none;
+  }
+  .case-study-body .carousel .cs-figure img:hover,
+  .case-study-body .carousel img:hover {
+    scale: 1;
+  }
+
+  @media (hover: hover) {
+    .case-study-body .zigzag-media:hover {
+      scale: 1.02;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -689,6 +708,13 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 </style>
 
+<style is:global>
+  html.custom-cursor-active,
+  html.custom-cursor-active * {
+    cursor: none !important;
+  }
+</style>
+
 <script>
   const mobileQuery = window.matchMedia('(max-width: 768px)')
 
@@ -731,7 +757,8 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
         const canvas = document.createElement('canvas')
         canvas.width = Math.min(img.naturalWidth, 100)
         canvas.height = Math.min(img.naturalHeight, 100)
-        const ctx = canvas.getContext('2d')!
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
         const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
         // Sample corner pixels for alpha < 255
@@ -766,9 +793,9 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     }
     const allIcons = Object.values(icons)
 
-    const imageTargets = document.querySelectorAll(
+    const imageTargets = Array.from(document.querySelectorAll(
       '.case-study-body .cs-figure img, .case-study-body .image-pair img, .case-study-body .image-grid img, .case-study-body .zigzag-media img'
-    )
+    )).filter(el => !el.closest('.carousel-track'))
     const carouselTargets = document.querySelectorAll(
       '.case-study-body .carousel-track'
     )
@@ -813,6 +840,7 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
         showIcon(type)
         active = true
         cursor.classList.add('is-visible')
+        document.documentElement.classList.add('custom-cursor-active')
         raf = requestAnimationFrame(tick)
       }
     }
@@ -821,19 +849,24 @@ const { title, tagline, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
       mx = e.clientX; my = e.clientY
     }
 
-    function onLeave() {
+    function onLeave(e: Event) {
       active = false
       cursor.classList.remove('is-visible')
+      document.documentElement.classList.remove('custom-cursor-active')
       cancelAnimationFrame(raf)
     }
 
     imageTargets.forEach(el => {
+      if ((el as HTMLElement).dataset.cursorBound) return
+      ;(el as HTMLElement).dataset.cursorBound = 'true'
       el.addEventListener('mouseenter', onEnter('zoom') as EventListener)
       el.addEventListener('mousemove', onMove as EventListener)
       el.addEventListener('mouseleave', onLeave)
     })
 
     carouselTargets.forEach(el => {
+      if ((el as HTMLElement).dataset.cursorBound) return
+      ;(el as HTMLElement).dataset.cursorBound = 'true'
       el.addEventListener('mouseenter', onEnter('drag') as EventListener)
       el.addEventListener('mousemove', onMove as EventListener)
       el.addEventListener('mouseleave', onLeave)

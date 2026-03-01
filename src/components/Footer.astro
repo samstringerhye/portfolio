@@ -20,10 +20,10 @@ const year = new Date().getFullYear()
       </div>
       <nav class="footer-bar-icons" aria-label="Social links">
         <a href="mailto:sam@samstringerhye.com" class="footer-icon-cell" aria-label="Email">
-          <Icon name="material-symbols-light:mail-outline-sharp" />
+          <Icon name="material-symbols-light:mail-outline-sharp" aria-hidden="true" />
         </a>
-        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-icon-cell" aria-label="LinkedIn">
-          <Icon name="simple-icons:linkedin" />
+        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-icon-cell" aria-label="LinkedIn (opens in new tab)">
+          <Icon name="simple-icons:linkedin" aria-hidden="true" />
         </a>
       </nav>
     </div>
@@ -99,18 +99,20 @@ const year = new Date().getFullYear()
     height: 100%;
     border-left: var(--border-width-1) solid var(--color-text-primary);
     color: var(--color-text-primary);
-    transition: background-color var(--transition-medium) ease;
+    transition: background-color var(--duration-medium) ease;
   }
 
   .footer-icon-cell svg {
     width: 30%;
     height: 30%;
-    transition: transform var(--transition-medium) cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform var(--duration-medium) cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  .footer-icon-cell:hover svg {
-    transform: scale(1.2) rotate(-5deg);
-    transition: transform 490ms cubic-bezier(0.5, 0, 0, 1);
+  @media (hover: hover) {
+    .footer-icon-cell:hover svg {
+      transform: scale(1.2) rotate(-5deg);
+      transition: transform 490ms cubic-bezier(0.5, 0, 0, 1);
+    }
   }
 
   .footer-wordmark-text {
@@ -133,11 +135,13 @@ const year = new Date().getFullYear()
   }
 
   .footer-colophon {
-    transition: opacity var(--transition-fast) ease;
+    transition: opacity var(--duration-short) ease;
   }
 
-  .footer-colophon:hover {
-    opacity: var(--opacity-50);
+  @media (hover: hover) {
+    .footer-colophon:hover {
+      opacity: var(--opacity-50);
+    }
   }
 
   /* ── Mobile ── */
@@ -166,6 +170,7 @@ const year = new Date().getFullYear()
   let colorIndex = 0
 
   function initFooterHover() {
+    if (!window.matchMedia('(hover: hover)').matches) return
     const cells = document.querySelectorAll<HTMLAnchorElement>('.footer-icon-cell')
     cells.forEach((cell) => {
       cell.addEventListener('mouseenter', () => {
@@ -213,5 +218,11 @@ const year = new Date().getFullYear()
   document.addEventListener('astro:page-load', () => {
     initFooterHover()
     initPaletteCycle()
+  })
+  document.addEventListener('astro:before-swap', () => {
+    if (paletteIntervalId !== null) {
+      clearInterval(paletteIntervalId)
+      paletteIntervalId = null
+    }
   })
 </script>

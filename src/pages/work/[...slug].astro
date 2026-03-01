@@ -25,11 +25,35 @@ export async function getStaticPaths() {
 
 const { entry, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 const { Content } = await render(entry)
+
+// Build OG image URL from thumbnail
+const thumbnailSrc = typeof entry.data.thumbnail === 'string'
+  ? entry.data.thumbnail
+  : entry.data.thumbnail?.src ?? '/assets/og-image.jpg'
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://samstringerhye.com'
+const ogImage = thumbnailSrc.startsWith('http') ? thumbnailSrc : `${siteUrl}${thumbnailSrc}`
+
+// CreativeWork JSON-LD
+const creativeWorkLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": entry.data.title,
+  "description": entry.data.tagline,
+  "url": `${siteUrl}/work/${entry.id}`,
+  "image": ogImage,
+  "author": {
+    "@type": "Person",
+    "name": "Sam Stringer-Hye",
+  },
+  "dateCreated": String(entry.data.year),
+}
 ---
 
 <CaseStudyLayout
   title={entry.data.title}
   tagline={entry.data.tagline}
+  ogImage={ogImage}
+  jsonLd={creativeWorkLd}
   prevSlug={prevSlug}
   prevTitle={prevTitle}
   nextSlug={nextSlug}

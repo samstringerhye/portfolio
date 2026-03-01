@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content'
 import { Image } from 'astro:assets'
 import { Icon } from 'astro-icon/components'
 import type { HeadingTag, TypographyRole } from '../types/typography'
-import { animations } from '../data/tokens'
 
 interface Props {
   headline?: string
@@ -17,7 +16,7 @@ interface Props {
 const {
   headline = 'Selected Work',
   headingTag = 'h2', headingRole = 'display',
-  cardTitleTag = 'h3', cardTitleRole = 'display-sm',
+  cardTitleTag = 'h3', cardTitleRole = 'headline-lg',
   contentInset = 'md',
 } = Astro.props as Props
 const SectionTag = headingTag as any
@@ -33,51 +32,53 @@ const featured = allWork
     thumbnail: w.data.thumbnail,
     slug: w.id,
   }))
-const revealCfg = animations.textReveal
-const workInitBlur = `${revealCfg.initialBlur}px`
 ---
 
 <section class="work-section" id="selected-work" aria-label="Selected work" style={`--content-inset: var(--content-inset-${contentInset})`}>
   <div class="work-container">
-    <SectionTag class={`work-label typo-${headingRole}`} data-reveal>{headline}</SectionTag>
+    <div class="work-header">
+      <SectionTag class={`work-label typo-${headingRole}`} data-reveal>{headline}</SectionTag>
+      <a href="/work" class="work-see-all" aria-label="See all work">
+        <span class="work-see-all-label">See all</span>
+        <svg class="work-see-all-icon" width="28" height="28" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="80" y1="100" x2="140" y2="100"/>
+          <polyline points="115,75 140,100 115,125"/>
+        </svg>
+      </a>
+    </div>
 
-    <div class="work-grid">
-      {featured.map(card => (
-        <a href={`/work/${card.slug}`} class="work-card" data-work-card>
-          <div class="work-card-proof" aria-hidden="true">
-            <span class="trim trim-tl-v"></span>
-            <span class="trim trim-tl-h"></span>
-            <span class="trim trim-tr-v"></span>
-            <span class="trim trim-tr-h"></span>
-            <span class="trim trim-bl-v"></span>
-            <span class="trim trim-bl-h"></span>
-            <span class="trim trim-br-v"></span>
-            <span class="trim trim-br-h"></span>
-          </div>
-          <div class="work-card-inner">
-            <Image
-              src={card.thumbnail}
-              alt={card.title}
-              width={1600}
-              format="webp"
-              quality={90}
-              loading="lazy"
-            />
-            <div class="work-card-cta">
-              <Icon name="material-symbols:arrow-forward-sharp" class="work-card-cta-icon" />
+    <div class="work-drag-cursor" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="9" x2="6" y2="9"/><polyline points="3,7 1,9 3,11"/><line x1="17" y1="9" x2="12" y2="9"/><polyline points="15,7 17,9 15,11"/></svg>
+    </div>
+
+    <div class="work-carousel" data-work-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="Selected work carousel">
+      <div class="work-track">
+        {featured.map(card => (
+          <a href={`/work/${card.slug}`} class="work-card" data-work-card>
+            <div class="work-card-inner">
+              <Image
+                src={card.thumbnail}
+                alt={card.title}
+                widths={[400, 800, 1200, 1600]}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                format="webp"
+                quality={90}
+                loading="lazy"
+              />
             </div>
-          </div>
-          <div class="work-card-label">
-            <CardTitleTag class={`work-card-title typo-${cardTitleRole}`} data-card-title>{card.title}</CardTitleTag>
-            <Icon name="material-symbols:arrow-forward-sharp" class="work-card-arrow" />
-          </div>
-        </a>
-      ))}
+            <div class="work-card-label">
+              <CardTitleTag class={`work-card-title typo-${cardTitleRole}`} data-card-title>{card.title}</CardTitleTag>
+              <Icon name="material-symbols:arrow-forward-sharp" class="work-card-arrow" />
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="work-carousel-dots" aria-live="polite"></div>
     </div>
   </div>
 </section>
 
-<style define:vars={{ workInitBlur }}>
+<style>
   .work-section {
     padding: 0;
   }
@@ -86,48 +87,134 @@ const workInitBlur = `${revealCfg.initialBlur}px`
     padding: 0;
   }
 
+  .work-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--content-inset-md);
+    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+  }
+
   .work-label {
     color: var(--color-text-primary);
     margin: 0;
-    padding: var(--content-inset-md);
-    opacity: 0;
-    filter: blur(var(--workInitBlur));
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .work-label {
-      opacity: 1;
-      transform: none;
-      filter: none;
+  .work-see-all {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    border-left: var(--border-width-1) solid var(--color-text-primary);
+    transition: background-color var(--duration-medium, 0.3s) ease;
+  }
+
+  .work-see-all-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .work-see-all-icon {
+    width: 65%;
+    height: 65%;
+    transition: transform var(--duration-medium, 0.3s) cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @media (hover: hover) {
+    .work-see-all:hover .work-see-all-icon {
+      transform: scale(1.2) rotate(-5deg);
+      transition: transform 490ms cubic-bezier(0.5, 0, 0, 1);
     }
   }
 
-  .work-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto;
-    gap: 0;
-    border-top: var(--border-width-1) solid var(--color-text-primary);
+  .work-carousel {
+    overflow: hidden;
+    position: relative;
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  .work-carousel:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  .work-carousel:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  .work-track {
+    display: flex;
+    will-change: transform;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  .work-drag-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--cursor-bg, var(--color-accent-1));
+    color: var(--color-bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: var(--z-modal, 200);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition:
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.2s ease,
+      background 0.3s ease;
+    will-change: transform;
+  }
+
+  .work-drag-cursor.is-visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  @media (pointer: coarse) {
+    .work-drag-cursor { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .work-drag-cursor { transition: none; }
+  }
+
+  @media (pointer: fine) {
+    .work-track {
+      cursor: none;
+    }
+    .work-track.is-dragging {
+      cursor: none;
+    }
   }
 
   .work-card {
-    --trim-length: 1.5rem;
+    flex: 0 0 50%;
     position: relative;
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
+    display: block;
     text-decoration: none;
-  }
-
-  /* Vertical center line */
-  .work-card:nth-child(odd) {
+    user-select: none;
+    -webkit-user-drag: none;
     border-right: var(--border-width-1) solid var(--color-text-primary);
   }
 
-  /* Horizontal center line */
-  .work-card:nth-child(-n+2) {
-    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+  .work-card:last-child {
+    border-right: none;
   }
 
   .work-card-inner {
@@ -141,15 +228,8 @@ const workInitBlur = `${revealCfg.initialBlur}px`
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-
-  .work-card-cta {
-    display: none;
-  }
-
-  .work-card-cta-icon {
-    width: 3em;
-    height: 3em;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   .work-card-label {
@@ -174,66 +254,53 @@ const workInitBlur = `${revealCfg.initialBlur}px`
     color: var(--color-text-primary);
   }
 
-  /* ── Print proof marks ── */
-  .work-card-proof {
-    position: absolute;
-    inset: calc(-1 * var(--trim-length));
-    pointer-events: none;
-  }
-
-  /* Trim lines — draw in from corners */
-  .trim {
-    position: absolute;
-    background: none;
-    border: none;
-    transition: transform var(--transition-1x) ease;
-  }
-
-  /* Vertical trims */
-  .trim-tl-v, .trim-tr-v { width: 0; height: var(--trim-length); top: 0; border-left: var(--border-width-1) solid var(--color-text-primary); }
-  .trim-bl-v, .trim-br-v { width: 0; height: var(--trim-length); bottom: 0; border-left: var(--border-width-1) solid var(--color-text-primary); }
-  .trim-tl-v, .trim-bl-v { left: var(--trim-length); }
-  .trim-tr-v, .trim-br-v { right: var(--trim-length); }
-
-  /* Horizontal trims */
-  .trim-tl-h, .trim-bl-h { height: 0; width: var(--trim-length); left: 0; border-top: var(--border-width-1) solid var(--color-text-primary); }
-  .trim-tr-h, .trim-br-h { height: 0; width: var(--trim-length); right: 0; border-top: var(--border-width-1) solid var(--color-text-primary); }
-  .trim-tl-h, .trim-tr-h { top: var(--trim-length); }
-  .trim-bl-h, .trim-br-h { bottom: var(--trim-length); }
-
-  /* Draw direction: scale from image edge outward */
-  .trim-tl-v, .trim-tr-v { transform-origin: bottom; transform: scaleY(0); }
-  .trim-bl-v, .trim-br-v { transform-origin: top; transform: scaleY(0); }
-  .trim-tl-h, .trim-bl-h { transform-origin: right; transform: scaleX(0); }
-  .trim-tr-h, .trim-br-h { transform-origin: left; transform: scaleX(0); }
-
   @media (--2x) {
-    .work-label {
+    .work-header {
       padding: var(--space-4) var(--page-margin);
+      border-bottom-color: var(--color-rule);
     }
 
-    .work-grid {
-      grid-template-columns: 1fr;
-      border-top: var(--border-width-1) solid var(--color-rule);
-      border-bottom: var(--border-width-1) solid var(--color-rule);
+    .work-see-all {
+      border-left-color: var(--color-rule);
     }
 
-    .work-card:nth-child(odd) {
-      border-right: none;
+    .work-carousel {
+      border-bottom-color: var(--color-rule);
     }
 
-    /* All cards except last get a bottom border */
-    .work-card:nth-child(-n+3) {
-      border-bottom: var(--border-width-1) solid var(--color-rule);
+    .work-card {
+      border-right-color: var(--color-rule);
     }
+
+    .work-card-label {
+      border-top-color: var(--color-rule);
+    }
+  }
+
+  .work-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: var(--space-2) 0;
+    border-top: var(--border-width-1) solid var(--color-rule);
+  }
+
+  .work-carousel-dots :global(.work-dot) {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--color-text-primary);
+    opacity: 0.3;
+    transition: width 0.3s ease, opacity 0.3s ease;
+  }
+
+  .work-carousel-dots :global(.work-dot.is-active) {
+    width: 16px;
+    opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .work-card img {
-      transition: none;
-    }
-
-    .work-card-overlay {
       transition: none;
     }
   }
@@ -241,67 +308,299 @@ const workInitBlur = `${revealCfg.initialBlur}px`
 
 <script>
   import gsap from 'gsap'
+  import { Observer } from 'gsap/Observer'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
   import { cmyRgba } from '../data/tokens'
+  import { tightenSingleLineHeadings } from './tighten-headings'
 
-  gsap.registerPlugin(ScrollTrigger)
+  gsap.registerPlugin(Observer, ScrollTrigger)
 
   const CMY_COLORS = cmyRgba(1)
   let colorIndex = 0
 
-  function tightenSingleLineHeadings() {
-    document.querySelectorAll<HTMLElement>('.work-label, .work-card-title').forEach((el) => {
-      const style = getComputedStyle(el)
-      const lineHeight = parseFloat(style.lineHeight)
-      const contentHeight = el.scrollHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
-      if (contentHeight <= lineHeight * 1.1) {
-        el.style.lineHeight = '1'
-      }
+  function initWorkHover() {
+    if (!window.matchMedia('(hover: hover)').matches) return
+    document.querySelectorAll<HTMLElement>('.work-card-label, .work-see-all').forEach((el) => {
+      if (el.dataset.workHoverBound === 'true') return
+      el.dataset.workHoverBound = 'true'
+
+      el.addEventListener('mouseenter', () => {
+        el.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
+      })
+      el.addEventListener('mouseleave', () => {
+        el.style.backgroundColor = ''
+      })
     })
   }
 
-  function initWorkSection() {
-    const cards = document.querySelectorAll<HTMLElement>('[data-work-card]')
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  function initWorkCarousel() {
+    document.querySelectorAll<HTMLElement>('[data-work-carousel]').forEach(carousel => {
+      if (carousel.dataset.carouselInit === 'true') return
+      carousel.dataset.carouselInit = 'true'
 
-    if (!cards.length) return
+      const track = carousel.querySelector<HTMLElement>('.work-track')
+      if (!track) return
 
-    if (prefersReduced) {
-      gsap.set(cards, { opacity: 1 })
-      return
-    }
+      const slides = Array.from(track.querySelectorAll<HTMLElement>('.work-card'))
+      if (slides.length <= 1) return
 
-    gsap.set(cards, { opacity: 1 })
-    tightenSingleLineHeadings()
+      let currentIndex = 0
+      let snapPoints: number[] = []
+
+      function getGridMetrics() {
+        const cw = carousel.offsetWidth
+        const probe = document.createElement('div')
+        probe.style.cssText = 'position:absolute;width:var(--grid-gutter);visibility:hidden;'
+        carousel.appendChild(probe)
+        const gutter = probe.offsetWidth
+        carousel.removeChild(probe)
+        const col = (cw - 11 * gutter) / 12
+        return { col, gutter }
+      }
+
+      function applyGridSizing() {
+        const cw = carousel.offsetWidth
+        if (cw <= 768) {
+          const probe = document.createElement('div')
+          probe.style.cssText = 'position:absolute;width:var(--page-margin);visibility:hidden;'
+          carousel.appendChild(probe)
+          const padSide = probe.offsetWidth || 16
+          carousel.removeChild(probe)
+          const slideWidth = cw
+          track!.style.paddingLeft = '0'
+          track!.style.paddingRight = '0'
+          track!.style.gap = '0'
+          slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
+          return
+        }
+        const { col, gutter } = getGridMetrics()
+        const slideWidth = col * 6 + gutter * 5
+        track!.style.paddingLeft = '0'
+        track!.style.paddingRight = '0'
+        track!.style.gap = '0'
+        slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
+      }
+      applyGridSizing()
+
+      function buildSnapPoints() {
+        const padLeft = parseFloat(getComputedStyle(track!).paddingLeft)
+        const lastSlide = slides[slides.length - 1]
+        const maxScroll = -(lastSlide.offsetLeft + lastSlide.offsetWidth - carousel.offsetWidth)
+        snapPoints = slides.map(s => {
+          const snap = padLeft - s.offsetLeft
+          return Math.max(snap, maxScroll)
+        })
+        snapPoints = [...new Set(snapPoints)]
+      }
+      buildSnapPoints()
+
+      function nearestIndex(x: number): number {
+        let best = 0, bestD = Infinity
+        snapPoints.forEach((p, i) => {
+          const d = Math.abs(x - p)
+          if (d < bestD) { bestD = d; best = i }
+        })
+        return best
+      }
+
+      const dotsContainer = carousel.querySelector('.work-carousel-dots') as HTMLElement
+
+      function renderDots() {
+        if (!dotsContainer) return
+        dotsContainer.innerHTML = ''
+        snapPoints.forEach((_, i) => {
+          const dot = document.createElement('span')
+          dot.className = 'work-dot' + (i === 0 ? ' is-active' : '')
+          dot.setAttribute('aria-hidden', 'true')
+          dotsContainer.appendChild(dot)
+        })
+      }
+
+      function updateDots(index: number) {
+        if (!dotsContainer) return
+        dotsContainer.querySelectorAll('.work-dot').forEach((dot, i) => {
+          dot.classList.toggle('is-active', i === index)
+        })
+      }
+
+      renderDots()
+
+      function animateTo(index: number) {
+        const i = Math.max(0, Math.min(index, snapPoints.length - 1))
+        currentIndex = i
+        updateDots(i)
+        gsap.to(track, {
+          x: snapPoints[i],
+          duration: 0.5,
+          ease: 'power3.out',
+          overwrite: true,
+        })
+      }
+
+      // Suppress click after drag
+      let didDrag = false
+      track!.addEventListener('click', (e) => {
+        if (didDrag) { e.stopPropagation(); e.preventDefault(); didDrag = false }
+      }, true)
+
+      const isTouch = window.matchMedia('(pointer: coarse)').matches
+
+      Observer.create({
+        target: carousel,
+        type: 'touch,pointer',
+        dragMinimum: isTouch ? 15 : 5,
+        tolerance: isTouch ? 10 : 0,
+        onPress() {
+          didDrag = false
+          gsap.killTweensOf(track)
+          track!.classList.add('is-dragging')
+        },
+        onDrag(self) {
+          if (isTouch && Math.abs(self.deltaY) > Math.abs(self.deltaX) * 1.5 && !didDrag) return
+
+          didDrag = true
+          const currentX = gsap.getProperty(track, 'x') as number
+          let newX = currentX + self.deltaX
+          const minX = snapPoints[snapPoints.length - 1]
+          const maxX = snapPoints[0]
+          if (newX > maxX) newX = maxX + (newX - maxX) * 0.3
+          else if (newX < minX) newX = minX + (newX - minX) * 0.3
+          gsap.set(track, { x: newX })
+          updateDots(nearestIndex(newX))
+        },
+        onDragEnd(self) {
+          track!.classList.remove('is-dragging')
+          const trackX = gsap.getProperty(track, 'x') as number
+          let targetIndex = nearestIndex(trackX)
+
+          const flickThreshold = isTouch ? 200 : 300
+          if (Math.abs(self.velocityX) > flickThreshold) {
+            targetIndex = self.velocityX > 0
+              ? Math.max(0, currentIndex - 1)
+              : Math.min(snapPoints.length - 1, currentIndex + 1)
+          }
+
+          animateTo(targetIndex)
+        },
+        onRelease() {
+          track!.classList.remove('is-dragging')
+        },
+      })
+
+      // Keyboard navigation
+      carousel.addEventListener('keydown', (e) => {
+        if ((e as KeyboardEvent).key === 'ArrowRight') { animateTo(currentIndex + 1); e.preventDefault() }
+        else if ((e as KeyboardEvent).key === 'ArrowLeft') { animateTo(currentIndex - 1); e.preventDefault() }
+      })
+
+      // Scroll-triggered slide-in entrance
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      let entranceDone = !prefersReduced ? false : true
+
+      if (!prefersReduced) {
+        const startX = carousel.offsetWidth * 0.4
+        gsap.set(track, { x: startX, opacity: 0 })
+        ScrollTrigger.create({
+          trigger: carousel,
+          start: 'top 85%',
+          once: true,
+          onEnter() {
+            gsap.to(track, {
+              x: snapPoints[0],
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power4.out',
+              onComplete() {
+                entranceDone = true
+              },
+            })
+          },
+        })
+      }
+
+      // Recalculate on resize — disconnect previous observer to prevent leaks
+      if ((carousel as any).__workRo) (carousel as any).__workRo.disconnect()
+      const ro = new ResizeObserver(() => {
+        applyGridSizing()
+        buildSnapPoints()
+        renderDots()
+        updateDots(Math.min(currentIndex, snapPoints.length - 1))
+        if (entranceDone) {
+          const safeIndex = Math.min(currentIndex, snapPoints.length - 1)
+          gsap.set(track, { x: snapPoints[safeIndex] })
+        }
+      })
+      ;(carousel as any).__workRo = ro
+      ro.observe(carousel)
+    })
   }
 
-  function initWorkHover() {
-    document.querySelectorAll<HTMLElement>('.work-card-label').forEach((label) => {
-      if (label.dataset.workHoverBound === 'true') return
-      label.dataset.workHoverBound = 'true'
+  function initDragCursor() {
+    const cursor = document.querySelector('.work-drag-cursor') as HTMLElement
+    if (!cursor || window.matchMedia('(pointer: coarse)').matches) return
 
+    const track = document.querySelector('.work-track') as HTMLElement
+    if (!track) return
+
+    const accents = [
+      'var(--color-accent-1)',
+      'var(--color-accent-2)',
+      'var(--color-accent-3)',
+    ]
+    let colorIdx = 0
+    let raf = 0
+    let mx = 0, my = 0, cx = 0, cy = 0
+    let active = false
+
+    function lerp(a: number, b: number, t: number) { return a + (b - a) * t }
+
+    function tick() {
+      if (!active) return
+      cx = lerp(cx, mx, 0.15)
+      cy = lerp(cy, my, 0.15)
+      cursor.style.left = `${cx}px`
+      cursor.style.top = `${cy}px`
+      raf = requestAnimationFrame(tick)
+    }
+
+    // Hide cursor when over card labels
+    track.querySelectorAll('.work-card-label').forEach(label => {
       label.addEventListener('mouseenter', () => {
-        label.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
+        cursor.classList.remove('is-visible')
       })
       label.addEventListener('mouseleave', () => {
-        label.style.backgroundColor = ''
+        if (active) cursor.classList.add('is-visible')
       })
     })
-  }
 
-  async function initWebGL() {
-    try {
-      const { initWebGLHoverEffect } = await import('./webgl-hover-effect')
-      initWebGLHoverEffect()
-    } catch (err) {
-      console.warn('[WorkCarousel] WebGL hover effect failed:', err)
-    }
+    track.addEventListener('mouseenter', (e: MouseEvent) => {
+      mx = e.clientX; my = e.clientY
+      cx = mx; cy = my
+      cursor.style.left = `${cx}px`
+      cursor.style.top = `${cy}px`
+      cursor.style.setProperty('--cursor-bg', accents[colorIdx])
+      colorIdx = (colorIdx + 1) % accents.length
+      active = true
+      cursor.classList.add('is-visible')
+      raf = requestAnimationFrame(tick)
+    })
+
+    track.addEventListener('mousemove', (e: MouseEvent) => {
+      mx = e.clientX; my = e.clientY
+    })
+
+    track.addEventListener('mouseleave', () => {
+      active = false
+      cursor.classList.remove('is-visible')
+      cancelAnimationFrame(raf)
+    })
   }
 
   function init() {
-    initWorkSection()
+    tightenSingleLineHeadings('.work-label, .work-card-title')
     initWorkHover()
-    initWebGL()
+    initWorkCarousel()
+    initDragCursor()
   }
 
   init()

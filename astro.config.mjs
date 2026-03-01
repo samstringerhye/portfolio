@@ -8,7 +8,7 @@ import icon from 'astro-icon'
 export default defineConfig({
   devToolbar: { enabled: false },
   site: 'https://samstringerhye.com',
-  integrations: [react(), mdx(), sitemap(), icon()],
+  integrations: [react(), mdx(), sitemap({ filter: (page) => !page.includes('/404') }), icon()],
   markdown: {
     remarkPlugins: [remarkUnwrapImages],
     rehypePlugins: [rehypeLazyImages],
@@ -18,7 +18,7 @@ export default defineConfig({
       noExternal: ['gsap'],
     },
     optimizeDeps: {
-      include: ['react/jsx-dev-runtime', 'react/jsx-runtime', 'lottie-web/build/player/lottie_light.min.js'],
+      include: ['react/jsx-dev-runtime', 'react/jsx-runtime', 'lottie-web/build/player/lottie_light'],
     },
   },
 })

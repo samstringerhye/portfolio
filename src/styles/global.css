@@ -91,9 +91,9 @@ ol {
 
 /* Focus visible */
 :focus-visible {
-  outline: none;
+  outline: 2px solid transparent;
   box-shadow: var(--focus-ring);
-  border-radius: var(--radius-1x);
+  border-radius: var(--radius-xs);
 }
 
 /* Selection */
@@ -113,7 +113,7 @@ ol {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -128,9 +128,9 @@ ol {
   padding: var(--space-1) var(--space-2);
   background: var(--color-text-primary);
   color: var(--color-bg-primary);
-  border-radius: var(--radius-2x);
+  border-radius: var(--radius-sm);
   z-index: var(--z-skip-link);
-  transition: top var(--transition-fast) ease;
+  transition: top var(--duration-short) ease;
 }
 
 .skip-to-content:focus-visible {

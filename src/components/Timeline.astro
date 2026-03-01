@@ -30,26 +30,34 @@ function getYear(d: string | null) {
 }
 
 const timelineStart = 2012
-const timelineEnd = currentYear
-const totalSpan = timelineEnd - timelineStart
+const timelineEnd = currentYear - 1 // display years 2012–2025
 
-const jobsWithFlex = jobs.map((j, i) => {
-  const start = getYear(j.startDate)
-  const end = getYear(j.endDate)
-  const span = end - start
-  const yearStart = start - timelineStart
-  const yearLabel = j.endDate ? `${start}–${end}` : `${start}–Present`
-  return { ...j, span, yearStart, yearLabel, index: i }
-})
-
-// Reverse for chronological left-to-right display (oldest first)
-const jobsChronological = [...jobsWithFlex].reverse()
-
-// Year markers — one per column interval
+// Year markers — one per grid row
 const yearMarkers: number[] = []
-for (let y = timelineStart; y < timelineEnd; y++) {
+for (let y = timelineStart; y <= timelineEnd; y++) {
   yearMarkers.push(y)
 }
+
+// Each year = 1 grid row. Row lines are 1-based.
+function yearToRow(year: number) {
+  return year - timelineStart + 1
+}
+
+const jobsChronological = [...jobs].reverse()
+
+const jobsWithRows = jobsChronological.map((j, i) => {
+  const start = getYear(j.startDate)
+  const end = getYear(j.endDate)
+  const yearLabel = j.endDate ? `${start}–${end}` : `${start}–Present`
+  return {
+    ...j,
+    yearLabel,
+    index: i,
+    rowStart: yearToRow(start),
+    // +1 because grid-row end is exclusive; clamp to grid size
+    rowEnd: yearToRow(end),
+  }
+})
 ---
 
 <section class="experience-section" aria-label="Experience" style={`--content-inset: var(--content-inset-${contentInset})`}>
@@ -59,25 +67,33 @@ for (let y = timelineStart; y < timelineEnd; y++) {
       <div class="lottie-save" data-lottie-container></div>
     </a>
   </div>
-  <div class="experience-timeline" data-timeline data-total-span={totalSpan}>
-    <!-- Job cards row -->
-    <ul class="timeline-cards" role="list">
-      {jobsChronological.map((job) => (
-        <li
-          class="timeline-card"
-          style={`flex: ${job.span} 1 0%;`}
-          data-card-index={job.index}
-          data-card-span={job.span}
-        >
-          <div class="timeline-card-wipe" aria-hidden="true"></div>
-          <p class="timeline-card-year typo-ui-caps" aria-hidden="true">{job.yearLabel}</p>
+  <div class="experience-timeline" data-timeline
+       style={`--tl-rows: ${yearMarkers.length}`}>
+    {/* Year cells — column 1, one per row */}
+    {yearMarkers.map((year, i) => (
+      <div class="tl-year" style={`grid-row: ${i + 1}`} aria-hidden="true">
+        <p class="typo-ui-caps">{year}</p>
+      </div>
+    ))}
+
+    {/* Job rows — columns 2-8, spanning year rows */}
+    <ul class="tl-jobs" role="list" style="display:contents">
+      {jobsWithRows.map((job) => (
+        <li class="tl-job" style={`grid-row: ${job.rowStart} / ${job.rowEnd}`}
+            data-card-index={job.index}>
+          <div class="tl-job-wipe" aria-hidden="true"></div>
           <span class="visually-hidden">{job.yearLabel}</span>
-          <div class="timeline-card-left">
-            <JobTitleTag class:list={["timeline-title", `typo-${jobTitleRole}`]}>{job.title}</JobTitleTag>
-            <CompanyTag class:list={["timeline-company", `typo-${companyRole}`]}>{job.company}</CompanyTag>
+          <span class="tl-job-year-mobile typo-ui-caps">{job.yearLabel}</span>
+          <div class="tl-job-info">
+            <JobTitleTag class:list={[`typo-${jobTitleRole}`, 'tl-job-title']}>
+              {job.title}
+            </JobTitleTag>
+            <CompanyTag class:list={[`typo-${companyRole}`, 'tl-job-company']}>
+              {job.company}
+            </CompanyTag>
           </div>
           {job.highlights?.length > 0 && (
-            <div class="timeline-highlights">
+            <div class="tl-job-highlights">
               {job.highlights.map((h: string) => (
                 <p class:list={[`typo-${highlightRole}`]}>{h}</p>
               ))}
@@ -86,25 +102,6 @@ for (let y = timelineStart; y < timelineEnd; y++) {
         </li>
       ))}
     </ul>
-
-    <!-- Year scale — grouped by card for alignment -->
-    <div class="timeline-years">
-      {jobsChronological.map((job) => (
-        <div
-          class="timeline-year-group"
-          style={`flex: ${job.span} 1 0%;`}
-          data-year-group={job.index}
-          data-year-group-span={job.span}
-        >
-          <div class="timeline-year-group-wipe" aria-hidden="true"></div>
-          {yearMarkers.slice(job.yearStart, job.yearStart + job.span).map(year => (
-            <div class="timeline-year">
-              <p class="typo-ui-caps">{year}</p>
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
   </div>
 </section>
 
@@ -117,6 +114,7 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     position: relative;
     display: flex;
     align-items: center;
+    border-bottom: var(--border-width-1) solid var(--color-rule);
   }
 
   .experience-heading {
@@ -136,78 +134,68 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     justify-content: center;
     border-left: var(--border-width-1) solid var(--color-text-primary);
     color: var(--color-text-primary);
-    transition: background-color var(--transition-medium) ease;
+    transition: background-color var(--duration-medium) ease;
   }
 
   .lottie-save {
     width: 45%;
     height: 45%;
-    transition: transform var(--transition-medium) cubic-bezier(0.34, 1.56, 0.64, 1); /* leave: quick spring with overshoot */
+    transition: transform var(--duration-medium) cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  .experience-download:hover .lottie-save {
-    transform: scale(1.2) rotate(-5deg);
-    transition: transform 490ms cubic-bezier(0.5, 0, 0, 1); /* enter: smooth ease-out matching open */
+  @media (hover: hover) {
+    .experience-download:hover .lottie-save {
+      transform: scale(1.2) rotate(-5deg);
+      transition: transform 490ms cubic-bezier(0.5, 0, 0, 1);
+    }
   }
 
+  /* ── Grid layout: year col + 12-col grid ── */
   .experience-timeline {
+    display: grid;
+    grid-template-columns: auto repeat(12, 1fr);
+    column-gap: var(--grid-gutter);
+    grid-template-rows: repeat(var(--tl-rows), auto);
+    padding-inline: var(--page-margin);
     min-width: 0;
   }
 
-  /* ── Job cards — vertical stack ── */
-  .timeline-cards {
+  /* Year cells — column 1 with right border */
+  .tl-year {
+    grid-column: 1;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--page-margin);
+    margin-left: calc(var(--page-margin) * -1);
+    border-bottom: var(--border-width-1) solid var(--color-rule);
+    border-right: var(--border-width-1) solid var(--color-rule);
+    color: var(--color-text-primary);
   }
 
-  .timeline-card {
-    position: relative;
-    display: flex;
-    align-items: baseline;
-    padding: var(--content-inset-sm);
-    border-bottom: var(--border-width-1) solid var(--color-text-primary);
-    min-width: 0;
-    overflow: hidden;
-    gap: var(--space-4);
-  }
-
-  .timeline-card:last-child {
+  .tl-year:last-of-type {
     border-bottom: none;
   }
 
-  .timeline-card-year {
-    display: block;
-    color: var(--color-text-primary);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .timeline-card-left {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex: 1;
-    gap: var(--space-2);
-    min-width: 0;
-  }
-
-  .timeline-highlights {
-    position: absolute;
-    z-index: 1;
-    right: var(--content-inset-sm);
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0;
-    width: 40ch;
-    max-width: 40vw;
-    color: var(--color-text-primary);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+  /* Job cards — columns 2-13, subgrid */
+  .tl-job {
+    grid-column: 2 / -1;
+    position: relative;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    margin-left: calc(var(--grid-gutter) * -1);
+    margin-right: calc(var(--page-margin) * -1);
+    padding: var(--space-2) var(--page-margin) var(--space-2) var(--grid-gutter);
+    border-bottom: var(--border-width-1) solid var(--color-rule);
     overflow: hidden;
   }
 
-  .timeline-card-wipe {
+  .tl-job:last-child {
+    border-bottom: none;
+  }
+
+  /* Wipe overlay for hover */
+  .tl-job-wipe {
     position: absolute;
     inset: 0;
     transform: scaleX(0);
@@ -216,50 +204,77 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     will-change: transform;
   }
 
-  .timeline-title {
+  .tl-job-title,
+  .tl-job-company {
     position: relative;
     z-index: 1;
     color: var(--color-text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    text-wrap: balance;
   }
 
-  .timeline-company {
+  /* Job info — 3 cols wide (subgrid cols 1–3) */
+  .tl-job-info {
+    grid-column: 1 / 4;
+    grid-row: 1;
     position: relative;
     z-index: 1;
-    color: var(--color-text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
-  /* ── Year scale — hidden, using inline year labels instead ── */
-  .timeline-years {
+  /* Highlights — starting at col 4 with gutter inset */
+  .tl-job-highlights {
+    grid-column: 4 / 10;
+    grid-row: 1;
+    padding-left: var(--grid-gutter);
+    position: relative;
+    z-index: 1;
+    visibility: hidden;
+    color: var(--color-text-primary);
+    text-wrap: pretty;
+  }
+
+  /* Mobile year label — hidden on desktop */
+  .tl-job-year-mobile {
     display: none;
+    color: var(--color-text-primary);
   }
 
   /* ── Mobile ── */
   @media (--2x) {
-    .timeline-card {
-      padding: var(--page-margin);
-      gap: 0;
-      flex-direction: column;
-      align-items: flex-start;
-      border-bottom-color: var(--color-rule);
+    .experience-timeline {
+      grid-template-columns: auto 1fr;
+      column-gap: 0;
+      padding-inline: 0;
     }
 
-    .timeline-title,
-    .timeline-company {
-      padding-inline: 0;
+    .tl-year {
+      padding: var(--space-2) var(--space-3);
+      margin-left: 0;
+    }
+
+    .tl-job {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      margin-left: 0;
+      margin-right: 0;
+      padding: var(--space-2) var(--page-margin) var(--space-2) var(--space-3);
+      pointer-events: none;
+    }
+
+    .tl-job-wipe {
+      display: none;
+    }
+
+    .tl-job-highlights {
+      display: none;
+    }
+
+    .tl-job-year-mobile {
+      display: none;
     }
 
     .experience-heading {
       padding: var(--space-4) var(--page-margin);
-    }
-
-    .timeline-card-year {
-      padding-inline: 0;
     }
 
     .experience-download {
@@ -270,7 +285,11 @@ for (let y = timelineStart; y < timelineEnd; y++) {
 
 <script>
   import gsap from 'gsap'
+  import { SplitText } from 'gsap/SplitText'
   import { animations, cmyRgba } from '../data/tokens'
+  import { tightenSingleLineHeadings } from './tighten-headings'
+
+  gsap.registerPlugin(SplitText)
 
   const h = animations.timeline.hover
   const CMY_COLORS = cmyRgba(h.cmyOpacity)
@@ -280,16 +299,50 @@ for (let y = timelineStart; y < timelineEnd; y++) {
     const timeline = document.querySelector<HTMLElement>('[data-timeline]')
     if (!timeline) return
 
-    const cards = Array.from(timeline.querySelectorAll<HTMLElement>('.timeline-card'))
+    const cards = Array.from(timeline.querySelectorAll<HTMLElement>('.tl-job'))
+    const yearCells = Array.from(timeline.querySelectorAll<HTMLElement>('.tl-year'))
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    // Build a map of grid-row index → year cell element
+    const yearsByRow = new Map<number, HTMLElement>()
+    yearCells.forEach((el) => {
+      const row = parseInt(el.style.gridRow, 10)
+      if (!isNaN(row)) yearsByRow.set(row, el)
+    })
+
+    function getJobYears(card: HTMLElement): HTMLElement[] {
+      const parts = card.style.gridRow.split('/')
+      const start = parseInt(parts[0], 10)
+      const end = parseInt(parts[1], 10)
+      const matched: HTMLElement[] = []
+      for (let r = start; r < end; r++) {
+        const el = yearsByRow.get(r)
+        if (el) matched.push(el)
+      }
+      return matched
+    }
 
     cards.forEach((card) => {
       if (card.dataset.hoverBound === 'true') return
       card.dataset.hoverBound = 'true'
 
-      const wipe = card.querySelector<HTMLElement>('.timeline-card-wipe')!
-      const highlights = card.querySelector<HTMLElement>('.timeline-highlights')
+      const wipe = card.querySelector<HTMLElement>('.tl-job-wipe')!
+      const highlights = card.querySelector<HTMLElement>('.tl-job-highlights')
+      const jobYears = getJobYears(card)
+
+      // Pre-split highlights into lines
+      let splitLines: HTMLElement[] = []
+      if (highlights) {
+        const split = SplitText.create(highlights, {
+          type: 'lines',
+          linesClass: 'highlight-line',
+          autoSplit: true,
+        })
+        splitLines = split.lines as HTMLElement[]
+        gsap.set(splitLines, { opacity: 0, x: -12 })
+        // Keep container hidden until hover — visibility toggled in enter/leave
+      }
 
       card.addEventListener('mouseenter', () => {
         const color = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
@@ -297,42 +350,57 @@ for (let y = timelineStart; y < timelineEnd; y++) {
         gsap.set(wipe, { backgroundColor: color, scaleX: 0 })
         gsap.to(wipe, { scaleX: 1, duration: h.wipeDuration, ease: h.wipeEase })
 
-        if (highlights) {
-          gsap.to(highlights, { opacity: 1, duration: h.highlightsShowDuration, delay: h.highlightsShowDelay, ease: h.highlightsShowEase })
+        // Light up corresponding year cells
+        jobYears.forEach((yr) => {
+          gsap.to(yr, { backgroundColor: color, duration: h.wipeDuration, ease: h.wipeEase })
+        })
+
+        if (splitLines.length && highlights) {
+          highlights.style.visibility = 'visible'
+          gsap.killTweensOf(splitLines)
+          gsap.set(splitLines, { opacity: 0, x: -12 })
+          gsap.to(splitLines, {
+            opacity: 1, x: 0,
+            duration: 0.6,
+            delay: h.highlightsShowDelay,
+            ease: 'power4.out',
+            stagger: 0.08,
+          })
         }
       })
 
       card.addEventListener('mouseleave', () => {
         gsap.to(wipe, { scaleX: 0, duration: h.wipeOutDuration, ease: h.wipeOutEase })
 
-        if (highlights) {
-          gsap.to(highlights, { opacity: 0, duration: h.highlightsHideDuration, ease: h.highlightsHideEase })
+        // Reset year cells
+        jobYears.forEach((yr) => {
+          gsap.to(yr, { backgroundColor: 'transparent', duration: h.wipeOutDuration, ease: h.wipeOutEase })
+        })
+
+        if (splitLines.length && highlights) {
+          gsap.killTweensOf(splitLines)
+          gsap.to(splitLines, {
+            opacity: 0, x: -12,
+            duration: 0.25,
+            ease: 'power2.in',
+            stagger: 0.02,
+            overwrite: true,
+            onComplete: () => { highlights.style.visibility = 'hidden' },
+          })
         }
       })
     })
   }
 
-  function tightenSingleLineHeadings() {
-    document.querySelectorAll<HTMLElement>('.experience-heading').forEach((el) => {
-      const style = getComputedStyle(el)
-      const lineHeight = parseFloat(style.lineHeight)
-      const contentHeight = el.scrollHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
-      if (contentHeight <= lineHeight * 1.1) {
-        el.style.lineHeight = '1'
-      }
-    })
-  }
-
-  tightenSingleLineHeadings()
+  tightenSingleLineHeadings('.experience-heading')
   initTimelineHover()
   document.addEventListener('astro:page-load', () => {
-    tightenSingleLineHeadings()
+    tightenSingleLineHeadings('.experience-heading')
     initTimelineHover()
   })
 </script>
 
 <script>
-  import lottie from 'lottie-web'
   import type { AnimationItem } from 'lottie-web'
   import { animations, cmyRgba } from '../data/tokens'
 
@@ -343,36 +411,63 @@ for (let y = timelineStart; y < timelineEnd; y++) {
   const CMY_COLORS = cmyRgba(animations.timeline.hover.saveCmyOpacity)
   let colorIndex = 0
   let anim: AnimationItem | null = null
+  let lottieLoaded = false
+  let activeIO: IntersectionObserver | null = null
+
+  async function loadLottieLight() {
+    if (lottieLoaded) return (await import('lottie-web/build/player/lottie_light')).default
+    const mod = await import('lottie-web/build/player/lottie_light')
+    lottieLoaded = true
+    return mod.default
+  }
 
   function initSaveLottie() {
     const link = document.querySelector<HTMLAnchorElement>('[data-lottie-hover]')
     const container = document.querySelector<HTMLElement>('[data-lottie-container]')
     if (!link || !container) return
 
-    if (anim) {
-      anim.destroy()
-      anim = null
-    }
+    // Tear down previous state completely
+    if (activeIO) { activeIO.disconnect(); activeIO = null }
+    if (anim) { anim.destroy(); anim = null }
+    container.innerHTML = ''
 
-    anim = lottie.loadAnimation({
-      container,
-      path: '/assets/save_icon.json',
-      renderer: 'svg',
-      loop: false,
-      autoplay: false,
-    })
+    // Skip if already initialized on this DOM node
+    if (link.dataset.lottieBound === 'true') return
+    link.dataset.lottieBound = 'true'
 
-    anim.goToAndStop(0, true)
+    // Lazy-load lottie-light on first visibility
+    activeIO = new IntersectionObserver(async (entries) => {
+      if (!entries[0].isIntersecting) return
+      activeIO?.disconnect()
+      activeIO = null
 
-    link.addEventListener('mouseenter', () => {
-      anim?.playSegments(OPEN, true)
-      link.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
-    })
+      // Guard against double-load
+      if (container.querySelector('svg')) return
 
-    link.addEventListener('mouseleave', () => {
-      anim?.playSegments(CLOSE, true)
-      link.style.backgroundColor = ''
-    })
+      const lottie = await loadLottieLight()
+
+      anim = lottie.loadAnimation({
+        container,
+        path: '/assets/save_icon.json',
+        renderer: 'svg',
+        loop: false,
+        autoplay: false,
+      })
+
+      anim.goToAndStop(0, true)
+
+      link.addEventListener('mouseenter', () => {
+        anim?.playSegments(OPEN, true)
+        link.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
+      })
+
+      link.addEventListener('mouseleave', () => {
+        anim?.playSegments(CLOSE, true)
+        link.style.backgroundColor = ''
+      })
+    }, { rootMargin: '200px' })
+
+    activeIO.observe(container)
   }
 
   initSaveLottie()

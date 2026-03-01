@@ -1,7 +1,4 @@
 import gsap from 'gsap'
-import { Flip } from 'gsap/Flip'
-
-gsap.registerPlugin(Flip)
 
 const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -253,6 +250,7 @@ export function initLightbox() {
   // Attach click + keyboard handlers to all case study images
   body.querySelectorAll<HTMLImageElement>('img').forEach(img => {
     if (img.closest('.cs-hero-image')) return // Skip hero image
+    if (img.closest('.carousel-track')) return // Skip carousel images — handled by drag
     if (img.dataset.lightboxBound === 'true') return
     img.dataset.lightboxBound = 'true'
 
@@ -269,5 +267,7 @@ export function initLightbox() {
     })
   })
 
+  // Remove previous listener to prevent accumulation across page navigations
+  document.removeEventListener('keydown', handleKeydown)
   document.addEventListener('keydown', handleKeydown)
 }

@@ -12,21 +12,24 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 {(prevSlug || nextSlug) && (
   <nav class="cs-nav" aria-label="Case study navigation">
     <div class="cs-nav-inner">
-      <div class="cs-nav-links">
-        {prevSlug ? (
-          <a href={`/work/${prevSlug}`} class="cs-nav-link cs-nav-prev" data-hover="spectral-link">
-            <span class="cs-nav-label typo-ui-caps">Previous</span>
-            <span class="cs-nav-title typo-heading-sm">{prevTitle}</span>
-          </a>
-        ) : <div />}
+      {prevSlug ? (
+        <a href={`/work/${prevSlug}`} class="cs-nav-link cs-nav-prev">
+          <span class="cs-nav-label typo-ui-caps">Previous</span>
+          <span class="cs-nav-title typo-heading-sm">{prevTitle}</span>
+        </a>
+      ) : <div />}
 
-        {nextSlug ? (
-          <a href={`/work/${nextSlug}`} class="cs-nav-link cs-nav-next" data-hover="spectral-link">
-            <span class="cs-nav-label typo-ui-caps">Next</span>
-            <span class="cs-nav-title typo-heading-sm">{nextTitle}</span>
-          </a>
-        ) : <div />}
-      </div>
+      {nextSlug ? (
+        <a href={`/work/${nextSlug}`} class="cs-nav-link cs-nav-next">
+          <span class="cs-nav-label typo-ui-caps">Next</span>
+          <span class="cs-nav-title typo-heading-sm">{nextTitle}</span>
+        </a>
+      ) : <div />}
+
+      <a href="/work" class="cs-nav-link cs-nav-all">
+        <span class="cs-nav-label typo-ui-caps">Browse</span>
+        <span class="cs-nav-title typo-heading-sm">All work</span>
+      </a>
     </div>
   </nav>
 )}
@@ -40,27 +43,41 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   .cs-nav-inner {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: subgrid;
-    border-top: var(--border-width-1) solid var(--color-rule);
-    padding-top: var(--space-6);
-  }
-
-  .cs-nav-links {
     grid-column: 2 / 12;
     display: flex;
-    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--grid-gutter);
+    border-top: var(--border-width-1) solid var(--color-rule);
+    padding-top: var(--space-6);
   }
 
   .cs-nav-link {
     text-decoration: none;
     padding: var(--space-2) 0;
-    transition: color var(--transition-fast) ease;
+    transition: color var(--duration-short) ease;
+  }
+
+  .cs-nav-prev {
+    margin-right: auto;
   }
 
   .cs-nav-next {
     text-align: right;
+  }
+
+  .cs-nav-all {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding: var(--space-2) 0;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--duration-short) ease;
+  }
+
+  .cs-nav-all:hover {
+    color: var(--color-text-primary);
   }
 
   .cs-nav-label {
@@ -68,19 +85,25 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     margin-bottom: var(--space-1);
   }
 
-  .cs-nav-link:hover .cs-nav-title {
-    color: var(--color-text-primary);
+  @media (hover: hover) {
+    .cs-nav-link:hover .cs-nav-title {
+      color: var(--color-text-primary);
+    }
   }
 
   @media (--2x) {
     .cs-nav-inner {
       grid-column: 1 / -1;
+      flex-wrap: wrap;
       padding-inline: var(--page-margin);
-      border-top: var(--border-width-1) solid var(--color-rule);
     }
 
-    .cs-nav-links {
-      grid-column: 1 / -1;
+    .cs-nav-link {
+      min-height: 44px;
+    }
+
+    .cs-nav-all {
+      min-height: 44px;
     }
   }
 </style>

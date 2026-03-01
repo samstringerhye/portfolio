@@ -1,6 +1,5 @@
 export const TYPOGRAPHY_ROLES = [
   'display',
-  'display-sm',
   'heading-lg',
   'heading-sm',
   'subhead',

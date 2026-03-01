@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="About — Sam Stringer-Hye" description="About Sam Stringer-Hye — Associate Design Director at Razorfish.">
+  <section class="about-page" aria-label="About">
+    <div class="about-body">
+      <h1 class="about-name typo-display-md">All that screen time actually led somewhere</h1>
+
+      <p class="about-bio typo-body">
+        I got my first computer at seven and never really looked up. What started as a kid messing around online turned into a career designing products for Samsung, Frontier, and CVS. Currently at Razorfish, working on consumer-facing product design.
+      </p>
+
+      <p class="about-bio typo-body">
+        I'm the person who notices when the spacing is off, when a transition feels wrong, or when a component system only works in the deck. That instinct is the whole job. Making things feel right in a way that's hard to explain but easy to notice when it's missing.
+      </p>
+
+      <address class="about-links">
+        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link typo-body">LinkedIn<span class="visually-hidden"> (opens in new tab)</span></a>
+        <a href="/assets/resume.pdf" download class="about-link typo-body">Download Resume</a>
+      </address>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-page {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .about-body {
+    grid-column: 2 / 8;
+    padding-block: var(--space-6);
+  }
+
+  .about-name {
+    margin: 0 0 var(--space-4);
+  }
+
+  .about-bio {
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-4);
+    max-width: var(--prose-measure);
+  }
+
+  .about-bio:last-of-type {
+    margin-bottom: var(--space-5);
+  }
+
+  .about-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .about-link {
+    color: var(--color-text-primary);
+    text-decoration: none;
+    padding-block: var(--space-1);
+    min-height: 44px;
+  }
+
+  .about-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (--2x) {
+    .about-body {
+      grid-column: 1 / -1;
+      padding-inline: var(--page-margin);
+    }
+  }
+</style>

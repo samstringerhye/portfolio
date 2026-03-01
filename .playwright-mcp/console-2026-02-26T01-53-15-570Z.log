@@ -1,2 +1,0 @@
-[     270ms] TypeError: Failed to execute 'addEventListener' on 'EventTarget': 2 arguments required, but only 1 present.
-    at https://keycapsule.shop/cdn/shop/t/4/assets/theme.CtLZHRA6.min.js:30:27298

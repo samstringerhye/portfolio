@@ -3,7 +3,8 @@ const pathname = Astro.url.pathname
 
 const links = [
   { href: '/', label: 'Home' },
-  { href: '/#selected-work', label: 'Work' },
+  { href: '/work', label: 'Work' },
+  { href: '/about', label: 'About' },
 ]
 
 function isActive(href: string) {
@@ -38,11 +39,6 @@ function isActive(href: string) {
           </a>
         </li>
       ))}
-      <li>
-        <button class="nav-link typo-ui" data-about-trigger aria-haspopup="dialog">
-          About
-        </button>
-      </li>
     </ul>
 
     <button
@@ -96,7 +92,7 @@ function isActive(href: string) {
     white-space: nowrap;
     font-size: var(--text-100);
     gap: var(--space-2);
-    transition: background-color var(--transition-medium) ease;
+    transition: background-color var(--duration-medium) ease;
   }
 
   .nav-logo-icon {
@@ -130,11 +126,11 @@ function isActive(href: string) {
     background: none;
     border: none;
     cursor: pointer;
-    transition: background-color var(--transition-medium) ease;
+    transition: background-color var(--duration-medium) ease;
   }
 
   .nav-link.active {
-    color: var(--color-rule);
+    color: var(--nav-active-color, var(--color-text-secondary));
   }
 
 
@@ -157,8 +153,8 @@ function isActive(href: string) {
     width: var(--nav-toggle-bar-width);
     height: var(--nav-toggle-bar-height);
     background: var(--color-text-primary);
-    border-radius: var(--radius-1x);
-    transition: transform var(--transition-1x) ease, opacity var(--transition-1x) ease;
+    border-radius: var(--radius-xs);
+    transition: transform var(--duration-long) ease, opacity var(--duration-long) ease;
   }
 
   @media (--2x) {
@@ -201,7 +197,7 @@ function isActive(href: string) {
       padding-bottom: env(safe-area-inset-bottom);
       background: var(--color-bg-primary);
       transform: translateX(100%);
-      transition: transform var(--transition-1x) ease;
+      transition: transform var(--duration-long) ease;
     }
 
     .nav-links li {
@@ -222,6 +218,12 @@ function isActive(href: string) {
       width: 100%;
       padding: var(--space-3) var(--page-margin) var(--space-3) var(--space-6);
       font-size: var(--text-400);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-links {
+        transition: none;
+      }
     }
 
     .nav-toggle[aria-expanded="true"] .nav-toggle-bar:first-child {
@@ -249,7 +251,10 @@ function isActive(href: string) {
     { x: 60, y: 60 },    // path 4: blue bottom-right
   ]
 
+  const canHover = window.matchMedia('(hover: hover)').matches
+
   function initNavHover() {
+    if (!canHover) return
     const items = document.querySelectorAll<HTMLElement>('.nav-link, .nav-logo')
     items.forEach((el) => {
       if (el.dataset.navHoverBound === 'true') return
@@ -379,6 +384,13 @@ function isActive(href: string) {
       else openNav()
     })
 
+    // Close on Escape key (document-level for when focus is outside nav)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggle!.getAttribute('aria-expanded') === 'true') {
+        closeNav()
+      }
+    })
+
     // Close on nav link click (mobile)
     links.querySelectorAll('a').forEach(link => {
       if ((link as HTMLElement).dataset.navCloseBound === 'true') return
@@ -395,4 +407,23 @@ function isActive(href: string) {
 
   initNav()
   document.addEventListener('astro:after-swap', navWindow.__navAfterSwapHandler)
+
+  // Cycle accent color on the active nav link
+  const ACCENT_COLORS = [
+    'var(--color-accent-1)',
+    'var(--color-accent-2)',
+    'var(--color-accent-3)',
+  ]
+  let activeColorIndex = Math.floor(Math.random() * ACCENT_COLORS.length)
+
+  function setActiveNavColor() {
+    const activeLink = document.querySelector<HTMLElement>('.nav-link.active')
+    if (activeLink) {
+      activeLink.style.setProperty('--nav-active-color', ACCENT_COLORS[activeColorIndex])
+      activeColorIndex = (activeColorIndex + 1) % ACCENT_COLORS.length
+    }
+  }
+
+  setActiveNavColor()
+  document.addEventListener('astro:after-swap', setActiveNavColor)
 </script>

@@ -9,7 +9,7 @@
     "headline": "The short version.",
     "headlineTag": "h2",
     "headlineRole": "display-md",
-    "body": "Associate Design Director at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll right past.",
+    "body": "Associate Design Director at Razorfish with 10+ years across UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll past.",
     "bodyTag": "p",
     "bodyRole": "title-lg",
     "contentInset": "md"
@@ -28,11 +28,11 @@
     "headingRole": "display-md",
     "contentInset": "md",
     "jobTitleTag": "p",
-    "jobTitleRole": "body-lg",
+    "jobTitleRole": "subhead",
     "companyTag": "p",
-    "companyRole": "body-lg",
+    "companyRole": "body",
     "highlightTag": "p",
-    "highlightRole": "body-md",
+    "highlightRole": "body",
     "jobs": [
       {
         "title": "Associate Design Director",
@@ -41,7 +41,7 @@
         "startDate": "2021-10",
         "endDate": null,
         "highlights": [
-          "Leads UX and design systems across B2C product redesigns at scale. Mentors teams, owns outcomes, ships the work."
+          "Leads UX and design systems across B2C product redesigns for 4+ enterprise clients. Mentors junior designers and drives work from concept through production."
         ]
       },
       {
@@ -51,7 +51,7 @@
         "startDate": "2018-06",
         "endDate": "2021-10",
         "highlights": [
-          "Designed flows, prototypes, and motion systems for enterprise clients. Very focused on craft and reducing friction wherever possible."
+          "Designed flows, prototypes, and motion systems for enterprise clients. Focused on craft and reducing friction."
         ]
       },
       {
@@ -61,7 +61,7 @@
         "startDate": "2016-08",
         "endDate": "2018-06",
         "highlights": [
-          "Built interactive prototypes and motion systems for early-stage products and client pitches. The kind of work that turns a deck into something you can actually click through."]
+          "Built interactive prototypes and motion systems for early-stage products and client pitches."]
       },
       {
         "title": "Art Director",
@@ -70,7 +70,7 @@
         "startDate": "2014-03",
         "endDate": "2016-08",
         "highlights": [
-          "Led design and motion direction for Mashable's Snapchat Discover presence and managed day-to-day creative production."
+          "Led design and motion direction for Mashable's Snapchat Discover channel and day-to-day creative production."
         ]
       },
       {
