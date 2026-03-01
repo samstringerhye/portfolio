@@ -35,6 +35,7 @@ export async function initScrollReveals() {
 
     // ── Grouped reveals: [data-reveal-group] containers ──
     document.querySelectorAll<HTMLElement>('[data-reveal-group]').forEach(group => {
+      if (group.closest('[data-no-reveal]')) return
       const children = Array.from(group.querySelectorAll<HTMLElement>('[data-reveal]'))
       if (!children.length) return
 
@@ -53,9 +54,10 @@ export async function initScrollReveals() {
       })
     })
 
-    // ── Standalone reveals: [data-reveal] not inside a group ──
+    // ── Standalone reveals: [data-reveal] not inside a group or no-reveal zone ──
     document.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
       if (grouped.has(el)) return
+      if (el.closest('[data-no-reveal]')) return
 
       createCmyAutoSplitReveal(el, cfg, {
         scrollTrigger: {

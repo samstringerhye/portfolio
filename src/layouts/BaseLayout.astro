@@ -267,87 +267,18 @@ const typoCss = `:root {
     {!hideFooter && <Footer />}
     <RGBShutter />
     <script>
-      import Lenis from 'lenis'
-      import gsap from 'gsap'
-      import { ScrollTrigger } from 'gsap/ScrollTrigger'
-      import { animations } from '../data/tokens'
-
-      gsap.registerPlugin(ScrollTrigger)
-
-      const scrollCfg = animations.smoothScroll
-      let lenis: InstanceType<typeof Lenis> | null = null
-      let lenisTicker: ((time: number) => void) | null = null
-
+      // Defer GSAP + Lenis loading until browser is idle (~1s TBT savings)
       type GlobalInitState = Window & {
         __siteAfterSwapHandler?: () => void
         __sitePageLoadHandler?: () => void
         __siteDestroyLenis?: () => void
-      }
-
-      function destroyLenis() {
-        if (lenisTicker) {
-          gsap.ticker.remove(lenisTicker)
-          lenisTicker = null
-        }
-
-        lenis?.destroy()
-        lenis = null
-      }
-
-      function initLenis() {
-        destroyLenis()
-
-        // Respect reduced motion
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        if (prefersReduced) return
-
-        lenis = new Lenis({ lerp: scrollCfg.lerp, smoothWheel: true, wheelMultiplier: scrollCfg.wheelMultiplier })
-
-        lenis.on('scroll', ScrollTrigger.update)
-        lenisTicker = (time) => lenis?.raf(time * 1000)
-        gsap.ticker.add(lenisTicker)
-        gsap.ticker.lagSmoothing(0)
-      }
-
-      async function initInteractions() {
-        try {
-          const { initScrollReveals } = await import('../components/scroll-reveals.ts')
-          const { initHoverEffects } = await import('../components/hover-effects.ts')
-          const { initLightbox } = await import('../components/Lightbox.ts')
-          await initScrollReveals()
-          initHoverEffects()
-          initLightbox()
-          initScrollProgress()
-        } catch (e) {
-          console.warn('Failed to init interactions', e)
-        }
-      }
-
-      let scrollProgressTrigger: ScrollTrigger | null = null
-
-      function initScrollProgress() {
-        // Kill previous trigger to prevent accumulation across page navigations
-        scrollProgressTrigger?.kill()
-        scrollProgressTrigger = null
-
-        const bar = document.querySelector<HTMLElement>('.scroll-progress')
-        if (!bar) return
-
-        const tween = gsap.to(bar, {
-          width: '100%',
-          ease: 'none',
-          scrollTrigger: {
-            trigger: document.querySelector('.case-study-body') || document.body,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: true,
-          },
-        })
-        scrollProgressTrigger = tween.scrollTrigger ?? null
+        __gsap?: typeof import('gsap').default
+        __ScrollTrigger?: typeof import('gsap/ScrollTrigger').ScrollTrigger
       }
 
       const globalState = window as GlobalInitState
 
+      // Clean up previous handlers
       if (globalState.__siteAfterSwapHandler) {
         document.removeEventListener('astro:after-swap', globalState.__siteAfterSwapHandler)
       }
@@ -356,24 +287,104 @@ const typoCss = `:root {
       }
       globalState.__siteDestroyLenis?.()
 
-      const handleAfterSwap = () => {
+      async function initCore() {
+        const [{ default: Lenis }, { default: gsap }, { ScrollTrigger }, { animations }] = await Promise.all([
+          import('lenis'),
+          import('gsap'),
+          import('gsap/ScrollTrigger'),
+          import('../data/tokens'),
+        ])
+
+        gsap.registerPlugin(ScrollTrigger)
+        globalState.__gsap = gsap
+        globalState.__ScrollTrigger = ScrollTrigger
+
+        const scrollCfg = animations.smoothScroll
+        let lenis: InstanceType<typeof Lenis> | null = null
+        let lenisTicker: ((time: number) => void) | null = null
+
+        function destroyLenis() {
+          if (lenisTicker) {
+            gsap.ticker.remove(lenisTicker)
+            lenisTicker = null
+          }
+          lenis?.destroy()
+          lenis = null
+        }
+
+        function initLenis() {
+          destroyLenis()
+          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          if (prefersReduced) return
+
+          lenis = new Lenis({ lerp: scrollCfg.lerp, smoothWheel: true, wheelMultiplier: scrollCfg.wheelMultiplier })
+          lenis.on('scroll', ScrollTrigger.update)
+          lenisTicker = (time) => lenis?.raf(time * 1000)
+          gsap.ticker.add(lenisTicker)
+          gsap.ticker.lagSmoothing(0)
+        }
+
+        let scrollProgressTrigger: ScrollTrigger | null = null
+
+        function initScrollProgress() {
+          scrollProgressTrigger?.kill()
+          scrollProgressTrigger = null
+
+          const bar = document.querySelector<HTMLElement>('.scroll-progress')
+          if (!bar) return
+
+          const tween = gsap.to(bar, {
+            width: '100%',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: document.querySelector('.case-study-body') || document.body,
+              start: 'top top',
+              end: 'bottom bottom',
+              scrub: true,
+            },
+          })
+          scrollProgressTrigger = tween.scrollTrigger ?? null
+        }
+
+        async function initInteractions() {
+          try {
+            const { initScrollReveals } = await import('../components/scroll-reveals.ts')
+            const { initHoverEffects } = await import('../components/hover-effects.ts')
+            const { initLightbox } = await import('../components/Lightbox.ts')
+            await initScrollReveals()
+            initHoverEffects()
+            initLightbox()
+            initScrollProgress()
+          } catch (e) {
+            console.warn('Failed to init interactions', e)
+          }
+        }
+
+        const handleAfterSwap = () => {
+          initLenis()
+          ScrollTrigger.refresh()
+        }
+
+        const handlePageLoad = () => {
+          initInteractions()
+        }
+
+        globalState.__siteAfterSwapHandler = handleAfterSwap
+        globalState.__sitePageLoadHandler = handlePageLoad
+        globalState.__siteDestroyLenis = destroyLenis
+
         initLenis()
-        ScrollTrigger.refresh()
-      }
-
-      const handlePageLoad = () => {
         initInteractions()
+
+        document.addEventListener('astro:after-swap', handleAfterSwap)
+        document.addEventListener('astro:page-load', handlePageLoad)
       }
 
-      globalState.__siteAfterSwapHandler = handleAfterSwap
-      globalState.__sitePageLoadHandler = handlePageLoad
-      globalState.__siteDestroyLenis = destroyLenis
-
-      initLenis()
-      initInteractions()
-
-      document.addEventListener('astro:after-swap', handleAfterSwap)
-      document.addEventListener('astro:page-load', handlePageLoad)
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => initCore(), { timeout: 1500 })
+      } else {
+        setTimeout(initCore, 100)
+      }
     </script>
 
   </body>
