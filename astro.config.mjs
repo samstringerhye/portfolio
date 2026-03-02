@@ -15,6 +15,10 @@ export default defineConfig({
     quality: 70,
   },
 
+  build: {
+    inlineStylesheets: 'always',
+  },
+
   markdown: {
     remarkPlugins: [remarkUnwrapImages],
     rehypePlugins: [rehypeLazyImages],
