@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config'
-import react from '@astrojs/react'
+// import react from '@astrojs/react' // Removed: no React islands remain
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import remarkUnwrapImages from 'remark-unwrap-images'
@@ -9,7 +9,11 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   devToolbar: { enabled: false },
   site: 'https://samstringerhye.com',
-  integrations: [react(), mdx(), sitemap({ filter: (page) => !page.includes('/404') }), icon()],
+  integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/404') }), icon()],
+
+  image: {
+    quality: 70,
+  },
 
   markdown: {
     remarkPlugins: [remarkUnwrapImages],
@@ -21,7 +25,7 @@ export default defineConfig({
       noExternal: ['gsap'],
     },
     optimizeDeps: {
-      include: ['react/jsx-dev-runtime', 'react/jsx-runtime', 'lottie-web/build/player/lottie_light'],
+      include: ['lottie-web/build/player/lottie_light'],
     },
   },
 

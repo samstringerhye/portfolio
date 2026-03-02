@@ -147,27 +147,28 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const isMobile = window.matchMedia('(max-width: 768px)').matches
 
-  // Dynamic Three.js imports
-  const [
-    { Scene, OrthographicCamera, Color, SRGBColorSpace, WebGLRenderer, InstancedMesh, CircleGeometry, MeshBasicMaterial },
-    { EffectComposer },
-    { RenderPass },
-    { ShaderPass },
-    { FXAAShader },
-    { OutputPass },
-  ] = await Promise.all([
-    import('three'),
-    import('three/examples/jsm/postprocessing/EffectComposer.js'),
-    import('three/examples/jsm/postprocessing/RenderPass.js'),
-    import('three/examples/jsm/postprocessing/ShaderPass.js'),
-    import('three/examples/jsm/shaders/FXAAShader.js'),
-    import('three/examples/jsm/postprocessing/OutputPass.js'),
-  ])
+  // Dynamic Three.js imports — skip postprocessing on mobile to reduce bundle + per-frame work
+  const { Scene, OrthographicCamera, Color, SRGBColorSpace, WebGLRenderer, InstancedMesh, CircleGeometry, MeshBasicMaterial } = await import('three')
+
+  let composer: any = null
+  let fxaaPass: any = null
+  if (!isMobile) {
+    const [{ EffectComposer }, { RenderPass }, { ShaderPass }, { FXAAShader }, { OutputPass }] = await Promise.all([
+      import('three/examples/jsm/postprocessing/EffectComposer.js'),
+      import('three/examples/jsm/postprocessing/RenderPass.js'),
+      import('three/examples/jsm/postprocessing/ShaderPass.js'),
+      import('three/examples/jsm/shaders/FXAAShader.js'),
+      import('three/examples/jsm/postprocessing/OutputPass.js'),
+    ])
+    // Composer is set up after renderer/camera below
+    composer = { EffectComposer, RenderPass, ShaderPass, FXAAShader, OutputPass }
+  }
 
   // Build scene
   const gen = generators[cfg.arrangement] || generators.concentric
-  const numRays = isMobile ? Math.round(cfg.numRays * 0.5) : cfg.numRays
-  const dotsPerRay = isMobile ? Math.round(cfg.dotsPerRay * 0.5) : cfg.dotsPerRay
+  const mobileFactor = 0.25 // Aggressively reduce dots on mobile (1/16th total)
+  const numRays = isMobile ? Math.round(cfg.numRays * mobileFactor) : cfg.numRays
+  const dotsPerRay = isMobile ? Math.round(cfg.dotsPerRay * mobileFactor) : cfg.dotsPerRay
   const { posX, posY, dist, total } = gen(numRays, dotsPerRay, cfg.spacing, cfg.innerRadius)
 
   let maxDist = 0
@@ -210,7 +211,7 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   }
 
   // Renderer
-  const dpr = Math.min(window.devicePixelRatio, isMobile ? 1.5 : cfg.maxDpr)
+  const dpr = Math.min(window.devicePixelRatio, isMobile ? 1 : cfg.maxDpr)
   const renderer = new WebGLRenderer({ antialias: false, alpha: false })
   renderer.sortObjects = false
   renderer.outputColorSpace = SRGBColorSpace
@@ -224,15 +225,18 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   camera.position.set(0, 0, 100)
   camera.zoom = cfg.zoom
 
-  // Post-processing
-  const composer = new EffectComposer(renderer)
-  const renderPass = new RenderPass(scene, camera)
-  renderPass.clearAlpha = 1
-  composer.addPass(renderPass)
-  const fxaaPass = new ShaderPass(FXAAShader)
-  composer.addPass(fxaaPass)
-  const outputPass = new OutputPass()
-  composer.addPass(outputPass)
+  // Post-processing (desktop only)
+  let effectComposer: any = null
+  if (composer) {
+    const { EffectComposer, RenderPass, ShaderPass, FXAAShader, OutputPass } = composer
+    effectComposer = new EffectComposer(renderer)
+    const renderPass = new RenderPass(scene, camera)
+    renderPass.clearAlpha = 1
+    effectComposer.addPass(renderPass)
+    fxaaPass = new ShaderPass(FXAAShader)
+    effectComposer.addPass(fxaaPass)
+    effectComposer.addPass(new OutputPass())
+  }
 
   // Visibility tracking
   let isVisible = true
@@ -262,10 +266,12 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
     const h = container.clientHeight
     if (w === 0 || h === 0) return
     renderer.setSize(w, h)
-    const pw = w * dpr
-    const ph = h * dpr
-    composer.setSize(w, h)
-    fxaaPass.uniforms.resolution.value.set(1 / pw, 1 / ph)
+    if (effectComposer) {
+      const pw = w * dpr
+      const ph = h * dpr
+      effectComposer.setSize(w, h)
+      fxaaPass.uniforms.resolution.value.set(1 / pw, 1 / ph)
+    }
     camera.left = -w / 2
     camera.right = w / 2
     camera.top = h / 2
@@ -279,21 +285,31 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const ro = new ResizeObserver(resize)
   ro.observe(container)
 
-  // Animation loop
+  // Animation loop — throttle to 30fps on mobile
   const startTime = performance.now()
   const cmyDelay = animations.hero.canvas.cmyStagger
+  const frameInterval = isMobile ? 1000 / 30 : 0 // 30fps cap on mobile
+  let lastFrameTime = 0
 
   function tick() {
     if (!prefersReduced) {
       frameId = requestAnimationFrame(tick)
     }
-    const elapsed = (performance.now() - startTime - pauseAccum) / 1000
+    const now = performance.now()
+    if (isMobile && now - lastFrameTime < frameInterval) return
+    lastFrameTime = now
+
+    const elapsed = (now - startTime - pauseAccum) / 1000
     const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
     meshes.forEach((mesh, i) => {
       updateDots(mesh.instanceMatrix.array as Float32Array, total, posX, posY, dist, dotScales, time - delays[i] * cmyDelay)
       mesh.instanceMatrix.needsUpdate = true
     })
-    composer.render()
+    if (effectComposer) {
+      effectComposer.render()
+    } else {
+      renderer.render(scene, camera)
+    }
   }
 
   tick()
@@ -303,7 +319,7 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
     cancelAnimationFrame(frameId)
     observer.disconnect()
     ro.disconnect()
-    composer.dispose()
+    effectComposer?.dispose()
     meshes.forEach(mesh => (mesh.material as MeshBasicMaterial).dispose())
     meshes[0].geometry.dispose()
     renderer.dispose()
