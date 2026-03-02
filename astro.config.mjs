@@ -12,7 +12,7 @@ export default defineConfig({
   integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/404') }), icon()],
 
   image: {
-    quality: 70,
+    quality: 60,
   },
 
   build: {

@@ -160,7 +160,6 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
       import('three/examples/jsm/shaders/FXAAShader.js'),
       import('three/examples/jsm/postprocessing/OutputPass.js'),
     ])
-    // Composer is set up after renderer/camera below
     composer = { EffectComposer, RenderPass, ShaderPass, FXAAShader, OutputPass }
   }
 
