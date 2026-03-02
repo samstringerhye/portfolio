@@ -64,16 +64,19 @@ const dg = animations.dotGrid
     content: '';
     position: absolute;
     inset: 0;
+    width: calc(100% + var(--dotSpacing));
+    height: calc(100% + var(--dotSpacing));
     background-image: radial-gradient(circle, var(--color-text-primary) var(--dotRadius), transparent var(--dotRadius));
     background-size: var(--dotSpacing) var(--dotSpacing);
     opacity: var(--dotGridOpacity);
     pointer-events: none;
+    will-change: transform;
     animation: dot-drift 2s linear infinite;
   }
 
   @keyframes dot-drift {
-    0% { background-position: 0 0; }
-    100% { background-position: var(--dotSpacing) var(--dotSpacing); }
+    from { transform: translate(0, 0); }
+    to { transform: translate(calc(-1 * var(--dotSpacing)), calc(-1 * var(--dotSpacing))); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -116,21 +119,30 @@ const dg = animations.dotGrid
 </style>
 
 <script>
-  import gsap from 'gsap'
-  import { animations } from '../data/tokens'
-
-  const scrollDuration = animations.interests.scrollDuration
-  let interestsTweens: gsap.core.Tween[] = []
+  let interestsTweens: any[] = []
+  let interestsObserver: IntersectionObserver | null = null
 
   function cleanupScrollingInterests() {
     interestsTweens.forEach(t => t.kill())
     interestsTweens = []
+    interestsObserver?.disconnect()
+    interestsObserver = null
   }
 
-  function initScrollingInterests() {
+  async function initScrollingInterests() {
     cleanupScrollingInterests()
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const section = document.querySelector('.interests-section')
+    if (!section) return
+
+    const [{ default: gsap }, { animations }] = await Promise.all([
+      import('gsap'),
+      import('../data/tokens'),
+    ])
+
+    const scrollDuration = animations.interests.scrollDuration
     const rows = document.querySelectorAll('.interests-row')
 
     rows.forEach((row, i) => {
@@ -141,14 +153,12 @@ const dg = animations.dotGrid
       const direction = row.getAttribute('data-direction')
       const filterId = `distort-${i + 1}`
 
-      // SVG feDisplacementMap filters break GSAP transforms on mobile Safari —
-      // only apply on non-touch (pointer: fine) devices
       const canFilter = window.matchMedia('(pointer: fine)').matches
       if (canFilter) {
         ;(track as HTMLElement).style.filter = `url(#${filterId})`
       }
 
-      let tween: gsap.core.Tween
+      let tween: any
 
       if (direction === 'left') {
         tween = gsap.to(track, {
@@ -176,11 +186,26 @@ const dg = animations.dotGrid
         })
       }
 
+      tween.pause()
       interestsTweens.push(tween)
     })
+
+    // Pause/resume infinite tweens based on visibility
+    interestsObserver = new IntersectionObserver(([entry]) => {
+      interestsTweens.forEach(t => entry.isIntersecting ? t.play() : t.pause())
+    }, { threshold: 0 })
+    interestsObserver.observe(section)
   }
 
-  initScrollingInterests()
-  document.addEventListener('astro:page-load', initScrollingInterests)
+  function deferInit() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => initScrollingInterests(), { timeout: 2000 })
+    } else {
+      setTimeout(initScrollingInterests, 200)
+    }
+  }
+
+  deferInit()
+  document.addEventListener('astro:page-load', deferInit)
   document.addEventListener('astro:before-swap', cleanupScrollingInterests)
 </script>

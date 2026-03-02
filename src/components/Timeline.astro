@@ -431,18 +431,11 @@ const jobsWithRows = jobsChronological.map((j, i) => {
     if (anim) { anim.destroy(); anim = null }
     container.innerHTML = ''
 
-    // Skip if already initialized on this DOM node
-    if (link.dataset.lottieBound === 'true') return
-    link.dataset.lottieBound = 'true'
-
     // Lazy-load lottie-light on first visibility
     activeIO = new IntersectionObserver(async (entries) => {
       if (!entries[0].isIntersecting) return
       activeIO?.disconnect()
       activeIO = null
-
-      // Guard against double-load
-      if (container.querySelector('svg')) return
 
       const lottie = await loadLottieLight()
 
@@ -467,7 +460,7 @@ const jobsWithRows = jobsChronological.map((j, i) => {
       })
     }, { rootMargin: '200px' })
 
-    activeIO.observe(container)
+    activeIO.observe(link)
   }
 
   initSaveLottie()

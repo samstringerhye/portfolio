@@ -66,10 +66,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     color: var(--color-text-primary);
   }
 
-  .hero-block {
-    opacity: 0;
-    filter: blur(var(--heroInitBlur));
-  }
+  /* Initial state set via JS to avoid blocking LCP */
 
   @media (prefers-reduced-motion: reduce) {
     .hero-block {
@@ -106,6 +103,10 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     }
 
     const cfg = animations.textReveal
+
+    // Set initial hidden state via JS (not CSS) so LCP isn't blocked
+    gsap.set(els, { opacity: 0, filter: `blur(${cfg.initialBlur}px)` })
+
     const startDelay = animations.hero.text.startDelay
 
     await document.fonts.ready
@@ -115,6 +116,14 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     })
   }
 
-  animateHero()
-  document.addEventListener('astro:page-load', animateHero)
+  function deferHero() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => animateHero(), { timeout: 1500 })
+    } else {
+      setTimeout(animateHero, 100)
+    }
+  }
+
+  deferHero()
+  document.addEventListener('astro:page-load', deferHero)
 </script>

@@ -54,11 +54,11 @@ const featured = allWork
             <div class="work-card-inner">
               <Image
                 src={card.thumbnail}
-                alt={card.title}
+                alt=""
                 widths={[400, 800, 1200, 1600]}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 format="webp"
-                quality={90}
+                quality={80}
                 loading="lazy"
               />
             </div>
@@ -555,6 +555,14 @@ const featured = allWork
     initWorkCarousel()
   }
 
-  init()
-  document.addEventListener('astro:page-load', init)
+  function deferInit() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => init(), { timeout: 1500 })
+    } else {
+      setTimeout(init, 100)
+    }
+  }
+
+  deferInit()
+  document.addEventListener('astro:page-load', deferInit)
 </script>

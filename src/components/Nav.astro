@@ -202,10 +202,6 @@ function isActive(href: string) {
     .nav-links li {
       flex: none;
       border-left: none;
-      border-bottom: var(--border-width-1) solid var(--color-rule);
-    }
-
-    .nav-links li:last-child {
       border-bottom: none;
     }
 
@@ -215,9 +211,12 @@ function isActive(href: string) {
 
     .nav-link {
       width: 100%;
-      padding: var(--space-3) var(--page-margin) var(--space-3) var(--space-6);
+      margin-inline: var(--page-margin);
+      padding: var(--space-3) var(--space-3);
       font-size: var(--text-400);
+      border-bottom: var(--border-width-1) solid var(--color-rule);
     }
+
 
     @media (prefers-reduced-motion: reduce) {
       .nav-links {
