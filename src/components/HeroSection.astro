@@ -1,5 +1,4 @@
 ---
-import HeroCanvasLazy from './HeroCanvasLazy.jsx'
 import type { HeadingTag, TypographyRole } from '../types/typography'
 import { animations } from '../data/tokens'
 
@@ -19,7 +18,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
 
 <section class="hero" aria-label="Introduction">
   <div class="hero-canvas-fallback" aria-hidden="true"></div>
-  <HeroCanvasLazy client:only="react" />
+  <div id="hero-canvas-root" aria-hidden="true"></div>
   <div class="hero-text">
     <HeroTag class:list={["hero-block", heroRole]} data-hero-text>{headline}</HeroTag>
   </div>
@@ -41,7 +40,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     background: radial-gradient(ellipse at 50% 60%, var(--color-bg-alt) 0%, var(--color-bg-primary) 70%);
   }
 
-  .hero :global(astro-island) {
+  #hero-canvas-root {
     position: absolute;
     inset: 0;
     z-index: var(--z-base);
@@ -126,4 +125,27 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
 
   deferHero()
   document.addEventListener('astro:page-load', deferHero)
+</script>
+
+<script>
+  let cleanupCanvas: (() => void) | null = null
+
+  async function mountHeroCanvas() {
+    const root = document.getElementById('hero-canvas-root')
+    if (!root) return
+    cleanupCanvas?.()
+    const { initHeroCanvas } = await import('./hero-canvas')
+    cleanupCanvas = await initHeroCanvas(root)
+  }
+
+  function deferCanvas() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => mountHeroCanvas(), { timeout: 3000 })
+    } else {
+      setTimeout(mountHeroCanvas, 2000)
+    }
+  }
+
+  deferCanvas()
+  document.addEventListener('astro:page-load', deferCanvas)
 </script>
