@@ -196,7 +196,9 @@ function isActive(href: string) {
       padding-bottom: env(safe-area-inset-bottom);
       background: var(--color-bg-primary);
       transform: translateX(100%);
-      transition: transform var(--duration-long) ease;
+      transition: transform var(--duration-long) ease, visibility 0s var(--duration-long);
+      visibility: hidden;
+      overflow: hidden;
     }
 
     .nav-links li {
@@ -207,6 +209,8 @@ function isActive(href: string) {
 
     .nav-links.open {
       transform: translateX(0);
+      visibility: visible;
+      transition: transform var(--duration-long) ease, visibility 0s 0s;
     }
 
     .nav-link {

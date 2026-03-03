@@ -215,7 +215,10 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   renderer.sortObjects = false
   renderer.outputColorSpace = SRGBColorSpace
   renderer.setPixelRatio(dpr)
-  renderer.setClearColor(new Color(cfg.bgColor || semantic.color.bg.primary).convertSRGBToLinear(), 1)
+  // Read CSS bg color and convert sRGB→linear so outputColorSpace conversion lands correctly
+  const bgStyle = getComputedStyle(container).backgroundColor || 'rgb(239,244,245)'
+  const bgColor = new Color(bgStyle).convertSRGBToLinear()
+  renderer.setClearColor(bgColor, 1)
   container.appendChild(renderer.domElement)
   renderer.domElement.style.display = 'block'
 
@@ -230,6 +233,7 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
     const { EffectComposer, RenderPass, ShaderPass, FXAAShader, OutputPass } = composer
     effectComposer = new EffectComposer(renderer)
     const renderPass = new RenderPass(scene, camera)
+    renderPass.clearColor = bgColor
     renderPass.clearAlpha = 1
     effectComposer.addPass(renderPass)
     fxaaPass = new ShaderPass(FXAAShader)
@@ -284,26 +288,34 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const ro = new ResizeObserver(resize)
   ro.observe(container)
 
-  // Animation loop — throttle to 30fps on mobile
+  // Animation loop — render at full rate, throttle dot updates to save CPU
   const startTime = performance.now()
   const cmyDelay = animations.hero.canvas.cmyStagger
-  const frameInterval = isMobile ? 1000 / 30 : 0 // 30fps cap on mobile
-  let lastFrameTime = 0
+  const simInterval = isMobile ? 1000 / 30 : 1000 / 45 // dot math budget
+  let lastSimTime = 0
+  let needsRender = true
 
   function tick() {
     if (!prefersReduced) {
       frameId = requestAnimationFrame(tick)
     }
     const now = performance.now()
-    if (isMobile && now - lastFrameTime < frameInterval) return
-    lastFrameTime = now
 
-    const elapsed = (now - startTime - pauseAccum) / 1000
-    const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
-    meshes.forEach((mesh, i) => {
-      updateDots(mesh.instanceMatrix.array as Float32Array, total, posX, posY, dist, dotScales, time - delays[i] * cmyDelay)
-      mesh.instanceMatrix.needsUpdate = true
-    })
+    // Update dot positions at throttled rate
+    if (now - lastSimTime >= simInterval) {
+      lastSimTime = now
+      needsRender = true
+      const elapsed = (now - startTime - pauseAccum) / 1000
+      const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
+      meshes.forEach((mesh, i) => {
+        updateDots(mesh.instanceMatrix.array as Float32Array, total, posX, posY, dist, dotScales, time - delays[i] * cmyDelay)
+        mesh.instanceMatrix.needsUpdate = true
+      })
+    }
+
+    // Render every frame (cheap if nothing changed), skip if no update
+    if (!needsRender) return
+    needsRender = false
     if (effectComposer) {
       effectComposer.render()
     } else {
