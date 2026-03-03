@@ -108,6 +108,14 @@ try {
     players.forEach(p => observer.observe(p))
   }
 
-  initLottie()
-  document.addEventListener('astro:page-load', initLottie)
+  function deferLottie() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => initLottie(), { timeout: 3000 })
+    } else {
+      setTimeout(initLottie, 2000)
+    }
+  }
+
+  deferLottie()
+  document.addEventListener('astro:page-load', deferLottie)
 </script>

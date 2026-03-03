@@ -45,6 +45,12 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     inset: 0;
     z-index: var(--z-base);
     background-color: var(--color-bg-primary);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  #hero-canvas-root.is-ready {
+    opacity: 1;
   }
 
   .hero-text {
@@ -72,6 +78,10 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
       opacity: 1;
       transform: none;
       filter: none;
+    }
+    #hero-canvas-root {
+      transition: none;
+      opacity: 1;
     }
   }
 </style>
@@ -136,13 +146,14 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     cleanupCanvas?.()
     const { initHeroCanvas } = await import('./hero-canvas')
     cleanupCanvas = await initHeroCanvas(root)
+    requestAnimationFrame(() => root.classList.add('is-ready'))
   }
 
   function deferCanvas() {
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => mountHeroCanvas(), { timeout: 3000 })
+      requestIdleCallback(() => mountHeroCanvas(), { timeout: 1500 })
     } else {
-      setTimeout(mountHeroCanvas, 2000)
+      setTimeout(mountHeroCanvas, 1000)
     }
   }
 

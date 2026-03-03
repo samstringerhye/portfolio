@@ -106,6 +106,15 @@ function sizeTaper(n: number, sizeStart: number, sizeMid: number, sizeEnd: numbe
 }
 
 /* -- Update dot instance matrices for a given time -- */
+/* -- Hoisted config for tight loop -- */
+const _waveSpeed = cfg.waveSpeed
+const _propagation = cfg.propagation
+const _waveSharpness = cfg.waveSharpness
+const _waveAmplitude = cfg.waveAmplitude
+const _waveFrequency = cfg.waveFrequency
+const _baseScale = cfg.baseScale
+const _twistAmount = cfg.twistAmount
+
 function updateDots(
   matArr: Float32Array, total: number,
   posX: Float32Array, posY: Float32Array, dist: Float32Array,
@@ -113,10 +122,10 @@ function updateDots(
 ) {
   for (let i = 0; i < total; i++) {
     const d = dist[i]
-    const t = time * cfg.waveSpeed - d / cfg.propagation
-    const wave = roundedSquareWave(t, cfg.waveSharpness + (0.2 * d) / 50, cfg.waveAmplitude, cfg.waveFrequency)
-    const scale = wave + cfg.baseScale
-    const tw = wave * cfg.twistAmount
+    const t = time * _waveSpeed - d / _propagation
+    const wave = roundedSquareWave(t, _waveSharpness + (0.2 * d) / 50, _waveAmplitude, _waveFrequency)
+    const scale = wave + _baseScale
+    const tw = wave * _twistAmount
     const px = posX[i] * scale
     const py = posY[i] * scale
     const cosT = Math.cos(tw)
@@ -147,25 +156,11 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const isMobile = window.matchMedia('(max-width: 768px)').matches
 
-  // Dynamic Three.js imports — skip postprocessing on mobile to reduce bundle + per-frame work
   const { Scene, OrthographicCamera, Color, SRGBColorSpace, WebGLRenderer, InstancedMesh, CircleGeometry, MeshBasicMaterial } = await import('three')
-
-  let composer: any = null
-  let fxaaPass: any = null
-  if (!isMobile) {
-    const [{ EffectComposer }, { RenderPass }, { ShaderPass }, { FXAAShader }, { OutputPass }] = await Promise.all([
-      import('three/examples/jsm/postprocessing/EffectComposer.js'),
-      import('three/examples/jsm/postprocessing/RenderPass.js'),
-      import('three/examples/jsm/postprocessing/ShaderPass.js'),
-      import('three/examples/jsm/shaders/FXAAShader.js'),
-      import('three/examples/jsm/postprocessing/OutputPass.js'),
-    ])
-    composer = { EffectComposer, RenderPass, ShaderPass, FXAAShader, OutputPass }
-  }
 
   // Build scene
   const gen = generators[cfg.arrangement] || generators.concentric
-  const mobileFactor = 0.25 // Aggressively reduce dots on mobile (1/16th total)
+  const mobileFactor = 0.5
   const numRays = isMobile ? Math.round(cfg.numRays * mobileFactor) : cfg.numRays
   const dotsPerRay = isMobile ? Math.round(cfg.dotsPerRay * mobileFactor) : cfg.dotsPerRay
   const { posX, posY, dist, total } = gen(numRays, dotsPerRay, cfg.spacing, cfg.innerRadius)
@@ -182,7 +177,7 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   }
 
   const scene = new Scene()
-  const geometry = new CircleGeometry(cfg.dotRadius, cfg.dotSegments)
+  const geometry = new CircleGeometry(cfg.dotRadius, 6)
 
   const accentColors = semantic.color.accent
   const accentOpacity = cfg.accentOpacity ?? 1
@@ -210,14 +205,15 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   }
 
   // Renderer
-  const dpr = Math.min(window.devicePixelRatio, isMobile ? 1 : cfg.maxDpr)
-  const renderer = new WebGLRenderer({ antialias: false, alpha: false })
+  const dpr = Math.min(window.devicePixelRatio, isMobile ? 1.5 : cfg.maxDpr)
+  const renderer = new WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'low-power' })
   renderer.sortObjects = false
   renderer.outputColorSpace = SRGBColorSpace
   renderer.setPixelRatio(dpr)
   // Read CSS bg color and convert sRGB→linear so outputColorSpace conversion lands correctly
   const bgStyle = getComputedStyle(container).backgroundColor || 'rgb(239,244,245)'
-  const bgColor = new Color(bgStyle).convertSRGBToLinear()
+  const bgColor = new Color(bgStyle)
+  // No post-processing, so keep sRGB — no OutputPass to convert back
   renderer.setClearColor(bgColor, 1)
   container.appendChild(renderer.domElement)
   renderer.domElement.style.display = 'block'
@@ -226,20 +222,6 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0.1, 1000)
   camera.position.set(0, 0, 100)
   camera.zoom = cfg.zoom
-
-  // Post-processing (desktop only)
-  let effectComposer: any = null
-  if (composer) {
-    const { EffectComposer, RenderPass, ShaderPass, FXAAShader, OutputPass } = composer
-    effectComposer = new EffectComposer(renderer)
-    const renderPass = new RenderPass(scene, camera)
-    renderPass.clearColor = bgColor
-    renderPass.clearAlpha = 1
-    effectComposer.addPass(renderPass)
-    fxaaPass = new ShaderPass(FXAAShader)
-    effectComposer.addPass(fxaaPass)
-    effectComposer.addPass(new OutputPass())
-  }
 
   // Visibility tracking
   let isVisible = true
@@ -263,18 +245,13 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   )
   observer.observe(container)
 
+
   // Sizing
   function resize() {
     const w = container.clientWidth
     const h = container.clientHeight
     if (w === 0 || h === 0) return
     renderer.setSize(w, h)
-    if (effectComposer) {
-      const pw = w * dpr
-      const ph = h * dpr
-      effectComposer.setSize(w, h)
-      fxaaPass.uniforms.resolution.value.set(1 / pw, 1 / ph)
-    }
     camera.left = -w / 2
     camera.right = w / 2
     camera.top = h / 2
@@ -288,39 +265,24 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const ro = new ResizeObserver(resize)
   ro.observe(container)
 
-  // Animation loop — render at full rate, throttle dot updates to save CPU
+  // Animation loop — update and render every frame
   const startTime = performance.now()
   const cmyDelay = animations.hero.canvas.cmyStagger
-  const simInterval = isMobile ? 1000 / 30 : 1000 / 45 // dot math budget
-  let lastSimTime = 0
-  let needsRender = true
 
   function tick() {
     if (!prefersReduced) {
       frameId = requestAnimationFrame(tick)
     }
-    const now = performance.now()
 
-    // Update dot positions at throttled rate
-    if (now - lastSimTime >= simInterval) {
-      lastSimTime = now
-      needsRender = true
-      const elapsed = (now - startTime - pauseAccum) / 1000
-      const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
-      meshes.forEach((mesh, i) => {
-        updateDots(mesh.instanceMatrix.array as Float32Array, total, posX, posY, dist, dotScales, time - delays[i] * cmyDelay)
-        mesh.instanceMatrix.needsUpdate = true
-      })
-    }
+    const elapsed = (performance.now() - startTime - pauseAccum) / 1000
+    const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
 
-    // Render every frame (cheap if nothing changed), skip if no update
-    if (!needsRender) return
-    needsRender = false
-    if (effectComposer) {
-      effectComposer.render()
-    } else {
-      renderer.render(scene, camera)
-    }
+    meshes.forEach((mesh, i) => {
+      updateDots(mesh.instanceMatrix.array as Float32Array, total, posX, posY, dist, dotScales, time - delays[i] * cmyDelay)
+      mesh.instanceMatrix.needsUpdate = true
+    })
+
+    renderer.render(scene, camera)
   }
 
   tick()
@@ -330,7 +292,6 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
     cancelAnimationFrame(frameId)
     observer.disconnect()
     ro.disconnect()
-    effectComposer?.dispose()
     meshes.forEach(mesh => (mesh.material as MeshBasicMaterial).dispose())
     meshes[0].geometry.dispose()
     renderer.dispose()

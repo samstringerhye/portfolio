@@ -29,7 +29,6 @@ src/
     HeroSection.astro, BioSection.astro, WorkCarousel.astro
     Timeline.astro, ScrollingInterests.astro, ResumeLink.astro
     CaseStudyHero.astro, CaseStudyNav.astro
-    HeroCanvas.jsx         — R3F hero (client:only="react")
     WorkCarouselIsland.jsx — GSAP carousel (client:visible)
     TuningPanel.jsx        — Dev-only tuning overlay
     store.js, heroSchema.js — Zustand tuning store
