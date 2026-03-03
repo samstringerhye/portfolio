@@ -25,6 +25,7 @@ export default defineConfig({
   },
 
   vite: {
+    worker: { format: 'es' },
     ssr: {
       noExternal: ['gsap'],
     },

@@ -2,147 +2,9 @@ import { animations, semantic } from '../data/tokens'
 
 const cfg = animations.hero.canvas
 
-const TWO_PI = Math.PI * 2
-const PHI = (1 + Math.sqrt(5)) / 2
-
-const roundedSquareWave = (t: number, delta: number, a: number, f: number) =>
-  ((2 * a) / Math.PI) * Math.atan(Math.sin(TWO_PI * t * f) / delta)
-
-/* -- Arrangement generators (flat typed arrays) -- */
-function generateSpiral(numRays: number, dotsPerRay: number, spacing: number) {
-  const total = numRays * dotsPerRay
-  const posX = new Float32Array(total)
-  const posY = new Float32Array(total)
-  const dist = new Float32Array(total)
-  const goldenAngle = TWO_PI / (PHI * PHI)
-  for (let i = 0; i < total; i++) {
-    const angle = i * goldenAngle
-    const r = spacing * Math.sqrt(i)
-    const x = Math.cos(angle) * r
-    const y = Math.sin(angle) * r
-    posX[i] = x
-    posY[i] = y
-    dist[i] = Math.sqrt(x * x + y * y)
-  }
-  return { posX, posY, dist, total }
-}
-
-function generateConcentric(numRays: number, dotsPerRay: number, spacing: number, innerRadius: number) {
-  const total = numRays * dotsPerRay
-  const posX = new Float32Array(total)
-  const posY = new Float32Array(total)
-  const dist = new Float32Array(total)
-  let idx = 0
-  for (let ring = 0; ring < dotsPerRay; ring++) {
-    const r = innerRadius + ring * spacing
-    for (let i = 0; i < numRays; i++) {
-      const angle = (i / numRays) * TWO_PI
-      posX[idx] = Math.cos(angle) * r
-      posY[idx] = Math.sin(angle) * r
-      dist[idx] = r
-      idx++
-    }
-  }
-  return { posX, posY, dist, total }
-}
-
-function generateHexagonal(_numRays: number, dotsPerRay: number, spacing: number) {
-  const maxR = dotsPerRay * spacing
-  const rowH = spacing * Math.sqrt(3) / 2
-  const rows = Math.ceil(maxR * 2 / rowH)
-  const tmpX: number[] = [], tmpY: number[] = [], tmpD: number[] = []
-  for (let row = -rows; row <= rows; row++) {
-    const y = row * rowH
-    const offset = (row % 2) * spacing * 0.5
-    const cols = Math.ceil(maxR * 2 / spacing)
-    for (let col = -cols; col <= cols; col++) {
-      const x = col * spacing + offset
-      const d2 = x * x + y * y
-      if (d2 > maxR * maxR) continue
-      tmpX.push(x)
-      tmpY.push(y)
-      tmpD.push(Math.sqrt(d2))
-    }
-  }
-  return {
-    posX: new Float32Array(tmpX),
-    posY: new Float32Array(tmpY),
-    dist: new Float32Array(tmpD),
-    total: tmpX.length,
-  }
-}
-
-function generateRose(numRays: number, dotsPerRay: number, spacing: number) {
-  const total = numRays * dotsPerRay
-  const posX = new Float32Array(total)
-  const posY = new Float32Array(total)
-  const dist = new Float32Array(total)
-  const k = Math.max(2, Math.round(numRays / 20))
-  for (let i = 0; i < total; i++) {
-    const theta = (i / total) * TWO_PI * k
-    const r = Math.cos(k * theta) * dotsPerRay * spacing * 0.3
-    const absR = Math.abs(r)
-    const sign = r >= 0 ? 1 : -1
-    const x = Math.cos(theta) * absR * sign
-    const y = Math.sin(theta) * absR * sign
-    posX[i] = x
-    posY[i] = y
-    dist[i] = Math.sqrt(x * x + y * y)
-  }
-  return { posX, posY, dist, total }
-}
-
-const generators: Record<string, Function> = {
-  spiral: generateSpiral,
-  concentric: generateConcentric,
-  hexagonal: generateHexagonal,
-  rose: generateRose,
-}
-
-/* -- Size taper -- */
-function sizeTaper(n: number, sizeStart: number, sizeMid: number, sizeEnd: number) {
-  const inv = 1 - n
-  return inv * inv * sizeStart + 2 * inv * n * sizeMid + n * n * sizeEnd
-}
-
-/* -- Update dot instance matrices for a given time -- */
-/* -- Hoisted config for tight loop -- */
-const _waveSpeed = cfg.waveSpeed
-const _propagation = cfg.propagation
-const _waveSharpness = cfg.waveSharpness
-const _waveAmplitude = cfg.waveAmplitude
-const _waveFrequency = cfg.waveFrequency
-const _baseScale = cfg.baseScale
-const _twistAmount = cfg.twistAmount
-
-function updateDots(
-  matArr: Float32Array, total: number,
-  posX: Float32Array, posY: Float32Array, dist: Float32Array,
-  dotScales: Float32Array, time: number,
-) {
-  for (let i = 0; i < total; i++) {
-    const d = dist[i]
-    const t = time * _waveSpeed - d / _propagation
-    const wave = roundedSquareWave(t, _waveSharpness + (0.2 * d) / 50, _waveAmplitude, _waveFrequency)
-    const scale = wave + _baseScale
-    const tw = wave * _twistAmount
-    const px = posX[i] * scale
-    const py = posY[i] * scale
-    const cosT = Math.cos(tw)
-    const sinT = Math.sin(tw)
-    const s = dotScales[i]
-
-    const o = i * 16
-    matArr[o]      = s
-    matArr[o + 5]  = s
-    matArr[o + 10] = s
-    matArr[o + 12] = px * cosT - py * sinT
-    matArr[o + 13] = px * sinT + py * cosT
-  }
-}
-
 /**
- * Initialize the hero canvas with vanilla Three.js (no React).
+ * Initialize the hero canvas.
+ * Uses OffscreenCanvas + Web Worker when supported, falls back to inline Three.js.
  * Returns a cleanup function.
  */
 export async function initHeroCanvas(container: HTMLElement): Promise<() => void> {
@@ -156,9 +18,275 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const isMobile = window.matchMedia('(max-width: 768px)').matches
 
+  // Get the canvas element from the DOM (added in HeroSection.astro)
+  const canvas = container.querySelector('canvas') as HTMLCanvasElement | null
+  if (!canvas) return () => {}
+
+  // Feature-detect OffscreenCanvas with WebGL support
+  let supportsOffscreen = false
+  try {
+    if (typeof canvas.transferControlToOffscreen === 'function') {
+      // Probe with a throwaway canvas to avoid consuming the real one
+      const probe = document.createElement('canvas')
+      const off = probe.transferControlToOffscreen()
+      const gl = off.getContext('webgl2') || off.getContext('webgl')
+      supportsOffscreen = !!gl
+    }
+  } catch {}
+
+  if (supportsOffscreen) {
+    return initWithWorker(container, canvas, isMobile, prefersReduced)
+  }
+  return initFallback(container, canvas, isMobile, prefersReduced)
+}
+
+/* -- OffscreenCanvas Worker path -- */
+function initWithWorker(
+  container: HTMLElement,
+  canvas: HTMLCanvasElement,
+  isMobile: boolean,
+  prefersReduced: boolean,
+): () => void {
+  const offscreen = canvas.transferControlToOffscreen()
+  const dpr = Math.min(window.devicePixelRatio, isMobile ? 1.5 : cfg.maxDpr)
+  const bgStyle = getComputedStyle(container).backgroundColor || 'rgb(239,244,245)'
+  const accentColors = semantic.color.accent
+
+  const worker = new Worker(
+    new URL('./hero-canvas.worker.ts', import.meta.url),
+    { type: 'module' },
+  )
+
+  // If the worker errors (e.g. Safari WebGL on OffscreenCanvas), fall back
+  let fellBack = false
+  worker.onerror = () => {
+    if (fellBack) return
+    fellBack = true
+    worker.terminate()
+    ro.disconnect()
+    io.disconnect()
+    // Re-create canvas since transferControlToOffscreen consumed the original
+    const newCanvas = document.createElement('canvas')
+    newCanvas.style.cssText = 'display:block;width:100%;height:100%'
+    container.innerHTML = ''
+    container.appendChild(newCanvas)
+    initFallback(container, newCanvas, isMobile, prefersReduced)
+  }
+
+  worker.onmessage = (e) => {
+    if (e.data.type === 'ready') {
+      requestAnimationFrame(() => container.classList.add('is-ready'))
+    } else if (e.data.type === 'error') {
+      worker.onerror!(new ErrorEvent('error'))
+    }
+  }
+
+  worker.postMessage({
+    type: 'init',
+    canvas: offscreen,
+    width: container.clientWidth,
+    height: container.clientHeight,
+    dpr,
+    bgColor: bgStyle,
+    isMobile,
+    prefersReduced,
+    config: {
+      arrangement: cfg.arrangement,
+      numRays: cfg.numRays,
+      dotsPerRay: cfg.dotsPerRay,
+      spacing: cfg.spacing,
+      innerRadius: cfg.innerRadius,
+      dotRadius: cfg.dotRadius,
+      sizeStart: cfg.sizeStart,
+      sizeMid: cfg.sizeMid,
+      sizeEnd: cfg.sizeEnd,
+      waveSpeed: cfg.waveSpeed,
+      waveFrequency: cfg.waveFrequency,
+      waveAmplitude: cfg.waveAmplitude,
+      waveSharpness: cfg.waveSharpness,
+      propagation: cfg.propagation,
+      baseScale: cfg.baseScale,
+      twistAmount: cfg.twistAmount,
+      zoom: cfg.zoom,
+      accentOpacity: cfg.accentOpacity,
+      cmyStagger: cfg.cmyStagger,
+      wavePaused: cfg.wavePaused,
+    },
+    colors: {
+      accent1: accentColors['1'],
+      accent2: accentColors['2'],
+      accent3: accentColors['3'],
+      textPrimary: semantic.color.text.primary,
+    },
+  } as any, [offscreen])
+
+  // ResizeObserver → post size changes to worker
+  const ro = new ResizeObserver(() => {
+    const w = container.clientWidth
+    const h = container.clientHeight
+    if (w > 0 && h > 0) {
+      worker.postMessage({ type: 'resize', width: w, height: h })
+    }
+  })
+  ro.observe(container)
+
+  // IntersectionObserver → post visibility changes to worker
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      worker.postMessage({ type: 'visibility', visible: entry.isIntersecting })
+    },
+    { threshold: 0 },
+  )
+  io.observe(container)
+
+  return () => {
+    ro.disconnect()
+    io.disconnect()
+    worker.terminate()
+  }
+}
+
+/* -- Fallback: inline Three.js (no OffscreenCanvas support) -- */
+async function initFallback(
+  container: HTMLElement,
+  canvas: HTMLCanvasElement,
+  isMobile: boolean,
+  prefersReduced: boolean,
+): Promise<() => void> {
+  const TWO_PI = Math.PI * 2
+  const PHI = (1 + Math.sqrt(5)) / 2
+
+  const roundedSquareWave = (t: number, delta: number, a: number, f: number) =>
+    ((2 * a) / Math.PI) * Math.atan(Math.sin(TWO_PI * t * f) / delta)
+
+  function generateSpiral(numRays: number, dotsPerRay: number, spacing: number) {
+    const total = numRays * dotsPerRay
+    const posX = new Float32Array(total)
+    const posY = new Float32Array(total)
+    const dist = new Float32Array(total)
+    const goldenAngle = TWO_PI / (PHI * PHI)
+    for (let i = 0; i < total; i++) {
+      const angle = i * goldenAngle
+      const r = spacing * Math.sqrt(i)
+      const x = Math.cos(angle) * r
+      const y = Math.sin(angle) * r
+      posX[i] = x
+      posY[i] = y
+      dist[i] = Math.sqrt(x * x + y * y)
+    }
+    return { posX, posY, dist, total }
+  }
+
+  function generateConcentric(numRays: number, dotsPerRay: number, spacing: number, innerRadius: number) {
+    const total = numRays * dotsPerRay
+    const posX = new Float32Array(total)
+    const posY = new Float32Array(total)
+    const dist = new Float32Array(total)
+    let idx = 0
+    for (let ring = 0; ring < dotsPerRay; ring++) {
+      const r = innerRadius + ring * spacing
+      for (let i = 0; i < numRays; i++) {
+        const angle = (i / numRays) * TWO_PI
+        posX[idx] = Math.cos(angle) * r
+        posY[idx] = Math.sin(angle) * r
+        dist[idx] = r
+        idx++
+      }
+    }
+    return { posX, posY, dist, total }
+  }
+
+  function generateHexagonal(_numRays: number, dotsPerRay: number, spacing: number) {
+    const maxR = dotsPerRay * spacing
+    const rowH = spacing * Math.sqrt(3) / 2
+    const rows = Math.ceil(maxR * 2 / rowH)
+    const tmpX: number[] = [], tmpY: number[] = [], tmpD: number[] = []
+    for (let row = -rows; row <= rows; row++) {
+      const y = row * rowH
+      const offset = (row % 2) * spacing * 0.5
+      const cols = Math.ceil(maxR * 2 / spacing)
+      for (let col = -cols; col <= cols; col++) {
+        const x = col * spacing + offset
+        const d2 = x * x + y * y
+        if (d2 > maxR * maxR) continue
+        tmpX.push(x)
+        tmpY.push(y)
+        tmpD.push(Math.sqrt(d2))
+      }
+    }
+    return {
+      posX: new Float32Array(tmpX),
+      posY: new Float32Array(tmpY),
+      dist: new Float32Array(tmpD),
+      total: tmpX.length,
+    }
+  }
+
+  function generateRose(numRays: number, dotsPerRay: number, spacing: number) {
+    const total = numRays * dotsPerRay
+    const posX = new Float32Array(total)
+    const posY = new Float32Array(total)
+    const dist = new Float32Array(total)
+    const k = Math.max(2, Math.round(numRays / 20))
+    for (let i = 0; i < total; i++) {
+      const theta = (i / total) * TWO_PI * k
+      const r = Math.cos(k * theta) * dotsPerRay * spacing * 0.3
+      const absR = Math.abs(r)
+      const sign = r >= 0 ? 1 : -1
+      const x = Math.cos(theta) * absR * sign
+      const y = Math.sin(theta) * absR * sign
+      posX[i] = x
+      posY[i] = y
+      dist[i] = Math.sqrt(x * x + y * y)
+    }
+    return { posX, posY, dist, total }
+  }
+
+  const generators: Record<string, Function> = {
+    spiral: generateSpiral, concentric: generateConcentric,
+    hexagonal: generateHexagonal, rose: generateRose,
+  }
+
+  function sizeTaper(n: number, sizeStart: number, sizeMid: number, sizeEnd: number) {
+    const inv = 1 - n
+    return inv * inv * sizeStart + 2 * inv * n * sizeMid + n * n * sizeEnd
+  }
+
+  const _waveSpeed = cfg.waveSpeed
+  const _propagation = cfg.propagation
+  const _waveSharpness = cfg.waveSharpness
+  const _waveAmplitude = cfg.waveAmplitude
+  const _waveFrequency = cfg.waveFrequency
+  const _baseScale = cfg.baseScale
+  const _twistAmount = cfg.twistAmount
+
+  function updateDots(
+    matArr: Float32Array, total: number,
+    posX: Float32Array, posY: Float32Array, dist: Float32Array,
+    dotScales: Float32Array, time: number,
+  ) {
+    for (let i = 0; i < total; i++) {
+      const d = dist[i]
+      const t = time * _waveSpeed - d / _propagation
+      const wave = roundedSquareWave(t, _waveSharpness + (0.2 * d) / 50, _waveAmplitude, _waveFrequency)
+      const scale = wave + _baseScale
+      const tw = wave * _twistAmount
+      const px = posX[i] * scale
+      const py = posY[i] * scale
+      const cosT = Math.cos(tw)
+      const sinT = Math.sin(tw)
+      const s = dotScales[i]
+      const o = i * 16
+      matArr[o]      = s
+      matArr[o + 5]  = s
+      matArr[o + 10] = s
+      matArr[o + 12] = px * cosT - py * sinT
+      matArr[o + 13] = px * sinT + py * cosT
+    }
+  }
+
   const { Scene, OrthographicCamera, Color, SRGBColorSpace, WebGLRenderer, InstancedMesh, CircleGeometry, MeshBasicMaterial } = await import('three')
 
-  // Build scene
   const gen = generators[cfg.arrangement] || generators.concentric
   const mobileFactor = 0.5
   const numRays = isMobile ? Math.round(cfg.numRays * mobileFactor) : cfg.numRays
@@ -178,7 +306,6 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
 
   const scene = new Scene()
   const geometry = new CircleGeometry(cfg.dotRadius, 6)
-
   const accentColors = semantic.color.accent
   const accentOpacity = cfg.accentOpacity ?? 1
   const layers = [
@@ -192,11 +319,8 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const delays: number[] = []
   for (const layer of layers) {
     const mat = new MeshBasicMaterial({
-      color: layer.color,
-      depthWrite: false,
-      depthTest: false,
-      transparent: true,
-      opacity: layer.opacity,
+      color: layer.color, depthWrite: false, depthTest: false,
+      transparent: true, opacity: layer.opacity,
     })
     const mesh = new InstancedMesh(geometry, mat, total)
     scene.add(mesh)
@@ -204,26 +328,19 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
     delays.push(layer.delay)
   }
 
-  // Renderer
   const dpr = Math.min(window.devicePixelRatio, isMobile ? 1.5 : cfg.maxDpr)
-  const renderer = new WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'low-power' })
+  const renderer = new WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'low-power' })
   renderer.sortObjects = false
   renderer.outputColorSpace = SRGBColorSpace
   renderer.setPixelRatio(dpr)
-  // Read CSS bg color and convert sRGB→linear so outputColorSpace conversion lands correctly
   const bgStyle = getComputedStyle(container).backgroundColor || 'rgb(239,244,245)'
   const bgColor = new Color(bgStyle)
-  // No post-processing, so keep sRGB — no OutputPass to convert back
   renderer.setClearColor(bgColor, 1)
-  container.appendChild(renderer.domElement)
-  renderer.domElement.style.display = 'block'
 
-  // Camera
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0.1, 1000)
   camera.position.set(0, 0, 100)
   camera.zoom = cfg.zoom
 
-  // Visibility tracking
   let isVisible = true
   let hiddenAt = 0
   let pauseAccum = 0
@@ -245,13 +362,13 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   )
   observer.observe(container)
 
-
-  // Sizing
   function resize() {
     const w = container.clientWidth
     const h = container.clientHeight
     if (w === 0 || h === 0) return
-    renderer.setSize(w, h)
+    renderer.setSize(w, h, false)
+    canvas.style.width = w + 'px'
+    canvas.style.height = h + 'px'
     camera.left = -w / 2
     camera.right = w / 2
     camera.top = h / 2
@@ -265,29 +382,25 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
   const ro = new ResizeObserver(resize)
   ro.observe(container)
 
-  // Animation loop — update and render every frame
   const startTime = performance.now()
-  const cmyDelay = animations.hero.canvas.cmyStagger
+  const cmyDelay = cfg.cmyStagger
 
   function tick() {
     if (!prefersReduced) {
       frameId = requestAnimationFrame(tick)
     }
-
     const elapsed = (performance.now() - startTime - pauseAccum) / 1000
     const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
-
     meshes.forEach((mesh, i) => {
       updateDots(mesh.instanceMatrix.array as Float32Array, total, posX, posY, dist, dotScales, time - delays[i] * cmyDelay)
       mesh.instanceMatrix.needsUpdate = true
     })
-
     renderer.render(scene, camera)
   }
 
   tick()
+  requestAnimationFrame(() => container.classList.add('is-ready'))
 
-  // Return cleanup
   return () => {
     cancelAnimationFrame(frameId)
     observer.disconnect()
@@ -295,8 +408,5 @@ export async function initHeroCanvas(container: HTMLElement): Promise<() => void
     meshes.forEach(mesh => (mesh.material as MeshBasicMaterial).dispose())
     meshes[0].geometry.dispose()
     renderer.dispose()
-    if (renderer.domElement.parentNode) {
-      renderer.domElement.parentNode.removeChild(renderer.domElement)
-    }
   }
 }

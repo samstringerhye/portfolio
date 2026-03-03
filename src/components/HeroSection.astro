@@ -18,7 +18,9 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
 
 <section class="hero" aria-label="Introduction">
   <div class="hero-canvas-fallback" aria-hidden="true"></div>
-  <div id="hero-canvas-root" aria-hidden="true"></div>
+  <div id="hero-canvas-root" aria-hidden="true">
+    <canvas style="display:block;width:100%;height:100%"></canvas>
+  </div>
   <div class="hero-text">
     <HeroTag class:list={["hero-block", heroRole]} data-hero-text>{headline}</HeroTag>
   </div>
