@@ -148,7 +148,6 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     cleanupCanvas?.()
     const { initHeroCanvas } = await import('./hero-canvas')
     cleanupCanvas = await initHeroCanvas(root)
-    requestAnimationFrame(() => root.classList.add('is-ready'))
   }
 
   function deferCanvas() {

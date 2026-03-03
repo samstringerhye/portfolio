@@ -59,9 +59,10 @@ function initWithWorker(
 
   // If the worker errors (e.g. Safari WebGL on OffscreenCanvas), fall back
   let fellBack = false
-  worker.onerror = () => {
+  function fallbackToInline() {
     if (fellBack) return
     fellBack = true
+    clearTimeout(readyTimeout)
     worker.terminate()
     ro.disconnect()
     io.disconnect()
@@ -73,19 +74,34 @@ function initWithWorker(
     initFallback(container, newCanvas, isMobile, prefersReduced)
   }
 
+  worker.onerror = fallbackToInline
+
+  // Timeout: if worker doesn't signal ready within 5s, fall back
+  const readyTimeout = setTimeout(fallbackToInline, 5000)
+
   worker.onmessage = (e) => {
     if (e.data.type === 'ready') {
+      clearTimeout(readyTimeout)
       requestAnimationFrame(() => container.classList.add('is-ready'))
     } else if (e.data.type === 'error') {
-      worker.onerror!(new ErrorEvent('error'))
+      fallbackToInline()
     }
+  }
+
+  // Ensure we have real dimensions (may be 0 during requestIdleCallback)
+  let w = container.clientWidth
+  let h = container.clientHeight
+  if (w === 0 || h === 0) {
+    const rect = container.getBoundingClientRect()
+    w = Math.round(rect.width)
+    h = Math.round(rect.height)
   }
 
   worker.postMessage({
     type: 'init',
     canvas: offscreen,
-    width: container.clientWidth,
-    height: container.clientHeight,
+    width: w,
+    height: h,
     dpr,
     bgColor: bgStyle,
     isMobile,
@@ -140,6 +156,7 @@ function initWithWorker(
   io.observe(container)
 
   return () => {
+    clearTimeout(readyTimeout)
     ro.disconnect()
     io.disconnect()
     worker.terminate()
