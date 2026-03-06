@@ -2,6 +2,8 @@ import { animations, semantic } from '../data/tokens'
 
 const cfg = animations.hero.canvas
 
+const MOBILE_FACTOR = 0.5
+
 /**
  * Initialize the hero canvas.
  * Uses OffscreenCanvas + Web Worker when supported, falls back to inline Three.js.
@@ -123,7 +125,7 @@ function initWithWorker(
       propagation: cfg.propagation,
       baseScale: cfg.baseScale,
       twistAmount: cfg.twistAmount,
-      zoom: isMobile ? cfg.zoom * 0.5 : cfg.zoom,
+      zoom: isMobile ? cfg.zoom * MOBILE_FACTOR : cfg.zoom,
       accentOpacity: cfg.accentOpacity,
       cmyStagger: cfg.cmyStagger,
       wavePaused: cfg.wavePaused,
@@ -305,9 +307,8 @@ async function initFallback(
   const { Scene, OrthographicCamera, Color, SRGBColorSpace, WebGLRenderer, InstancedMesh, CircleGeometry, MeshBasicMaterial } = await import('three')
 
   const gen = generators[cfg.arrangement] || generators.concentric
-  const mobileFactor = 0.5
-  const numRays = isMobile ? Math.round(cfg.numRays * mobileFactor) : cfg.numRays
-  const dotsPerRay = isMobile ? Math.round(cfg.dotsPerRay * mobileFactor) : cfg.dotsPerRay
+  const numRays = isMobile ? Math.round(cfg.numRays * MOBILE_FACTOR) : cfg.numRays
+  const dotsPerRay = isMobile ? Math.round(cfg.dotsPerRay * MOBILE_FACTOR) : cfg.dotsPerRay
   const { posX, posY, dist, total } = gen(numRays, dotsPerRay, cfg.spacing, cfg.innerRadius)
 
   let maxDist = 0
@@ -354,7 +355,7 @@ async function initFallback(
   const bgColor = new Color(bgStyle)
   renderer.setClearColor(bgColor, 1)
 
-  const effectiveZoom = isMobile ? cfg.zoom * 0.5 : cfg.zoom
+  const effectiveZoom = isMobile ? cfg.zoom * MOBILE_FACTOR : cfg.zoom
 
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0.1, 1000)
   camera.position.set(0, 0, 100)

@@ -147,11 +147,11 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     if (mountPending) return
     mountPending = true
     try {
-    const root = document.getElementById('hero-canvas-root')
-    if (!root) return
-    cleanupCanvas?.()
-    const { initHeroCanvas } = await import('./hero-canvas')
-    cleanupCanvas = await initHeroCanvas(root)
+      const root = document.getElementById('hero-canvas-root')
+      if (!root) return
+      cleanupCanvas?.()
+      const { initHeroCanvas } = await import('./hero-canvas')
+      cleanupCanvas = await initHeroCanvas(root)
     } finally {
       mountPending = false
     }
