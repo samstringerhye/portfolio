@@ -135,6 +135,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     }
   }
 
+  deferHero()
   document.addEventListener('astro:page-load', deferHero)
 </script>
 
@@ -145,6 +146,15 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     const root = document.getElementById('hero-canvas-root')
     if (!root) return
     cleanupCanvas?.()
+    cleanupCanvas = null
+    // Replace the canvas element so transferControlToOffscreen() can be
+    // called fresh — the original is consumed once and can't be reused.
+    const old = root.querySelector('canvas')
+    if (old) {
+      const fresh = document.createElement('canvas')
+      fresh.style.cssText = 'display:block;width:100%;height:100%'
+      old.replaceWith(fresh)
+    }
     const { initHeroCanvas } = await import('./hero-canvas')
     cleanupCanvas = await initHeroCanvas(root)
   }
@@ -157,5 +167,6 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     }
   }
 
+  deferCanvas()
   document.addEventListener('astro:page-load', deferCanvas)
 </script>
