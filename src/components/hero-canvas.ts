@@ -123,7 +123,7 @@ function initWithWorker(
       propagation: cfg.propagation,
       baseScale: cfg.baseScale,
       twistAmount: cfg.twistAmount,
-      zoom: cfg.zoom,
+      zoom: isMobile ? cfg.zoom * 0.5 : cfg.zoom,
       accentOpacity: cfg.accentOpacity,
       cmyStagger: cfg.cmyStagger,
       wavePaused: cfg.wavePaused,
@@ -354,9 +354,11 @@ async function initFallback(
   const bgColor = new Color(bgStyle)
   renderer.setClearColor(bgColor, 1)
 
+  const effectiveZoom = isMobile ? cfg.zoom * 0.5 : cfg.zoom
+
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0.1, 1000)
   camera.position.set(0, 0, 100)
-  camera.zoom = cfg.zoom
+  camera.zoom = effectiveZoom
 
   let isVisible = true
   let hiddenAt = 0
@@ -390,7 +392,7 @@ async function initFallback(
     camera.right = w / 2
     camera.top = h / 2
     camera.bottom = -h / 2
-    camera.zoom = cfg.zoom
+    camera.zoom = effectiveZoom
     camera.position.set(0, 0, 100)
     camera.updateProjectionMatrix()
   }

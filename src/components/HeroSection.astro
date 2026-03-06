@@ -141,13 +141,20 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
 
 <script>
   let cleanupCanvas: (() => void) | null = null
+  let mountPending = false
 
   async function mountHeroCanvas() {
+    if (mountPending) return
+    mountPending = true
+    try {
     const root = document.getElementById('hero-canvas-root')
     if (!root) return
     cleanupCanvas?.()
     const { initHeroCanvas } = await import('./hero-canvas')
     cleanupCanvas = await initHeroCanvas(root)
+    } finally {
+      mountPending = false
+    }
   }
 
   function deferCanvas() {
