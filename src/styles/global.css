@@ -18,7 +18,7 @@ html {
 }
 
 body {
-  --ls-base: -0.02rem;
+  --ls-base: 0rem;
   letter-spacing: calc(var(--ls-base) + var(--ls-adjust, 0rem));
   font-family: var(--font-primary);
   font-size: var(--text-100);
@@ -78,12 +78,6 @@ ol {
   list-style: none;
 }
 
-/* Serif base letter-spacing (Playfair Display) */
-[class*="typo-display"],
-[class*="typo-headline"] {
-  --ls-base: -0.1rem;
-  letter-spacing: calc(var(--ls-base) + var(--ls-adjust, 0rem));
-}
 
 /* SplitText word wrappers — keep inline after animation completes */
 .cmy-word {
