@@ -250,14 +250,105 @@ const typoCss = `:root {
     <SEO title={title} description={description} ogImage={ogImage} jsonLd={jsonLd} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Mono:wght@400;500&subset=latin&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=DM+Mono:wght@400;500&subset=latin&display=swap" />
     <style>
       @font-face {
-        font-family: 'Playfair Display Fallback';
-        src: local('Times New Roman');
-        size-adjust: 112%;
-        ascent-override: 97%;
-        descent-override: 27%;
+        font-family: 'Perfectly Nineties';
+        src: url('/fonts/perfectlynineties-regular.otf') format('opentype');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Perfectly Nineties';
+        src: url('/fonts/perfectlynineties-regularitalic.otf') format('opentype');
+        font-weight: 400;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Perfectly Nineties';
+        src: url('/fonts/perfectlynineties-semibold.otf') format('opentype');
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Perfectly Nineties';
+        src: url('/fonts/perfectlynineties-semibolditalic.otf') format('opentype');
+        font-weight: 600;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Perfectly Nineties';
+        src: url('/fonts/perfectlynineties-bold.otf') format('opentype');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Perfectly Nineties';
+        src: url('/fonts/perfectlynineties-bolditalic.otf') format('opentype');
+        font-weight: 700;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Söhne';
+        src: url('/fonts/sohne-regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Söhne';
+        src: url('/fonts/sohne-regular-italic.woff2') format('woff2');
+        font-weight: 400;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Söhne';
+        src: url('/fonts/sohne-medium.woff2') format('woff2');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Söhne';
+        src: url('/fonts/sohne-medium-italic.woff2') format('woff2');
+        font-weight: 500;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Söhne';
+        src: url('/fonts/sohne-semibold.woff2') format('woff2');
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Söhne';
+        src: url('/fonts/sohne-semibold-italic.woff2') format('woff2');
+        font-weight: 600;
+        font-style: italic;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Söhne';
+        src: url('/fonts/sohne-bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Söhne';
+        src: url('/fonts/sohne-bold-italic.woff2') format('woff2');
+        font-weight: 700;
+        font-style: italic;
+        font-display: swap;
       }
       @font-face {
         font-family: 'DM Sans Fallback';

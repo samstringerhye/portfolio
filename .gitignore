@@ -20,8 +20,8 @@ dist/
 # Playwright MCP cache
 .playwright-mcp/
 
-# Trial fonts (not used — site uses Google Fonts)
-fonts/
+# Trial/source fonts (not committed — only public/fonts is tracked)
+/fonts/
 
 # Editor / OS
 .DS_Store
