@@ -17,22 +17,22 @@
   "work": {
     "headline": "Selected Work",
     "headingTag": "h2",
-    "headingRole": "display-md",
+    "headingRole": "headline-lg",
     "cardTitleTag": "p",
-    "cardTitleRole": "title-lg",
+    "cardTitleRole": "body-lg",
     "contentInset": "md"
   },
   "experience": {
     "headline": "Experience",
     "headingTag": "h2",
-    "headingRole": "display-md",
+    "headingRole": "headline-lg",
     "contentInset": "md",
     "jobTitleTag": "p",
     "jobTitleRole": "body-lg",
     "companyTag": "p",
     "companyRole": "body-lg",
     "highlightTag": "p",
-    "highlightRole": "body-md",
+    "highlightRole": "body-lg",
     "jobs": [
       {
         "title": "Associate Design Director",

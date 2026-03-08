@@ -2,15 +2,11 @@ export const TYPOGRAPHY_ROLES = [
   'display-lg',
   'display-md',
   'headline-lg',
-  'headline-md',
   'headline-sm',
   'title-lg',
-  'title-sm',
   'body-lg',
-  'body-md',
-  'label-lg',
-  'label-sm',
-  'ui-lg',
+  'body-sm',
+  'ui',
   'ui-caps',
 ] as const
 

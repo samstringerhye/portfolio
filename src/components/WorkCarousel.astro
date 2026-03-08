@@ -16,7 +16,7 @@ interface Props {
 const {
   headline = 'Selected Work',
   headingTag = 'h2', headingRole = 'display',
-  cardTitleTag = 'h3', cardTitleRole = 'headline-lg',
+  cardTitleTag = 'h3', cardTitleRole = 'ui',
   contentInset = 'md',
 } = Astro.props as Props
 const SectionTag = headingTag as any
@@ -170,7 +170,7 @@ const featured = allWork
   }
 
   .work-card {
-    flex: 0 0 50%;
+    flex: 0 0 66.666%;
     position: relative;
     display: block;
     text-decoration: none;
@@ -335,7 +335,7 @@ const featured = allWork
           return
         }
         const { col, gutter } = getGridMetrics()
-        const slideWidth = col * 6 + gutter * 5
+        const slideWidth = col * 8 + gutter * 7
         track!.style.paddingLeft = '0'
         track!.style.paddingRight = '0'
         track!.style.gap = '0'

@@ -81,8 +81,7 @@
     "fontWeight": {
       "type": "number",
       "minimum": 100,
-      "maximum": 900,
-      "multipleOf": 100
+      "maximum": 900
     },
 
     "ref": {
@@ -104,6 +103,7 @@
             "weight": {
               "type": "object",
               "properties": {
+                "light": { "$ref": "#/definitions/fontWeight" },
                 "regular": { "$ref": "#/definitions/fontWeight" },
                 "medium": { "$ref": "#/definitions/fontWeight" },
                 "semibold": { "$ref": "#/definitions/fontWeight" },
@@ -114,15 +114,13 @@
             "scale": {
               "type": "object",
               "properties": {
-                "50": { "$ref": "#/definitions/fluidOrFixed" },
                 "75": { "$ref": "#/definitions/fluidOrFixed" },
                 "100": { "$ref": "#/definitions/fluidOrFixed" },
                 "200": { "$ref": "#/definitions/fluidOrFixed" },
                 "300": { "$ref": "#/definitions/fluidOrFixed" },
                 "400": { "$ref": "#/definitions/fluidOrFixed" },
                 "500": { "$ref": "#/definitions/fluidOrFixed" },
-                "600": { "$ref": "#/definitions/fluidOrFixed" },
-                "700": { "$ref": "#/definitions/fluidOrFixed" }
+                "600": { "$ref": "#/definitions/fluidOrFixed" }
               },
               "additionalProperties": false
             },
@@ -504,15 +502,11 @@
             "display-lg": { "$ref": "#/definitions/typographyRole" },
             "display-md": { "$ref": "#/definitions/typographyRole" },
             "headline-lg": { "$ref": "#/definitions/typographyRole" },
-            "headline-md": { "$ref": "#/definitions/typographyRole" },
             "headline-sm": { "$ref": "#/definitions/typographyRole" },
             "title-lg": { "$ref": "#/definitions/typographyRole" },
-            "title-sm": { "$ref": "#/definitions/typographyRole" },
             "body-lg": { "$ref": "#/definitions/typographyRole" },
-            "body-md": { "$ref": "#/definitions/typographyRole" },
-            "label-lg": { "$ref": "#/definitions/typographyRole" },
-            "label-sm": { "$ref": "#/definitions/typographyRole" },
-            "ui-lg": { "$ref": "#/definitions/typographyRole" },
+            "body-sm": { "$ref": "#/definitions/typographyRole" },
+            "ui": { "$ref": "#/definitions/typographyRole" },
             "ui-caps": { "$ref": "#/definitions/typographyRole" }
           },
           "additionalProperties": false

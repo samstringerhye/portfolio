@@ -18,14 +18,15 @@ html {
 }
 
 body {
-  --ls-base: -0.02rem;
-  letter-spacing: calc(var(--ls-base) + var(--ls-adjust, 0rem));
+  letter-spacing: var(--ls-adjust, 0rem);
   font-family: var(--font-primary);
   font-size: var(--text-100);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-normal);
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
+  font-feature-settings: 'liga' 1, 'calt' 1;
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
@@ -78,12 +79,6 @@ ol {
   list-style: none;
 }
 
-/* Serif base letter-spacing (Playfair Display) */
-[class*="typo-display"],
-[class*="typo-headline"] {
-  --ls-base: -0.1rem;
-  letter-spacing: calc(var(--ls-base) + var(--ls-adjust, 0rem));
-}
 
 /* SplitText word wrappers — keep inline after animation completes */
 .cmy-word {

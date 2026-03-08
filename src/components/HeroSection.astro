@@ -8,7 +8,7 @@ interface Props {
   role?: TypographyRole
 }
 
-const { headline, tag = 'h1', role = 'display' } = Astro.props as Props
+const { headline, tag = 'h1', role = 'display-lg' } = Astro.props as Props
 const HeroTag = tag as any
 const heroRole = `typo-${role}`
 

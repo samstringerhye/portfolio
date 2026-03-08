@@ -32,30 +32,33 @@ function getYear(d: string | null) {
 const timelineStart = 2012
 const timelineEnd = currentYear - 1 // display years 2012–2025
 
-// Year markers — one per grid row
+// Year markers — one per grid row, newest at top
 const yearMarkers: number[] = []
-for (let y = timelineStart; y <= timelineEnd; y++) {
+for (let y = timelineEnd; y >= timelineStart; y--) {
   yearMarkers.push(y)
 }
 
-// Each year = 1 grid row. Row lines are 1-based.
+// Each year = 1 grid row. Newest year = row 1.
 function yearToRow(year: number) {
-  return year - timelineStart + 1
+  return timelineEnd - year + 1
 }
 
-const jobsChronological = [...jobs].reverse()
+const jobsChronological = [...jobs]
 
 const jobsWithRows = jobsChronological.map((j, i) => {
   const start = getYear(j.startDate)
   const end = getYear(j.endDate)
   const yearLabel = j.endDate ? `${start}–${end}` : `${start}–Present`
+  // In inverted grid: end year is at top (lower row), start year at bottom (higher row).
+  // End year is exclusive (same convention as original) — current jobs extend to row 1.
+  const rowStart = end > timelineEnd ? yearToRow(timelineEnd) : yearToRow(end) + 1
+  const rowEnd = yearToRow(start) + 1
   return {
     ...j,
     yearLabel,
     index: i,
-    rowStart: yearToRow(start),
-    // +1 because grid-row end is exclusive; clamp to grid size
-    rowEnd: yearToRow(end),
+    rowStart,
+    rowEnd,
   }
 })
 ---

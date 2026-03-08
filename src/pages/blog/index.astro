@@ -33,19 +33,19 @@ const allPosts = (await getCollection('blog'))
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    padding-bottom: var(--space-7);
+    padding-bottom: var(--space-6);
   }
 
   .blog-index-heading {
     grid-column: 4 / 10;
     color: var(--color-text-primary);
     margin: 0;
-    padding-block: var(--space-7);
+    padding-block: var(--space-6);
   }
 
   .blog-empty {
     grid-column: 4 / 10;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
   }
 
   .blog-row {
@@ -61,7 +61,7 @@ const allPosts = (await getCollection('blog'))
 
   .blog-row-date {
     display: block;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     margin-bottom: var(--space-2);
   }
 
@@ -72,7 +72,7 @@ const allPosts = (await getCollection('blog'))
   }
 
   .blog-row-desc {
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     margin: 0;
     text-wrap: pretty;
     max-width: var(--prose-measure);
