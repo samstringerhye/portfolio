@@ -7,21 +7,21 @@ const allPosts = (await getCollection('blog'))
 ---
 
 <BaseLayout title="Blog — Sam Stringer-Hye" description="Thoughts on design, development, and the space between.">
-  <section class="blog-index" aria-label="Blog posts" data-no-reveal>
-    <h1 class="blog-index-heading typo-display-md">Blog</h1>
+  <section class="blog-index" aria-label="Blog posts">
+    <h1 class="blog-index-heading typo-display-md" data-reveal="line">Blog</h1>
 
     {allPosts.length === 0 && (
-      <p class="blog-empty typo-body-lg">No posts yet. Check back soon.</p>
+      <p class="blog-empty typo-body-lg" data-reveal="line">No posts yet. Check back soon.</p>
     )}
 
     {allPosts.map(post => (
-      <article class="blog-row">
+      <article class="blog-row" data-reveal-group>
         <a href={`/blog/${post.id}`} class="blog-row-link" data-astro-prefetch="hover">
-          <time class="blog-row-date typo-ui-caps" datetime={post.data.publishedDate.toISOString().slice(0, 10)}>
+          <time class="blog-row-date typo-ui-caps" data-reveal="line" datetime={post.data.publishedDate.toISOString().slice(0, 10)}>
             {post.data.publishedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
           </time>
-          <h2 class="blog-row-title typo-headline-lg">{post.data.title}</h2>
-          <p class="blog-row-desc typo-body-lg">{post.data.description}</p>
+          <h2 class="blog-row-title typo-headline-lg" data-reveal="line">{post.data.title}</h2>
+          <p class="blog-row-desc typo-body-lg" data-reveal="line">{post.data.description}</p>
         </a>
       </article>
     ))}
@@ -34,6 +34,7 @@ const allPosts = (await getCollection('blog'))
     display: grid;
     grid-template-columns: subgrid;
     padding-bottom: var(--space-6);
+    min-height: 75vh;
   }
 
   .blog-index-heading {

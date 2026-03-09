@@ -10,7 +10,7 @@ const allWork = (await getCollection('work'))
 
 <BaseLayout title="Work — Sam Stringer-Hye" description="Selected work from Samsung, Frontier, CVS, and more.">
   <section class="work-index" aria-label="All work">
-    <h1 class="work-index-heading typo-display-md">Work</h1>
+    <h1 class="work-index-heading typo-display-md" data-reveal="line">Work</h1>
     {allWork.map((entry, i) => (
       <article class:list={['work-row', { 'work-row--reversed': i % 2 !== 0 }]}>
         <div class="work-row-image">
@@ -23,11 +23,11 @@ const allWork = (await getCollection('work'))
             loading="eager"
           />
         </div>
-        <div class="work-row-info">
-          <p class="work-row-year typo-ui-caps">{entry.data.year}</p>
-          <h2 class="work-row-title typo-headline-lg">{entry.data.title}</h2>
-          <p class="work-row-tagline typo-body-lg">{entry.data.tagline}</p>
-          <a href={`/work/${entry.id}`} class="work-row-link typo-body-lg" aria-label={`View ${entry.data.title} project`}>
+        <div class="work-row-info" data-reveal-group>
+          <p class="work-row-year typo-ui-caps" data-reveal="line">{entry.data.year}</p>
+          <h2 class="work-row-title typo-headline-lg" data-reveal="line">{entry.data.title}</h2>
+          <p class="work-row-tagline typo-body-lg" data-reveal="line">{entry.data.tagline}</p>
+          <a href={`/work/${entry.id}`} class="work-row-link typo-body-lg" data-reveal="fade" aria-label={`View ${entry.data.title} project`}>
             View project <Icon name="material-symbols:arrow-forward-sharp" class="work-row-arrow" />
           </a>
         </div>
@@ -51,16 +51,36 @@ const allWork = (await getCollection('work'))
   }
 
   .work-row {
+    position: relative;
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: stretch;
-    border-top: var(--border-width-1) solid var(--color-rule);
     padding: 0;
   }
 
-  .work-row:last-child {
-    border-bottom: var(--border-width-1) solid var(--color-rule);
+  .work-row::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleX(var(--border-draw, 0));
+    transform-origin: left;
+  }
+
+  .work-row:last-child::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleX(var(--border-draw, 0));
+    transform-origin: left;
   }
 
 
@@ -80,24 +100,52 @@ const allWork = (await getCollection('work'))
   }
 
   .work-row-info {
+    position: relative;
     grid-column: 2;
     grid-row: 1;
     padding: var(--content-inset-md);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-left: var(--border-width-1) solid var(--color-rule);
+  }
+
+  .work-row-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleY(var(--border-draw, 0));
+    transform-origin: top;
   }
 
   /* Reversed: text left 50%, image right 50% */
   .work-row--reversed .work-row-info {
     grid-column: 1;
-    border-left: none;
+  }
+
+  .work-row--reversed .work-row-info::before {
+    display: none;
   }
 
   .work-row--reversed .work-row-image {
+    position: relative;
     grid-column: 2;
-    border-left: var(--border-width-1) solid var(--color-rule);
+  }
+
+  .work-row--reversed .work-row-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleY(var(--border-draw, 0));
+    transform-origin: top;
+    z-index: 1;
   }
 
   .work-row-year {
@@ -141,6 +189,20 @@ const allWork = (await getCollection('work'))
     .work-row-image img {
       transition: none;
     }
+
+    .work-row-year,
+    .work-row-title,
+    .work-row-tagline,
+    .work-row-link {
+      opacity: 1 !important;
+      filter: none !important;
+    }
+
+    .work-row,
+    .work-row-info,
+    .work-row-image {
+      --border-draw: 1 !important;
+    }
   }
 
   /* ── Mobile ── */
@@ -170,13 +232,15 @@ const allWork = (await getCollection('work'))
       grid-column: 1 / -1;
       grid-row: auto;
       padding: var(--content-inset-md);
-      border-left: none;
-      border-right: none;
-      border-top: var(--border-width-1) solid var(--color-rule);
     }
 
-    .work-row--reversed .work-row-image {
-      border-left: none;
+    .work-row-info::before,
+    .work-row--reversed .work-row-info::before {
+      display: none;
+    }
+
+    .work-row--reversed .work-row-image::before {
+      display: none;
     }
   }
 </style>

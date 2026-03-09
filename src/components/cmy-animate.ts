@@ -26,6 +26,7 @@ export function createCmyAutoSplitReveal(
   el: HTMLElement,
   cfg: TextRevealConfig,
   timelineVars?: gsap.TimelineVars,
+  splitMode: 'auto' | 'lines' = 'auto',
 ): CmyAutoSplitHandle {
   gsap.set(el, { opacity: 1, y: 0, filter: 'none', visibility: 'visible' })
 
@@ -37,9 +38,9 @@ export function createCmyAutoSplitReveal(
     onSplit(self) {
       const lines = self.lines as HTMLElement[]
       const words = self.words as HTMLElement[]
-      const multiline = lines.length > 1
-      const targets = multiline ? lines : words
-      const stagger = multiline ? cfg.blockStagger : cfg.wordStagger
+      const useLines = splitMode === 'lines' || lines.length > 1
+      const targets = useLines ? lines : words
+      const stagger = useLines ? cfg.blockStagger : cfg.wordStagger
 
       gsap.set(targets, {
         opacity: 0,
@@ -79,6 +80,7 @@ export function createCmyAutoSplitRevealGrouped(
   cfg: TextRevealConfig,
   parentTl: gsap.core.Timeline,
   position: number,
+  splitMode: 'auto' | 'lines' = 'auto',
 ): CmyAutoSplitHandle {
   gsap.set(el, { opacity: 1, y: 0, filter: 'none', visibility: 'visible' })
 
@@ -90,9 +92,9 @@ export function createCmyAutoSplitRevealGrouped(
     onSplit(self) {
       const lines = self.lines as HTMLElement[]
       const words = self.words as HTMLElement[]
-      const multiline = lines.length > 1
-      const targets = multiline ? lines : words
-      const stagger = multiline ? cfg.blockStagger : cfg.wordStagger
+      const useLines = splitMode === 'lines' || lines.length > 1
+      const targets = useLines ? lines : words
+      const stagger = useLines ? cfg.blockStagger : cfg.wordStagger
 
       gsap.set(targets, {
         opacity: 0,
