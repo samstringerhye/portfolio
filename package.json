@@ -14,6 +14,7 @@
     "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/react": "^4.2.0",
+    "@astrojs/rss": "^4.0.17",
     "@astrojs/sitemap": "^3.3.0",
     "@iconify-json/material-symbols": "^1.2.56",
     "@iconify-json/material-symbols-light": "^1.2.56",

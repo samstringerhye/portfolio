@@ -1,0 +1,19 @@
+/* TEAM */
+Designer & Developer: Sam Stringer-Hye
+Role: Associate Design Director
+Location: Philadelphia, PA
+Site: samstringerhye.com
+LinkedIn: linkedin.com/in/samstringerhye
+
+/* THANKS */
+Built with help from Claude Code by Anthropic.
+
+/* SITE */
+Framework: Astro
+Animation: GSAP, Lenis
+Fonts: Inter, Perfectly Nineties
+Hosting: Cloudflare Pages
+Last updated: 2026-03-10
+
+/* NOTE */
+If you're reading this, you're my kind of person.
