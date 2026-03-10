@@ -1,5 +1,4 @@
 ---
-import { Icon } from 'astro-icon/components'
 const year = new Date().getFullYear()
 ---
 
@@ -18,20 +17,16 @@ const year = new Date().getFullYear()
       <div class="footer-bar-text">
         <p class="footer-wordmark-text">Sam Stringer-Hye</p>
       </div>
-      <nav class="footer-bar-icons" aria-label="Social links">
-        <a href="/contact" class="footer-icon-cell" aria-label="Contact">
-          <Icon name="material-symbols-light:mail-outline-sharp" aria-hidden="true" />
-        </a>
-        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-icon-cell" aria-label="LinkedIn (opens in new tab)">
-          <Icon name="simple-icons:linkedin" aria-hidden="true" />
-        </a>
-      </nav>
     </div>
 
     <!-- Bottom bar -->
     <div class="footer-bottom">
       <p class="footer-copyright typo-ui-caps">&copy; {year}</p>
-      <a href="/colophon" class="footer-colophon typo-ui-caps">Colophon</a>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="/contact" class="footer-link typo-ui-caps">Contact</a>
+        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-link typo-ui-caps">LinkedIn</a>
+        <a href="/colophon" class="footer-link typo-ui-caps">Colophon</a>
+      </nav>
     </div>
   </div>
 </footer>
@@ -101,49 +96,6 @@ const year = new Date().getFullYear()
     padding-right: var(--content-inset-md);
   }
 
-  .footer-bar-icons {
-    display: flex;
-    flex-shrink: 0;
-    height: 100%;
-  }
-
-  .footer-icon-cell {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--nav-height);
-    height: 100%;
-    color: var(--color-text-primary);
-    transition: background-color var(--duration-medium) ease;
-  }
-
-  /* Left border — draws top to bottom */
-  .footer-icon-cell::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: var(--border-width-1);
-    background: var(--color-text-primary);
-    transform: scaleY(var(--border-draw, 1));
-    transform-origin: top;
-  }
-
-  .footer-icon-cell svg {
-    width: 30%;
-    height: 30%;
-    transition: transform var(--duration-medium) cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  @media (hover: hover) {
-    .footer-icon-cell:hover svg {
-      transform: scale(1.2) rotate(-5deg);
-      transition: transform 490ms cubic-bezier(0.5, 0, 0, 1);
-    }
-  }
-
   .footer-wordmark-text {
     font-family: var(--font-serif);
     font-weight: var(--font-weight-regular);
@@ -163,12 +115,19 @@ const year = new Date().getFullYear()
     padding: var(--space-3) var(--content-inset-md);
   }
 
-  .footer-colophon {
+  .footer-links {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .footer-link {
+    color: var(--color-text-primary);
+    text-decoration: none;
     transition: opacity var(--duration-short) ease;
   }
 
   @media (hover: hover) {
-    .footer-colophon:hover {
+    .footer-link:hover {
       opacity: var(--opacity-50);
     }
   }
@@ -193,24 +152,6 @@ const year = new Date().getFullYear()
 </style>
 
 <script>
-  import { animations, cmyRgba } from '../data/tokens'
-
-  const CMY_COLORS = cmyRgba(animations.timeline.hover.saveCmyOpacity)
-  let colorIndex = 0
-
-  function initFooterHover() {
-    if (!window.matchMedia('(hover: hover)').matches) return
-    const cells = document.querySelectorAll<HTMLAnchorElement>('.footer-icon-cell')
-    cells.forEach((cell) => {
-      cell.addEventListener('mouseenter', () => {
-        cell.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
-      })
-      cell.addEventListener('mouseleave', () => {
-        cell.style.backgroundColor = ''
-      })
-    })
-  }
-
   const PALETTE_COLORS = [
     '#24F266', '#F22434', '#FBE91E', '#2471F2', '#0B0D1B', '#ffffff',
   ]
@@ -242,10 +183,8 @@ const year = new Date().getFullYear()
     paletteIntervalId = setInterval(() => { offset--; paint() }, 200)
   }
 
-  initFooterHover()
   initPaletteCycle()
   document.addEventListener('astro:page-load', () => {
-    initFooterHover()
     initPaletteCycle()
   })
   document.addEventListener('astro:before-swap', () => {
