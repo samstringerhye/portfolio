@@ -19,7 +19,7 @@ const year = new Date().getFullYear()
         <p class="footer-wordmark-text">Sam Stringer-Hye</p>
       </div>
       <nav class="footer-bar-icons" aria-label="Social links">
-        <a href="mailto:hello@samstringerhye.com" class="footer-icon-cell" aria-label="Email">
+        <a href="/contact" class="footer-icon-cell" aria-label="Contact">
           <Icon name="material-symbols-light:mail-outline-sharp" aria-hidden="true" />
         </a>
         <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="footer-icon-cell" aria-label="LinkedIn (opens in new tab)">
@@ -51,19 +51,10 @@ const year = new Date().getFullYear()
     right: 0;
     height: var(--border-width-1);
     background-color: var(--color-text-primary);
-    transform: scaleX(var(--footer-line-draw, 0));
+    transform: scaleX(var(--footer-line-draw, 1));
     transform-origin: left;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .footer {
-      --footer-line-draw: 1 !important;
-    }
-    .footer-bar,
-    .footer-icon-cell {
-      --border-draw: 1 !important;
-    }
-  }
 
   .footer-container {
     max-width: var(--max-content-width);
@@ -87,7 +78,7 @@ const year = new Date().getFullYear()
     right: 0;
     height: var(--border-width-1);
     background: var(--color-text-primary);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
@@ -136,7 +127,7 @@ const year = new Date().getFullYear()
     bottom: 0;
     width: var(--border-width-1);
     background: var(--color-text-primary);
-    transform: scaleY(var(--border-draw, 0));
+    transform: scaleY(var(--border-draw, 1));
     transform-origin: top;
   }
 

@@ -14,6 +14,24 @@ const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)
 
 let revealCtx: gsap.Context | null = null
 
+/**
+ * Returns ScrollTrigger tween vars when the trigger element is below
+ * the viewport, or an empty object when it's already visible.
+ * Spreading the result into a gsap.to() call means visible elements
+ * animate immediately while off-screen ones wait for scroll.
+ */
+function stVars(trigger: Element | null, start: string = cfg.scrollStart): gsap.TweenVars {
+  if (!trigger) return {}
+  if ((trigger as HTMLElement).getBoundingClientRect().top < window.innerHeight) return {}
+  return {
+    scrollTrigger: {
+      trigger,
+      start,
+      toggleActions: 'play none none none',
+    },
+  }
+}
+
 export async function initScrollReveals() {
   // Revert all tweens, timelines, ScrollTriggers, and SplitText splits
   // that were created in the previous call's context.
@@ -63,13 +81,7 @@ export async function initScrollReveals() {
 
       children.forEach(el => grouped.add(el))
 
-      const parentTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: group,
-          start: cfg.scrollStart,
-          toggleActions: 'play none none none',
-        },
-      })
+      const parentTl = gsap.timeline(stVars(group))
 
       children.forEach((el, idx) => {
         if (isFade(el)) {
@@ -85,63 +97,20 @@ export async function initScrollReveals() {
       if (grouped.has(el)) return
       if (el.closest('[data-no-reveal]')) return
 
+      const sv = stVars(el)
+
       if (isFade(el)) {
-        createFadeReveal(el, {
-          scrollTrigger: {
-            trigger: el,
-            start: cfg.scrollStart,
-            toggleActions: 'play none none none',
-          },
-        })
+        createFadeReveal(el, sv)
       } else {
-        createCmyAutoSplitReveal(el, cfg, {
-          scrollTrigger: {
-            trigger: el,
-            start: cfg.scrollStart,
-            toggleActions: 'play none none none',
-          },
-        }, splitMode(el))
+        createCmyAutoSplitReveal(el, cfg, sv, splitMode(el))
       }
     })
 
     // ── Image reveals: all pages ──
     initImageReveals()
 
-    // ── Line reveals: site-wide border draw-in ──
-    initLineReveals()
-
     // ── Home page reveals ──
     initHomeReveals()
-
-    // ── Footer: fade up on every page ──
-    const footer = document.querySelector<HTMLElement>('.footer')
-    if (footer) {
-      gsap.set(footer, { opacity: 0, y: 20 })
-      gsap.to(footer, {
-        opacity: 1, y: 0,
-        duration: 0.7, ease: 'power3.out',
-        scrollTrigger: {
-          trigger: footer,
-          start: 'top 95%',
-          toggleActions: 'play none none none',
-        },
-      })
-    }
-
-    // ── Short-page safety net ──────────────────────────────────
-    // On pages that can't scroll enough for every trigger to fire
-    // (colophon, 404, about, etc.), detect unreachable triggers and
-    // force-play them so nothing stays invisible.
-    requestAnimationFrame(() => {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-      ScrollTrigger.getAll().forEach(st => {
-        // If the trigger can never be reached by scrolling, play it now
-        if (st.start > maxScroll && !st.progress) {
-          st.scroll(st.start)
-          st.update()
-        }
-      })
-    })
   })
 }
 
@@ -167,7 +136,7 @@ function initImageReveals() {
       gsap.set(el, blurUp)
       gsap.to(el, {
         ...blurUpTo,
-        scrollTrigger: { trigger: el, start: imgStart, toggleActions: 'play none none none' },
+        ...stVars(el, imgStart),
         onComplete() { gsap.set(el, { clearProps: 'transform,translate,rotate,scale' }) },
       })
     })
@@ -180,7 +149,7 @@ function initImageReveals() {
       gsap.to(imgs, {
         ...blurUpTo,
         stagger: 0.15,
-        scrollTrigger: { trigger: pair, start: imgStart, toggleActions: 'play none none none' },
+        ...stVars(pair, imgStart),
         onComplete() { gsap.set(imgs, { clearProps: 'transform,translate,rotate,scale' }) },
       })
     })
@@ -194,7 +163,7 @@ function initImageReveals() {
         opacity: 1, x: 0,
         duration: imgDuration, ease: imgEase,
         stagger: 0.1,
-        scrollTrigger: { trigger: el, start: imgStart, toggleActions: 'play none none none' },
+        ...stVars(el, imgStart),
       })
     })
 
@@ -203,7 +172,7 @@ function initImageReveals() {
       gsap.set(el, blurUp)
       gsap.to(el, {
         ...blurUpTo,
-        scrollTrigger: { trigger: el, start: imgStart, toggleActions: 'play none none none' },
+        ...stVars(el, imgStart),
         onComplete() { gsap.set(el, { clearProps: 'transform,translate,rotate,scale' }) },
       })
     })
@@ -217,7 +186,7 @@ function initImageReveals() {
         gsap.set(media, blurUp)
         gsap.to(media, {
           ...blurUpTo,
-          scrollTrigger: { trigger: section, start: imgStart, toggleActions: 'play none none none' },
+          ...stVars(section, imgStart),
           onComplete() { gsap.set(media, { clearProps: 'transform,translate,rotate,scale' }) },
         })
       }
@@ -227,7 +196,7 @@ function initImageReveals() {
         gsap.to(prose, {
           opacity: 1, y: 0,
           duration: imgDuration, ease: imgEase, delay: 0.2,
-          scrollTrigger: { trigger: section, start: imgStart, toggleActions: 'play none none none' },
+          ...stVars(section, imgStart),
         })
       }
     })
@@ -237,16 +206,10 @@ function initImageReveals() {
       const children = Array.from(group.querySelectorAll<HTMLElement>(':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > p, :scope > blockquote'))
       if (!children.length) return
 
-      const parentTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: group,
-          start: cfg.scrollStart,
-          toggleActions: 'play none none none',
-        },
-      })
+      const parentTl = gsap.timeline(stVars(group))
 
       children.forEach((el, idx) => {
-        createCmyAutoSplitRevealGrouped(el, cfg, parentTl, idx * cfg.blockStagger)
+        createCmyAutoSplitRevealGrouped(el, cfg, parentTl, idx * cfg.blockStagger, 'lines')
       })
     })
 
@@ -254,13 +217,7 @@ function initImageReveals() {
     body.querySelectorAll<HTMLElement>(
       ':scope > h1, :scope > h2, :scope > h3'
     ).forEach(el => {
-      createCmyAutoSplitReveal(el, cfg, {
-        scrollTrigger: {
-          trigger: el,
-          start: cfg.scrollStart,
-          toggleActions: 'play none none none',
-        },
-      })
+      createCmyAutoSplitReveal(el, cfg, stVars(el), 'lines')
     })
   }
 
@@ -275,240 +232,10 @@ function initImageReveals() {
     gsap.set(el, blurUp)
     gsap.to(el, {
       ...blurUpTo,
-      scrollTrigger: { trigger: el, start: imgStart, toggleActions: 'play none none none' },
+      ...stVars(el, imgStart),
       onComplete() { gsap.set(el, { clearProps: 'transform,translate,rotate,scale' }) },
     })
   })
-}
-
-/* ── Line reveal animations — site-wide border draw-in ── */
-
-function initLineReveals() {
-  const start = cfg.scrollStart // same trigger as text reveals (top 70%)
-  const lineDuration = 0.8
-  const lineEase = 'power3.inOut'
-  const borderDuration = 0.6
-  const borderEase = 'power2.out'
-
-  // ── Structural lines: pseudo-element scaleX/scaleY draw-in ──
-
-  // Section rules: draw from left to right (skip the first one — handled by entrance animation)
-  const allRules = document.querySelectorAll<HTMLElement>('.section-rule')
-  allRules.forEach((el, i) => {
-    if (i === 0) return // first rule animated by Nav.astro entrance timeline
-    gsap.set(el, { scaleX: 0, transformOrigin: 'left' })
-    gsap.to(el, {
-      scaleX: 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    })
-  })
-
-  // Bio divider: draw in (vertical on desktop, horizontal on mobile)
-  document.querySelectorAll<HTMLElement>('.bio-divider').forEach(el => {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches
-    gsap.to(el, {
-      scaleX: isMobile ? 1 : undefined,
-      scaleY: isMobile ? undefined : 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.bio-section') || el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    })
-  })
-
-  // Experience header: bottom line draw-in
-  document.querySelectorAll<HTMLElement>('.experience-header').forEach(el => {
-    const after = el as HTMLElement
-    gsap.to(after, {
-      '--experience-header-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.experience-section') || el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // Footer ::before line
-  document.querySelectorAll<HTMLElement>('.footer').forEach(el => {
-    gsap.fromTo(el, { '--footer-line-draw': 0 } as any, {
-      '--footer-line-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 95%',
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // ── Internal borders: border-color transparent → visible ──
-
-  // Resolve CSS variables to computed colors so GSAP can interpolate
-  const rootStyles = getComputedStyle(document.documentElement)
-  const ruleColor = rootStyles.getPropertyValue('--color-rule').trim()
-  const primaryColor = rootStyles.getPropertyValue('--color-text-primary').trim()
-
-  // Helper: set borders transparent then animate to target color
-  function animateBorders(selector: string, targetColor: string, triggerSelector?: string) {
-    document.querySelectorAll<HTMLElement>(selector).forEach(el => {
-      const trigger = triggerSelector ? el.closest(triggerSelector) || el : el
-      gsap.set(el, { borderColor: 'transparent' })
-      gsap.to(el, {
-        borderColor: targetColor,
-        duration: borderDuration,
-        ease: borderEase,
-        scrollTrigger: {
-          trigger,
-          start,
-          toggleActions: 'play none none none',
-        },
-      })
-    })
-  }
-
-  const rule = ruleColor
-  const primary = primaryColor
-
-  // Work carousel borders — pseudo-element draw-in via --border-draw
-  document.querySelectorAll<HTMLElement>('.work-header, .work-carousel, .work-card, .work-card-label, .work-see-all, .work-carousel-dots').forEach(el => {
-    gsap.to(el, {
-      '--border-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.work-section') || el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // Timeline borders — all pseudo-element draw-ins via --border-draw custom property
-  // (year cells: ::after bottom + ::before right, job cards: ::after bottom, download: ::before left)
-  document.querySelectorAll<HTMLElement>('.tl-year, .tl-job, .experience-download').forEach(el => {
-    gsap.to(el, {
-      '--border-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.experience-section') || el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // Footer internal borders — draw-in via --border-draw, triggered at top 95% (page bottom)
-  document.querySelectorAll<HTMLElement>('.footer-bar, .footer-icon-cell').forEach(el => {
-    gsap.to(el, {
-      '--border-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.footer') || el,
-        start: 'top 95%',
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // Resume borders — pseudo-element draw-in via --border-draw
-  document.querySelectorAll<HTMLElement>('.resume-summary, .resume-section-heading, .resume-entry').forEach(el => {
-    gsap.to(el, {
-      '--border-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.resume-page') || el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // Work index borders — pseudo-element draw-in via --border-draw
-  document.querySelectorAll<HTMLElement>('.work-row, .work-row-info, .work-row--reversed .work-row-image').forEach(el => {
-    gsap.to(el, {
-      '--border-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.work-index') || el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // About link borders — pseudo-element draw-in via --border-draw
-  document.querySelectorAll<HTMLElement>('.about-link').forEach(el => {
-    gsap.to(el, {
-      '--border-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.about-page') || el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // Blog post blockquote border — pseudo-element draw-in via --border-draw
-  document.querySelectorAll<HTMLElement>('.blog-post-body blockquote').forEach(el => {
-    gsap.to(el, {
-      '--border-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-
-  // Case study container borders — intentional borderColor fade (full-box borders)
-  // These elements have 4-sided borders where pseudo-element draw-in is impractical.
-  animateBorders('.case-study-body .cs-meta-item + .cs-meta-item', primary)
-  animateBorders('.case-study-body .cs-hero-image', rule)
-  animateBorders('.case-study-body .cs-hero-meta', rule)
-  // Case study nav border — pseudo-element draw-in via --border-draw
-  document.querySelectorAll<HTMLElement>('.cs-nav-inner').forEach(el => {
-    gsap.to(el, {
-      '--border-draw': 1,
-      duration: lineDuration,
-      ease: lineEase,
-      scrollTrigger: {
-        trigger: el.closest('.cs-nav') || el,
-        start,
-        toggleActions: 'play none none none',
-      },
-    } as any)
-  })
-  animateBorders('.case-study-body .accent-band', primary)
-  animateBorders('.case-study-body .lottie-grid', primary)
-  animateBorders('.case-study-body .lottie-grid .lottie-player', primary)
-  animateBorders('.case-study-body .image-grid', primary)
-  animateBorders('.case-study-body .image-pair', rule)
-  animateBorders('.case-study-body .image-pair-cell', rule)
-  animateBorders('.case-study-body .carousel', rule)
-  animateBorders('.case-study-body .carousel-dots', rule)
-  animateBorders('.case-study-body .zigzag-section', rule)
-  animateBorders('.case-study-body > .cs-figure', rule)
 }
 
 /* ── Home page reveal animations ── */
@@ -520,51 +247,40 @@ function initHomeReveals() {
 
   // ── Work cards: handled by WorkCarousel.astro's own entrance animation ──
 
-  // ── Timeline: job cards stagger in ──
-  const timelineJobs = document.querySelectorAll<HTMLElement>('.tl-job')
-  if (timelineJobs.length) {
-    gsap.set(timelineJobs, { opacity: 0, y: 20 })
-    gsap.to(timelineJobs, {
+  // ── Timeline: job card text staggers in (borders stay visible) ──
+  const timelineJobTexts = document.querySelectorAll<HTMLElement>('.tl-job-info')
+  const timelineTrigger = document.querySelector<HTMLElement>('.experience-timeline')
+  if (timelineJobTexts.length) {
+    gsap.set(timelineJobTexts, { opacity: 0, y: 20 })
+    gsap.to(timelineJobTexts, {
       opacity: 1, y: 0,
       duration: 0.7, ease,
       stagger: 0.1,
-      scrollTrigger: {
-        trigger: document.querySelector('.experience-timeline'),
-        start,
-        toggleActions: 'play none none none',
-      },
+      ...stVars(timelineTrigger, start),
     })
   }
 
-  // ── Timeline: year cells stagger in ──
-  const yearCells = document.querySelectorAll<HTMLElement>('.tl-year')
-  if (yearCells.length) {
-    gsap.set(yearCells, { opacity: 0 })
-    gsap.to(yearCells, {
+  // ── Timeline: year labels stagger in (borders stay visible) ──
+  const yearLabels = document.querySelectorAll<HTMLElement>('.tl-year p')
+  if (yearLabels.length) {
+    gsap.set(yearLabels, { opacity: 0 })
+    gsap.to(yearLabels, {
       opacity: 1,
       duration: 0.7, ease,
       stagger: 0.05,
       delay: 0.2,
-      scrollTrigger: {
-        trigger: document.querySelector('.experience-timeline'),
-        start,
-        toggleActions: 'play none none none',
-      },
+      ...stVars(timelineTrigger, start),
     })
   }
 
   // ── Timeline: download icon ──
-  const downloadIcon = document.querySelector<HTMLElement>('.experience-download')
+  const downloadIcon = document.querySelector<HTMLElement>('.experience-download svg')
   if (downloadIcon) {
     gsap.set(downloadIcon, { opacity: 0 })
     gsap.to(downloadIcon, {
       opacity: 1,
       duration: 0.7, ease,
-      scrollTrigger: {
-        trigger: downloadIcon.closest('.experience-section'),
-        start,
-        toggleActions: 'play none none none',
-      },
+      ...stVars(downloadIcon.closest('.experience-section'), start),
     })
   }
 
@@ -574,11 +290,7 @@ function initHomeReveals() {
     gsap.to(row, {
       opacity: 1, y: 0,
       duration, ease,
-      scrollTrigger: {
-        trigger: row,
-        start,
-        toggleActions: 'play none none none',
-      },
+      ...stVars(row, start),
     })
   })
 
@@ -589,11 +301,7 @@ function initHomeReveals() {
       '--dot-grid-reveal': 1,
       duration: 1.2,
       ease: 'power2.out',
-      scrollTrigger: {
-        trigger: interestsSection,
-        start,
-        toggleActions: 'play none none none',
-      },
+      ...stVars(interestsSection, start),
     } as any)
   }
 

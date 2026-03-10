@@ -201,8 +201,6 @@ body:has(.lightbox-overlay.is-open) .grid-overlay {
   border: none;
   border-top: var(--border-width-1) solid var(--color-rule);
   margin: 0;
-  transform: scaleX(0);
-  transform-origin: left;
 }
 
 .section-rule::before,
@@ -250,10 +248,6 @@ body:has(.lightbox-overlay.is-open) .grid-overlay {
 
   .grid-overlay {
     --line-draw: 1 !important;
-  }
-
-  .section-rule {
-    transform: none !important;
   }
 
   .nav-logo,

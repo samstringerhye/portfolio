@@ -10,7 +10,7 @@ const allWork = (await getCollection('work'))
 
 <BaseLayout title="Work — Sam Stringer-Hye" description="Selected work from Samsung, Frontier, CVS, and more.">
   <section class="work-index" aria-label="All work">
-    <h1 class="work-index-heading typo-display-md" data-reveal="line">Work</h1>
+    <h1 class="work-index-heading typo-display-md">Work</h1>
     {allWork.map((entry, i) => (
       <article class:list={['work-row', { 'work-row--reversed': i % 2 !== 0 }]}>
         <div class="work-row-image">
@@ -23,11 +23,11 @@ const allWork = (await getCollection('work'))
             loading="eager"
           />
         </div>
-        <div class="work-row-info" data-reveal-group>
-          <p class="work-row-year typo-ui-caps" data-reveal="line">{entry.data.year}</p>
-          <h2 class="work-row-title typo-headline-lg" data-reveal="line">{entry.data.title}</h2>
-          <p class="work-row-tagline typo-body-lg" data-reveal="line">{entry.data.tagline}</p>
-          <a href={`/work/${entry.id}`} class="work-row-link typo-body-lg" data-reveal="fade" aria-label={`View ${entry.data.title} project`}>
+        <div class="work-row-info">
+          <p class="work-row-year typo-ui-caps">{entry.data.year}</p>
+          <h2 class="work-row-title typo-headline-lg">{entry.data.title}</h2>
+          <p class="work-row-tagline typo-body-lg">{entry.data.tagline}</p>
+          <a href={`/work/${entry.id}`} class="work-row-link typo-body-lg" aria-label={`View ${entry.data.title} project`}>
             View project <Icon name="material-symbols:arrow-forward-sharp" class="work-row-arrow" />
           </a>
         </div>
@@ -67,7 +67,7 @@ const allWork = (await getCollection('work'))
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
@@ -79,7 +79,7 @@ const allWork = (await getCollection('work'))
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
@@ -117,7 +117,7 @@ const allWork = (await getCollection('work'))
     bottom: 0;
     width: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleY(var(--border-draw, 0));
+    transform: scaleY(var(--border-draw, 1));
     transform-origin: top;
   }
 
@@ -143,7 +143,7 @@ const allWork = (await getCollection('work'))
     bottom: 0;
     width: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleY(var(--border-draw, 0));
+    transform: scaleY(var(--border-draw, 1));
     transform-origin: top;
     z-index: 1;
   }
@@ -188,20 +188,6 @@ const allWork = (await getCollection('work'))
   @media (prefers-reduced-motion: reduce) {
     .work-row-image img {
       transition: none;
-    }
-
-    .work-row-year,
-    .work-row-title,
-    .work-row-tagline,
-    .work-row-link {
-      opacity: 1 !important;
-      filter: none !important;
-    }
-
-    .work-row,
-    .work-row-info,
-    .work-row-image {
-      --border-draw: 1 !important;
     }
   }
 

@@ -7,22 +7,22 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     <div class="about-body">
       <img src="https://media1.tenor.com/m/9ItR8nSuxE0AAAAd/thumbs-up-computer.gif" alt="Kid at computer giving thumbs up" class="about-gif" width="498" height="498" loading="lazy" />
 
-      <h1 class="about-name typo-display-md" data-reveal>All that screen time actually led somewhere</h1>
+      <h1 class="about-name typo-display-md">All that screen time actually led somewhere</h1>
 
-      <p class="about-bio typo-body-lg" data-reveal>
+      <p class="about-bio typo-body-lg">
         I got my first computer at seven and never really looked up. What started as a kid messing around online turned into a career designing products for Samsung, Frontier, and CVS. Currently at Razorfish, working on consumer-facing product design.
       </p>
 
-      <p class="about-bio typo-body-lg" data-reveal>
+      <p class="about-bio typo-body-lg">
         I'm the person who notices when the spacing is off, when a transition feels wrong, or when a component system only works in the deck. That instinct is the whole job. Making things feel right in a way that's hard to explain but easy to notice when it's missing.
       </p>
 
       <nav class="about-links" aria-label="Contact and resume">
-        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link typo-body-lg" data-reveal="fade">
+        <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link typo-body-lg">
           <span>LinkedIn</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 15L15 5M15 5H8M15 5V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a href="/resume" class="about-link typo-body-lg" data-reveal="fade">
+        <a href="/resume" class="about-link typo-body-lg">
           <span>Resume</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 15L15 5M15 5H8M15 5V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -55,7 +55,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
   }
 
   .about-bio:last-of-type {
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-8);
   }
 
   .about-gif {
@@ -91,7 +91,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
@@ -103,22 +103,10 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .about-name,
-    .about-bio,
-    .about-link {
-      opacity: 1 !important;
-      filter: none !important;
-    }
-
-    .about-link {
-      --border-draw: 1 !important;
-    }
-  }
 
   .about-link svg {
     flex-shrink: 0;

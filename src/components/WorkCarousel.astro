@@ -99,7 +99,7 @@ const featured = allWork
     right: 0;
     height: var(--border-width-1);
     background: var(--color-text-primary);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
@@ -130,7 +130,7 @@ const featured = allWork
     bottom: 0;
     width: var(--border-width-1);
     background: var(--color-text-primary);
-    transform: scaleY(var(--border-draw, 0));
+    transform: scaleY(var(--border-draw, 1));
     transform-origin: top;
   }
 
@@ -168,7 +168,7 @@ const featured = allWork
     right: 0;
     height: var(--border-width-1);
     background: var(--color-text-primary);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
     z-index: 1;
   }
@@ -220,7 +220,7 @@ const featured = allWork
     bottom: 0;
     width: var(--border-width-1);
     background: var(--color-text-primary);
-    transform: scaleY(var(--border-draw, 0));
+    transform: scaleY(var(--border-draw, 1));
     transform-origin: top;
     z-index: 1;
   }
@@ -261,7 +261,7 @@ const featured = allWork
     right: 0;
     height: var(--border-width-1);
     background: var(--color-text-primary);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
@@ -320,7 +320,7 @@ const featured = allWork
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
@@ -341,15 +341,6 @@ const featured = allWork
   @media (prefers-reduced-motion: reduce) {
     .work-card img {
       transition: none;
-    }
-
-    .work-header,
-    .work-carousel,
-    .work-card,
-    .work-card-label,
-    .work-see-all,
-    .work-carousel-dots {
-      --border-draw: 1 !important;
     }
   }
 </style>

@@ -57,14 +57,8 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cs-nav-inner {
-      --border-draw: 1 !important;
-    }
   }
 
   .cs-nav-link {

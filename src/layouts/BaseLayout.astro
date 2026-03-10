@@ -293,20 +293,9 @@ const typoCss = `:root {
     <noscript><style>
       .cmy-word, .hero-block, .nav-logo, .nav-link, [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
       .grid-overlay, .nav, .nav-logo, .nav-links li { --line-draw: 1 !important; }
-      .section-rule { transform: none !important; }
-      .footer { --footer-line-draw: 1 !important; opacity: 1 !important; }
-      /* Border draw-ins */
-      .work-header, .work-carousel, .work-card, .work-card-label,
-      .work-see-all, .work-carousel-dots,
-      .tl-year, .tl-job, .experience-download,
-      .footer-bar, .footer-icon-cell,
-      .resume-summary, .resume-section-heading, .resume-entry,
-      .work-row, .work-row-info, .work-row-image, .about-link,
-      .cs-nav-inner, .blog-post-body blockquote { --border-draw: 1 !important; }
-      .experience-header { --experience-header-draw: 1 !important; }
       .interests-section { --dot-grid-reveal: 1 !important; }
       /* Home reveals */
-      .interests-row, .tl-job, .tl-year, .experience-download { opacity: 1 !important; }
+      .interests-row, .tl-job-info, .tl-year p, .experience-download svg { opacity: 1 !important; }
     </style></noscript>
     <ViewTransitions fallback="swap" />
     <slot name="head" />

@@ -127,20 +127,10 @@ const jobsWithRows = jobsChronological.map((j, i) => {
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--experience-header-draw, 0));
+    transform: scaleX(var(--experience-header-draw, 1));
     transform-origin: left;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .experience-header {
-      --experience-header-draw: 1 !important;
-    }
-    .tl-year,
-    .tl-job,
-    .experience-download {
-      --border-draw: 1 !important;
-    }
-  }
 
   .experience-heading {
     color: var(--color-text-primary);
@@ -170,7 +160,7 @@ const jobsWithRows = jobsChronological.map((j, i) => {
     bottom: 0;
     width: var(--border-width-1);
     background: var(--color-text-primary);
-    transform: scaleY(var(--border-draw, 0));
+    transform: scaleY(var(--border-draw, 1));
     transform-origin: top;
   }
 
@@ -217,7 +207,7 @@ const jobsWithRows = jobsChronological.map((j, i) => {
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
 
@@ -230,7 +220,7 @@ const jobsWithRows = jobsChronological.map((j, i) => {
     bottom: 0;
     width: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleY(var(--border-draw, 0));
+    transform: scaleY(var(--border-draw, 1));
     transform-origin: top;
   }
 
@@ -260,7 +250,7 @@ const jobsWithRows = jobsChronological.map((j, i) => {
     right: 0;
     height: var(--border-width-1);
     background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 0));
+    transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
     z-index: 0;
   }
