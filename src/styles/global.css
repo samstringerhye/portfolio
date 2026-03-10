@@ -183,7 +183,8 @@ body:has(.lightbox-overlay.is-open) .grid-overlay {
   bottom: 0;
   width: var(--border-width-1);
   background: var(--color-rule);
-  opacity: 1;
+  transform: scaleY(var(--line-draw, 0));
+  transform-origin: top;
 }
 
 .grid-overlay::before {
@@ -200,6 +201,8 @@ body:has(.lightbox-overlay.is-open) .grid-overlay {
   border: none;
   border-top: var(--border-width-1) solid var(--color-rule);
   margin: 0;
+  transform: scaleX(0);
+  transform-origin: left;
 }
 
 .section-rule::before,
@@ -224,6 +227,12 @@ body:has(.lightbox-overlay.is-open) .grid-overlay {
   transform: translate(50%, -50%);
 }
 
+/* ── Initial hidden states for animated elements ── */
+[data-reveal] {
+  opacity: 0;
+  filter: blur(6px);
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -237,5 +246,25 @@ body:has(.lightbox-overlay.is-open) .grid-overlay {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .grid-overlay {
+    --line-draw: 1 !important;
+  }
+
+  .section-rule {
+    transform: none !important;
+  }
+
+  .nav-logo,
+  .nav-link {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
   }
 }

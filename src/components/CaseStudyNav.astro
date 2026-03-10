@@ -41,12 +41,30 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   }
 
   .cs-nav-inner {
+    position: relative;
     grid-column: 1 / -1;
     display: flex;
     align-items: flex-start;
     gap: var(--grid-gutter);
-    border-top: var(--border-width-1) solid var(--color-rule);
     padding: var(--space-6);
+  }
+
+  .cs-nav-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleX(var(--border-draw, 0));
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cs-nav-inner {
+      --border-draw: 1 !important;
+    }
   }
 
   .cs-nav-link {

@@ -68,7 +68,7 @@ const dg = animations.dotGrid
     height: calc(100% + var(--dotSpacing));
     background-image: radial-gradient(circle, var(--color-text-primary) var(--dotRadius), transparent var(--dotRadius));
     background-size: var(--dotSpacing) var(--dotSpacing);
-    opacity: var(--dotGridOpacity);
+    opacity: calc(var(--dotGridOpacity) * var(--dot-grid-reveal, 1));
     pointer-events: none;
     will-change: transform;
     animation: dot-drift 2s linear infinite;
@@ -80,7 +80,10 @@ const dg = animations.dotGrid
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .interests-section::before { animation: none; }
+    .interests-section::before {
+      animation: none;
+      --dot-grid-reveal: 1 !important;
+    }
   }
 
   .interests-row {

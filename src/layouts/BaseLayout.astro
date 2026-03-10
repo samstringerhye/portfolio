@@ -4,7 +4,7 @@ import SEO from '../components/SEO.astro'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import RGBShutter from '../components/RGBShutter.astro'
-import { ref, sys, elementMap, proseMap, animations } from '../data/tokens'
+import { ref, sys, elementMap, animations } from '../data/tokens'
 import '../styles/global.css'
 
 interface Props {
@@ -232,21 +232,6 @@ const elementRules = Object.entries(elementMap).map(([el, roleName]) => {
   }`
 }).filter(Boolean).join('\n  ')
 
-/* ── Prose contextual rules from proseMap ── */
-const proseRules = Object.entries(proseMap).map(([selector, roleName]) => {
-  const cfg = typescale[roleName]
-  if (!cfg) return ''
-  const fontSize = typeof cfg.scale === 'number' ? `${cfg.scale}rem` : buildClamp(cfg.scale.min, cfg.scale.max)
-  const family = familyToVar[cfg.family] ?? cfg.family
-  const trackingLine = cfg.tracking && cfg.tracking !== '0rem' ? `\n    --ls-adjust: ${cfg.tracking};` : ''
-  return `${selector} {
-    font-family: ${family};
-    font-weight: ${cfg.weight};
-    font-size: ${fontSize};
-    line-height: ${cfg.lineHeight};${trackingLine}
-  }`
-}).filter(Boolean).join('\n  ')
-
 /* ── Assemble the full :root block ── */
 const typoCss = `:root {
     ${fontVars}
@@ -278,8 +263,7 @@ const typoCss = `:root {
     --border-light: var(--border-width-1) solid var(--color-rule);
   }
   ${roleRules}
-  ${elementRules}
-  ${proseRules}`
+  ${elementRules}`
 ---
 
 <!doctype html>
@@ -290,34 +274,6 @@ const typoCss = `:root {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
     <style>
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-thin.otf') format('opentype');
-        font-weight: 100;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-thinitalic.otf') format('opentype');
-        font-weight: 100;
-        font-style: italic;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-extralight.otf') format('opentype');
-        font-weight: 200;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-extralightitalic.otf') format('opentype');
-        font-weight: 200;
-        font-style: italic;
-        font-display: swap;
-      }
       @font-face {
         font-family: 'Perfectly Nineties';
         src: url('/fonts/perfectlynineties-light.otf') format('opentype');
@@ -332,79 +288,26 @@ const typoCss = `:root {
         font-style: italic;
         font-display: swap;
       }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-regular.otf') format('opentype');
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-regularitalic.otf') format('opentype');
-        font-weight: 400;
-        font-style: italic;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-semibold.otf') format('opentype');
-        font-weight: 600;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-semibolditalic.otf') format('opentype');
-        font-weight: 600;
-        font-style: italic;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-bold.otf') format('opentype');
-        font-weight: 700;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-bolditalic.otf') format('opentype');
-        font-weight: 700;
-        font-style: italic;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-extrabold.otf') format('opentype');
-        font-weight: 800;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-extrabolditalic.otf') format('opentype');
-        font-weight: 800;
-        font-style: italic;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-black.otf') format('opentype');
-        font-weight: 900;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Perfectly Nineties';
-        src: url('/fonts/perfectlynineties-blackitalic.otf') format('opentype');
-        font-weight: 900;
-        font-style: italic;
-        font-display: swap;
-      }
     </style>
     <style set:html={typoCss}></style>
-    <noscript><style>.cmy-word, .hero-block { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
+    <noscript><style>
+      .cmy-word, .hero-block, .nav-logo, .nav-link, [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
+      .grid-overlay, .nav, .nav-logo, .nav-links li { --line-draw: 1 !important; }
+      .section-rule { transform: none !important; }
+      .footer { --footer-line-draw: 1 !important; opacity: 1 !important; }
+      /* Border draw-ins */
+      .work-header, .work-carousel, .work-card, .work-card-label,
+      .work-see-all, .work-carousel-dots,
+      .tl-year, .tl-job, .experience-download,
+      .footer-bar, .footer-icon-cell,
+      .resume-summary, .resume-section-heading, .resume-entry,
+      .work-row, .work-row-info, .work-row-image, .about-link,
+      .cs-nav-inner, .blog-post-body blockquote { --border-draw: 1 !important; }
+      .experience-header { --experience-header-draw: 1 !important; }
+      .interests-section { --dot-grid-reveal: 1 !important; }
+      /* Home reveals */
+      .interests-row, .tl-job, .tl-year, .experience-download { opacity: 1 !important; }
+    </style></noscript>
     <ViewTransitions fallback="swap" />
     <slot name="head" />
   </head>

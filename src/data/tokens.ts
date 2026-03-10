@@ -24,7 +24,6 @@ const resolved = resolveRefs(rawTokens, rawTokens) as typeof rawTokens
 export const ref = resolved.ref
 export const sys = resolved.sys
 export const elementMap = resolved.elementMap
-export const proseMap = resolved.proseMap
 
 // Backward-compat aliases
 export const primitives = ref

@@ -38,7 +38,7 @@ const featured = allWork
   <div class="work-container">
     <div class="work-header">
       <SectionTag class={`work-label typo-${headingRole}`} data-reveal>{headline}</SectionTag>
-      <a href="/work" class="work-see-all" aria-label="See all work">
+      <a href="/work" class="work-see-all" data-reveal="fade" aria-label="See all work">
         <span class="work-see-all-label">See all</span>
         <svg class="work-see-all-icon" width="28" height="28" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
           <line x1="80" y1="100" x2="140" y2="100"/>
@@ -89,7 +89,18 @@ const featured = allWork
     align-items: center;
     justify-content: space-between;
     padding: var(--content-inset-md);
-    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  .work-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-text-primary);
+    transform: scaleX(var(--border-draw, 0));
+    transform-origin: left;
   }
 
   .work-label {
@@ -108,8 +119,19 @@ const featured = allWork
     justify-content: center;
     color: var(--color-text-primary);
     text-decoration: none;
-    border-left: var(--border-width-1) solid var(--color-text-primary);
     transition: background-color var(--duration-medium, 0.3s) ease;
+  }
+
+  .work-see-all::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-text-primary);
+    transform: scaleY(var(--border-draw, 0));
+    transform-origin: top;
   }
 
   .work-see-all-label {
@@ -136,7 +158,19 @@ const featured = allWork
   .work-carousel {
     overflow: hidden;
     position: relative;
-    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  .work-carousel::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-text-primary);
+    transform: scaleX(var(--border-draw, 0));
+    transform-origin: left;
+    z-index: 1;
   }
 
   .work-carousel:focus-visible {
@@ -176,11 +210,23 @@ const featured = allWork
     text-decoration: none;
     user-select: none;
     -webkit-user-drag: none;
-    border-right: var(--border-width-1) solid var(--color-text-primary);
   }
 
-  .work-card:last-child {
-    border-right: none;
+  .work-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-text-primary);
+    transform: scaleY(var(--border-draw, 0));
+    transform-origin: top;
+    z-index: 1;
+  }
+
+  .work-card:last-child::before {
+    display: none;
   }
 
   .work-card-inner {
@@ -199,12 +245,24 @@ const featured = allWork
   }
 
   .work-card-label {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: var(--content-inset-sm);
     gap: var(--space-2);
-    border-top: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  .work-card-label::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-text-primary);
+    transform: scaleX(var(--border-draw, 0));
+    transform-origin: left;
   }
 
   .work-card-title {
@@ -223,32 +281,47 @@ const featured = allWork
   @media (--2x) {
     .work-header {
       padding: var(--space-4) var(--page-margin);
-      border-bottom-color: var(--color-rule);
     }
 
-    .work-see-all {
-      border-left-color: var(--color-rule);
+    .work-header::after {
+      background: var(--color-rule);
     }
 
-    .work-carousel {
-      border-bottom-color: var(--color-rule);
+    .work-see-all::before {
+      background: var(--color-rule);
     }
 
-    .work-card {
-      border-right-color: var(--color-rule);
+    .work-carousel::after {
+      background: var(--color-rule);
     }
 
-    .work-card-label {
-      border-top-color: var(--color-rule);
+    .work-card::before {
+      background: var(--color-rule);
+    }
+
+    .work-card-label::after {
+      background: var(--color-rule);
     }
   }
 
   .work-carousel-dots {
+    position: relative;
     display: flex;
     justify-content: center;
     gap: 6px;
     padding: var(--space-2) 0;
-    border-top: var(--border-width-1) solid var(--color-rule);
+  }
+
+  .work-carousel-dots::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleX(var(--border-draw, 0));
+    transform-origin: left;
   }
 
   .work-carousel-dots :global(.work-dot) {
@@ -268,6 +341,15 @@ const featured = allWork
   @media (prefers-reduced-motion: reduce) {
     .work-card img {
       transition: none;
+    }
+
+    .work-header,
+    .work-carousel,
+    .work-card,
+    .work-card-label,
+    .work-see-all,
+    .work-carousel-dots {
+      --border-draw: 1 !important;
     }
   }
 </style>
@@ -503,8 +585,8 @@ const featured = allWork
         const startX = carousel.offsetWidth * 0.4
         gsap.set(track, { x: startX, opacity: 0 })
         ScrollTrigger.create({
-          trigger: carousel,
-          start: 'top 85%',
+          trigger: carousel.closest('.work-section') || carousel,
+          start: 'top 70%',
           once: true,
           onEnter() {
             gsap.to(track, {

@@ -52,12 +52,12 @@ const blogPostLd = {
   description={entry.data.description}
   jsonLd={blogPostLd}
 >
-  <article class="blog-post" data-no-reveal>
-    <header class="blog-post-header">
-      <time class="blog-post-date typo-ui-caps" datetime={publishedISO}>{publishedDisplay}</time>
-      <h1 class="blog-post-title typo-display-md">{entry.data.title}</h1>
+  <article class="blog-post">
+    <header class="blog-post-header" data-reveal-group>
+      <time class="blog-post-date typo-ui-caps" data-reveal datetime={publishedISO}>{publishedDisplay}</time>
+      <h1 class="blog-post-title typo-display-md" data-reveal>{entry.data.title}</h1>
       {entry.data.description && (
-        <p class="blog-post-desc typo-body-lg">{entry.data.description}</p>
+        <p class="blog-post-desc typo-body-lg" data-reveal>{entry.data.description}</p>
       )}
     </header>
 
@@ -67,12 +67,12 @@ const blogPostLd = {
 
     <nav class="blog-post-nav" aria-label="Blog post navigation">
       {prevSlug ? (
-        <a href={`/blog/${prevSlug}`} class="blog-post-nav-link typo-ui" data-astro-prefetch="hover">
+        <a href={`/blog/${prevSlug}`} class="blog-post-nav-link typo-ui" data-reveal="fade" data-astro-prefetch="hover">
           &larr; {prevTitle}
         </a>
       ) : <span />}
       {nextSlug ? (
-        <a href={`/blog/${nextSlug}`} class="blog-post-nav-link typo-ui" data-astro-prefetch="hover">
+        <a href={`/blog/${nextSlug}`} class="blog-post-nav-link typo-ui" data-reveal="fade" data-astro-prefetch="hover">
           {nextTitle} &rarr;
         </a>
       ) : <span />}
@@ -85,6 +85,7 @@ const blogPostLd = {
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
+    min-height: 75vh;
   }
 
   .blog-post-header {
@@ -150,10 +151,28 @@ const blogPostLd = {
   }
 
   .blog-post-body :global(blockquote) {
-    border-left: 3px solid var(--color-rule);
+    position: relative;
     padding-left: var(--space-3);
     color: var(--color-text-primary);
     margin-block: var(--space-3);
+  }
+
+  .blog-post-body :global(blockquote)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleY(var(--border-draw, 0));
+    transform-origin: top;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-post-body :global(blockquote) {
+      --border-draw: 1 !important;
+    }
   }
 
   .blog-post-body :global(code) {

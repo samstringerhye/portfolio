@@ -51,6 +51,18 @@ const year = new Date().getFullYear()
     right: 0;
     height: var(--border-width-1);
     background-color: var(--color-text-primary);
+    transform: scaleX(var(--footer-line-draw, 0));
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer {
+      --footer-line-draw: 1 !important;
+    }
+    .footer-bar,
+    .footer-icon-cell {
+      --border-draw: 1 !important;
+    }
   }
 
   .footer-container {
@@ -61,9 +73,22 @@ const year = new Date().getFullYear()
 
   /* ── Top utility bar ── */
   .footer-bar {
+    position: relative;
     display: flex;
     height: var(--nav-height);
-    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+  }
+
+  /* Bottom border — draws left to right */
+  .footer-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-text-primary);
+    transform: scaleX(var(--border-draw, 0));
+    transform-origin: left;
   }
 
   .footer-palette {
@@ -92,14 +117,27 @@ const year = new Date().getFullYear()
   }
 
   .footer-icon-cell {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     width: var(--nav-height);
     height: 100%;
-    border-left: var(--border-width-1) solid var(--color-text-primary);
     color: var(--color-text-primary);
     transition: background-color var(--duration-medium) ease;
+  }
+
+  /* Left border — draws top to bottom */
+  .footer-icon-cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-text-primary);
+    transform: scaleY(var(--border-draw, 0));
+    transform-origin: top;
   }
 
   .footer-icon-cell svg {
