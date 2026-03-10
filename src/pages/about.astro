@@ -1,8 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+
+const aboutJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Sam Stringer-Hye",
+    "jobTitle": "Associate Design Director",
+    "worksFor": { "@type": "Organization", "name": "Razorfish" },
+    "url": "https://samstringerhye.com",
+    "sameAs": ["https://linkedin.com/in/samstringerhye"],
+    "knowsAbout": ["UI/UX Design", "Design Systems", "Motion Design", "Interaction Prototyping"],
+  },
+}
 ---
 
-<BaseLayout title="About — Sam Stringer-Hye" description="About Sam Stringer-Hye — Associate Design Director at Razorfish.">
+<BaseLayout title="About — Sam Stringer-Hye" description="About Sam Stringer-Hye — Associate Design Director at Razorfish." jsonLd={aboutJsonLd}>
   <section class="about-page" aria-label="About">
     <div class="about-body">
       <img src="https://media1.tenor.com/m/9ItR8nSuxE0AAAAd/thumbs-up-computer.gif" alt="Kid at computer giving thumbs up" class="about-gif" width="498" height="498" loading="lazy" />

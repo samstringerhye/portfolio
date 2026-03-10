@@ -1,0 +1,21 @@
+{
+  "name": "Sam Stringer-Hye",
+  "short_name": "SSH",
+  "description": "Portfolio of Sam Stringer-Hye — Associate Design Director",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0B0D1B",
+  "theme_color": "#0B0D1B",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ]
+}

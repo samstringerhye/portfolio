@@ -6,9 +6,33 @@ import BaseLayout from '../../layouts/BaseLayout.astro'
 
 const allWork = (await getCollection('work'))
   .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+
+const siteUrl = 'https://samstringerhye.com'
+
+const workJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Selected Work",
+    "itemListElement": allWork.map((entry, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "name": entry.data.title,
+      "url": `${siteUrl}/work/${entry.id}`,
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
+      { "@type": "ListItem", "position": 2, "name": "Work", "item": `${siteUrl}/work` },
+    ],
+  },
+]
 ---
 
-<BaseLayout title="Work — Sam Stringer-Hye" description="Selected work from Samsung, Frontier, CVS, and more.">
+<BaseLayout title="Work — Sam Stringer-Hye" description="Selected case studies from Samsung, Frontier, CVS, and more — $143M+ in measurable conversion impact." jsonLd={workJsonLd}>
   <section class="work-index" aria-label="All work">
     <h1 class="work-index-heading typo-display-md">Work</h1>
     {allWork.map((entry, i) => (
