@@ -23,6 +23,10 @@ dist/
 # Trial/source fonts (not committed — only public/fonts is tracked)
 /fonts/
 
+# Internal docs (keep local, not public)
+AUDIT.md
+RETROSPECTIVE.md
+
 # Editor / OS
 .DS_Store
 *.swp

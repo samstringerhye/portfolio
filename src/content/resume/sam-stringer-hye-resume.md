@@ -1,6 +1,6 @@
 # Sam Stringer-Hye
 
-Philadelphia, PA · sam@samstringerhye.com · (615) 739-8930 · [samstringerhye.com](https://samstringerhye.com) · [LinkedIn](https://linkedin.com/in/samstringerhye)
+Philadelphia, PA · hello@samstringerhye.com · (615) 739-8930 · [samstringerhye.com](https://samstringerhye.com) · [LinkedIn](https://linkedin.com/in/samstringerhye)
 
 ---
 
