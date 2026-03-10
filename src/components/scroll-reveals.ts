@@ -127,6 +127,21 @@ export async function initScrollReveals() {
         },
       })
     }
+
+    // ── Short-page safety net ──────────────────────────────────
+    // On pages that can't scroll enough for every trigger to fire
+    // (colophon, 404, about, etc.), detect unreachable triggers and
+    // force-play them so nothing stays invisible.
+    requestAnimationFrame(() => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      ScrollTrigger.getAll().forEach(st => {
+        // If the trigger can never be reached by scrolling, play it now
+        if (st.start > maxScroll && !st.progress) {
+          st.scroll(st.start)
+          st.update()
+        }
+      })
+    })
   })
 }
 

@@ -67,7 +67,7 @@ const jobsWithRows = jobsChronological.map((j, i) => {
   <div class="experience-header">
     <HeadingTag class:list={["experience-heading", `typo-${headingRole}`]} data-reveal>{headline}</HeadingTag>
     <a href="/resume" class="experience-download" aria-label="View resume">
-      <svg class="experience-download-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 18L18 6M18 6H10M18 6V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="experience-download-icon" width="28" height="28" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="80" y1="100" x2="140" y2="100"/><polyline points="115,75 140,100 115,125"/></svg>
     </a>
   </div>
   <div class="experience-timeline" data-timeline
@@ -175,12 +175,15 @@ const jobsWithRows = jobsChronological.map((j, i) => {
   }
 
   .experience-download-icon {
+    width: 65%;
+    height: 65%;
     transition: transform var(--duration-medium) cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   @media (hover: hover) {
     .experience-download:hover .experience-download-icon {
-      transform: translate(2px, -2px);
+      transform: scale(1.2) rotate(-5deg);
+      transition: transform 490ms cubic-bezier(0.5, 0, 0, 1);
     }
   }
 
@@ -464,11 +467,27 @@ const jobsWithRows = jobsChronological.map((j, i) => {
     })
   }
 
+  function initDownloadHover() {
+    if (!window.matchMedia('(hover: hover)').matches) return
+    document.querySelectorAll<HTMLElement>('.experience-download').forEach((el) => {
+      if (el.dataset.hoverBound === 'true') return
+      el.dataset.hoverBound = 'true'
+      el.addEventListener('mouseenter', () => {
+        el.style.backgroundColor = CMY_COLORS[colorIndex++ % CMY_COLORS.length]
+      })
+      el.addEventListener('mouseleave', () => {
+        el.style.backgroundColor = ''
+      })
+    })
+  }
+
   tightenSingleLineHeadings('.experience-heading')
   initTimelineHover()
+  initDownloadHover()
   document.addEventListener('astro:page-load', () => {
     tightenSingleLineHeadings('.experience-heading')
     initTimelineHover()
+    initDownloadHover()
   })
 </script>
 
