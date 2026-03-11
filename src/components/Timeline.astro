@@ -305,10 +305,24 @@ const jobsWithRows = jobsChronological.map((j, i) => {
 
   /* ── Mobile ── */
   @media (--2x) {
+    .experience-section {
+      padding-inline: var(--page-margin);
+    }
+
+    .experience-header::after {
+      left: calc(var(--page-margin) * -1);
+      right: calc(var(--page-margin) * -1);
+    }
+
+    .experience-heading {
+      padding: var(--content-inset-sm);
+    }
+
     .experience-timeline {
       grid-template-columns: auto 1fr;
       column-gap: 0;
       padding-inline: 0;
+      margin-inline: calc(var(--page-margin) * -1);
     }
 
     .tl-year {
@@ -336,10 +350,6 @@ const jobsWithRows = jobsChronological.map((j, i) => {
 
     .tl-job-year-mobile {
       display: none;
-    }
-
-    .experience-heading {
-      padding: var(--space-4) var(--page-margin);
     }
 
     .experience-download {

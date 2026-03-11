@@ -7,7 +7,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   try {
     const data = await request.json()
-    const { name, email, message } = data
+    const { name, email, message, website, form_loaded } = data
+
+    if (website) {
+      console.warn('Honeypot triggered', { name, email })
+      return new Response(JSON.stringify({ success: true }), { status: 200, headers })
+    }
+
+    const elapsed = Date.now() - Number(form_loaded)
+    if (!form_loaded || elapsed < 3000) {
+      console.warn('Timing check failed', { elapsed })
+      return new Response(JSON.stringify({ success: true }), { status: 200, headers })
+    }
 
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return new Response(JSON.stringify({ error: 'All fields are required.' }), { status: 400, headers })

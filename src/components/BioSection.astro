@@ -90,20 +90,22 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
   @media (--2x) {
     .bio-inner {
       grid-template-columns: 1fr;
+      padding-inline: var(--page-margin);
     }
 
     .bio-left {
       justify-content: flex-start;
-      padding: var(--space-4) var(--page-margin);
+      padding: var(--content-inset-sm);
     }
 
     .bio-right {
-      padding-inline: var(--page-margin);
+      padding: var(--content-inset-sm);
     }
 
     .bio-divider {
-      width: 100%;
+      width: auto;
       height: var(--border-width-1);
+      margin-inline: calc(var(--page-margin) * -1);
     }
   }
 

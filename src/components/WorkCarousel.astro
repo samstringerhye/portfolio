@@ -279,16 +279,26 @@ const featured = allWork
   }
 
   @media (--2x) {
+    .work-container {
+      padding-inline: var(--page-margin);
+    }
+
     .work-header {
-      padding: var(--space-4) var(--page-margin);
+      padding: var(--content-inset-sm);
     }
 
     .work-header::after {
       background: var(--color-rule);
+      left: calc(var(--page-margin) * -1);
+      right: calc(var(--page-margin) * -1);
     }
 
     .work-see-all::before {
       background: var(--color-rule);
+    }
+
+    .work-carousel {
+      margin-inline: calc(var(--page-margin) * -1);
     }
 
     .work-carousel::after {
