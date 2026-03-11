@@ -68,6 +68,17 @@ a {
   text-decoration: none;
 }
 
+@keyframes cmy-cycle {
+  0%      { color: #0062ff; }
+  33.33%  { color: #ac00ff; }
+  66.66%  { color: #ba4f00; }
+  100%    { color: #0062ff; }
+}
+
+a:hover:not(.nav-link):not(.nav-logo) {
+  animation: cmy-cycle 1.5s steps(1, end) infinite;
+}
+
 button {
   background: none;
   border: none;

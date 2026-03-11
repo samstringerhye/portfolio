@@ -64,7 +64,6 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   .cs-nav-link {
     text-decoration: none;
     padding: var(--space-2) 0;
-    transition: color var(--duration-short) ease;
   }
 
   .cs-nav-prev {
@@ -83,7 +82,7 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   @media (hover: hover) {
     .cs-nav-link:hover .cs-nav-title {
-      color: var(--color-text-primary);
+      animation: cmy-cycle 1.5s steps(1, end) infinite;
     }
   }
 
