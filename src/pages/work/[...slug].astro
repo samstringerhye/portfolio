@@ -2,38 +2,32 @@
 import { getCollection, render } from 'astro:content'
 import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro'
 
-export async function getStaticPaths() {
-  const allWork = await getCollection('work')
-  const sorted = allWork.sort((a, b) => a.data.sortOrder - b.data.sortOrder)
-  const listed = sorted.filter(e => !e.data.unlisted)
+export const prerender = false
 
-  return sorted.map((entry) => {
-    // Unlisted entries get no prev/next nav
-    if (entry.data.unlisted) {
-      return {
-        params: { slug: entry.id },
-        props: { entry, noindex: true },
-      }
-    }
+const { slug } = Astro.params
+const allWork = await getCollection('work')
+const sorted = allWork.sort((a, b) => a.data.sortOrder - b.data.sortOrder)
 
-    const idx = listed.indexOf(entry)
-    const prev = listed[idx - 1]
-    const next = listed[idx + 1]
+const entry = sorted.find(e => e.id === slug)
+if (!entry) return Astro.redirect('/404')
 
-    return {
-      params: { slug: entry.id },
-      props: {
-        entry,
-        prevSlug: prev?.id,
-        prevTitle: prev?.data.title,
-        nextSlug: next?.id,
-        nextTitle: next?.data.title,
-      },
-    }
-  })
+const listed = sorted.filter(e => !e.data.unlisted)
+const noindex = entry.data.unlisted || undefined
+
+let prevSlug: string | undefined
+let prevTitle: string | undefined
+let nextSlug: string | undefined
+let nextTitle: string | undefined
+
+if (!entry.data.unlisted) {
+  const idx = listed.indexOf(entry)
+  const prev = listed[idx - 1]
+  const next = listed[idx + 1]
+  prevSlug = prev?.id
+  prevTitle = prev?.data.title
+  nextSlug = next?.id
+  nextTitle = next?.data.title
 }
-
-const { entry, prevSlug, prevTitle, nextSlug, nextTitle, noindex } = Astro.props
 const { Content } = await render(entry)
 
 // Build OG image URL from thumbnail
