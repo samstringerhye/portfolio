@@ -24,34 +24,20 @@ Portfolio site for Sam Stringer-Hye, an Associate Design Director at Razorfish (
 
 ```
 src/
-  components/              — All components flat (20 files: .astro, .jsx, .ts, .js)
-    Nav.astro, Footer.astro, AboutModal.astro, SEO.astro
-    HeroSection.astro, BioSection.astro, WorkCarousel.astro
-    Timeline.astro, ScrollingInterests.astro, ResumeLink.astro
-    CaseStudyHero.astro, CaseStudyNav.astro
-    WorkCarouselIsland.jsx — GSAP carousel (client:visible)
-    TuningPanel.jsx        — Dev-only tuning overlay
-    store.js, heroSchema.js — Zustand tuning store
-    about-modal.ts, hover-effects.ts, scroll-reveals.ts
-  content/                 — Astro content collections (work, blog, home.md)
-  layouts/                 — BaseLayout, CaseStudyLayout, BlogLayout
-  pages/                   — Astro routes (index, work/[slug], blog, 404, etc.)
-  styles/                  — Global CSS, variables, typography, utilities, case-study
-  experience.json          — Timeline data
+  assets/                  — Images organized by case study (work/[project]/, about/)
+  components/              — All components flat (~28 files: .astro, .ts)
+    wab/                   — WAB case study components (13 files)
+  content/                 — Astro content collections (work/, blog/, resume/, home.json)
+  data/                    — Design tokens, animation config, schemas
+  layouts/                 — BaseLayout, CaseStudyLayout
+  lottie/                  — Lottie animation JSON files
+  pages/                   — Astro routes (index, work/[slug], blog, contact, etc.)
+  styles/                  — global.css, custom-media.css
+  types/                   — TypeScript type definitions
 
-inputs/
-  markdown/                — Case study and resume source content (5 files)
-  images/                  — ~154 image assets (png, jpg, webp, gif, jpeg, psd)
-
-prototypes/                — Vite + React app with hash-based routing (#/hero, #/carousel, etc.)
-  src/
-    prototypes/            — Individual prototype components (7 routes)
-    shared/                — OGL renderer, hooks, GLSL shaders
-    tunables/              — Live-tuning system (Zustand + localStorage)
-  r3f-hero/                — Separate Vite + R3F sub-project
-
-tokens.json                — Design tokens (typography, colors, animation, layout, breakpoints)
-package.json               — Root: Astro site
+plugins/                   — Astro plugins (rehype-lazy-images)
+public/                    — Static assets (fonts, favicon, brand SVGs)
+scripts/                   — Utility scripts (pagespeed.sh)
 ```
 
 ## Case Studies
@@ -73,10 +59,9 @@ package.json               — Root: Astro site
 ## Tech Stack
 
 - **Framework**: Astro 5 (static site) with React 19 islands
-- **3D/WebGL**: Three.js + R3F + Drei (hero), OGL (prototypes)
+- **3D/WebGL**: Three.js + R3F + Drei (hero)
 - **Animation**: GSAP (ScrollTrigger, Draggable), Lenis (smooth scroll)
-- **State**: Zustand (tuning system with localStorage persistence)
-- **Build**: Astro (main site), Vite 6 (prototypes app)
+- **Build**: Astro (main site, static output to `dist/`)
 
 ## Available Tools & Skills
 
@@ -176,13 +161,10 @@ package.json               — Root: Astro site
 ## Current State
 
 - **Framework**: Astro (static site) with React islands for interactive components
-- **Flat structure**: `src/` has 5 top-level folders (`components/`, `content/`, `layouts/`, `pages/`, `styles/`) — zero nesting inside `components/`
-- **Prototypes app** — Vite + React with 7 routes, OGL shader system, Zustand tunables (separate from main site)
-- Content is ready, design tokens defined, interaction patterns being explored
+- **Flat structure**: `src/` has 9 top-level folders — components are flat with one `wab/` subdirectory for case-study-specific components
+- Content is ready, design tokens defined, 5 case studies live
 
 ## Commands
 
 - `npm run dev` — Start Astro dev server
 - `npx astro build` — Production build (static output to `dist/`)
-- `cd prototypes && npm run dev` — Prototypes app (Vite, port 3000)
-- `cd prototypes/r3f-hero && npm run dev` — R3F hero sub-project
