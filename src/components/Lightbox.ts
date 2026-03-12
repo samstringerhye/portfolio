@@ -107,6 +107,14 @@ function getSectionImages(clickedImg: HTMLImageElement): HTMLImageElement[] {
   const body = document.querySelector('.case-study-body')
   if (!body) return [clickedImg]
 
+  // Phone scroll: return all non-dupe device screens as a navigable set
+  const phoneScroll = clickedImg.closest('.hero-phone-scroll')
+  if (phoneScroll) {
+    return Array.from(phoneScroll.querySelectorAll<HTMLImageElement>(
+      '.scroll-phone:not([data-phone-dupe]) .device-screen'
+    ))
+  }
+
   const carousel = clickedImg.closest('.carousel')
   if (carousel) return Array.from(carousel.querySelectorAll<HTMLImageElement>('img'))
 
@@ -157,14 +165,35 @@ function open(img: HTMLImageElement) {
 
 function showImage(img: HTMLImageElement) {
   if (!state.imgContainer) return
-
-  const clone = document.createElement('img')
-  clone.src = img.currentSrc || img.src
-  clone.alt = img.alt
-  clone.className = 'lightbox-img'
-
   state.imgContainer.innerHTML = ''
-  state.imgContainer.appendChild(clone)
+
+  const phoneParent = img.closest('.scroll-phone')
+
+  if (phoneParent) {
+    // Composite phone view: screen + device frame stacked via grid
+    const wrapper = document.createElement('div')
+    wrapper.className = 'lightbox-phone'
+
+    const screen = document.createElement('img')
+    screen.src = img.currentSrc || img.src
+    screen.alt = img.alt
+    screen.className = 'lightbox-phone-screen'
+
+    const frame = document.createElement('img')
+    frame.src = '/images/iphone-frame.png'
+    frame.alt = ''
+    frame.className = 'lightbox-phone-frame'
+
+    wrapper.appendChild(screen)
+    wrapper.appendChild(frame)
+    state.imgContainer.appendChild(wrapper)
+  } else {
+    const clone = document.createElement('img')
+    clone.src = img.currentSrc || img.src
+    clone.alt = img.alt
+    clone.className = 'lightbox-img'
+    state.imgContainer.appendChild(clone)
+  }
 }
 
 function navigate(direction: number) {
@@ -250,6 +279,7 @@ export function initLightbox() {
   // Attach click + keyboard handlers to all case study images
   body.querySelectorAll<HTMLImageElement>('img').forEach(img => {
     if (img.closest('.cs-hero-image')) return // Skip hero image
+    if (img.closest('[data-no-lightbox]')) return // Skip elements that opt out
     if (img.closest('.carousel-track')) return // Skip carousel images — handled by drag
     if (img.dataset.lightboxBound === 'true') return
     img.dataset.lightboxBound = 'true'

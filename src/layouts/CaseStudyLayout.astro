@@ -11,12 +11,13 @@ interface Props {
   prevTitle?: string
   nextSlug?: string
   nextTitle?: string
+  noindex?: boolean
 }
 
-const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
+const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitle, noindex } = Astro.props
 ---
 
-<BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline} ogImage={ogImage} jsonLd={jsonLd}>
+<BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline} ogImage={ogImage} jsonLd={jsonLd} noindex={noindex}>
   <div class="scroll-progress"></div>
   <article class="case-study-body">
     <slot />
@@ -173,7 +174,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
   }
 
   .case-study-body .cs-figure img,
-  .case-study-body .image-pair img,
+  .case-study-body .image-pair img:not(.device-screen):not(.device-frame),
   .case-study-body .image-grid img,
   .case-study-body .zigzag-media {
     transition: scale 0.3s ease;
@@ -181,7 +182,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
   @media (hover: hover) {
     .case-study-body .cs-figure img:hover,
-    .case-study-body .image-pair img:hover,
+    .case-study-body .image-pair img:not(.device-screen):not(.device-frame):hover,
     .case-study-body .image-grid img:hover {
       scale: 1.02;
     }
@@ -239,7 +240,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     overflow: hidden;
   }
 
-  .case-study-body .image-pair img {
+  .case-study-body .image-pair img:not(.device-screen):not(.device-frame) {
     display: block;
     width: 100%;
     height: auto;
@@ -261,6 +262,27 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
   .case-study-body .image-pair img.has-transparency {
     object-fit: contain;
     background: transparent;
+  }
+
+  /* ── Image pair with device frames: padded, centered, warm bg ── */
+  .case-study-body .image-pair:has(.device-phone) {
+    background: #fdf8f4;
+    column-gap: var(--border-width-1);
+  }
+
+  .case-study-body .image-pair > .image-pair-cell:has(.device-phone) {
+    background: #fdf8f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    line-height: normal;
+    overflow: visible;
+  }
+
+  .case-study-body .image-pair-cell .device-phone {
+    width: 280px;
+    max-width: 100%;
   }
 
   /* ── Zigzag: alternating image/text 2-col sections ── */
@@ -341,7 +363,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
   /* ── Accent band: full-width color section ── */
   .case-study-body .accent-band {
-    padding-inline: var(--space-3);
+    padding-inline: var(--content-inset-md);
   }
   .accent-band-1 { background: var(--color-accent-1); }
   .accent-band-2 { background: var(--color-accent-2); }
@@ -597,6 +619,37 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     object-fit: contain;
     border-radius: var(--radius-lg);
     display: block;
+  }
+
+  /* Composite phone view in lightbox */
+  .lightbox-phone {
+    display: grid;
+    max-height: 75vh;
+    max-width: calc(75vh * 0.484);
+  }
+
+  .lightbox-phone > img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .lightbox-phone-screen {
+    place-self: center;
+    border-radius: 13% !important;
+    z-index: 1;
+    width: 97.5% !important;
+    height: 98.8% !important;
+    object-fit: cover !important;
+  }
+
+  .lightbox-phone-frame {
+    z-index: 2;
+    pointer-events: none;
+    object-fit: fill !important;
   }
 
   .lightbox-close {

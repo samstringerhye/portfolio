@@ -60,7 +60,17 @@ const { label, fullBleed = false } = Astro.props
     -webkit-user-drag: none;
   }
 
-  .carousel-track :global(img) {
+  .carousel-track > :global(.device-phone) {
+    flex: 0 0 auto;
+    padding: 0;
+    margin: 0;
+    border: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .carousel-track > :global(img),
+  .carousel-track > :global(.cs-figure) :global(img) {
     display: block;
     width: 100%;
     height: auto;
@@ -106,6 +116,11 @@ const { label, fullBleed = false } = Astro.props
       flex: 0 0 82%;
     }
 
+    .carousel-track > :global(.device-phone) {
+      flex: 0 0 auto;
+      max-width: 82%;
+    }
+
     .carousel-track :global(img) {
       border-radius: 0;
     }
@@ -130,12 +145,12 @@ const { label, fullBleed = false } = Astro.props
 
       // Unwrap Astro MDX wrapper div
       const wrapper = track.querySelector(':scope > div')
-      if (wrapper && !wrapper.classList.contains('cs-figure')) {
+      if (wrapper && !wrapper.classList.contains('cs-figure') && !wrapper.classList.contains('device-phone')) {
         while (wrapper.firstChild) track.appendChild(wrapper.firstChild)
         wrapper.remove()
       }
 
-      const slides = Array.from(track.querySelectorAll<HTMLElement>(':scope > img, :scope > .cs-figure'))
+      const slides = Array.from(track.querySelectorAll<HTMLElement>(':scope > img, :scope > .cs-figure, :scope > .device-phone'))
       if (slides.length <= 1) {
         dotsContainer.style.display = 'none'
         if (slides[0]) slides[0].style.flex = '0 0 100%'
@@ -168,7 +183,14 @@ const { label, fullBleed = false } = Astro.props
           track.style.paddingLeft = `${padSide}px`
           track.style.paddingRight = `${padSide}px`
           track.style.gap = `${padSide}px`
-          slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
+          slides.forEach(s => {
+            if (s.classList.contains('device-phone')) {
+              s.style.flex = '0 0 auto'
+              s.style.maxWidth = `${slideWidth}px`
+            } else {
+              s.style.flex = `0 0 ${slideWidth}px`
+            }
+          })
           return
         }
         const { col, gutter } = getGridMetrics()
@@ -178,7 +200,14 @@ const { label, fullBleed = false } = Astro.props
         track.style.paddingLeft = `${padLeft}px`
         track.style.paddingRight = `${padRight}px`
         track.style.gap = `${gutter}px`
-        slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
+        slides.forEach(s => {
+          if (s.classList.contains('device-phone')) {
+            s.style.flex = '0 0 auto'
+            s.style.maxWidth = `${slideWidth}px`
+          } else {
+            s.style.flex = `0 0 ${slideWidth}px`
+          }
+        })
       }
       applyGridSizing()
 

@@ -5,6 +5,7 @@ import { Icon } from 'astro-icon/components'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 
 const allWork = (await getCollection('work'))
+  .filter(e => !e.data.unlisted)
   .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
 
 const siteUrl = 'https://samstringerhye.com'
@@ -43,7 +44,7 @@ const workJsonLd = [
             alt={entry.data.title}
             width={1600}
             format="webp"
-            quality={80}
+            quality={90}
             loading="eager"
           />
         </div>

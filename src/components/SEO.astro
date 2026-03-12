@@ -5,6 +5,7 @@ interface Props {
   ogImage?: string
   canonicalUrl?: string
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+  noindex?: boolean
 }
 
 const {
@@ -13,6 +14,7 @@ const {
   ogImage = '/assets/og-image.jpg',
   canonicalUrl,
   jsonLd,
+  noindex = false,
 } = Astro.props
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://samstringerhye.com'
@@ -46,6 +48,7 @@ import { colors } from '../data/tokens'
 
 <title>{title}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 <link rel="canonical" href={canonical} />
 
 <meta property="og:type" content="website" />

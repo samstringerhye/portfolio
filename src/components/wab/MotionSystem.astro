@@ -1,0 +1,327 @@
+---
+/**
+ * Motion System diagram for Whataburger case study.
+ * 3 duration tiers + easing curve with interactive demos.
+ * Animated dots play the actual duration on hover.
+ * Easing curve has a traveling dot on click.
+ */
+const durations = [
+  { name: 'Fast', ms: 100, usage: 'Toggles, checkboxes', width: '20%' },
+  { name: 'Normal', ms: 150, usage: 'Sheets, modals', width: '40%' },
+  { name: 'Slow', ms: 300, usage: 'Page transitions', width: '80%' },
+]
+---
+
+<section class="motion-system" aria-label="Motion system">
+  <div class="motion-grid">
+    <div class="motion-durations">
+      <h4 class="motion-section-title">Duration</h4>
+      <div class="duration-bars">
+        {durations.map(d => (
+          <div class="duration-item" data-duration={d.ms}>
+            <div class="duration-bar-track">
+              <div class="duration-bar-fill" style={`width: ${d.width};`} />
+              <div class="duration-dot" aria-hidden="true" />
+            </div>
+            <div class="duration-meta">
+              <span class="duration-name">{d.name}</span>
+              <span class="duration-ms">{d.ms}ms</span>
+            </div>
+            <span class="duration-usage">{d.usage}</span>
+          </div>
+        ))}
+      </div>
+      <p class="motion-hint">Hover a bar to see the timing</p>
+    </div>
+
+    <div class="motion-easing">
+      <h4 class="motion-section-title">Easing</h4>
+      <div class="easing-card">
+        <div class="easing-label">ease-in-out</div>
+        <p class="easing-desc">Standard easing for all transitions.<br />Smooth acceleration and deceleration.</p>
+        <div class="easing-demo">
+          <svg class="easing-curve" viewBox="0 0 200 200" fill="none" aria-label="Cubic bezier curve: 0.42, 0, 0.58, 1">
+            <rect x="0" y="0" width="200" height="200" fill="none" stroke="#f4ebe1" stroke-width="1" rx="4" />
+            <line x1="0" y1="200" x2="200" y2="0" stroke="#f4ebe1" stroke-width="1" stroke-dasharray="4 4" />
+            <!-- Control point lines -->
+            <line x1="0" y1="200" x2="84" y2="200" stroke="#ffd6ba" stroke-width="1" />
+            <line x1="200" y1="0" x2="116" y2="0" stroke="#ffd6ba" stroke-width="1" />
+            <!-- Curve -->
+            <path class="easing-path" d="M 0 200 C 84 200, 116 0, 200 0" stroke="#fe7800" stroke-width="2.5" fill="none" />
+            <!-- Control points -->
+            <circle cx="84" cy="200" r="4" fill="#fe7800" />
+            <circle cx="116" cy="0" r="4" fill="#fe7800" />
+            <!-- Traveling dot -->
+            <circle class="easing-dot" cx="0" cy="200" r="6" fill="#472c19" opacity="0" />
+            <!-- Labels -->
+            <text x="84" y="192" font-size="10" fill="#806c5b" text-anchor="middle">P1 (0.42, 0)</text>
+            <text x="116" y="16" font-size="10" fill="#806c5b" text-anchor="middle">P2 (0.58, 1)</text>
+          </svg>
+          <button class="easing-play" aria-label="Play easing animation" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5,3 19,12 5,21" />
+            </svg>
+            <span>Play</span>
+          </button>
+        </div>
+        <code class="easing-code">cubic-bezier(0.42, 0, 0.58, 1)</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .motion-system {
+    background: #fdf8f4;
+    border-radius: 0;
+    border-top: var(--border-width-1) solid var(--color-text-primary);
+    border-bottom: var(--border-width-1) solid var(--color-text-primary);
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+
+  .motion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .motion-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #472c19;
+    margin: 0 0 1rem;
+  }
+
+  .duration-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .duration-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    cursor: pointer;
+  }
+
+  .duration-bar-track {
+    height: 8px;
+    background: rgba(255, 214, 186, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .duration-bar-fill {
+    height: 100%;
+    background: #fe7800;
+    border-radius: 4px;
+  }
+
+  .duration-dot {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    background: #472c19;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .duration-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .duration-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #472c19;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .duration-ms {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: #806c5b;
+  }
+
+  .duration-usage {
+    font-size: 0.72rem;
+    color: #948274;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .motion-hint {
+    font-size: 0.68rem;
+    color: #a0846c;
+    margin: 0.75rem 0 0;
+    font-style: italic;
+  }
+
+  .easing-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .easing-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #472c19;
+    margin-bottom: 0.35rem;
+  }
+
+  .easing-desc {
+    font-size: 0.78rem;
+    color: #806c5b;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+
+  .easing-demo {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .easing-curve {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+  }
+
+  .easing-play {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: #fdf8f4;
+    border: 1px solid #f4ebe1;
+    border-radius: 6px;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #472c19;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .easing-play:hover {
+    background: #f4ebe1;
+    border-color: #cdb9a7;
+  }
+
+  .easing-play svg {
+    color: #fe7800;
+  }
+
+  .easing-code {
+    display: block;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: #806c5b;
+  }
+
+  @media (max-width: 768px) {
+    .motion-grid {
+      grid-template-columns: 1fr;
+    }
+    .motion-system {
+      padding: 1.25rem;
+    }
+    .motion-hint {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .duration-dot,
+    .easing-dot,
+    .easing-play,
+    .motion-hint {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  async function initMotionSystem() {
+    const container = document.querySelector('.motion-system') as HTMLElement | null
+    if (!container || container.dataset.motionInit === 'true') return
+    container.dataset.motionInit = 'true'
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const { default: gsap } = await import('gsap')
+
+    // Duration bar hover demos — animated dot travels the bar width
+    const items = container.querySelectorAll<HTMLElement>('.duration-item')
+    items.forEach(item => {
+      const ms = parseInt(item.dataset.duration || '150', 10)
+      const dot = item.querySelector<HTMLElement>('.duration-dot')
+      const fill = item.querySelector<HTMLElement>('.duration-bar-fill')
+      if (!dot || !fill) return
+
+      const playDemo = () => {
+        const fillWidth = fill.offsetWidth
+        gsap.killTweensOf(dot)
+        gsap.set(dot, { left: 0, opacity: 1 })
+        gsap.to(dot, {
+          left: fillWidth,
+          duration: ms / 1000,
+          ease: 'power2.inOut',
+          onComplete() {
+            gsap.to(dot, { opacity: 0, duration: 0.2, delay: 0.3 })
+          }
+        })
+      }
+
+      item.addEventListener('mouseenter', playDemo)
+      item.addEventListener('click', playDemo)
+    })
+
+    // Easing curve play button — dot traces the bezier path
+    const playBtn = container.querySelector<HTMLElement>('.easing-play')
+    const easingDot = container.querySelector<SVGCircleElement>('.easing-dot')
+    const easingPath = container.querySelector<SVGPathElement>('.easing-path')
+
+    if (playBtn && easingDot && easingPath) {
+      const playEasing = () => {
+        const length = easingPath.getTotalLength()
+        gsap.killTweensOf(easingDot)
+        gsap.set(easingDot, { opacity: 1 })
+
+        const obj = { t: 0 }
+        gsap.to(obj, {
+          t: 1,
+          duration: 1.2,
+          ease: 'none',
+          onUpdate() {
+            const point = easingPath.getPointAtLength(obj.t * length)
+            easingDot.setAttribute('cx', String(point.x))
+            easingDot.setAttribute('cy', String(point.y))
+          },
+          onComplete() {
+            gsap.to(easingDot, { opacity: 0, duration: 0.3, delay: 0.5 })
+          }
+        })
+      }
+
+      playBtn.addEventListener('click', playEasing)
+    }
+  }
+
+  initMotionSystem()
+  document.addEventListener('astro:page-load', initMotionSystem)
+</script>

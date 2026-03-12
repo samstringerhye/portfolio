@@ -13,9 +13,10 @@ interface Props {
   ogImage?: string
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
   hideFooter?: boolean
+  noindex?: boolean
 }
 
-const { title, description, ogImage, jsonLd, hideFooter = false } = Astro.props
+const { title, description, ogImage, jsonLd, hideFooter = false, noindex } = Astro.props
 
 /* ── Helper: fluid clamp from min→max rem across 480→1140px ── */
 function buildClamp(min: number, max: number): string {
@@ -269,7 +270,7 @@ const typoCss = `:root {
 <!doctype html>
 <html lang="en">
   <head>
-    <SEO title={title} description={description} ogImage={ogImage} jsonLd={jsonLd} />
+    <SEO title={title} description={description} ogImage={ogImage} jsonLd={jsonLd} noindex={noindex} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" as="style" />

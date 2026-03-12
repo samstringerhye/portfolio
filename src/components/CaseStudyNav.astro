@@ -43,8 +43,9 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   .cs-nav-inner {
     position: relative;
     grid-column: 1 / -1;
-    display: flex;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
     gap: var(--grid-gutter);
     padding: var(--space-6);
   }
@@ -66,18 +67,17 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
     padding: var(--space-2) 0;
   }
 
-  .cs-nav-prev {
-    margin-right: auto;
-  }
-
   .cs-nav-next {
     text-align: right;
-    margin-left: auto;
   }
 
-.cs-nav-label {
+  .cs-nav-label {
     display: block;
     margin-bottom: var(--space-1);
+  }
+
+  .cs-nav-title {
+    display: block;
   }
 
   @media (hover: hover) {
@@ -88,23 +88,11 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
 
   @media (--2x) {
     .cs-nav-inner {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
       padding-inline: var(--page-margin);
     }
 
     .cs-nav-link {
       min-height: 44px;
     }
-
-    .cs-nav-prev {
-      margin-right: 0;
-    }
-
-    .cs-nav-next {
-      text-align: right;
-    }
-
   }
 </style>

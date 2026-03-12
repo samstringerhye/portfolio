@@ -14,7 +14,7 @@ dist/
 *.png
 !src/**/*.png
 !public/**/*.png
-!inputs/**/*.png
+
 !assets/**/*.png
 
 # Playwright MCP cache
@@ -26,6 +26,10 @@ dist/
 # Internal docs (keep local, not public)
 AUDIT.md
 RETROSPECTIVE.md
+
+# Working/reference directories
+inputs/
+oldwbapp/
 
 # Editor / OS
 .DS_Store

@@ -5,10 +5,20 @@ import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro'
 export async function getStaticPaths() {
   const allWork = await getCollection('work')
   const sorted = allWork.sort((a, b) => a.data.sortOrder - b.data.sortOrder)
+  const listed = sorted.filter(e => !e.data.unlisted)
 
-  return sorted.map((entry, i) => {
-    const prev = sorted[i - 1]
-    const next = sorted[i + 1]
+  return sorted.map((entry) => {
+    // Unlisted entries get no prev/next nav
+    if (entry.data.unlisted) {
+      return {
+        params: { slug: entry.id },
+        props: { entry, noindex: true },
+      }
+    }
+
+    const idx = listed.indexOf(entry)
+    const prev = listed[idx - 1]
+    const next = listed[idx + 1]
 
     return {
       params: { slug: entry.id },
@@ -23,7 +33,7 @@ export async function getStaticPaths() {
   })
 }
 
-const { entry, prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
+const { entry, prevSlug, prevTitle, nextSlug, nextTitle, noindex } = Astro.props
 const { Content } = await render(entry)
 
 // Build OG image URL from thumbnail
@@ -69,6 +79,7 @@ const jsonLd = [
   prevTitle={prevTitle}
   nextSlug={nextSlug}
   nextTitle={nextTitle}
+  noindex={noindex}
 >
   <Content />
 </CaseStudyLayout>

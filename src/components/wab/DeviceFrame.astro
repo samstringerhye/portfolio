@@ -1,0 +1,68 @@
+---
+/**
+ * iPhone device frame for Whataburger case study screens.
+ * CSS grid stacking: both images in grid-area 1/1.
+ * Screen: 365×765, Frame container: 375×775 (10px larger each dimension)
+ */
+import { Image } from 'astro:assets'
+
+interface Props {
+  src: ImageMetadata
+  alt: string
+}
+
+const { src, alt } = Astro.props
+---
+
+<div class="device-phone">
+  <div class="device-phone-inner">
+    <Image src={src} alt={alt} width={730} format="webp" quality={90} loading="lazy" class="device-screen" />
+    <img src="/images/iphone-frame.png" alt="" loading="lazy" class="device-frame" />
+  </div>
+</div>
+
+<style>
+  .device-phone {
+    width: 375px;
+    max-width: 100%;
+  }
+
+  .device-phone-inner {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1564 / 3140;
+  }
+
+  /* Absolute stacking — immune to external img rules */
+  .device-phone-inner > :global(img) {
+    position: absolute;
+    background: transparent !important;
+    padding: 0 !important;
+    transition: none !important;
+    border-radius: 0 !important;
+  }
+
+  .device-phone-inner > :global(img:hover) {
+    scale: 1 !important;
+  }
+
+  /* Screen: inset slightly from frame edges */
+  .device-phone-inner > :global(img.device-screen) {
+    inset: 1.27% 3.33%;
+    width: 93.35% !important;
+    height: 97.45% !important;
+    border-radius: 9% !important;
+    object-fit: cover !important;
+    z-index: 1;
+  }
+
+  /* Frame: fills entire container */
+  .device-frame {
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: fill !important;
+    z-index: 2;
+    pointer-events: none;
+  }
+</style>
