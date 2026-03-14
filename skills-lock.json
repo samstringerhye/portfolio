@@ -45,6 +45,11 @@
       "source": "smithery/ai",
       "sourceType": "well-known",
       "computedHash": "287f1c9f65e36ddc35cd19190a38d1353290d73d13e312bd27f6909c3f4f4e4c"
+    },
+    "web-design-reviewer": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "computedHash": "10c6fad8b4f01dbeae969009d81d6c306c8a96d56077cad9bfe2a73a38f5dcbe"
     }
   }
 }

@@ -4,7 +4,7 @@ client: "Whataburger"
 year: 2026
 role: "Associate Design Director"
 agency: "Razorfish"
-tagline: "Rebuilding a design system and visual language for a beloved brand's mobile experience."
+tagline: "Design system and production screens for a 900-location QSR brand's mobile app."
 thumbnail: "../../assets/work/wab-2026/wab-thumbnail.jpeg"
 heroImage: "../../assets/work/wab-2026/hero.png"
 heroImageAlt: "Whataburger mobile app redesign — home screen shown in a device mockup"
@@ -66,11 +66,11 @@ import giftCardsSrc from '../../assets/work/wab-2026/gift-cards.png'
 
 <ProseGroup>
 
-# Designing a Modern System for a Beloved Brand
+# 258 Tokens, 90+ Components, Every Screen
 
-As sole visual designer on a major mobile app redesign for Whataburger — a brand with over 900 locations — I owned two parallel tracks: rebuilding the design system from the ground up, and delivering production-ready visual design across every screen in the app.
+As sole visual designer on Whataburger's mobile app redesign (900+ locations), I owned two parallel tracks: rebuilding the design system from the ground up, and delivering production-ready visual design across every screen in the app.
 
-I designed the complete token architecture (258 variables across three collections), built the component library (90+ icons, navigation, inputs, layout, and utility components), and delivered visual design for the full app experience — sign-in and account management, location finding, and the full menu ordering and customization flow.
+I designed the complete token architecture (258 variables across three collections), built the component library (90+ icons, navigation, inputs, layout, and utility components), and delivered visual design for the full app experience: sign-in, account management, location finding, and the full menu ordering and customization flow.
 
 </ProseGroup>
 
@@ -80,15 +80,15 @@ I designed the complete token architecture (258 variables across three collectio
 
 ## The Problem
 
-The existing app felt dated. Visually, it relied on a single shade of orange for everything — buttons, headers, accents, promotional banners — with no hierarchy to guide the eye. The orange-and-white striped awning motif repeated on every screen. Typography was all-caps branded display type everywhere, with no scale or system behind it. Layouts were utilitarian stacked cards with no depth or breathing room.
+The existing app felt dated. Visually, it relied on a single shade of orange for everything: buttons, headers, accents, promotional banners. No hierarchy to guide the eye. The orange-and-white striped awning motif repeated on every screen. Typography was all-caps branded display type everywhere, with no scale or system behind it. Layouts were utilitarian stacked cards with no depth or breathing room.
 
-The deeper issue was structural. The design system had primitive tokens only — named after the brand ("Whataburger Orange") rather than by function, and covering only elements that already existed. There were no tokens for interaction states, motion, or elevation. No semantic layer at all. Every new screen meant inventing values from scratch, making the app increasingly inconsistent as it grew.
+The deeper issue was structural. The design system had primitive tokens only, named after the brand ("Whataburger Orange") rather than by function, covering only elements that already existed. There were no tokens for interaction states, motion, or elevation. No semantic layer at all. Every new screen meant inventing values from scratch, making the app increasingly inconsistent as it grew.
 
 The timeline was tight: late January to May for a complete design system and production-ready screens across every flow. The brand's orange, awning motif, and W mark were non-negotiable, but we had freedom with illustration style, supporting colors, and typography.
 
-What started as a visual refresh became something bigger. The client pushed us to innovate beyond new paint, to find better patterns for how the app worked, not just how it looked. That meant competitive research across other QSR apps and rethinking flows like customization, where Whataburger's depth of options (significantly more than competitors) demanded solutions that didn't exist in the category.
+The client pushed us past a visual refresh. They wanted better patterns for how the app worked, beyond how it looked. That meant competitive research across other QSR apps and rethinking flows like customization, where Whataburger's depth of options (significantly more than competitors) demanded solutions that didn't exist in the category.
 
-Three visual directions were pressure-tested against real wireframes to find the right balance. We took Vibrant Bold's iconography, typography, and bold color energy, then paired it with Modern's component structure and lighter color palette — landing on a direction that felt like Whataburger without overwhelming the daily ordering experience.
+Three visual directions were pressure-tested against real wireframes to find the right balance. We took Vibrant Bold's iconography, typography, and bold color energy, then paired it with Modern's component structure and lighter color palette. The result felt like Whataburger without overwhelming the daily ordering experience.
 
 </ProseGroup>
 
@@ -104,7 +104,7 @@ Three visual directions were pressure-tested against real wireframes to find the
 
 This was the most thorough systems work of my career. Before designing a single screen, I audited the existing token structure and found a system that could only describe what already existed, not what we needed to build. The rebuild, codenamed Pele, delivered 258 variables across three collections.
 
-The naming convention was the most consequential early decision. Every token reads like a path — `color/fg/primary`, `spacing/400`, `shadow/elevation/raised` — because the structure had to serve two audiences simultaneously. Designers needed names that described *function*, not appearance: "primary foreground" tells you where to use it, "Whataburger Orange" doesn't. Engineers needed names that mapped directly to component props without a translation layer. The ×100 numeric scale (borrowed from Material Design's density-independent convention) gave spacing and radius tokens a predictable progression that both teams could reason about without looking up values.
+The naming convention was the most consequential early decision. Every token reads like a path: `color/fg/primary`, `spacing/400`, `shadow/elevation/raised`. The structure had to serve two audiences simultaneously. Designers needed names that described *function*, not appearance: "primary foreground" tells you where to use it, "Whataburger Orange" doesn't. Engineers needed names that mapped directly to component props without a translation layer. The ×100 numeric scale (borrowed from Material Design's density-independent convention) gave spacing and radius tokens a predictable progression that both teams could reason about without looking up values.
 
 </ProseGroup>
 
@@ -116,7 +116,7 @@ The naming convention was the most consequential early decision. Every token rea
 
 ### Color States
 
-The most critical gap in the old system was interactive states. A button had one color — no hover, no pressed, no disabled. Pele introduced 11 color states, each defined across three categories: foreground, background, and border. Every interactive element in the app now has a complete, predictable state set without designers making one-off decisions.
+The most critical gap in the old system was interactive states. A button had one color: no hover, no pressed, no disabled. Pele introduced 11 color states, each defined across three categories: foreground, background, and border. Every interactive element in the app now has a complete, predictable state set without designers making one-off decisions.
 
 </ProseGroup>
 
@@ -126,7 +126,7 @@ The most critical gap in the old system was interactive states. A button had one
 
 ### Typography
 
-Typography follows an M3-inspired naming convention — Display, Headline, Body, Label — giving every text element a clear role in the hierarchy. Display styles use Alkaline (the brand's display typeface), while all other roles use Unbounded. Each style is bound to semantic tokens for size, line-height, letter-spacing, and weight, so the full typographic system can be updated from a single source.
+Typography follows an M3-inspired naming convention: Display, Headline, Body, Label. Every text element has a clear role in the hierarchy. Display styles use Alkaline (the brand's display typeface), while all other roles use Unbounded. Each style is bound to semantic tokens for size, line-height, letter-spacing, and weight, so the full typographic system can be updated from a single source.
 
 </ProseGroup>
 
@@ -156,7 +156,7 @@ The motion system defines three duration tiers: Fast (100ms) for micro-interacti
 
 ### Elevation
 
-Five elevation levels are composed from shadow distance, blur, and spread tokens rather than arbitrary box-shadow values. Each level has a clear use case — raised for cards, overlay for dropdowns, modal for dialogs, dramatic for floating actions, and inset for pressed states. The shadow token scale (×100) follows the same convention as spacing, making the system internally consistent.
+Five elevation levels are composed from shadow distance, blur, and spread tokens rather than arbitrary box-shadow values. Each level has a clear use case: raised for cards, overlay for dropdowns, modal for dialogs, dramatic for floating actions, inset for pressed states. The shadow token scale (×100) follows the same convention as spacing, making the system internally consistent.
 
 </ProseGroup>
 
@@ -178,7 +178,7 @@ The component library organized into universal components (in the design library
 
 ## Visual Design
 
-Menu and customization was the hardest flow to solve — both in UX complexity and visual hierarchy. Branching paths (meal vs. à la carte, daypart-dependent categories, deep customization trees) meant the interface had to guide users through decisions without overwhelming someone who just wants lunch.
+Menu and customization was the hardest flow to solve, in both UX complexity and visual hierarchy. Branching paths (meal vs. à la carte, daypart-dependent categories, deep customization trees) meant the interface had to guide users through decisions without overwhelming someone who just wants lunch.
 
 I worked closely with the client's UX team, uncovering and resolving experience issues during the visual exploration phase that weren't visible in wireframes. The merged direction gave the interface room to breathe while staying unmistakably Whataburger.
 
@@ -215,11 +215,11 @@ The menu ordering flow was the real test. Whataburger's customization depth (sig
 
 ## What I Learned
 
-Building the system first made everything downstream faster and more consistent. The upfront investment in token architecture — which felt slow at the time — eliminated hundreds of micro-decisions across every flow. When a new screen needed a hover state or an elevation level, the answer already existed. The system didn't just make design faster; it made design decisions more confident, because every choice was grounded in a structure that had already been thought through.
+Building the system first eliminated hundreds of micro-decisions across every flow. When a new screen needed a hover state or an elevation level, the answer already existed. The upfront time felt slow. The downstream speed made up for it.
 
-Working embedded with a client UX team taught me different collaboration patterns than working with an internal team. You're simultaneously a peer and a vendor, which means you earn trust through the quality of your work and the clarity of your rationale, not through org-chart authority. The closest collaboration happened during menu customization, where my visual exploration surfaced UX issues that led to meaningful flow changes — the kind of contribution that only happens when visual design is involved early, not applied as a skin at the end.
+Working embedded with a client UX team taught me different collaboration patterns than working with an internal team. You're simultaneously a peer and a vendor, which means you earn trust through the quality of your work and the clarity of your rationale, not through org-chart authority. The closest collaboration happened during menu customization, where my visual exploration surfaced UX issues that led to meaningful flow changes. That only happens when visual design is involved early, not applied as a skin at the end.
 
-Token architecture is invisible to end users, but it transforms the speed and quality of design-to-engineering handoff. Naming tokens by action instead of appearance meant the dev team could read the system without a translation layer.
+Naming tokens by function instead of appearance meant the dev team could read the system without a translation layer. `fg/primary` maps to a theme prop. "Whataburger Orange" doesn't.
 
 </ProseGroup>
 

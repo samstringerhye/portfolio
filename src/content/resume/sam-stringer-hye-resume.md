@@ -6,7 +6,7 @@ Philadelphia, PA · (615) 739-8930 · [samstringerhye.com](https://samstringerhy
 
 ## Summary
 
-Associate Design Director with 13+ years designing interfaces, design systems, and interactive experiences across e-commerce, consumer apps, and media. Strong prototyping background that connects design intent to real implementation. Work across Samsung, CVS, Frontier, Barclays, and Mashable has driven measurable lifts in conversion and engagement. Now building at the intersection of design and code, using agentic AI and creative coding to ship work directly.
+Associate Design Director with 13+ years designing interfaces, design systems, and interactive experiences across e-commerce, consumer apps, and media. Prototyping background in After Effects, ProtoPie, and code. Work across Samsung, CVS, Frontier, Barclays, and Mashable has driven measurable lifts in conversion and engagement. Now designing and building with agentic AI and creative coding.
 
 ---
 
@@ -47,8 +47,8 @@ Associate Design Director with 13+ years designing interfaces, design systems, a
 ### Motion Designer · NowThis News
 **Aug 2012 – Mar 2014 · New York, NY**
 
-- Created motion templates that streamlined production and maintained brand consistency across viral social content
-- Redesigned the brand identity at a pivotal early stage, building a visual system that strengthened recognition across social platforms
+- Created motion templates that sped up production and maintained brand consistency across viral social content
+- Redesigned the brand identity at a pivotal early stage, building the visual system NowThis used across its social channels
 
 ---
 

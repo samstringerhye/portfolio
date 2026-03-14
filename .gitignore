@@ -45,6 +45,12 @@ oldwbapp/
 *.log
 npm-debug.log*
 
+# Claude Code skills (local tool config)
+.agent/
+.agents/
+.claude/skills/
+skills/
+
 # Vercel
 .vercel/
 

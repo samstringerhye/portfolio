@@ -1,5 +1,19 @@
 # CLAUDE.md
 
+## Copy & Writing Rules
+
+Voice: Direct, specific, earned. No adjectives that don't carry weight.
+Never: "seamlessly," "robust," "innovative," "streamlined," "leveraged," "elevated"
+Never: em dashes, passive voice, throat-clearing intros
+Never: AI tell phrases — "delve," "nuanced," "holistic," "at its core," "it's worth noting"
+
+Case study structure: Problem → constraint → decision → outcome. Lead with the outcome.
+Metrics: Include real ones or omit. Never fudge with "significantly improved."
+
+When writing copy, read it back as if you're a skeptical creative director who's seen 500 portfolios.
+
+---
+
 ## How to Work
 
 **Favor rebuilding over patching.** If something isn't working after a couple of attempts, say so and propose a different approach rather than accumulating workarounds.
