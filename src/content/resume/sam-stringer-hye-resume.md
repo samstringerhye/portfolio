@@ -6,7 +6,7 @@ Philadelphia, PA · (615) 739-8930 · [samstringerhye.com](https://samstringerhy
 
 ## Summary
 
-Associate Design Director with 13+ years designing interfaces, design systems, and interactive experiences across e-commerce, consumer apps, and media. Prototyping background in After Effects, ProtoPie, and code. Work across Samsung, CVS, Frontier, Barclays, and Mashable has driven measurable lifts in conversion and engagement. Now designing and building with agentic AI and creative coding.
+Associate Design Director at Razorfish, 13+ years in interface design, design systems, and motion. Prototyping background in After Effects, ProtoPie, and code. Shipped work for Samsung, CVS, Frontier, Barclays, and Mashable. Now building with AI-assisted workflows and creative coding.
 
 ---
 
@@ -15,10 +15,10 @@ Associate Design Director with 13+ years designing interfaces, design systems, a
 ### Associate Design Director · Razorfish (Publicis Groupe)
 **Oct 2021 – Present · Remote**
 
-- Lead UX and production design for Samsung's Bespoke Design Studio, an online customization tool for luxury appliances; research-driven iteration reduced exit rates by 14% and increased add-to-cart rates by 24%
-- Own design system development and page-level UX for Samsung.com and Frontier's MyFrontier app; Samsung work contributed to a 10% conversion lift ($143M in additional revenue), Frontier saw a 22% increase in autopay sign-ups
-- Build and maintain a flexible design system for CVS Pharmacy's e-commerce platform, increasing conversion rates by 12%
-- Create CRM brand guidelines and Figma component templates for Samsung, cutting production time by 50%
+- Lead UX and production design for Samsung's Bespoke Design Studio, a configurator for customizing luxury appliances online
+- Own design system and page-level UX for Samsung.com (12+ global markets) and Frontier's MyFrontier app
+- Build and maintain the design system (type scale, icon grid, component library) for CVS Pharmacy's e-commerce platform
+- Create CRM brand guidelines and Figma component templates for Samsung, standardizing creative production
 - Won W3 Award Best in Show for Best Interactive Design (Emerging Tech Features) for Samsung SmartThings Hub (2025)
 - Establish and lead a Designers & AI Craft Group focused on integrating emerging tools into production workflows
 - Mentor junior designers on systems thinking, UX craft, and career development
@@ -26,9 +26,9 @@ Associate Design Director with 13+ years designing interfaces, design systems, a
 ### Senior Designer · Razorfish
 **Jun 2018 – Oct 2021 · New York, NY**
 
-- Designed prototypes and motion interactions for Samsung's Smart Home marketing page, driving a 5% increase in SmartThings sales
-- Built prototypes and user flows for Barclays' finance app, improving customer satisfaction scores by 10%
-- Designed motion and interaction systems for Pilot Flying J's mobile app; micro-interactions contributed to a 15% increase in positive app reviews
+- Designed prototypes and motion interactions for Samsung's Smart Home marketing page
+- Built prototypes and user flows for Barclays' finance app
+- Designed motion and interaction systems for Pilot Flying J's mobile app
 
 ### Motion & Product Designer · Independent
 **Aug 2016 – Jun 2018 · New York, NY**
