@@ -69,10 +69,10 @@ a {
 }
 
 @keyframes cmy-cycle {
-  0%      { color: #0062ff; }
-  33.33%  { color: #ac00ff; }
-  66.66%  { color: #ba4f00; }
-  100%    { color: #0062ff; }
+  0%      { color: var(--color-accent-3); }
+  33.33%  { color: var(--color-accent-1); }
+  66.66%  { color: var(--color-accent-2); }
+  100%    { color: var(--color-accent-3); }
 }
 
 a:hover:not(.nav-link):not(.nav-logo) {

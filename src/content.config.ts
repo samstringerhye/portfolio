@@ -13,6 +13,7 @@ const work = defineCollection({
     thumbnail: image(),
     heroImage: image(),
     heroImageAlt: z.string(),
+    thumbnailAlt: z.string().optional(),
     featured: z.boolean().default(false),
     sortOrder: z.number().default(999),
     unlisted: z.boolean().default(false),

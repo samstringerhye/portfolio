@@ -33,7 +33,7 @@ const workJsonLd = [
 ]
 ---
 
-<BaseLayout title="Work — Sam Stringer-Hye" description="Case studies from Samsung, Frontier, and CVS. $143M+ in conversion lift." jsonLd={workJsonLd}>
+<BaseLayout title="Work — Sam Stringer-Hye" description="Case studies from Samsung, Frontier, and CVS. Design systems, product design, and interactive experiences." jsonLd={workJsonLd}>
   <section class="work-index" aria-label="All work">
     <h1 class="work-index-heading typo-display-md">Work</h1>
     {allWork.map((entry, i) => (
@@ -41,7 +41,7 @@ const workJsonLd = [
         <div class="work-row-image">
           <Image
             src={entry.data.thumbnail}
-            alt={entry.data.title}
+            alt={entry.data.thumbnailAlt ?? entry.data.title}
             width={1600}
             format="webp"
             quality={90}

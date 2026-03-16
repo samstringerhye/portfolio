@@ -114,17 +114,17 @@ const year = new Date().getFullYear()
     justify-content: space-between;
     align-items: center;
     margin-bottom: calc(var(--page-margin) * 2);
-    padding: var(--space-3) 0;
+    padding: var(--space-3) var(--space-3);
   }
 
   .footer-links {
     display: flex;
-    gap: var(--space-3);
   }
 
   .footer-link {
     color: var(--color-text-primary);
     text-decoration: none;
+    padding: var(--space-2) var(--space-3);
     transition: opacity var(--duration-short) ease;
   }
 
@@ -149,6 +149,10 @@ const year = new Date().getFullYear()
       font-size: var(--wordmark-size-mobile);
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .footer-link {
+      padding: var(--space-2) var(--space-2);
     }
   }
 </style>

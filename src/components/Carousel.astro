@@ -80,22 +80,22 @@ const { label, fullBleed = false } = Astro.props
   .carousel-dots {
     display: flex;
     justify-content: center;
-    gap: 6px;
+    gap: var(--space-1);
     padding: var(--space-4) 0;
     border-top: var(--border-width-1) solid var(--color-rule);
   }
 
   .carousel-dots :global(.carousel-dot) {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
+    width: var(--space-1);
+    height: var(--space-1);
+    border-radius: var(--radius-full, 9999px);
     background: var(--color-text-primary);
     opacity: 0.3;
     transition: width 0.3s ease, opacity 0.3s ease;
   }
 
   .carousel-dots :global(.carousel-dot.is-active) {
-    width: 16px;
+    width: var(--space-3);
     opacity: 1;
   }
 

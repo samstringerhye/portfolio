@@ -9,8 +9,8 @@
     "headline": "The short version.",
     "headlineTag": "h2",
     "headlineRole": "display-md",
-    "body": "Associate Design Director at Razorfish with 13 years in UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll right past.",
-    "bodyTag": "h3",
+    "body": "Associate Design Director at Razorfish with 13+ years in UI, UX, motion, and design systems. I've shipped work for Samsung, Frontier, and CVS. Mostly I obsess over the details most people scroll right past.",
+    "bodyTag": "p",
     "bodyRole": "title-lg",
     "contentInset": "md"
   },

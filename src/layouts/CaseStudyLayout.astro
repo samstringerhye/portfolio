@@ -266,16 +266,16 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
   /* ── Image pair with device frames: padded, centered, warm bg ── */
   .case-study-body .image-pair:has(.device-phone) {
-    background: #fdf8f4;
+    background: var(--color-bg-warm, #fdf8f4);
     column-gap: var(--border-width-1);
   }
 
   .case-study-body .image-pair > .image-pair-cell:has(.device-phone) {
-    background: #fdf8f4;
+    background: var(--color-bg-warm, #fdf8f4);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: var(--space-5) var(--space-3);
     line-height: normal;
     overflow: visible;
   }
@@ -674,6 +674,12 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     color: var(--color-bg-primary);
   }
 
+  .lightbox-close:focus-visible,
+  .lightbox-nav:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+  }
+
   .lightbox-nav {
     position: absolute;
     top: 50%;
@@ -730,7 +736,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
 
 <script>
-  const mobileQuery = window.matchMedia('(max-width: 768px)')
+  const mobileQuery = window.matchMedia('(max-width: 768px)') /* matches @custom-media --2x */
 
   function sizeImagePairs() {
     const isMobile = mobileQuery.matches

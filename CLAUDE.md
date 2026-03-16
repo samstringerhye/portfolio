@@ -73,7 +73,7 @@ scripts/                   — Utility scripts (pagespeed.sh)
 ## Tech Stack
 
 - **Framework**: Astro 5 (static site) with React 19 islands
-- **3D/WebGL**: Three.js + R3F + Drei (hero)
+- **3D/WebGL**: Three.js (vanilla, hero canvas)
 - **Animation**: GSAP (ScrollTrigger, Draggable), Lenis (smooth scroll)
 - **Build**: Astro (main site, static output to `dist/`)
 
