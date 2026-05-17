@@ -138,24 +138,26 @@ const year = new Date().getFullYear()
   @media (--2x) {
     .footer-bar {
       height: auto;
-      padding-block: var(--space-4);
+      flex-direction: column;
     }
 
     .footer-bar-text {
       flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-3);
-      padding-left: var(--page-margin);
-      padding-right: var(--page-margin);
+      align-items: stretch;
+      gap: 0;
+      padding-inline: var(--page-margin);
     }
 
     .footer-wordmark-text {
-      font-size: var(--wordmark-size-mobile);
+      font-size: var(--wordmark-size);
+      padding-block: var(--space-4);
     }
 
     .footer-links {
       flex-direction: column;
       gap: 0;
+      border-top: var(--border-width-1) solid var(--color-rule);
+      padding-block: var(--space-3);
     }
 
     .footer-link {
@@ -163,7 +165,7 @@ const year = new Date().getFullYear()
     }
 
     .footer-bottom {
-      padding: var(--space-3) 0;
+      padding: var(--space-3) var(--page-margin);
     }
   }
 </style>
