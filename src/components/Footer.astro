@@ -136,23 +136,34 @@ const year = new Date().getFullYear()
 
   /* ── Mobile ── */
   @media (--2x) {
+    .footer-bar {
+      height: auto;
+      padding-block: var(--space-4);
+    }
+
     .footer-bar-text {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3);
       padding-left: var(--page-margin);
       padding-right: var(--page-margin);
     }
 
-    .footer-bottom {
-      padding: var(--space-3) 0;
-    }
-
     .footer-wordmark-text {
       font-size: var(--wordmark-size-mobile);
-      overflow: hidden;
-      text-overflow: ellipsis;
+    }
+
+    .footer-links {
+      flex-direction: column;
+      gap: 0;
     }
 
     .footer-link {
-      padding: var(--space-2) var(--space-2);
+      padding: var(--space-1) 0;
+    }
+
+    .footer-bottom {
+      padding: var(--space-3) 0;
     }
   }
 </style>
