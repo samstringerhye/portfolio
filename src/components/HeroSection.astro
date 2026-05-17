@@ -54,7 +54,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     z-index: var(--z-base);
     background-color: var(--color-bg-primary);
     opacity: 0;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.3s ease;
   }
 
   #hero-canvas-root.is-ready {
@@ -151,13 +151,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
     }
   }
 
-  function deferCanvas() {
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => mountHeroCanvas(), { timeout: 1500 })
-    } else {
-      setTimeout(mountHeroCanvas, 1000)
-    }
-  }
-
-  document.addEventListener('astro:page-load', deferCanvas)
+  document.addEventListener('astro:page-load', () => {
+    requestAnimationFrame(() => mountHeroCanvas())
+  })
 </script>

@@ -1,5 +1,12 @@
 /// <reference lib="webworker" />
 
+// Static import so Three.js downloads as soon as the worker script loads,
+// not waiting for the first 'init' message.
+import {
+  Scene, OrthographicCamera, Color, SRGBColorSpace, WebGLRenderer,
+  InstancedMesh, CircleGeometry, MeshBasicMaterial,
+} from 'three'
+
 const TWO_PI = Math.PI * 2
 const PHI = (1 + Math.sqrt(5)) / 2
 
@@ -225,11 +232,6 @@ let prefersReduced = false
 async function initScene(msg: InitMessage) {
   cfg = msg.config
   prefersReduced = msg.prefersReduced
-
-  const {
-    Scene, OrthographicCamera, Color, SRGBColorSpace, WebGLRenderer,
-    InstancedMesh, CircleGeometry, MeshBasicMaterial,
-  } = await import('three')
 
   const gen = generators[cfg.arrangement] || generators.concentric
   const mobileFactor = 0.5
