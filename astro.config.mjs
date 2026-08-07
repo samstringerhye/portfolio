@@ -12,6 +12,8 @@ export default defineConfig({
 
   image: {
     quality: 90,
+    layout: 'constrained',
+    responsiveStyles: true,
   },
 
   build: {

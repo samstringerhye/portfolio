@@ -18,22 +18,22 @@ interface Props {
 
 const { title, description, ogImage, jsonLd, hideFooter = false, noindex } = Astro.props
 
-/* ── Helper: fluid clamp from min→max rem across 480→1140px ── */
-function buildClamp(min: number, max: number): string {
+/* ── Helper: fluid clamp from min→max rem across a given viewport-width range ── */
+function buildClamp(min: number, max: number, vwMin = 400, vwMax = 1200): string {
   if (min === max) return `${min}rem`
   const rootPx = 16
-  const vwMin = 400
-  const vwMax = 1200
   const slope = ((max - min) * rootPx * 100) / (vwMax - vwMin)
   const intercept = min - (slope * vwMin) / (100 * rootPx)
   return `clamp(${min.toFixed(4)}rem, ${intercept.toFixed(4)}rem + ${slope.toFixed(4)}vw, ${max.toFixed(4)}rem)`
 }
 
 /* ── Helper: resolve a token value (number, string, or {min,max}) to CSS ── */
-function cssVal(val: any, unit = 'rem'): string {
+function cssVal(val: any, unit = 'rem', vwRange?: [number, number]): string {
   if (typeof val === 'string') return val
   if (typeof val === 'number') return `${val}${unit}`
-  if (val && typeof val === 'object' && 'min' in val && 'max' in val) return buildClamp(val.min, val.max)
+  if (val && typeof val === 'object' && 'min' in val && 'max' in val) {
+    return vwRange ? buildClamp(val.min, val.max, vwRange[0], vwRange[1]) : buildClamp(val.min, val.max)
+  }
   return String(val)
 }
 
@@ -88,9 +88,9 @@ const spacingVars = Object.entries(ref.spacing).map(([key, val]) => {
 /* ── Layout vars ── */
 const layoutVars = [
   `--page-margin: ${cssVal(sys.layout.pageMargin)};`,
-  `--content-inset-sm: ${cssVal(sys.layout.contentInset.sm)};`,
-  `--content-inset-md: ${cssVal(sys.layout.contentInset.md)};`,
-  `--content-inset-lg: ${cssVal(sys.layout.contentInset.lg)};`,
+  `--content-inset-sm: ${cssVal(sys.layout.contentInset.sm, 'rem', [900, 1400])};`,
+  `--content-inset-md: ${cssVal(sys.layout.contentInset.md, 'rem', [900, 1400])};`,
+  `--content-inset-lg: ${cssVal(sys.layout.contentInset.lg, 'rem', [900, 1400])};`,
   `--content-inset: var(--content-inset-md);`,
   `--grid-gutter: ${cssVal(sys.layout.gridGutter)};`,
   `--section-padding: ${cssVal(sys.layout.sectionPadding)};`,

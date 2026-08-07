@@ -42,10 +42,8 @@ const workJsonLd = [
           <Image
             src={entry.data.thumbnail}
             alt={entry.data.thumbnailAlt ?? entry.data.title}
-            widths={[600, 900, 1200, 1600]}
             sizes="(min-width: 768px) 50vw, 100vw"
             format="webp"
-            quality={90}
             loading={i < 2 ? "eager" : "lazy"}
           />
         </div>

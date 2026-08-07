@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
 import { Image } from 'astro:assets'
-import { Icon } from 'astro-icon/components'
 import type { HeadingTag, TypographyRole } from '../types/typography'
 
 interface Props {
@@ -46,32 +45,67 @@ const featured = allWork
       </a>
     </div>
 
-    <div class="work-carousel" data-work-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="Selected work carousel">
-      <div class="work-track">
-        {featured.map(card => (
-          <a href={`/work/${card.slug}`} class="work-card" data-work-card>
-            <div class="work-card-inner">
-              <Image
-                src={card.thumbnail}
-                alt={card.title}
-                widths={[400, 800, 1200, 1600]}
-                sizes="(max-width: 768px) 100vw, 50vw"
-                format="webp"
-                quality={90}
-                loading="lazy"
-              />
-            </div>
-            <div class="work-card-label">
-              <div class="work-card-copy">
-                <p class="work-card-meta typo-ui-caps">{card.client} · {card.year}</p>
-                <CardTitleTag class={`work-card-title typo-${cardTitleRole}`} data-card-title>{card.title}</CardTitleTag>
+    <div class="work-carousel-container">
+      <div class="work-carousel" data-work-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="Selected work carousel">
+        <div class="work-track">
+          {featured.map(card => (
+            <a
+              href={`/work/${card.slug}`}
+              class="work-card"
+              data-work-card
+              data-card-slug={card.slug}
+              data-card-title={card.title}
+              data-card-client={card.client}
+              data-card-year={card.year}
+            >
+              <div class="work-card-inner">
+                <Image
+                  src={card.thumbnail}
+                  alt={card.title}
+                  layout="full-width"
+                  format="webp"
+                  loading="lazy"
+                />
               </div>
-              <Icon name="material-symbols:arrow-forward-sharp" class="work-card-arrow" />
-            </div>
-          </a>
-        ))}
+            </a>
+          ))}
+        </div>
       </div>
-      <div class="work-carousel-dots" aria-live="polite"></div>
+
+      <div class="work-caption-row">
+        <div class="work-caption-left">
+          <p class="work-caption-meta typo-ui-caps">
+            <span data-caption-meta></span>
+          </p>
+          <CardTitleTag class={`work-caption-title typo-${cardTitleRole}`}>
+            <a href="" class="work-caption-link" data-caption-link></a>
+          </CardTitleTag>
+        </div>
+        <div class="work-caption-right">
+          <button
+            class="work-nav-button work-nav-prev"
+            data-nav="prev"
+            aria-label="Previous slide"
+            title="Previous slide"
+          >
+            <svg class="work-nav-icon" width="28" height="28" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="80" y1="100" x2="140" y2="100"/>
+              <polyline points="115,75 140,100 115,125"/>
+            </svg>
+          </button>
+          <button
+            class="work-nav-button work-nav-next"
+            data-nav="next"
+            aria-label="Next slide"
+            title="Next slide"
+          >
+            <svg class="work-nav-icon" width="28" height="28" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="80" y1="100" x2="140" y2="100"/>
+              <polyline points="115,75 140,100 115,125"/>
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -79,10 +113,23 @@ const featured = allWork
 <style>
   .work-section {
     padding: 0;
+    max-height: calc(100vh - var(--nav-height));
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (--2x) {
+    .work-section {
+      max-height: none;
+    }
   }
 
   .work-container {
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
   }
 
   .work-header {
@@ -91,6 +138,7 @@ const featured = allWork
     align-items: center;
     justify-content: space-between;
     padding: var(--content-inset-md);
+    flex-shrink: 0;
   }
 
   .work-header::after {
@@ -157,22 +205,19 @@ const featured = allWork
     }
   }
 
+  .work-carousel-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
+  }
+
   .work-carousel {
     overflow: hidden;
     position: relative;
-  }
-
-  .work-carousel::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: var(--border-width-1);
-    background: var(--color-text-primary);
-    transform: scaleX(var(--border-draw, 1));
-    transform-origin: left;
-    z-index: 1;
+    min-height: 320px;
+    flex: 1;
   }
 
   .work-carousel:focus-visible {
@@ -186,76 +231,47 @@ const featured = allWork
 
   .work-track {
     display: flex;
+    height: 100%;
     will-change: transform;
     touch-action: pan-y pinch-zoom;
   }
 
-  .work-track {
-    cursor: grab;
-  }
-  .work-track.is-dragging {
-    cursor: grabbing;
-  }
-
   .work-card {
-    cursor: grab;
-  }
-
-  .work-card-label {
-    cursor: pointer;
-  }
-
-  .work-card {
-    flex: 0 0 66.666%;
+    flex: 0 0 100%;
     position: relative;
     display: block;
+    height: 100%;
     text-decoration: none;
     user-select: none;
     -webkit-user-drag: none;
   }
 
-  .work-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: var(--border-width-1);
-    background: var(--color-text-primary);
-    transform: scaleY(var(--border-draw, 1));
-    transform-origin: top;
-    z-index: 1;
-  }
-
-  .work-card:last-child::before {
-    display: none;
-  }
-
   .work-card-inner {
     position: relative;
-    aspect-ratio: 3 / 2;
+    height: 100%;
     overflow: hidden;
   }
 
   .work-card img {
     display: block;
     width: 100%;
-    height: 100%;
+    height: calc(100% + 2px);
     object-fit: cover;
     user-select: none;
     -webkit-user-drag: none;
   }
 
-  .work-card-label {
+  .work-caption-row {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: var(--content-inset-sm);
     gap: var(--space-2);
+    flex-shrink: 0;
   }
 
-  .work-card-label::after {
+  .work-caption-row::after {
     content: '';
     position: absolute;
     top: 0;
@@ -267,26 +283,93 @@ const featured = allWork
     transform-origin: left;
   }
 
-  .work-card-title {
+  .work-caption-left {
+    min-width: 0;
+    flex: 1;
+    padding-right: var(--space-4);
+  }
+
+  .work-caption-meta {
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-1);
+    font-size: 1rem;
+  }
+
+  .work-caption-title {
     display: block;
     color: var(--color-text-primary);
     margin: 0;
   }
 
-  .work-card-copy {
-    min-width: 0;
+  .work-caption-link {
+    color: inherit;
+    text-decoration: none;
   }
 
-  .work-card-meta {
-    color: var(--color-text-primary);
-    margin: 0 0 var(--space-1);
+  .work-caption-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
   }
 
-  .work-card-arrow {
-    width: 2rem;
-    height: 2rem;
-    flex-shrink: 0;
+  .work-caption-right::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-text-primary);
+    transform: scaleY(var(--border-draw, 1));
+    transform-origin: top;
+  }
+
+  .work-nav-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    height: 100%;
+    border: none;
+    background: transparent;
     color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background-color var(--duration-medium, 0.3s) ease, opacity var(--duration-medium, 0.3s) ease;
+    padding: 0;
+  }
+
+  .work-nav-prev::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-text-primary);
+  }
+
+  .work-nav-icon {
+    width: 65%;
+    height: 65%;
+  }
+
+  .work-nav-prev .work-nav-icon {
+    transform: rotate(180deg);
+  }
+
+  .work-nav-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  @media (hover: hover) {
+    .work-nav-button:not(:disabled):hover {
+      background-color: var(--color-text-primary);
+      color: var(--color-bg, white);
+    }
   }
 
   @media (--2x) {
@@ -312,51 +395,20 @@ const featured = allWork
       margin-inline: calc(var(--page-margin) * -1);
     }
 
-    .work-carousel::after {
-      background: var(--color-rule);
+    .work-caption-row {
+      padding-inline: var(--content-inset-sm);
     }
 
-    .work-card::before {
+    .work-caption-row::after {
       background: var(--color-rule);
+      left: calc(var(--page-margin) * -1);
+      right: calc(var(--page-margin) * -1);
     }
 
-    .work-card-label::after {
+    .work-caption-right::before,
+    .work-nav-prev::after {
       background: var(--color-rule);
     }
-  }
-
-  .work-carousel-dots {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    gap: var(--space-1);
-    padding: var(--space-2) 0;
-  }
-
-  .work-carousel-dots::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--border-width-1);
-    background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 1));
-    transform-origin: left;
-  }
-
-  .work-carousel-dots :global(.work-dot) {
-    width: var(--space-1);
-    height: var(--space-1);
-    border-radius: var(--radius-full, 9999px);
-    background: var(--color-text-primary);
-    opacity: 0.45;
-    transition: width 0.3s ease, opacity 0.3s ease;
-  }
-
-  .work-carousel-dots :global(.work-dot.is-active) {
-    width: var(--space-3);
-    opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -375,7 +427,7 @@ const featured = allWork
 
   function initWorkHover() {
     if (!window.matchMedia('(hover: hover)').matches) return
-    document.querySelectorAll<HTMLElement>('.work-card-label, .work-see-all').forEach((el) => {
+    document.querySelectorAll<HTMLElement>('.work-nav-button, .work-see-all').forEach((el) => {
       if (el.dataset.workHoverBound === 'true') return
       el.dataset.workHoverBound = 'true'
 
@@ -401,91 +453,49 @@ const featured = allWork
       const slides = Array.from(track.querySelectorAll<HTMLElement>('.work-card'))
       if (slides.length <= 1) return
 
+      const container = carousel.closest('.work-carousel-container') as HTMLElement
+      const captionMeta = container?.querySelector<HTMLElement>('[data-caption-meta]')
+      const captionLink = container?.querySelector<HTMLElement>('[data-caption-link]') as HTMLAnchorElement
+      const prevBtn = container?.querySelector<HTMLButtonElement>('.work-nav-prev')
+      const nextBtn = container?.querySelector<HTMLButtonElement>('.work-nav-next')
+
       let currentIndex = 0
       let snapPoints: number[] = []
 
-      function getGridMetrics() {
-        const cw = carousel.offsetWidth
-        const probe = document.createElement('div')
-        probe.style.cssText = 'position:absolute;width:var(--grid-gutter);visibility:hidden;'
-        carousel.appendChild(probe)
-        const gutter = probe.offsetWidth
-        carousel.removeChild(probe)
-        const col = (cw - 11 * gutter) / 12
-        return { col, gutter }
-      }
-
-      function applyGridSizing() {
-        const cw = carousel.offsetWidth
-        if (cw <= 768) {
-          const probe = document.createElement('div')
-          probe.style.cssText = 'position:absolute;width:var(--page-margin);visibility:hidden;'
-          carousel.appendChild(probe)
-          const padSide = probe.offsetWidth || 16
-          carousel.removeChild(probe)
-          const slideWidth = cw
-          track!.style.paddingLeft = '0'
-          track!.style.paddingRight = '0'
-          track!.style.gap = '0'
-          slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
-          return
-        }
-        const { col, gutter } = getGridMetrics()
-        const slideWidth = col * 8 + gutter * 7
-        track!.style.paddingLeft = '0'
-        track!.style.paddingRight = '0'
-        track!.style.gap = '0'
-        slides.forEach(s => { s.style.flex = `0 0 ${slideWidth}px` })
-      }
-      applyGridSizing()
-
       function buildSnapPoints() {
-        const padLeft = parseFloat(getComputedStyle(track!).paddingLeft)
-        const lastSlide = slides[slides.length - 1]
-        const maxScroll = -(lastSlide.offsetLeft + lastSlide.offsetWidth - carousel.offsetWidth)
-        snapPoints = slides.map(s => {
-          const snap = padLeft - s.offsetLeft
-          return Math.max(snap, maxScroll)
-        })
-        snapPoints = [...new Set(snapPoints)]
+        snapPoints = slides.map((_, i) => -i * carousel.offsetWidth)
       }
       buildSnapPoints()
 
-      function nearestIndex(x: number): number {
-        let best = 0, bestD = Infinity
-        snapPoints.forEach((p, i) => {
-          const d = Math.abs(x - p)
-          if (d < bestD) { bestD = d; best = i }
-        })
-        return best
+      function updateCaption(index: number) {
+        const slide = slides[index]
+        if (!slide) return
+
+        const slug = slide.dataset.cardSlug || ''
+        const title = slide.dataset.cardTitle || ''
+        const client = slide.dataset.cardClient || ''
+        const year = slide.dataset.cardYear || ''
+
+        if (captionMeta) captionMeta.textContent = `${client} · ${year}`
+        if (captionLink) {
+          captionLink.href = `/work/${slug}`
+          captionLink.textContent = title
+        }
       }
 
-      const dotsContainer = carousel.querySelector('.work-carousel-dots') as HTMLElement
-
-      function renderDots() {
-        if (!dotsContainer) return
-        dotsContainer.innerHTML = ''
-        snapPoints.forEach((_, i) => {
-          const dot = document.createElement('span')
-          dot.className = 'work-dot' + (i === 0 ? ' is-active' : '')
-          dot.setAttribute('aria-hidden', 'true')
-          dotsContainer.appendChild(dot)
-        })
+      function updateNavButtons(index: number) {
+        if (prevBtn) prevBtn.disabled = index === 0
+        if (nextBtn) nextBtn.disabled = index === slides.length - 1
       }
 
-      function updateDots(index: number) {
-        if (!dotsContainer) return
-        dotsContainer.querySelectorAll('.work-dot').forEach((dot, i) => {
-          dot.classList.toggle('is-active', i === index)
-        })
-      }
-
-      renderDots()
+      updateCaption(0)
+      updateNavButtons(0)
 
       function animateTo(index: number) {
-        const i = Math.max(0, Math.min(index, snapPoints.length - 1))
+        const i = Math.max(0, Math.min(index, slides.length - 1))
         currentIndex = i
-        updateDots(i)
+        updateCaption(i)
+        updateNavButtons(i)
         gsap.to(track, {
           x: snapPoints[i],
           duration: 0.5,
@@ -494,101 +504,19 @@ const featured = allWork
         })
       }
 
-      // ── Native pointer event drag ──
-      let didDrag = false
-      let dragging = false
-      let startX = 0
-      let startY = 0
-      let trackStartX = 0
-      let lastX = 0
-      let lastTime = 0
-      let velocityX = 0
-
-      // Suppress click after drag
-      track!.addEventListener('click', (e) => {
-        if (didDrag) { e.stopPropagation(); e.preventDefault(); didDrag = false }
-      }, true)
-
-      let pointerId = -1
-
-      track!.addEventListener('pointerdown', (e: PointerEvent) => {
-        if (e.button !== 0) return
-        dragging = true
-        didDrag = false
-        pointerId = e.pointerId
-        startX = e.clientX
-        startY = e.clientY
-        lastX = e.clientX
-        lastTime = Date.now()
-        velocityX = 0
-        trackStartX = (gsap.getProperty(track, 'x') as number) || 0
-        gsap.killTweensOf(track)
-      })
-
-      track!.addEventListener('pointermove', (e: PointerEvent) => {
-        if (!dragging) return
-        const dx = e.clientX - startX
-        const dy = e.clientY - startY
-
-        if (!didDrag) {
-          const absDx = Math.abs(dx)
-          const absDy = Math.abs(dy)
-          if (absDx < 5 && absDy < 5) return
-          if (absDy > absDx * 1.2) {
-            dragging = false
-            return
-          }
-          didDrag = true
-          track!.setPointerCapture(pointerId)
-          track!.classList.add('is-dragging')
-        }
-
-        e.preventDefault()
-
-        const now = Date.now()
-        const dt = now - lastTime
-        if (dt > 0) {
-          velocityX = (e.clientX - lastX) / dt * 1000
-          lastX = e.clientX
-          lastTime = now
-        }
-
-        let newX = trackStartX + dx
-        const minX = snapPoints[snapPoints.length - 1]
-        const maxX = snapPoints[0]
-        if (newX > maxX) newX = maxX + (newX - maxX) * 0.3
-        else if (newX < minX) newX = minX + (newX - minX) * 0.3
-        gsap.set(track, { x: newX })
-        updateDots(nearestIndex(newX))
-      })
-
-      function onPointerEnd(e: PointerEvent) {
-        if (!dragging) return
-        dragging = false
-        track!.classList.remove('is-dragging')
-
-        if (!didDrag) return
-
-        const trackX = gsap.getProperty(track, 'x') as number
-        let targetIndex = nearestIndex(trackX)
-
-        if (Math.abs(velocityX) > 300) {
-          targetIndex = velocityX > 0
-            ? Math.max(0, currentIndex - 1)
-            : Math.min(snapPoints.length - 1, currentIndex + 1)
-        }
-
-        animateTo(targetIndex)
-      }
-
-      track!.addEventListener('pointerup', onPointerEnd)
-      track!.addEventListener('pointercancel', onPointerEnd)
-      track!.addEventListener('dragstart', (e) => e.preventDefault())
-
       // Keyboard navigation
       carousel.addEventListener('keydown', (e) => {
         if ((e as KeyboardEvent).key === 'ArrowRight') { animateTo(currentIndex + 1); e.preventDefault() }
         else if ((e as KeyboardEvent).key === 'ArrowLeft') { animateTo(currentIndex - 1); e.preventDefault() }
+      })
+
+      // Prev/Next button navigation
+      container?.addEventListener('click', (e) => {
+        const btn = (e.target as Element).closest('[data-nav]') as HTMLElement
+        if (!btn) return
+        const direction = btn.dataset.nav
+        if (direction === 'prev') animateTo(currentIndex - 1)
+        else if (direction === 'next') animateTo(currentIndex + 1)
       })
 
       // Scroll-triggered slide-in entrance
@@ -619,12 +547,9 @@ const featured = allWork
       // Recalculate on resize — disconnect previous observer to prevent leaks
       if (workObservers.has(carousel)) workObservers.get(carousel)?.disconnect()
       const ro = new ResizeObserver(() => {
-        applyGridSizing()
         buildSnapPoints()
-        renderDots()
-        updateDots(Math.min(currentIndex, snapPoints.length - 1))
         if (entranceDone) {
-          const safeIndex = Math.min(currentIndex, snapPoints.length - 1)
+          const safeIndex = Math.min(currentIndex, slides.length - 1)
           gsap.set(track, { x: snapPoints[safeIndex] })
         }
       })
@@ -646,7 +571,7 @@ const featured = allWork
     CMY_COLORS = tokensMod.accentRgba(1)
     tightenSingleLineHeadings = tightenMod.tightenSingleLineHeadings
 
-    tightenSingleLineHeadings('.work-label, .work-card-title')
+    tightenSingleLineHeadings('.work-label, .work-caption-title')
     initWorkHover()
     initWorkCarousel()
   }

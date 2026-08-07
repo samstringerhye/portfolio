@@ -18,7 +18,7 @@
     "headingTag": "h2",
     "headingRole": "headline-lg",
     "cardTitleTag": "p",
-    "cardTitleRole": "body-lg"
+    "cardTitleRole": "headline-sm"
   },
   "experience": {
     "headline": "Experience",

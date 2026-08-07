@@ -41,6 +41,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
+    grid-template-rows: auto 1fr;
   }
 
   .contact-heading {
@@ -51,11 +52,13 @@ import BaseLayout from '../layouts/BaseLayout.astro'
     padding-inline: var(--content-inset-md);
   }
 
+  /* Last row grows to fill any leftover space, so it (not empty whitespace) reaches the footer */
   .contact-row {
     position: relative;
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
+    align-items: start;
   }
 
   .contact-row::after {
