@@ -14,6 +14,7 @@ sortOrder: 2
 tags: ["Mobile App", "Design System", "Motion Design", "UX"]
 ---
 import HeroImage from '../../components/HeroImage.astro'
+import { Image } from 'astro:assets'
 import Meta from '../../components/Meta.astro'
 import LottiePlayer from '../../components/LottiePlayer.astro'
 import ProseGroup from '../../components/ProseGroup.astro'
@@ -23,6 +24,8 @@ import ImagePair from '../../components/ImagePair.astro'
 import ZigzagSection from '../../components/ZigzagSection.astro'
 import AccentBand from '../../components/AccentBand.astro'
 import heroSrc from '../../assets/work/myfrontier-app/frontier-app-kv.png'
+import dashboard1Src from '../../assets/work/myfrontier-app/screens/dashboard-1.png'
+import dashboard2Src from '../../assets/work/myfrontier-app/screens/dashboard-2.png'
 
 <HeroImage src={heroSrc} alt="MyFrontier App Redesign project showcase" />
 
@@ -37,8 +40,8 @@ The MyFrontier app covered bill pay, account management, technician scheduling, 
 <Meta client="Frontier" role="Associate Design Director" agency="Razorfish" year={2024} />
 
 <ImagePair>
-  <Fragment slot="left">![Dashboard home](../../assets/work/myfrontier-app/screens/dashboard-1.png)</Fragment>
-  <Fragment slot="right">![Account overview](../../assets/work/myfrontier-app/screens/dashboard-2.png)</Fragment>
+  <Fragment slot="left"><Image src={dashboard1Src} alt="Dashboard home" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={dashboard2Src} alt="Account overview" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>

@@ -14,6 +14,7 @@ sortOrder: 4
 tags: ["Design System", "E-commerce", "Accessibility", "Typography"]
 ---
 import HeroImage from '../../components/HeroImage.astro'
+import { Image } from 'astro:assets'
 import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
 import ProseGroup from '../../components/ProseGroup.astro'
@@ -21,6 +22,12 @@ import Figure from '../../components/Figure.astro'
 import ZigzagSection from '../../components/ZigzagSection.astro'
 import AccentBand from '../../components/AccentBand.astro'
 import heroSrc from '../../assets/work/cvs-redesign/cvs-header-2.jpg'
+import brandVisualLanguageSrc from '../../assets/work/cvs-redesign/group-10624.jpg'
+import iconIllustrationSystemSrc from '../../assets/work/cvs-redesign/frame-10558.png'
+import iconConstructionSrc from '../../assets/work/cvs-redesign/frame-10629.png'
+import homepageResponsiveLayoutSrc from '../../assets/work/cvs-redesign/frame-10669.png'
+import uiComponentsHeadlinesSrc from '../../assets/work/cvs-redesign/frame-10630.png'
+import uiComponentsPaginationSrc from '../../assets/work/cvs-redesign/frame-10608.png'
 
 <HeroImage src={heroSrc} alt="CVS Shop Website Redesign project showcase" />
 
@@ -36,7 +43,7 @@ CVS.com had years of inconsistency from acquisitions. I led the type system, the
 
 <ZigzagSection>
   <Fragment slot="media">
-    ![Brand visual language showing CVS design elements and UI patterns](../../assets/work/cvs-redesign/group-10624.jpg)
+    <Image src={brandVisualLanguageSrc} alt="Brand visual language showing CVS design elements and UI patterns" format="webp" />
   </Fragment>
   <ProseGroup>
 
@@ -56,8 +63,8 @@ CVS sits at an unusual intersection: pharmacy and general retailer. That means t
 </ProseGroup>
 
 <ImagePair>
-  <Fragment slot="left">![Icon and illustration system, geometric shapes built for the CVS brand](../../assets/work/cvs-redesign/frame-10558.png)</Fragment>
-  <Fragment slot="right">![Icon construction, grid-based build process for consistent sizing](../../assets/work/cvs-redesign/frame-10629.png)</Fragment>
+  <Fragment slot="left"><Image src={iconIllustrationSystemSrc} alt="Icon and illustration system, geometric shapes built for the CVS brand" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={iconConstructionSrc} alt="Icon construction, grid-based build process for consistent sizing" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>
@@ -70,7 +77,7 @@ The key decision was building atomic pieces rather than page-specific components
 
 <ZigzagSection reversed>
   <Fragment slot="media">
-    ![CVS.com homepage, desktop and mobile responsive layout](../../assets/work/cvs-redesign/frame-10669.png)
+    <Image src={homepageResponsiveLayoutSrc} alt="CVS.com homepage, desktop and mobile responsive layout" format="webp" />
   </Fragment>
   <ProseGroup>
 
@@ -86,8 +93,8 @@ The key decision was building atomic pieces rather than page-specific components
 ![Brand page template, Skin Care / Neutrogena on mobile and desktop](../../assets/work/cvs-redesign/group-10604.png)
 
 <ImagePair>
-  <Fragment slot="left">![UI components including headlines, product cards, and product tabs](../../assets/work/cvs-redesign/frame-10630.png)</Fragment>
-  <Fragment slot="right">![UI components including pagination, branding elements, and category navigation](../../assets/work/cvs-redesign/frame-10608.png)</Fragment>
+  <Fragment slot="left"><Image src={uiComponentsHeadlinesSrc} alt="UI components including headlines, product cards, and product tabs" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={uiComponentsPaginationSrc} alt="UI components including pagination, branding elements, and category navigation" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>

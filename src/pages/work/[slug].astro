@@ -2,15 +2,13 @@
 import CaseStudyLayout from '../../layouts/CaseStudyLayout.astro'
 import { getSortedWork, buildCaseStudyProps } from './_caseStudy'
 
-export async function getStaticPaths() {
-  const sorted = await getSortedWork()
+export const prerender = false
 
-  return sorted
-    .filter(entry => !entry.data.passwordProtected)
-    .map(entry => ({ params: { slug: entry.id }, props: { entry, sorted } }))
-}
+const { slug } = Astro.params
+const sorted = await getSortedWork()
+const entry = sorted.find(e => e.id === slug && e.data.passwordProtected)
+if (!entry) return Astro.redirect('/404')
 
-const { entry, sorted } = Astro.props
 const { Content, prevSlug, prevTitle, nextSlug, nextTitle, noindex, ogImage, jsonLd } = await buildCaseStudyProps(entry, sorted)
 ---
 

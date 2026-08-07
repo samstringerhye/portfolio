@@ -17,6 +17,7 @@ const work = defineCollection({
     featured: z.boolean().default(false),
     sortOrder: z.number().default(999),
     unlisted: z.boolean().default(false),
+    passwordProtected: z.boolean().default(false),
     tags: z.array(z.string()).optional(),
   }),
 })

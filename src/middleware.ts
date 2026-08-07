@@ -1,7 +1,7 @@
 import { defineMiddleware } from 'astro:middleware'
+import { getCollection } from 'astro:content'
 
-const PROTECTED_PATH = '/work/wab-2026'
-const COOKIE_NAME = 'wab_auth'
+const COOKIE_NAME = 'case_study_auth'
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 const RATE_LIMIT_MAX = 5
 const RATE_LIMIT_WINDOW = 5 * 60 * 1000 // 5 minutes
@@ -10,9 +10,29 @@ const attempts = new Map<string, { count: number; resetAt: number }>()
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, request } = context
 
-  if (!url.pathname.startsWith(PROTECTED_PATH)) {
-    return next()
+  const match = url.pathname.match(/^\/work\/([^/]+)\/?$/)
+  const slug = match?.[1]
+  if (!slug) return next()
+
+  // Read the POST body before any other await — the request's body stream
+  // doesn't reliably survive being read after unrelated async work (e.g. the
+  // getCollection() call below) in this dev environment.
+  let submittedPassword: string | undefined
+  if (request.method === 'POST') {
+    try {
+      const formData = await request.formData()
+      const value = formData.get('password')
+      if (typeof value === 'string') submittedPassword = value
+    } catch {
+      // Bad form data — treated as an incorrect/missing password below
+    }
   }
+
+  const allWork = await getCollection('work')
+  const caseStudy = allWork.find(e => e.id === slug && e.data.passwordProtected)
+  if (!caseStudy) return next()
+
+  const protectedPath = `/work/${slug}`
 
   // Clean expired entries
   const now = Date.now()
@@ -25,7 +45,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const clientIp = getClientIp(request)
     const entry = attempts.get(clientIp)
     if (entry && entry.count >= RATE_LIMIT_MAX && now < entry.resetAt) {
-      return new Response(passwordPage(false, true), {
+      return new Response(passwordPage(caseStudy.data.title, false, true), {
         status: 429,
         headers: { 'Content-Type': 'text/html; charset=utf-8', 'Retry-After': '300' },
       })
@@ -51,23 +71,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // Handle form submission
   if (request.method === 'POST') {
-    try {
-      const formData = await request.formData()
-      const password = formData.get('password')
-
-      if (typeof password === 'string' && timingSafeEqual(password, envPassword)) {
-        const timestamp = String(Date.now())
-        context.cookies.set(COOKIE_NAME, await createAuthCookieValue(timestamp, envPassword), {
-          path: PROTECTED_PATH,
-          maxAge: COOKIE_MAX_AGE,
-          httpOnly: true,
-          secure: import.meta.env.PROD,
-          sameSite: 'lax',
-        })
-        return context.redirect(url.pathname, 302)
-      }
-    } catch {
-      // Bad form data — fall through to show error
+    if (submittedPassword !== undefined && timingSafeEqual(submittedPassword, envPassword)) {
+      const timestamp = String(Date.now())
+      context.cookies.set(COOKIE_NAME, await createAuthCookieValue(timestamp, envPassword), {
+        path: protectedPath,
+        maxAge: COOKIE_MAX_AGE,
+        httpOnly: true,
+        secure: import.meta.env.PROD,
+        sameSite: 'lax',
+      })
+      return context.redirect(url.pathname, 302)
     }
 
     const clientIp = getClientIp(request)
@@ -75,14 +88,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     entry.count++
     attempts.set(clientIp, entry)
 
-    return new Response(passwordPage(true), {
+    return new Response(passwordPage(caseStudy.data.title, true), {
       status: 401,
       headers: { 'Content-Type': 'text/html; charset=utf-8' },
     })
   }
 
   // Show password form
-  return new Response(passwordPage(false), {
+  return new Response(passwordPage(caseStudy.data.title, false), {
     status: 401,
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   })
@@ -145,7 +158,14 @@ function getClientIp(request: Request): string {
     ?? 'unknown'
 }
 
-function passwordPage(error: boolean, rateLimited = false): string {
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[char] as string))
+}
+
+function passwordPage(caseStudyTitle: string, error: boolean, rateLimited = false): string {
+  const title = escapeHtml(caseStudyTitle)
   const formContent = rateLimited
     ? '<p class="error">Too many attempts. Try again in a few minutes.</p>'
     : `<form method="POST">
@@ -160,7 +180,7 @@ function passwordPage(error: boolean, rateLimited = false): string {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Whataburger App Redesign — Password Required</title>
+  <title>${title} — Password Required</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -313,7 +333,7 @@ function passwordPage(error: boolean, rateLimited = false): string {
     </header>
     <main>
       <div class="gate">
-        <p class="project-name">Whataburger App Redesign</p>
+        <p class="project-name">${title}</p>
         <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>

@@ -14,6 +14,7 @@ sortOrder: 3
 tags: ["Design System", "E-commerce", "Global", "Navigation"]
 ---
 import HeroImage from '../../components/HeroImage.astro'
+import { Image } from 'astro:assets'
 import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
 import ProseGroup from '../../components/ProseGroup.astro'
@@ -23,6 +24,13 @@ import ImageGrid from '../../components/ImageGrid.astro'
 import ZigzagSection from '../../components/ZigzagSection.astro'
 import AccentBand from '../../components/AccentBand.astro'
 import heroSrc from '../../assets/work/samsung-redesign/revamp-kv.jpg'
+import uiMosaicOverviewSrc from '../../assets/work/samsung-redesign/revamp-ui-mosaic.jpg'
+import productCategoryPageSrc from '../../assets/work/samsung-redesign/samsung-section-2-pcd-desktop.jpg'
+import productDetailZoomSrc from '../../assets/work/samsung-redesign/samsung-section-2-pd-zoom-desktop.jpg'
+import homepageFullPageSrc from '../../assets/work/samsung-redesign/revamp-hp.jpg'
+import globalNavigationMobileSrc from '../../assets/work/samsung-redesign/samsung-section-3-gnb-desktop.jpg'
+import globalNavigationCloseupSrc from '../../assets/work/samsung-redesign/samsung-section-3-gnb-closeup-desktop.jpg'
+import globalNavigationDesktopSrc from '../../assets/work/samsung-redesign/samsung-section-3-gnb-desktop-full.jpg'
 
 <HeroImage src={heroSrc} alt="Samsung.com Redesign project showcase" />
 
@@ -38,7 +46,7 @@ I contributed to three areas of Samsung.com: the design system, page layouts, an
 
 <ZigzagSection>
   <Fragment slot="media">
-    ![UI mosaic overview](../../assets/work/samsung-redesign/revamp-ui-mosaic.jpg)
+    <Image src={uiMosaicOverviewSrc} alt="UI mosaic overview" format="webp" />
   </Fragment>
   <ProseGroup>
 
@@ -58,8 +66,8 @@ Samsung.com's navigation had accumulated complexity from years of market-by-mark
 </ProseGroup>
 
 <ImagePair>
-  <Fragment slot="left">![Product category page](../../assets/work/samsung-redesign/samsung-section-2-pcd-desktop.jpg)</Fragment>
-  <Fragment slot="right">![Product detail zoom](../../assets/work/samsung-redesign/samsung-section-2-pd-zoom-desktop.jpg)</Fragment>
+  <Fragment slot="left"><Image src={productCategoryPageSrc} alt="Product category page" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={productDetailZoomSrc} alt="Product detail zoom" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>
@@ -88,7 +96,7 @@ I moved between roles on this project. I designed GNB variations and prototyped 
 
 <ZigzagSection reversed>
   <Fragment slot="media">
-    ![Samsung.com homepage full page](../../assets/work/samsung-redesign/revamp-hp.jpg)
+    <Image src={homepageFullPageSrc} alt="Samsung.com homepage full page" format="webp" />
   </Fragment>
   <ProseGroup>
 
@@ -121,7 +129,7 @@ I moved between roles on this project. I designed GNB variations and prototyped 
 
 <ZigzagSection>
   <Fragment slot="media">
-    ![Global navigation bar, mobile category browsing](../../assets/work/samsung-redesign/samsung-section-3-gnb-desktop.jpg)
+    <Image src={globalNavigationMobileSrc} alt="Global navigation bar, mobile category browsing" format="webp" />
   </Fragment>
   <ProseGroup>
 
@@ -133,8 +141,8 @@ I moved between roles on this project. I designed GNB variations and prototyped 
 </ZigzagSection>
 
 <ImagePair>
-  <Fragment slot="left">![Global navigation closeup](../../assets/work/samsung-redesign/samsung-section-3-gnb-closeup-desktop.jpg)</Fragment>
-  <Fragment slot="right">![Global navigation full desktop](../../assets/work/samsung-redesign/samsung-section-3-gnb-desktop-full.jpg)</Fragment>
+  <Fragment slot="left"><Image src={globalNavigationCloseupSrc} alt="Global navigation closeup" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={globalNavigationDesktopSrc} alt="Global navigation full desktop" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>

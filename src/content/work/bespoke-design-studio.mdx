@@ -14,6 +14,7 @@ sortOrder: 1
 tags: ["Design System", "E-commerce", "Interactive", "Motion Design"]
 ---
 import HeroImage from '../../components/HeroImage.astro'
+import { Image } from 'astro:assets'
 import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
 import Carousel from '../../components/Carousel.astro'
@@ -22,6 +23,16 @@ import Figure from '../../components/Figure.astro'
 import ZigzagSection from '../../components/ZigzagSection.astro'
 import AccentBand from '../../components/AccentBand.astro'
 import heroSrc from '../../assets/work/bespoke-design-studio/scene-2-1.png'
+import desktop06Src from '../../assets/work/bespoke-design-studio/desktop-06.png'
+import mobile06Src from '../../assets/work/bespoke-design-studio/mobile-06.png'
+import desktop03bSrc from '../../assets/work/bespoke-design-studio/desktop-03b.png'
+import mobile04bSrc from '../../assets/work/bespoke-design-studio/mobile-04b.png'
+import desktop04bSrc from '../../assets/work/bespoke-design-studio/desktop-04b.png'
+import mobile03bSrc from '../../assets/work/bespoke-design-studio/mobile-03b.png'
+import userFlowBespokeKitchenSrc from '../../assets/work/bespoke-design-studio/user-flow-bespoke-kitchen-2.jpg'
+import kitchenConfiguratorOverviewSrc from '../../assets/work/bespoke-design-studio/ha-bespoke-kitchen-desktop-006.jpg'
+import configuratorColorSelectionSrc from '../../assets/work/bespoke-design-studio/image-2.png'
+import configuratorFullColorPanelSrc from '../../assets/work/bespoke-design-studio/new-design.png'
 
 <HeroImage src={heroSrc} alt="Samsung Bespoke Design Studio project showcase" />
 
@@ -36,8 +47,8 @@ Making a complex configurator feel simple through sequencing. Samsung's Bespoke 
 <Meta client="Samsung" role="Associate Design Director" agency="Razorfish" year={2024} />
 
 <ImagePair>
-  <Fragment slot="left">![Desktop view of the Bespoke Design Studio](../../assets/work/bespoke-design-studio/desktop-06.png)</Fragment>
-  <Fragment slot="right">![Mobile view of the Bespoke Design Studio](../../assets/work/bespoke-design-studio/mobile-06.png)</Fragment>
+  <Fragment slot="left"><Image src={desktop06Src} alt="Desktop view of the Bespoke Design Studio" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={mobile06Src} alt="Mobile view of the Bespoke Design Studio" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>
@@ -49,8 +60,8 @@ A customer configuring a Bespoke fridge has to pick a model, then a size, then c
 </ProseGroup>
 
 <ImagePair>
-  <Fragment slot="left">![Desktop configuration view](../../assets/work/bespoke-design-studio/desktop-03b.png)</Fragment>
-  <Fragment slot="right">![Mobile configuration view](../../assets/work/bespoke-design-studio/mobile-04b.png)</Fragment>
+  <Fragment slot="left"><Image src={desktop03bSrc} alt="Desktop configuration view" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={mobile04bSrc} alt="Mobile configuration view" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>
@@ -62,8 +73,8 @@ I owned visual design, not strategy or UX research, but the surface layer where 
 </ProseGroup>
 
 <ImagePair>
-  <Fragment slot="left">![Desktop detail view](../../assets/work/bespoke-design-studio/desktop-04b.png)</Fragment>
-  <Fragment slot="right">![Mobile detail view](../../assets/work/bespoke-design-studio/mobile-03b.png)</Fragment>
+  <Fragment slot="left"><Image src={desktop04bSrc} alt="Desktop detail view" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={mobile03bSrc} alt="Mobile detail view" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>
@@ -94,7 +105,7 @@ Multiple rounds of wireframing explored how to sequence the configuration steps.
 
 <ZigzagSection>
   <Fragment slot="media">
-    ![User flow for Bespoke Kitchen](../../assets/work/bespoke-design-studio/user-flow-bespoke-kitchen-2.jpg)
+    <Image src={userFlowBespokeKitchenSrc} alt="User flow for Bespoke Kitchen" format="webp" />
   </Fragment>
   <ProseGroup>
 
@@ -107,7 +118,7 @@ Multiple rounds of wireframing explored how to sequence the configuration steps.
 
 <ZigzagSection reversed>
   <Fragment slot="media">
-    ![Kitchen configurator overview](../../assets/work/bespoke-design-studio/ha-bespoke-kitchen-desktop-006.jpg)
+    <Image src={kitchenConfiguratorOverviewSrc} alt="Kitchen configurator overview" format="webp" />
   </Fragment>
   <ProseGroup>
 
@@ -143,8 +154,8 @@ Multiple rounds of wireframing explored how to sequence the configuration steps.
 </Figure>
 
 <ImagePair>
-  <Fragment slot="left">![Configurator color selection, choosing panel finishes by zone](../../assets/work/bespoke-design-studio/image-2.png)</Fragment>
-  <Fragment slot="right">![Configurator with full color panel, all four door zones visible](../../assets/work/bespoke-design-studio/new-design.png)</Fragment>
+  <Fragment slot="left"><Image src={configuratorColorSelectionSrc} alt="Configurator color selection, choosing panel finishes by zone" format="webp" /></Fragment>
+  <Fragment slot="right"><Image src={configuratorFullColorPanelSrc} alt="Configurator with full color panel, all four door zones visible" format="webp" /></Fragment>
 </ImagePair>
 
 <ProseGroup>
