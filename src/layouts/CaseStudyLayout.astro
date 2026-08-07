@@ -275,8 +275,11 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
   .case-study-body .image-pair img:not(.device-screen):not(.device-frame) {
     display: block;
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     height: auto;
+    max-height: 75vh;
+    margin-inline: auto;
   }
 
   .case-study-body .image-pair:has(img.has-transparency) {
