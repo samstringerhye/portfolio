@@ -4,9 +4,17 @@ import { getSortedWork, buildCaseStudyProps } from './_caseStudy'
 
 export const prerender = false
 
+// This SSR route exists so password-protected case studies can be gated by
+// middleware (which requires SSR, since Cloudflare Workers can't run sharp
+// at request time and static assets bypass the Worker entirely). In dev,
+// Astro always prioritizes this single-segment dynamic route over the
+// prerendered [...slug].astro rest-param route, so it also has to handle
+// every OTHER case study slug here — in production those are instead served
+// as prebuilt static files by Cloudflare's asset lookup before this route
+// is ever reached, preserving their build-time image optimization.
 const { slug } = Astro.params
 const sorted = await getSortedWork()
-const entry = sorted.find(e => e.id === slug && e.data.passwordProtected)
+const entry = sorted.find(e => e.id === slug)
 if (!entry) return Astro.redirect('/404')
 
 const { Content, prevSlug, prevTitle, nextSlug, nextTitle, noindex, ogImage, jsonLd } = await buildCaseStudyProps(entry, sorted)

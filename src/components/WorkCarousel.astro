@@ -337,7 +337,7 @@ const featured = allWork
     background: transparent;
     color: var(--color-text-primary);
     cursor: pointer;
-    transition: background-color var(--duration-medium, 0.3s) ease, opacity var(--duration-medium, 0.3s) ease;
+    transition: background-color var(--duration-medium, 0.3s) ease;
     padding: 0;
   }
 
@@ -354,6 +354,7 @@ const featured = allWork
   .work-nav-icon {
     width: 65%;
     height: 65%;
+    transition: opacity var(--duration-medium, 0.3s) ease;
   }
 
   .work-nav-prev .work-nav-icon {
@@ -361,8 +362,11 @@ const featured = allWork
   }
 
   .work-nav-button:disabled {
-    opacity: 0.3;
     cursor: not-allowed;
+  }
+
+  .work-nav-button:disabled .work-nav-icon {
+    opacity: 0.3;
   }
 
   @media (hover: hover) {
@@ -467,20 +471,42 @@ const featured = allWork
       }
       buildSnapPoints()
 
-      function updateCaption(index: number) {
+      const captionTargets = [captionMeta, captionLink].filter(Boolean) as HTMLElement[]
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      function updateCaption(index: number, direction: 1 | -1 = 1, animate = true) {
         const slide = slides[index]
         if (!slide) return
 
-        const slug = slide.dataset.cardSlug || ''
-        const title = slide.dataset.cardTitle || ''
-        const client = slide.dataset.cardClient || ''
-        const year = slide.dataset.cardYear || ''
+        const applyText = () => {
+          const slug = slide.dataset.cardSlug || ''
+          const title = slide.dataset.cardTitle || ''
+          const client = slide.dataset.cardClient || ''
+          const year = slide.dataset.cardYear || ''
 
-        if (captionMeta) captionMeta.textContent = `${client} · ${year}`
-        if (captionLink) {
-          captionLink.href = `/work/${slug}`
-          captionLink.textContent = title
+          if (captionMeta) captionMeta.textContent = `${client} · ${year}`
+          if (captionLink) {
+            captionLink.href = `/work/${slug}`
+            captionLink.textContent = title
+          }
         }
+
+        if (!animate || prefersReducedMotion || !captionTargets.length) {
+          applyText()
+          return
+        }
+
+        gsap.killTweensOf(captionTargets)
+        gsap.to(captionTargets, {
+          x: direction * -8,
+          opacity: 0,
+          duration: 0.15,
+          ease: 'power2.in',
+          onComplete: () => {
+            applyText()
+            gsap.fromTo(captionTargets, { x: direction * 8, opacity: 0 }, { x: 0, opacity: 1, duration: 0.25, ease: 'power2.out' })
+          },
+        })
       }
 
       function updateNavButtons(index: number) {
@@ -488,13 +514,15 @@ const featured = allWork
         if (nextBtn) nextBtn.disabled = index === slides.length - 1
       }
 
-      updateCaption(0)
+      updateCaption(0, 1, false)
       updateNavButtons(0)
 
       function animateTo(index: number) {
         const i = Math.max(0, Math.min(index, slides.length - 1))
+        if (i === currentIndex) return
+        const direction = i > currentIndex ? 1 : -1
         currentIndex = i
-        updateCaption(i)
+        updateCaption(i, direction)
         updateNavButtons(i)
         gsap.to(track, {
           x: snapPoints[i],
