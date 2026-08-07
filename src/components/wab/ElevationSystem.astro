@@ -79,7 +79,17 @@ const levels = [
 
 <style>
   .elevation-system {
-    background: #fdf8f4;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     margin: 2rem 0;
     border-top: var(--border-width-1) solid var(--color-text-primary);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
@@ -113,7 +123,7 @@ const levels = [
   .elev-name {
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.72rem;
-    color: #472c19;
+    color: var(--wab-brown);
     font-weight: 600;
     display: block;
     margin-bottom: 0.2rem;
@@ -121,26 +131,26 @@ const levels = [
 
   .elev-usage {
     font-size: 0.72rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     margin: 0;
     line-height: 1.3;
   }
 
   .elev-layers {
     font-size: 0.68rem;
-    color: #948274;
+    color: var(--wab-muted-mid);
     margin: 0.15rem 0 0;
   }
 
   .shadow-tokens {
-    background: #fdf8f4;
+    background: var(--wab-bg);
     border-radius: 12px;
     padding: 1.25rem;
   }
 
   .shadow-tokens-title {
     font-size: 0.8rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin: 0 0 0.15rem;
@@ -149,7 +159,7 @@ const levels = [
 
   .shadow-tokens-desc {
     font-size: 0.75rem;
-    color: #948274;
+    color: var(--wab-muted-mid);
     margin: 0 0 0.75rem;
   }
 
@@ -168,7 +178,7 @@ const levels = [
   .token-table-label {
     font-size: 0.78rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     width: 70px;
     min-width: 70px;
   }
@@ -182,14 +192,14 @@ const levels = [
   .token-table-values code {
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.7rem;
-    color: #fe7800;
+    color: var(--wab-orange);
     background: white;
     padding: 0.15rem 0.4rem;
     border-radius: 4px;
   }
 
   .token-table-values code.inset {
-    color: #948274;
+    color: var(--wab-muted-mid);
   }
 
   @media (max-width: 768px) {

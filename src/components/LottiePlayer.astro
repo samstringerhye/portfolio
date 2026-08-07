@@ -50,6 +50,16 @@ try {
 </style>
 
 <script>
+  let observer: IntersectionObserver | null = null
+  const tweens = new Set<any>()
+
+  function destroyLottie() {
+    observer?.disconnect()
+    observer = null
+    tweens.forEach(tween => tween.kill())
+    tweens.clear()
+  }
+
   async function initLottie() {
     const players = document.querySelectorAll<HTMLElement>('.lottie-player[data-animation]')
     if (players.length === 0) return
@@ -70,7 +80,8 @@ try {
       return
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    destroyLottie()
+    observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const el = entry.target as HTMLElement
         if (entry.isIntersecting && !el.dataset.initialized) {
@@ -86,7 +97,7 @@ try {
             })
             if (!prefersReduced && el.dataset.loop === 'true') {
               const obj = { frame: 0 }
-              gsap.to(obj, {
+              const tween = gsap.to(obj, {
                 frame: anim.totalFrames - 1,
                 duration: 2,
                 ease: 'power2.inOut',
@@ -95,6 +106,7 @@ try {
                 repeatDelay: 0.5,
                 onUpdate: () => anim.goToAndStop(obj.frame, true),
               })
+              tweens.add(tween)
             } else if (!prefersReduced) {
               anim.play()
             }
@@ -118,4 +130,5 @@ try {
 
   deferLottie()
   document.addEventListener('astro:page-load', deferLottie)
+  document.addEventListener('astro:before-swap', destroyLottie)
 </script>

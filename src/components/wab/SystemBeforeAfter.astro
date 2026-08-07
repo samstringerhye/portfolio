@@ -120,7 +120,17 @@
 
 <style>
   .system-ba {
-    background: #fdf8f4;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     border-top: var(--border-width-1) solid var(--color-text-primary);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
     padding: 2rem;
@@ -137,7 +147,7 @@
     flex: 1;
     padding: 1.5rem;
     background: white;
-    border: 1px solid #f4ebe1;
+    border: 1px solid var(--wab-border);
   }
 
   .ba-label {
@@ -149,20 +159,20 @@
   }
 
   .ba-before .ba-label {
-    color: #a0846c;
+    color: var(--wab-muted-alt);
   }
 
   .ba-after .ba-label {
-    color: #fe7800;
+    color: var(--wab-orange);
   }
 
   .ba-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     margin: 0 0 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid #f4ebe1;
+    border-bottom: 1px solid var(--wab-border);
   }
 
   .ba-list {
@@ -180,7 +190,7 @@
     align-items: flex-start;
     font-size: 0.85rem;
     line-height: 1.4;
-    color: #472c19;
+    color: var(--wab-brown);
   }
 
   .ba-item div {
@@ -191,13 +201,13 @@
 
   .ba-detail {
     font-size: 0.75rem;
-    color: #806c5b;
+    color: var(--wab-muted);
   }
 
   .ba-detail code {
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.72rem;
-    background: #fdf8f4;
+    background: var(--wab-bg);
     padding: 0.1rem 0.3rem;
     border-radius: 3px;
   }
@@ -216,19 +226,19 @@
   }
 
   .ba-problem .ba-icon {
-    background: #f4ebe1;
-    color: #a0846c;
+    background: var(--wab-bg-alt);
+    color: var(--wab-muted-alt);
   }
 
   .ba-success .ba-icon {
-    background: #fe7800;
+    background: var(--wab-orange);
     color: white;
   }
 
   .ba-divider {
     display: flex;
     align-items: center;
-    color: #fe7800;
+    color: var(--wab-orange);
     flex-shrink: 0;
   }
 
@@ -238,7 +248,7 @@
     gap: 2.5rem;
     margin-top: 1.5rem;
     padding-top: 1.25rem;
-    border-top: 1px solid #f4ebe1;
+    border-top: 1px solid var(--wab-border);
   }
 
   .ba-stat {
@@ -251,7 +261,7 @@
   .ba-stat-number {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #fe7800;
+    color: var(--wab-orange);
     line-height: 1;
   }
 
@@ -260,7 +270,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #806c5b;
+    color: var(--wab-muted);
   }
 
   @media (max-width: 768px) {
@@ -286,6 +296,8 @@
 </style>
 
 <script>
+  let ctx: { revert: () => void } | null = null
+
   async function initSystemBA() {
     const container = document.querySelector('.system-ba') as HTMLElement | null
     if (!container || container.dataset.baInit === 'true') return
@@ -305,40 +317,45 @@
     const { ScrollTrigger } = await import('gsap/ScrollTrigger')
     gsap.registerPlugin(ScrollTrigger)
 
-    // Staggered entrance for before/after items
-    gsap.from('.ba-item', {
-      y: 20,
-      opacity: 0,
-      duration: 0.5,
-      stagger: 0.08,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '.ba-grid',
-        start: 'top 80%',
-      }
-    })
+    ctx?.revert()
+    ctx = gsap.context(() => {
+      const grid = container.querySelector('.ba-grid')
+      const stats = container.querySelector('.ba-stats')
 
-    // Stat counter animation
-    container.querySelectorAll<HTMLElement>('.ba-stat-number').forEach(el => {
-      const target = parseInt(el.dataset.target || '0', 10)
-      const suffix = el.dataset.suffix || ''
-      const obj = { val: 0 }
-
-      gsap.to(obj, {
-        val: target,
-        duration: 2,
+      gsap.from(container.querySelectorAll('.ba-item'), {
+        y: 20,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.08,
         ease: 'power2.out',
         scrollTrigger: {
-          trigger: '.ba-stats',
-          start: 'top 85%',
-        },
-        onUpdate() {
-          el.textContent = Math.round(obj.val) + suffix
-        },
+          trigger: grid,
+          start: 'top 80%',
+        }
+      })
+
+      container.querySelectorAll<HTMLElement>('.ba-stat-number').forEach(el => {
+        const target = parseInt(el.dataset.target || '0', 10)
+        const suffix = el.dataset.suffix || ''
+        const obj = { val: 0 }
+
+        gsap.to(obj, {
+          val: target,
+          duration: 2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: stats,
+            start: 'top 85%',
+          },
+          onUpdate() {
+            el.textContent = Math.round(obj.val) + suffix
+          },
+        })
       })
     })
   }
 
   initSystemBA()
   document.addEventListener('astro:page-load', initSystemBA)
+  document.addEventListener('astro:before-swap', () => { ctx?.revert(); ctx = null })
 </script>

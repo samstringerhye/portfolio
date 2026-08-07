@@ -122,7 +122,17 @@
 
 <style>
   .comp-lib {
-    background: #fdf8f4;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     border-top: var(--border-width-1) solid var(--color-text-primary);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
     padding: 2rem;
@@ -132,19 +142,19 @@
   .lib-header {
     margin-bottom: 1.25rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #f4ebe1;
+    border-bottom: 1px solid var(--wab-border);
   }
 
   .lib-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     margin: 0 0 0.25rem;
   }
 
   .lib-subtitle {
     font-size: 0.8rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     margin: 0;
     line-height: 1.4;
   }
@@ -157,7 +167,7 @@
 
   .lib-card {
     background: white;
-    border: 1px solid #f4ebe1;
+    border: 1px solid var(--wab-border);
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
@@ -169,11 +179,11 @@
     gap: 0.6rem;
     margin-bottom: 0.85rem;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid #f4ebe1;
+    border-bottom: 1px solid var(--wab-border);
   }
 
   .lib-card-icon {
-    color: #fe7800;
+    color: var(--wab-orange);
     display: flex;
     flex-shrink: 0;
   }
@@ -181,7 +191,7 @@
   .lib-card-title {
     font-size: 0.9rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     margin: 0;
   }
 
@@ -197,7 +207,7 @@
 
   .lib-parts li {
     font-size: 0.78rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     padding-left: 0.75rem;
     position: relative;
   }
@@ -206,16 +216,16 @@
     content: '·';
     position: absolute;
     left: 0;
-    color: #cdb9a7;
+    color: var(--wab-tan);
     font-weight: 700;
   }
 
   .lib-card-structure {
     margin-top: 0.75rem;
     padding-top: 0.5rem;
-    border-top: 1px solid #f4ebe1;
+    border-top: 1px solid var(--wab-border);
     font-size: 0.68rem;
-    color: #a0846c;
+    color: var(--wab-muted-alt);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -224,7 +234,7 @@
   .lib-footer {
     margin-top: 1.25rem;
     padding-top: 1rem;
-    border-top: 1px solid #f4ebe1;
+    border-top: 1px solid var(--wab-border);
     display: flex;
     gap: 2rem;
     flex-wrap: wrap;
@@ -235,12 +245,12 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.8rem;
-    color: #472c19;
+    color: var(--wab-brown);
     line-height: 1.3;
   }
 
   .lib-footer-stat svg {
-    color: #fe7800;
+    color: var(--wab-orange);
     flex-shrink: 0;
   }
 

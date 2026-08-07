@@ -57,7 +57,7 @@ export async function initScrollReveals() {
       el.dataset.reveal === 'line' ? 'lines' : 'auto'
 
     function createFadeReveal(el: HTMLElement, vars: gsap.TweenVars = {}) {
-      gsap.set(el, { opacity: 0, y: cfg.yOffset, filter: `blur(${cfg.blurStrength}px)` })
+      gsap.set(el, { opacity: 0, y: cfg.slideUp, filter: `blur(${cfg.initialBlur}px)` })
       gsap.to(el, {
         opacity: 1, y: 0, filter: 'blur(0px)',
         duration: cfg.duration, ease: cfg.ease,
@@ -66,7 +66,7 @@ export async function initScrollReveals() {
     }
 
     function createFadeRevealGrouped(el: HTMLElement, parentTl: gsap.core.Timeline, offset: number) {
-      gsap.set(el, { opacity: 0, y: cfg.yOffset, filter: `blur(${cfg.blurStrength}px)` })
+      gsap.set(el, { opacity: 0, y: cfg.slideUp, filter: `blur(${cfg.initialBlur}px)` })
       parentTl.to(el, {
         opacity: 1, y: 0, filter: 'blur(0px)',
         duration: cfg.duration, ease: cfg.ease,

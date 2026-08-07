@@ -20,7 +20,7 @@ const typeScale = [
 ---
 
 <section class="type-scale" aria-label="Typography scale">
-  <p class="scale-subtitle">13 text styles, M3-inspired naming, bound to semantic tokens</p>
+  <p class="scale-subtitle">12 text styles, M3-inspired naming, bound to semantic tokens</p>
 
   <div class="scale-table">
     {typeScale.map(t => (
@@ -40,7 +40,17 @@ const typeScale = [
 
 <style>
   .type-scale {
-    background: #fdf8f4;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     border-radius: 0;
     border-top: var(--border-width-1) solid var(--color-text-primary);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
@@ -50,7 +60,7 @@ const typeScale = [
 
   .scale-subtitle {
     font-size: 0.85rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     margin: 0 0 1.5rem;
   }
 
@@ -74,13 +84,13 @@ const typeScale = [
   .scale-specimen {
     min-width: 200px;
     width: 200px;
-    color: #472c19;
+    color: var(--wab-brown);
     white-space: nowrap;
   }
 
   @font-face {
     font-family: 'Alkaline';
-    src: url('/fonts/Alkaline-Bold.otf') format('opentype');
+    src: url('/fonts/Alkaline-Bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -88,7 +98,7 @@ const typeScale = [
 
   @font-face {
     font-family: 'Unbounded';
-    src: url('/fonts/Unbounded-Variable.ttf') format('truetype');
+    src: url('/fonts/Unbounded-Variable.woff2') format('woff2');
     font-weight: 100 900;
     font-style: normal;
     font-display: swap;
@@ -119,14 +129,14 @@ const typeScale = [
 
   .meta-size {
     font-size: 0.78rem;
-    color: #472c19;
+    color: var(--wab-brown);
     font-weight: 500;
   }
 
   .meta-tokens {
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.68rem;
-    color: #948274;
+    color: var(--wab-muted-mid);
     word-break: break-all;
   }
 

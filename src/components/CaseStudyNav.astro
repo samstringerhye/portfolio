@@ -13,14 +13,14 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   <div class="cs-nav-inner">
     {prevSlug ? (
       <a href={`/work/${prevSlug}`} class="cs-nav-link cs-nav-prev">
-        <span class="cs-nav-label typo-ui-caps">Previous</span>
+        <span class="cs-nav-label typo-ui-caps">Previous Project</span>
         <span class="cs-nav-title typo-headline-sm">{prevTitle}</span>
       </a>
     ) : <div />}
 
     {nextSlug ? (
       <a href={`/work/${nextSlug}`} class="cs-nav-link cs-nav-next">
-        <span class="cs-nav-label typo-ui-caps">Next</span>
+        <span class="cs-nav-label typo-ui-caps">Next Project</span>
         <span class="cs-nav-title typo-headline-sm">{nextTitle}</span>
       </a>
     ) : (
@@ -74,10 +74,14 @@ const { prevSlug, prevTitle, nextSlug, nextTitle } = Astro.props
   .cs-nav-label {
     display: block;
     margin-bottom: var(--space-1);
+    font-size: var(--text-75);
+    opacity: var(--opacity-60);
   }
 
   .cs-nav-title {
     display: block;
+    font-size: var(--text-400);
+    font-weight: var(--font-weight-regular);
   }
 
   @media (hover: hover) {

@@ -32,7 +32,17 @@
 
 <style>
   .chaos-to-order {
-    background: #fdf8f4;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     border-top: var(--border-width-1) solid var(--color-text-primary);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
     padding: 3rem 2rem;
@@ -55,7 +65,7 @@
     position: absolute;
     width: 80px;
     height: 56px;
-    background: #fe7800;
+    background: var(--wab-orange);
     border-radius: 2px;
   }
 
@@ -74,18 +84,18 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #a0846c;
+    color: var(--wab-muted-alt);
     flex-shrink: 0;
   }
 
   .morph-label--after .morph-label-tag {
-    color: #fe7800;
+    color: var(--wab-orange);
   }
 
   .morph-label-text {
     font-size: 1rem;
     font-weight: 600;
-    color: #472c19;
+    color: var(--wab-brown);
   }
 
   @media (max-width: 768px) {
@@ -111,6 +121,8 @@
 </style>
 
 <script>
+  let ctx: { revert: () => void } | null = null
+
   async function initChaosToOrder() {
     const container = document.querySelector('.chaos-to-order') as HTMLElement | null
     if (!container || container.dataset.morphInit === 'true') return
@@ -122,87 +134,85 @@
     const { ScrollTrigger } = await import('gsap/ScrollTrigger')
     gsap.registerPlugin(ScrollTrigger)
 
-    const canvas = container.querySelector('.morph-canvas') as HTMLElement
-    const elements = Array.from(container.querySelectorAll<HTMLElement>('.morph-el'))
-    const beforeLabel = container.querySelector('.morph-label--before') as HTMLElement
-    const afterLabel = container.querySelector('.morph-label--after') as HTMLElement
+    ctx?.revert()
+    ctx = gsap.context(() => {
+      const canvas = container.querySelector('.morph-canvas') as HTMLElement
+      const elements = Array.from(container.querySelectorAll<HTMLElement>('.morph-el'))
+      const beforeLabel = container.querySelector('.morph-label--before') as HTMLElement
+      const afterLabel = container.querySelector('.morph-label--after') as HTMLElement
 
-    const canvasW = canvas.offsetWidth
-    const canvasH = canvas.offsetHeight
+      const canvasW = canvas.offsetWidth
+      const canvasH = canvas.offsetHeight
 
-    // Semantic colors for the "after" state
-    const afterColors = [
-      '#fe7800', '#ff9b40', '#ffbd80', // orange family
-      '#472c19', '#6b4c35', '#a0846c', // brown family
-      '#1a8754', '#d4382c', '#2563eb', // functional: success, error, info
-      '#f4ebe1', '#ffffff', '#fdf8f4', // surfaces
-    ]
+      // Semantic colors for the "after" state
+      const afterColors = [
+        '#fe7800', '#ff9b40', '#ffbd80', // orange family
+        '#472c19', '#6b4c35', '#a0846c', // brown family
+        '#1a8754', '#d4382c', '#2563eb', // functional: success, error, info
+        '#f4ebe1', '#ffffff', '#fdf8f4', // surfaces
+      ]
 
-    // Grid layout for "after" state: 4 columns × 3 rows
-    const cols = 4
-    const rows = 3
-    const gap = 12
-    const elW = (canvasW - (cols - 1) * gap) / cols
-    const elH = (canvasH - (rows - 1) * gap) / rows
+      // Grid layout for "after" state: 4 columns × 3 rows
+      const cols = 4
+      const rows = 3
+      const gap = 12
+      const elW = (canvasW - (cols - 1) * gap) / cols
+      const elH = (canvasH - (rows - 1) * gap) / rows
 
-    const gridPositions = elements.map((_, i) => ({
-      x: (i % cols) * (elW + gap),
-      y: Math.floor(i / cols) * (elH + gap),
-    }))
+      const gridPositions = elements.map((_, i) => ({
+        x: (i % cols) * (elW + gap),
+        y: Math.floor(i / cols) * (elH + gap),
+      }))
 
-    // Chaos state: scattered, rotated, overlapping, all same orange
-    elements.forEach((el, i) => {
-      gsap.set(el, {
-        x: Math.random() * (canvasW - 80),
-        y: Math.random() * (canvasH - 56),
-        rotation: (Math.random() - 0.5) * 40,
-        scale: 0.6 + Math.random() * 0.8,
-        opacity: 0.4 + Math.random() * 0.6,
-        backgroundColor: '#fe7800',
-        borderRadius: Math.random() * 12,
-        zIndex: Math.floor(Math.random() * 12),
+      elements.forEach((el) => {
+        gsap.set(el, {
+          x: Math.random() * (canvasW - 80),
+          y: Math.random() * (canvasH - 56),
+          rotation: (Math.random() - 0.5) * 40,
+          scale: 0.6 + Math.random() * 0.8,
+          opacity: 0.4 + Math.random() * 0.6,
+          backgroundColor: 'var(--wab-orange)',
+          borderRadius: Math.random() * 12,
+          zIndex: Math.floor(Math.random() * 12),
+        })
       })
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: 'top 70%',
+          end: 'top 10%',
+          scrub: 1,
+        }
+      })
+
+      tl.to(elements, {
+        x: (i: number) => gridPositions[i].x,
+        y: (i: number) => gridPositions[i].y,
+        width: elW,
+        height: elH,
+        rotation: 0,
+        scale: 1,
+        opacity: 1,
+        backgroundColor: (i: number) => afterColors[i],
+        borderRadius: 8,
+        zIndex: 1,
+        duration: 1,
+        stagger: 0.03,
+        ease: 'power2.inOut',
+      }, 0)
+
+      tl.to(beforeLabel, { opacity: 0, y: -10, duration: 0.3 }, 0.2)
+      tl.to(afterLabel, { opacity: 1, y: 0, duration: 0.3 }, 0.5)
+      tl.to(elements, {
+        boxShadow: '0 2px 8px rgba(71, 44, 25, 0.12)',
+        duration: 0.3,
+        stagger: 0.02,
+      }, 0.7)
     })
-
-    // Timeline: chaos → order on scroll
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: 'top 70%',
-        end: 'top 10%',
-        scrub: 1,
-      }
-    })
-
-    // Morph elements to grid
-    tl.to(elements, {
-      x: (i: number) => gridPositions[i].x,
-      y: (i: number) => gridPositions[i].y,
-      width: elW,
-      height: elH,
-      rotation: 0,
-      scale: 1,
-      opacity: 1,
-      backgroundColor: (i: number) => afterColors[i],
-      borderRadius: 8,
-      zIndex: 1,
-      duration: 1,
-      stagger: 0.03,
-      ease: 'power2.inOut',
-    }, 0)
-
-    // Crossfade labels
-    tl.to(beforeLabel, { opacity: 0, y: -10, duration: 0.3 }, 0.2)
-    tl.to(afterLabel, { opacity: 1, y: 0, duration: 0.3 }, 0.5)
-
-    // Add subtle elevation shadows at the end
-    tl.to(elements, {
-      boxShadow: '0 2px 8px rgba(71, 44, 25, 0.12)',
-      duration: 0.3,
-      stagger: 0.02,
-    }, 0.7)
   }
 
   initChaosToOrder()
   document.addEventListener('astro:page-load', initChaosToOrder)
+  document.addEventListener('astro:before-swap', () => { ctx?.revert(); ctx = null })
 </script>

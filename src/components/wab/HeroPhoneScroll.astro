@@ -47,7 +47,17 @@ const { screens } = Astro.props
     height: 85vh;
     display: flex;
     align-items: center;
-    background: #FCF6ED;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
   }
 
@@ -76,31 +86,31 @@ const { screens } = Astro.props
   /* Grid stacking for frame overlay */
   .scroll-phone > :global(img) {
     grid-area: 1 / 1;
-    background: transparent !important;
-    padding: 0 !important;
-    object-fit: initial !important;
-    max-height: none !important;
-    transition: none !important;
+    background: transparent;
+    padding: 0;
+    object-fit: initial;
+    max-height: none;
+    transition: none;
   }
 
   .scroll-phone > :global(img:hover) {
-    scale: 1 !important;
+    scale: 1;
   }
 
   .scroll-phone > :global(img.device-screen) {
     place-self: center;
     border-radius: 9%;
     z-index: 1;
-    width: calc(var(--phone-width) * 0.975) !important;
+    width: calc(var(--phone-width) * 0.975);
     height: calc(var(--phone-height) * 0.988);
   }
 
   .scroll-phone > .device-frame {
     z-index: 2;
     pointer-events: none;
-    width: 100% !important;
+    width: 100%;
     height: 100%;
-    object-fit: fill !important;
+    object-fit: fill;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -135,6 +145,9 @@ const { screens } = Astro.props
 
 <script>
   const INIT_ATTR = 'data-hero-initialized'
+  let ctx: { revert: () => void } | null = null
+  let scrollTween: { kill: () => void } | null = null
+  let speedTween: { kill: () => void } | null = null
 
   async function initHeroEntrance() {
     const container = document.querySelector('.hero-phone-scroll') as HTMLElement | null
@@ -195,85 +208,85 @@ const { screens } = Astro.props
     // ── Load GSAP ──
     const { default: gsap } = await import('gsap')
 
-    // ── Set initial state ──
-    phones.forEach((phone, i) => {
-      const distFromCenter = Math.abs(i - centerIndex)
-      gsap.set(phone, {
-        opacity: 0,
-        x: phoneOffsets[i],
-        zIndex: phones.length - distFromCenter,
+    ctx?.revert()
+    ctx = gsap.context(() => {
+      phones.forEach((phone, i) => {
+        const distFromCenter = Math.abs(i - centerIndex)
+        gsap.set(phone, {
+          opacity: 0,
+          x: phoneOffsets[i],
+          zIndex: phones.length - distFromCenter,
+        })
       })
+      gsap.set(dupes, { opacity: 0 })
+      gsap.set(track, {
+        x: centerOffset,
+        scale: 2,
+        transformOrigin: `${originX}px center`,
+      })
+
+      const halfWidth = track.scrollWidth / 2
+      const isMobile = window.matchMedia('(max-width: 768px)').matches
+      const scrollDuration = isMobile ? 40 : 60
+
+      function startScroll() {
+        scrollTween = gsap.fromTo(track,
+          { x: centerOffset },
+          { x: centerOffset - halfWidth, duration: scrollDuration, repeat: -1, ease: 'none' }
+        )
+        scrollTween.timeScale(0)
+        speedTween = gsap.to(scrollTween, { timeScale: 1, duration: 1, ease: 'power2.inOut' })
+      }
+
+      const tl = gsap.timeline()
+
+      tl.to(track, {
+        scale: 1,
+        duration: 2,
+        ease: 'elastic.out(1, 1)',
+      }, 0)
+
+      tl.to(phones[centerIndex], {
+        opacity: 1,
+        duration: 0.2,
+        ease: 'power2.out',
+      }, 0)
+
+      const leftPhones = phones.slice(0, centerIndex).reverse()
+      const rightPhones = phones.slice(centerIndex + 1)
+      const STAGGER = 0.18
+
+      const fadeConfig = {
+        opacity: 1,
+        duration: 0.08,
+        ease: 'power2.out' as const,
+        stagger: STAGGER,
+      }
+      tl.to(leftPhones, fadeConfig, 0.25)
+      tl.to(rightPhones, fadeConfig, 0.25)
+
+      const slideConfig = {
+        x: 0,
+        duration: 0.7,
+        ease: 'power4.out' as const,
+        stagger: STAGGER,
+      }
+      tl.to(leftPhones, slideConfig, 0.25)
+      tl.to(rightPhones, slideConfig, 0.25)
+
+      tl.call(startScroll, [], 0.4)
+      tl.set(dupes, { opacity: 1 }, 0.4)
     })
-    gsap.set(dupes, { opacity: 0 })
-    gsap.set(track, {
-      x: centerOffset,
-      scale: 2,
-      transformOrigin: `${originX}px center`,
-    })
-
-    // ── Entrance timeline ──
-    const halfWidth = track.scrollWidth / 2
-    const isMobile = window.matchMedia('(max-width: 768px)').matches
-    const scrollDuration = isMobile ? 40 : 60
-
-    let scrollTween: ReturnType<typeof gsap.fromTo> | null = null
-
-    function startScroll() {
-      scrollTween = gsap.fromTo(track,
-        { x: centerOffset },
-        { x: centerOffset - halfWidth, duration: scrollDuration, repeat: -1, ease: 'none' }
-      )
-      // Start frozen, ease into full speed
-      scrollTween.timeScale(0)
-      gsap.to(scrollTween, { timeScale: 1, duration: 1, ease: 'power2.inOut' })
-    }
-
-    const tl = gsap.timeline()
-
-    // GROUP SCALE: track scales down as one unit with spring
-    tl.to(track, {
-      scale: 1,
-      duration: 2,
-      ease: 'elastic.out(1, 1)',
-    }, 0)
-
-    // CENTER PHONE: fades in first — must complete before side phones start at 0.25s
-    tl.to(phones[centerIndex], {
-      opacity: 1,
-      duration: 0.2,
-      ease: 'power2.out',
-    }, 0)
-
-    // SIDE PHONES: left and right fan out symmetrically
-    const leftPhones = phones.slice(0, centerIndex).reverse()
-    const rightPhones = phones.slice(centerIndex + 1)
-    const STAGGER = 0.18
-
-    // Fast fade per phone
-    const fadeConfig = {
-      opacity: 1,
-      duration: 0.08,
-      ease: 'power2.out' as const,
-      stagger: STAGGER,
-    }
-    tl.to(leftPhones, fadeConfig, 0.25)
-    tl.to(rightPhones, fadeConfig, 0.25)
-
-    // Slower x-slide to natural position
-    const slideConfig = {
-      x: 0,
-      duration: 0.7,
-      ease: 'power4.out' as const,
-      stagger: STAGGER,
-    }
-    tl.to(leftPhones, slideConfig, 0.25)
-    tl.to(rightPhones, slideConfig, 0.25)
-
-    // Start scroll while phones are still fanning out — their motion masks the start
-    tl.call(startScroll, [], 0.4)
-    tl.set(dupes, { opacity: 1 }, 0.4)
   }
 
   initHeroEntrance()
   document.addEventListener('astro:page-load', initHeroEntrance)
+  document.addEventListener('astro:before-swap', () => {
+    scrollTween?.kill()
+    scrollTween = null
+    speedTween?.kill()
+    speedTween = null
+    ctx?.revert()
+    ctx = null
+  })
 </script>

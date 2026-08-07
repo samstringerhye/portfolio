@@ -4,12 +4,25 @@
  * Each diagram gets a staggered fade-up on its child elements.
  */
 
+let ctx: { revert: () => void } | null = null
+
+export function cleanupDiagramAnimations() {
+  ctx?.revert()
+  ctx = null
+  document.querySelectorAll<HTMLElement>('[data-anim-init]').forEach(el => {
+    delete el.dataset.animInit
+  })
+}
+
 export async function initDiagramAnimations() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
   const { default: gsap } = await import('gsap')
   const { ScrollTrigger } = await import('gsap/ScrollTrigger')
   gsap.registerPlugin(ScrollTrigger)
+
+  cleanupDiagramAnimations()
+  ctx = gsap.context(() => {
 
   // Helper: animate a set of elements with stagger
   function staggerIn(
@@ -81,4 +94,5 @@ export async function initDiagramAnimations() {
   // Component Library: cards + footer stats
   staggerIn('.comp-lib .lib-card', '.comp-lib .lib-grid', { stagger: 0.1 })
   staggerIn('.comp-lib .lib-footer-stat', '.comp-lib .lib-footer', { y: 15, delay: 0.3, stagger: 0.1, duration: 0.4 })
+  })
 }

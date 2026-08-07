@@ -7,12 +7,14 @@ agency: "Razorfish"
 tagline: "Design system and production screens for a 900-location QSR brand's mobile app."
 thumbnail: "../../assets/work/wab-2026/wab-thumbnail.jpeg"
 heroImage: "../../assets/work/wab-2026/hero.png"
-heroImageAlt: "Whataburger mobile app redesign — home screen shown in a device mockup"
-featured: false
-sortOrder: 999
-unlisted: true
+heroImageAlt: "Whataburger mobile app redesign: home screen shown in a device mockup"
+featured: true
+sortOrder: 0
+unlisted: false
+thumbnailAlt: "Whataburger mobile app screens showing home, menu, and burger customization on an orange background"
 tags: ["Design System", "Design Tokens", "Mobile App", "Visual Design", "Component Architecture"]
 ---
+import { Image } from 'astro:assets'
 import HeroImage from '../../components/HeroImage.astro'
 import Meta from '../../components/Meta.astro'
 import ImagePair from '../../components/ImagePair.astro'
@@ -46,31 +48,37 @@ import menuSaucesSrc from '../../assets/work/wab-2026/menu-sauces.png'
 import menuAddToCartSrc from '../../assets/work/wab-2026/menu-add-to-cart.png'
 import menuFavoritesSrc from '../../assets/work/wab-2026/menu-favorites.png'
 import giftCardsSrc from '../../assets/work/wab-2026/gift-cards.png'
+import lifestyleMenuSrc from '../../assets/work/wab-2026/lifestyle-menu.jpeg'
+import lifestyleRewardsSrc from '../../assets/work/wab-2026/lifestyle-rewards.jpeg'
+import lifestyleScanSrc from '../../assets/work/wab-2026/lifestyle-scan.png'
+import lifestyleAccountSrc from '../../assets/work/wab-2026/lifestyle-account.png'
+import screensGridSrc from '../../assets/work/wab-2026/screens-grid.jpeg'
+import directionTestingSrc from '../../assets/work/wab-2026/direction-testing.png'
 
 <HeroPhoneScroll screens={[
-  { src: menuFavoritesSrc, alt: "Favorites — quick reorder from saved items" },
-  { src: locationsSrc, alt: "Location finder — map view with nearby restaurants" },
-  { src: menuDrinkSrc, alt: "Choose your drink — consistent pattern across customization steps" },
-  { src: signInSrc, alt: "Sign in — clean authentication flow" },
-  { src: menuSaucesSrc, alt: "Sauces and extras — granular options without visual overload" },
-  { src: menuCategorySrc, alt: "Category browsing — visual hierarchy that surfaces options" },
-  { src: orderSummarySrc, alt: "Order summary — consistent component patterns across the full flow" },
-  { src: heroSrc, alt: "Home screen — personalized greeting, featured items, and rewards" },
-  { src: menuLandingSrc, alt: "Menu landing — category browsing with daypart-aware content" },
-  { src: menuCustomizationSrc, alt: "Item customization — progressive disclosure of options" },
-  { src: accountSrc, alt: "Account hub — personalized profile with condiment preference badges" },
-  { src: giftCardsSrc, alt: "Gift cards — branded gifting experience with balance management" },
-  { src: menuSidesSrc, alt: "Choose your side — meal builder with clear selection states" },
-  { src: menuAddToCartSrc, alt: "Add to cart — order confirmation with full customization summary" },
+  { src: menuFavoritesSrc, alt: "Favorites: quick reorder from saved items" },
+  { src: locationsSrc, alt: "Location finder: map view with nearby restaurants" },
+  { src: menuDrinkSrc, alt: "Choose your drink: consistent pattern across customization steps" },
+  { src: signInSrc, alt: "Sign in: clean authentication flow" },
+  { src: menuSaucesSrc, alt: "Sauces and extras: granular options without visual overload" },
+  { src: menuCategorySrc, alt: "Category browsing: visual hierarchy that surfaces options" },
+  { src: orderSummarySrc, alt: "Order summary: consistent component patterns across the full flow" },
+  { src: heroSrc, alt: "Home screen: personalized greeting, featured items, and rewards" },
+  { src: menuLandingSrc, alt: "Menu landing: category browsing with daypart-aware content" },
+  { src: menuCustomizationSrc, alt: "Item customization: progressive disclosure of options" },
+  { src: accountSrc, alt: "Account hub: personalized profile with condiment preference badges" },
+  { src: giftCardsSrc, alt: "Gift cards screen: card designs and balance" },
+  { src: menuSidesSrc, alt: "Choose your side: meal builder with clear selection states" },
+  { src: menuAddToCartSrc, alt: "Add to cart: order confirmation with full customization summary" },
 ]} />
 
 <ProseGroup>
 
-# 258 Tokens, 90+ Components, Every Screen
+# Redesigning How 900 Locations Order
 
-As sole visual designer on Whataburger's mobile app redesign (900+ locations), I ran two parallel tracks: rebuilding the entire design system, and delivering production-ready visual design for every screen in the app.
+The Whataburger app wasn't working. The ordering flow took too many taps and felt dated. The old design lacked brand personality, and the interface was buried under generic QSR patterns. Core features like ordering, rewards, and location finding all existed, but nothing felt connected or felt like Whataburger.
 
-I designed the complete token architecture (258 variables across three collections), built the component library (90+ icons, navigation, inputs, layout, and utility components), and delivered visual design for the full app experience: sign-in, account management, location finding, and the full menu ordering and customization flow.
+As sole visual designer on the redesign, I ran two parallel tracks: rebuilding the entire design system from scratch, and delivering production-ready visual design for every screen in the app. Late January to May. 258 tokens, 90+ components, every flow.
 
 </ProseGroup>
 
@@ -78,35 +86,137 @@ I designed the complete token architecture (258 variables across three collectio
 
 <ProseGroup>
 
-## The Problem
+## Three Experience Pillars
 
-The existing app felt dated. Visually, it relied on a single shade of orange for everything: buttons, headers, accents, promotional banners. No hierarchy to guide the eye. The orange-and-white striped awning motif repeated on every screen. Typography was all-caps branded display type everywhere, with no scale or system behind it. Layouts were utilitarian stacked cards with no depth or breathing room.
+I led with three pillars that guided every design decision.
 
-Structurally, the design system had primitive tokens only, named after the brand ("Whataburger Orange") rather than by function, covering only elements that already existed. There were no tokens for interaction states, motion, or elevation. No semantic layer at all. Every new screen meant inventing values from scratch, making the app increasingly inconsistent as it grew.
+**Fun.** Confetti on completed orders. The mascot appearing in empty states. Color shifts between menu categories. Personality woven into moments where the app could have been forgettable.
 
-The timeline was tight: late January to May for a complete design system and production-ready screens across every flow. The brand's orange, awning motif, and W mark were non-negotiable, but we had freedom with illustration style, supporting colors, and typography.
+**Smart.** Surfacing orders by purchase history. Nearest-location ordering. Recent order shortcuts on the home screen. The app uses context to reduce friction without feeling invasive.
 
-The client pushed us past a visual refresh. They wanted better patterns for how the app worked, beyond how it looked. That meant competitive research across other QSR apps and rethinking flows like customization, where Whataburger's depth of options (significantly more than competitors) demanded solutions that didn't exist in the category.
+**Intuitive.** The old ordering flow took 14 taps to get from home to checkout. The redesign cut it to 6 taps. Clear labels at every step. Progressive disclosure means customization never feels overwhelming. Tap counts reduced, steps eliminated.
 
-Three visual directions were pressure-tested against real wireframes to find the right balance. We took Vibrant Bold's iconography, typography, and bold color energy, then paired it with Modern's component structure and lighter color palette. The result felt like Whataburger without overwhelming the daily ordering experience.
+</ProseGroup>
+
+<ProseGroup>
+
+## Research and Testing
+
+I tested early and often. Three visual directions were pressure-tested against real wireframes to find the right balance between brand expression and daily usability.
+
+</ProseGroup>
+
+<Figure flush>
+  <Image src={directionTestingSrc} alt="Three visual directions tested against the same home screen wireframe: vibrant orange, clean modern, and dark premium" widths={[800, 1200, 2000]} sizes="100vw" format="webp" quality={90} loading="lazy" />
+</Figure>
+
+<ProseGroup>
+
+Direction testing identified what resonated visually: color, contrast, imagery, typography. I balanced bold, brand-forward design with readability and usability best practices. Key feature testing followed, putting landing and menu flows in front of users at critical decision moments. I carried forward the top-performing elements while refining what didn't work.
+
+The merged direction took Vibrant Bold's iconography, typography, and color energy, then paired it with Modern's component structure and lighter palette. The result felt like Whataburger without overwhelming the daily ordering experience.
 
 </ProseGroup>
 
 <DirectionExploration />
 
-<ChaosToOrder />
+<ProseGroup>
 
-<TypeHierarchy />
+## The Product
+
+</ProseGroup>
+
+<ProseGroup>
+
+### Home
+
+The home screen now does more than welcome guests. It surfaces products, limited-time offers, rewards, reorder history, and location context so guests can make faster decisions and start ordering with less friction. The hero carousel spotlights campaigns. Below the fold, the experience shifts from tactical product offering to brand discovery: quickly reorder, check rewards, explore promotions, and an always-present "Start Order" CTA.
+
+</ProseGroup>
+
+<ImagePair>
+  <Fragment slot="left"><DeviceFrame src={heroSrc} alt="Home screen: personalized greeting with featured menu items and daypart-aware content" /></Fragment>
+  <Fragment slot="right"><DeviceFrame src={menuLandingSrc} alt="Menu landing: category browsing with recent orders and featured items" /></Fragment>
+</ImagePair>
+
+<ProseGroup>
+
+### Menu and Customization
+
+This was the hardest flow to solve. Whataburger's customization depth (significantly more options than most QSR apps) meant the interface had to handle dense decision trees without feeling overwhelming. Branching paths (meal vs. a la carte, daypart-dependent categories, deep customization for every ingredient) demanded solutions that didn't exist in the category.
+
+Clearer menu and customization patterns make ordering easier. Each step in the flow (browse, customize, choose sides, review) uses progressive disclosure to surface only what's relevant at that moment.
+
+</ProseGroup>
+
+<Figure flush>
+  <Image src={lifestyleMenuSrc} alt="Menu customization in context: hand holding phone showing burger customization with ingredient options" widths={[800, 1400, 2200, 4400]} sizes="100vw" format="webp" quality={90} loading="lazy" />
+</Figure>
+
+<ImagePair>
+  <Fragment slot="left"><DeviceFrame src={menuCustomizationSrc} alt="Customize your burger: progressive disclosure of toppings and ingredients" /></Fragment>
+  <Fragment slot="right"><DeviceFrame src={orderSummarySrc} alt="Order summary: full customization detail with consistent component patterns" /></Fragment>
+</ImagePair>
+
+<ProseGroup>
+
+### Rewards
+
+The old rewards screen showed points and tier, but nothing else. The redesign adds visual tier progression with distinct offer cards, a branded system that surfaces reward-eligible items, and small personality touches that connect back to the Whataburger brand.
+
+</ProseGroup>
+
+<Figure flush>
+  <Image src={lifestyleRewardsSrc} alt="Rewards experience in context: phone on couch showing earn-as-you-eat screen with points balance" widths={[800, 1400, 2200, 4400]} sizes="100vw" format="webp" quality={90} loading="lazy" />
+</Figure>
+
+<ProseGroup>
+
+### Scan
+
+Scan brings earning, redeeming, and wallet access into one place. A clearer in-store moment that makes it easy for guests to pay, scan coupons, and check their Whatawallet balance without navigating between screens.
+
+</ProseGroup>
+
+<Figure flush>
+  <Image src={lifestyleScanSrc} alt="Scan in-store: hand holding phone showing QR code for earning points at the register" widths={[800, 1400, 2200, 4400]} sizes="100vw" format="webp" quality={90} loading="lazy" />
+</Figure>
+
+<ProseGroup>
+
+### Account
+
+Account settings are grouped into a simpler self-service hub. Personalized condiment preference badges (Spicy Ketchup, No Pickle, Mustard) add personality while serving a real function: they surface in the ordering flow so returning guests don't have to re-specify preferences.
+
+</ProseGroup>
+
+<Figure flush>
+  <Image src={lifestyleAccountSrc} alt="Account hub in context: phone showing personalized profile with condiment preference badges and Whatawallet balance" widths={[800, 1400, 2200, 3000]} sizes="100vw" format="webp" quality={90} loading="lazy" />
+</Figure>
+
+<ImagePair>
+  <Fragment slot="left"><DeviceFrame src={signInSrc} alt="Sign in: clean authentication flow with social login options" /></Fragment>
+  <Fragment slot="right"><DeviceFrame src={accountSrc} alt="Account hub: personalized profile with condiment preferences" /></Fragment>
+</ImagePair>
+
+<ImagePair>
+  <Fragment slot="left"><DeviceFrame src={locationsSrc} alt="Location finder: map view with nearby restaurants and delivery radius" /></Fragment>
+  <Fragment slot="right"><DeviceFrame src={giftCardsSrc} alt="Gift cards screen: card designs and balance" /></Fragment>
+</ImagePair>
+
+<ChaosToOrder />
 
 <ProseGroup>
 
 ## The Design System
 
-This was the most thorough systems work of my career. Before designing a single screen, I audited the existing token structure and found a system that could only describe what already existed, not what we needed to build. The rebuild, codenamed Pele, delivered 258 variables across three collections.
+Before designing a single screen, I audited the existing token structure and found a system that could only describe what already existed, not what needed to be built. Primitive tokens named after the brand ("Whataburger Orange") rather than by function. No tokens for interaction states, motion, or elevation. No semantic layer. Every new screen meant inventing values from scratch.
 
-The naming convention was the most consequential early decision. Every token reads like a path: `color/fg/primary`, `spacing/400`, `shadow/elevation/raised`. The structure had to serve two audiences simultaneously. Designers needed names that described *function*, not appearance: "primary foreground" tells you where to use it, "Whataburger Orange" doesn't. Engineers needed names that mapped directly to component props without a translation layer. The ×100 numeric scale (borrowed from Material Design's density-independent convention) gave spacing and radius tokens a predictable progression that both teams could reason about without looking up values.
+The rebuild, codenamed Pele, delivered 258 variables across three collections. The naming convention was the most consequential early decision. Every token reads like a path: `color/fg/primary`, `spacing/400`, `shadow/elevation/raised`. Designers get names that describe function. Engineers get names that map directly to component props without a translation layer.
 
 </ProseGroup>
+
+<TypeHierarchy />
 
 <SystemBeforeAfter />
 
@@ -116,7 +226,7 @@ The naming convention was the most consequential early decision. Every token rea
 
 ### Color States
 
-The most critical gap in the old system was interactive states. A button had one color: no hover, no pressed, no disabled. Pele introduced 11 color states, each defined across three categories: foreground, background, and border. Every interactive element in the app now has a complete, predictable state set without designers making one-off decisions.
+The most critical gap in the old system was interactive states. A button had one color: no hover, no pressed, no disabled. Pele introduced 11 color states across foreground, background, and border. Every interactive element now has a complete, predictable state set.
 
 </ProseGroup>
 
@@ -126,7 +236,7 @@ The most critical gap in the old system was interactive states. A button had one
 
 ### Typography
 
-Typography follows an M3-inspired naming convention: Display, Headline, Body, Label. Every text element has a clear role in the hierarchy. Display styles use Alkaline (the brand's display typeface), while all other roles use Unbounded. Each style is bound to semantic tokens for size, line-height, letter-spacing, and weight, so the full typographic system can be updated from a single source.
+Typography follows an M3-inspired naming convention: Display, Headline, Body, Label. Display styles use Alkaline (the brand's display typeface), while all other roles use Unbounded. Each style is bound to semantic tokens for size, line-height, letter-spacing, and weight.
 
 </ProseGroup>
 
@@ -134,82 +244,31 @@ Typography follows an M3-inspired naming convention: Display, Headline, Body, La
 
 <ProseGroup>
 
-### Spacing and Radius
+### Spacing, Motion, and Elevation
 
-All spatial values follow a ×100 naming convention built on a 4px base. `spacing/400` resolves to 16px, `radius/200` to 8px. The naming maps directly to CSS custom properties, so engineering never has to translate between design language and code. Eight radius steps from sharp corners to full circles cover every component shape in the system.
+All spatial values follow a x100 naming convention built on a 4px base. The motion system defines three duration tiers: Fast (100ms) for micro-interactions, Normal (150ms) for sheets and modals, Slow (300ms) for page transitions. Five elevation levels are composed from shadow tokens rather than arbitrary box-shadow values.
 
 </ProseGroup>
 
 <SpacingSystem />
 
-<ProseGroup>
-
-### Motion
-
-The motion system defines three duration tiers: Fast (100ms) for micro-interactions like toggles, Normal (150ms) for sheets and modals, and Slow (300ms) for page transitions. A single easing curve (ease-in-out) standardizes timing across the entire app, keeping animations cohesive without constraining expression.
-
-</ProseGroup>
-
 <MotionSystem />
-
-<ProseGroup>
-
-### Elevation
-
-Five elevation levels are composed from shadow distance, blur, and spread tokens rather than arbitrary box-shadow values. Each level has a clear use case: raised for cards, overlay for dropdowns, modal for dialogs, dramatic for floating actions, inset for pressed states. The shadow token scale (×100) follows the same convention as spacing, making the system internally consistent.
-
-</ProseGroup>
 
 <ElevationSystem />
 
 <ProseGroup>
 
-### Components and Engineering Handoff
+### Components
 
-The component library organized into universal components (in the design library, ready for cross-project reuse) and screen-specific components (with a migration plan to promote them after publishing). Navigation, Layout, Inputs, and Utilities each followed a Components + Parts structure. Over 90 icons across 10 categories and a custom illustration system rounded out the toolkit.
-
-**Naming conventions mapped directly to React component props.** The token structure mirrored how engineering would consume them: semantic names that read like code, not like a brand guideline. `fg/primary` maps to a theme token, not a conversation about which shade of brown to use. Documentation in Figma was written specifically for the dev team, not designers.
+The component library organized into universal components (ready for cross-project reuse) and screen-specific components (with a migration plan to promote them after publishing). Over 90 icons, navigation, inputs, layout, and utility components. Naming conventions mapped directly to React component props so the dev team could consume the system without a translation layer.
 
 </ProseGroup>
 
 <ComponentLibrary />
 
-<ProseGroup>
-
-## Visual Design
-
-Menu and customization was the hardest flow to solve, in both UX complexity and visual hierarchy. Branching paths (meal vs. à la carte, daypart-dependent categories, deep customization trees) meant the interface had to guide users through decisions without overwhelming someone who just wants lunch.
-
-I worked closely with the client's UX team, uncovering and resolving experience issues during the visual exploration phase that weren't visible in wireframes. The merged direction gave the interface room to breathe while staying unmistakably Whataburger.
-
-</ProseGroup>
-
-<ProseGroup>
-
-Each flow posed different challenges. The location finder layered map data, search, and delivery context into a single view. Item customization needed progressive disclosure to handle Whataburger's depth of options without flattening everything onto one screen.
-
-</ProseGroup>
-
-<ImagePair>
-  <Fragment slot="left"><DeviceFrame src={locationsSrc} alt="Location finder — map view with nearby restaurants and delivery radius" /></Fragment>
-  <Fragment slot="right"><DeviceFrame src={menuCustomizationSrc} alt="Item customization — progressive disclosure of options with clear selection states" /></Fragment>
-</ImagePair>
-
-<ProseGroup>
-
-The menu ordering flow was the real test. Whataburger's customization depth (significantly more options than most QSR apps) meant the interface had to handle dense decision trees without feeling overwhelming. Category browsing, item customization, and the full cart summary all draw from the same token set and component library, but each demanded different information density. The spacing and elevation tokens scaled predictably enough that none of these screens needed one-off overrides.
-
-</ProseGroup>
-
-<ImagePair>
-  <Fragment slot="left"><DeviceFrame src={menuLandingSrc} alt="Menu landing — category browsing with daypart-aware featured items" /></Fragment>
-  <Fragment slot="right"><DeviceFrame src={orderSummarySrc} alt="Order summary — full customization detail with consistent component patterns" /></Fragment>
-</ImagePair>
-
-<ImagePair>
-  <Fragment slot="left"><DeviceFrame src={signInSrc} alt="Sign in — clean authentication flow with social login options" /></Fragment>
-  <Fragment slot="right"><DeviceFrame src={accountSrc} alt="Account hub — personalized profile with condiment preference badges" /></Fragment>
-</ImagePair>
+<Figure flush>
+  <Image src={screensGridSrc} alt="Complete screen inventory: all major flows shown together including home, onboarding, menu, rewards, scan, account, locations" widths={[800, 1400, 2200, 3840]} sizes="100vw" format="webp" quality={90} loading="lazy" />
+</Figure>
 
 <ProseGroup>
 
@@ -217,9 +276,7 @@ The menu ordering flow was the real test. Whataburger's customization depth (sig
 
 Building the system first eliminated the micro-decisions that slow every flow down. When a new screen needed a hover state or an elevation level, the answer already existed. The upfront time felt slow. The downstream speed made up for it.
 
-Working embedded with a client UX team taught me different collaboration patterns than working with an internal team. You're simultaneously a peer and a vendor, which means you earn trust through the quality of your work and the clarity of your rationale, not through org-chart authority. The closest collaboration happened during menu customization, where my visual exploration surfaced UX issues that led to meaningful flow changes. That only happens when visual design is involved early, not applied as a skin at the end.
-
-Naming tokens by function instead of appearance meant the dev team could read the system without a translation layer. `fg/primary` maps to a theme prop. "Whataburger Orange" doesn't.
+Working embedded with a client UX team taught me different collaboration patterns. You earn trust through the quality of your work and the clarity of your rationale, not through org-chart authority. The closest collaboration happened during menu customization, where my visual exploration surfaced UX issues that led to meaningful flow changes. That only happens when visual design is involved early, not applied as a skin at the end.
 
 </ProseGroup>
 
