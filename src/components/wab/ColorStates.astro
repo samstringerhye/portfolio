@@ -123,7 +123,17 @@ const states = [
 
 <style>
   .color-states {
-    background: #fdf8f4;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     margin: 2rem 0;
     border-top: var(--border-width-1) solid var(--color-text-primary);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
@@ -136,7 +146,7 @@ const states = [
 
   .states-subtitle {
     font-size: 0.85rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     margin: 0;
   }
 
@@ -149,7 +159,7 @@ const states = [
   .state-card {
     border-radius: 10px;
     overflow: hidden;
-    border: 1px solid #f4ebe1;
+    border: 1px solid var(--wab-border);
   }
 
   .state-preview {
@@ -195,7 +205,7 @@ const states = [
     width: 36px;
     min-width: 36px;
     font-weight: 700;
-    color: #806c5b;
+    color: var(--wab-muted);
     text-transform: uppercase;
     font-size: 0.62rem;
     letter-spacing: 0.04em;
@@ -204,7 +214,7 @@ const states = [
   .token-row code {
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.68rem;
-    color: #472c19;
+    color: var(--wab-brown);
     flex: 1;
   }
 

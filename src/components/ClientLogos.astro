@@ -1,0 +1,144 @@
+---
+const clients = [
+  { name: 'Samsung', logo: '/logos/samsung.svg', h: 36 },
+  { name: 'CVS', logo: '/logos/cvs.svg', h: 32 },
+  { name: 'Frontier', logo: '/logos/frontier.svg', h: 52 },
+  { name: 'Whataburger', logo: '/logos/whataburger.svg', h: 72 },
+  { name: "McDonald's", logo: '/logos/mcdonalds.svg', h: 64 },
+  { name: 'Target', logo: '/logos/target.svg', h: 56 },
+  { name: 'Google', logo: '/logos/google.svg', h: 56 },
+  { name: 'Citi', logo: '/logos/citi.svg', h: 56 },
+  { name: 'Barclays', logo: '/logos/barclays.svg', h: 56 },
+  { name: 'Walmart', logo: '/logos/walmart.svg', h: 36 },
+  { name: 'Mashable', logo: '/logos/mashable.svg', h: 32 },
+  { name: 'Amica', logo: '/logos/amica.svg', h: 36 },
+  { name: 'NowThis', logo: '/logos/nowthis.svg', h: 64 },
+]
+const copies = 4
+---
+
+<div class="client-logos" aria-label="Selected clients">
+  <div class="client-logos-track">
+    {Array.from({ length: copies }, () =>
+      clients.map(c => (
+        <img src={c.logo} alt={c.name} class="client-logo" style={`height: ${c.h}px;`} loading="lazy" />
+      ))
+    )}
+  </div>
+  <p class="visually-hidden">{clients.map(c => c.name).join(', ')}</p>
+</div>
+
+<style>
+  .client-logos {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .client-logos::before,
+  .client-logos::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--space-8);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .client-logos::before {
+    left: 0;
+    background: linear-gradient(to right, var(--color-bg-primary), transparent);
+  }
+
+  .client-logos::after {
+    right: 0;
+    background: linear-gradient(to left, var(--color-bg-primary), transparent);
+  }
+
+  .client-logos-track {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    white-space: nowrap;
+    will-change: transform;
+  }
+
+  .client-logo {
+    width: auto;
+    flex-shrink: 0;
+    opacity: var(--opacity-50);
+    transition: opacity var(--duration-medium) ease;
+  }
+
+  @media (hover: hover) {
+    .client-logo:hover {
+      opacity: 1;
+    }
+  }
+
+  @media (--2x) {
+    .client-logos-track {
+      gap: var(--space-6);
+    }
+
+    .client-logos::before,
+    .client-logos::after {
+      width: var(--space-4);
+    }
+  }
+</style>
+
+<script>
+  let logoTween: any = null
+  let logoObserver: IntersectionObserver | null = null
+
+  function cleanupClientLogos() {
+    logoTween?.kill()
+    logoTween = null
+    logoObserver?.disconnect()
+    logoObserver = null
+  }
+
+  async function initClientLogos() {
+    cleanupClientLogos()
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const container = document.querySelector('.client-logos')
+    const track = document.querySelector('.client-logos-track') as HTMLElement
+    if (!container || !track) return
+
+    const { default: gsap } = await import('gsap')
+
+    const copyWidth = track.scrollWidth / 4
+
+    logoTween = gsap.to(track, {
+      x: -copyWidth,
+      duration: 40,
+      ease: 'none',
+      repeat: -1,
+      modifiers: {
+        x: gsap.utils.unitize((x: string) => parseFloat(x) % copyWidth),
+      },
+    })
+
+    logoTween.pause()
+
+    logoObserver = new IntersectionObserver(([entry]) => {
+      entry.isIntersecting ? logoTween.play() : logoTween.pause()
+    }, { threshold: 0 })
+    logoObserver.observe(container)
+  }
+
+  function deferInit() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => initClientLogos(), { timeout: 2000 })
+    } else {
+      setTimeout(initClientLogos, 200)
+    }
+  }
+
+  deferInit()
+  document.addEventListener('astro:page-load', deferInit)
+  document.addEventListener('astro:before-swap', cleanupClientLogos)
+</script>

@@ -62,17 +62,6 @@
       "highlightsHideEase": { "$ref": "sys.motion.gsapEasing.bounceIn" }
     }
   },
-  "workHover": {
-    "radius": 0.4,
-    "channelSpread": { "r": 0.4, "g": 0.45, "b": 0.35 },
-    "mouseSmoothing": 0.2,
-    "speedSmoothing": 0.2,
-    "speedDecay": 0.999,
-    "maxVelocity": 1.25,
-    "idleThreshold": 0.001,
-    "fadeDuration": 0.4,
-    "maxDpr": 1.8
-  },
   "dotGrid": {
     "spacing": 30,
     "radius": 1,

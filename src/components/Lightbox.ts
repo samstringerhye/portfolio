@@ -9,6 +9,7 @@ interface LightboxState {
   nextBtn: HTMLElement | null
   counter: HTMLElement | null
   imgContainer: HTMLElement | null
+  loader: HTMLElement | null
   images: HTMLImageElement[]
   currentIndex: number
   sectionImages: HTMLImageElement[]
@@ -24,6 +25,7 @@ const state: LightboxState = {
   nextBtn: null,
   counter: null,
   imgContainer: null,
+  loader: null,
   images: [],
   currentIndex: 0,
   sectionImages: [],
@@ -32,8 +34,53 @@ const state: LightboxState = {
   removeTrap: null,
 }
 
+function installLightboxStyles() {
+  if (document.getElementById('lightbox-feedback-styles')) return
+
+  const style = document.createElement('style')
+  style.id = 'lightbox-feedback-styles'
+  style.textContent = `
+    .lightbox-loader {
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 3px solid color-mix(in srgb, var(--color-text-secondary) 30%, transparent);
+      border-top-color: var(--color-text-secondary);
+      border-radius: 50%;
+      animation: lightbox-spin 0.8s linear infinite;
+    }
+
+    .lightbox-img {
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .lightbox-img.is-loaded {
+      opacity: 1;
+    }
+
+    .lightbox-error {
+      color: var(--color-text-secondary);
+      font-family: var(--font-primary);
+      text-align: center;
+    }
+
+    @keyframes lightbox-spin {
+      to { transform: rotate(360deg); }
+    }
+  `
+  document.head.appendChild(style)
+}
+
+function showImageError() {
+  if (!state.imgContainer) return
+
+  state.imgContainer.innerHTML = '<p class="lightbox-error">Image failed to load</p>'
+}
+
 function createOverlay() {
   if (state.overlay) return
+
+  installLightboxStyles()
 
   const overlay = document.createElement('div')
   overlay.className = 'lightbox-overlay'
@@ -77,6 +124,36 @@ function createOverlay() {
   state.prevBtn?.addEventListener('click', () => navigate(-1))
   state.nextBtn?.addEventListener('click', () => navigate(1))
   overlay.querySelector('.lightbox-backdrop')?.addEventListener('click', close)
+
+  const content = overlay.querySelector('.lightbox-content')
+  let pointerStart: { id: number; x: number; y: number; time: number } | null = null
+
+  content?.addEventListener('pointerdown', (event) => {
+    if (state.sectionImages.length <= 1) return
+
+    pointerStart = {
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      time: performance.now(),
+    }
+  })
+
+  content?.addEventListener('pointerup', (event) => {
+    if (!pointerStart || pointerStart.id !== event.pointerId) return
+
+    const horizontalDistance = event.clientX - pointerStart.x
+    const verticalDistance = event.clientY - pointerStart.y
+    pointerStart = null
+
+    if (Math.abs(horizontalDistance) <= 50 || Math.abs(verticalDistance) >= Math.abs(horizontalDistance)) return
+
+    navigate(horizontalDistance < 0 ? 1 : -1)
+  })
+
+  content?.addEventListener('pointercancel', () => {
+    pointerStart = null
+  })
 }
 
 function installFocusTrap() {
@@ -167,6 +244,13 @@ function showImage(img: HTMLImageElement) {
   if (!state.imgContainer) return
   state.imgContainer.innerHTML = ''
 
+  const loader = document.createElement('div')
+  loader.className = 'lightbox-loader'
+  loader.setAttribute('role', 'status')
+  loader.setAttribute('aria-label', 'Loading image')
+  state.imgContainer.appendChild(loader)
+  state.loader = loader
+
   const phoneParent = img.closest('.scroll-phone')
 
   if (phoneParent) {
@@ -175,9 +259,16 @@ function showImage(img: HTMLImageElement) {
     wrapper.className = 'lightbox-phone'
 
     const screen = document.createElement('img')
-    screen.src = img.currentSrc || img.src
     screen.alt = img.alt
     screen.className = 'lightbox-phone-screen'
+    screen.onload = () => {
+      loader.remove()
+      state.loader = null
+    }
+    screen.onerror = () => {
+      if (state.imgContainer?.contains(screen)) showImageError()
+    }
+    screen.src = img.currentSrc || img.src
 
     const frame = document.createElement('img')
     frame.src = '/images/iphone-frame.png'
@@ -189,9 +280,18 @@ function showImage(img: HTMLImageElement) {
     state.imgContainer.appendChild(wrapper)
   } else {
     const clone = document.createElement('img')
-    clone.src = img.currentSrc || img.src
     clone.alt = img.alt
     clone.className = 'lightbox-img'
+    clone.onload = () => {
+      if (!state.imgContainer?.contains(clone)) return
+      loader.remove()
+      state.loader = null
+      clone.classList.add('is-loaded')
+    }
+    clone.onerror = () => {
+      if (state.imgContainer?.contains(clone)) showImageError()
+    }
+    clone.src = img.currentSrc || img.src
     state.imgContainer.appendChild(clone)
   }
 }
@@ -301,3 +401,23 @@ export function initLightbox() {
   document.removeEventListener('keydown', handleKeydown)
   document.addEventListener('keydown', handleKeydown)
 }
+
+document.addEventListener('astro:before-swap', () => {
+  close()
+  gsap.killTweensOf([state.overlay, state.imgContainer])
+  state.overlay?.remove()
+
+  state.overlay = null
+  state.closeBtn = null
+  state.prevBtn = null
+  state.nextBtn = null
+  state.counter = null
+  state.imgContainer = null
+  state.loader = null
+  state.triggerElement = null
+  state.removeTrap = null
+  state.isOpen = false
+  state.images = []
+  state.sectionImages = []
+  state.currentIndex = 0
+})

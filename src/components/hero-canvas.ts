@@ -1,4 +1,13 @@
 import { animations, semantic } from '../data/tokens'
+import {
+  generateConcentric,
+  generateHexagonal,
+  generateRose,
+  generateSpiral,
+  sizeTaper,
+  updateDots,
+  type ArrangementGenerator,
+} from './hero-canvas-shared'
 
 const cfg = animations.hero.canvas
 
@@ -172,136 +181,9 @@ async function initFallback(
   isMobile: boolean,
   prefersReduced: boolean,
 ): Promise<() => void> {
-  const TWO_PI = Math.PI * 2
-  const PHI = (1 + Math.sqrt(5)) / 2
-
-  const roundedSquareWave = (t: number, delta: number, a: number, f: number) =>
-    ((2 * a) / Math.PI) * Math.atan(Math.sin(TWO_PI * t * f) / delta)
-
-  function generateSpiral(numRays: number, dotsPerRay: number, spacing: number) {
-    const total = numRays * dotsPerRay
-    const posX = new Float32Array(total)
-    const posY = new Float32Array(total)
-    const dist = new Float32Array(total)
-    const goldenAngle = TWO_PI / (PHI * PHI)
-    for (let i = 0; i < total; i++) {
-      const angle = i * goldenAngle
-      const r = spacing * Math.sqrt(i)
-      const x = Math.cos(angle) * r
-      const y = Math.sin(angle) * r
-      posX[i] = x
-      posY[i] = y
-      dist[i] = Math.sqrt(x * x + y * y)
-    }
-    return { posX, posY, dist, total }
-  }
-
-  function generateConcentric(numRays: number, dotsPerRay: number, spacing: number, innerRadius: number) {
-    const total = numRays * dotsPerRay
-    const posX = new Float32Array(total)
-    const posY = new Float32Array(total)
-    const dist = new Float32Array(total)
-    let idx = 0
-    for (let ring = 0; ring < dotsPerRay; ring++) {
-      const r = innerRadius + ring * spacing
-      for (let i = 0; i < numRays; i++) {
-        const angle = (i / numRays) * TWO_PI
-        posX[idx] = Math.cos(angle) * r
-        posY[idx] = Math.sin(angle) * r
-        dist[idx] = r
-        idx++
-      }
-    }
-    return { posX, posY, dist, total }
-  }
-
-  function generateHexagonal(_numRays: number, dotsPerRay: number, spacing: number) {
-    const maxR = dotsPerRay * spacing
-    const rowH = spacing * Math.sqrt(3) / 2
-    const rows = Math.ceil(maxR * 2 / rowH)
-    const tmpX: number[] = [], tmpY: number[] = [], tmpD: number[] = []
-    for (let row = -rows; row <= rows; row++) {
-      const y = row * rowH
-      const offset = (row % 2) * spacing * 0.5
-      const cols = Math.ceil(maxR * 2 / spacing)
-      for (let col = -cols; col <= cols; col++) {
-        const x = col * spacing + offset
-        const d2 = x * x + y * y
-        if (d2 > maxR * maxR) continue
-        tmpX.push(x)
-        tmpY.push(y)
-        tmpD.push(Math.sqrt(d2))
-      }
-    }
-    return {
-      posX: new Float32Array(tmpX),
-      posY: new Float32Array(tmpY),
-      dist: new Float32Array(tmpD),
-      total: tmpX.length,
-    }
-  }
-
-  function generateRose(numRays: number, dotsPerRay: number, spacing: number) {
-    const total = numRays * dotsPerRay
-    const posX = new Float32Array(total)
-    const posY = new Float32Array(total)
-    const dist = new Float32Array(total)
-    const k = Math.max(2, Math.round(numRays / 20))
-    for (let i = 0; i < total; i++) {
-      const theta = (i / total) * TWO_PI * k
-      const r = Math.cos(k * theta) * dotsPerRay * spacing * 0.3
-      const absR = Math.abs(r)
-      const sign = r >= 0 ? 1 : -1
-      const x = Math.cos(theta) * absR * sign
-      const y = Math.sin(theta) * absR * sign
-      posX[i] = x
-      posY[i] = y
-      dist[i] = Math.sqrt(x * x + y * y)
-    }
-    return { posX, posY, dist, total }
-  }
-
-  const generators: Record<string, Function> = {
+  const generators: Record<string, ArrangementGenerator> = {
     spiral: generateSpiral, concentric: generateConcentric,
     hexagonal: generateHexagonal, rose: generateRose,
-  }
-
-  function sizeTaper(n: number, sizeStart: number, sizeMid: number, sizeEnd: number) {
-    const inv = 1 - n
-    return inv * inv * sizeStart + 2 * inv * n * sizeMid + n * n * sizeEnd
-  }
-
-  const _waveSpeed = cfg.waveSpeed
-  const _propagation = cfg.propagation
-  const _waveSharpness = cfg.waveSharpness
-  const _waveAmplitude = cfg.waveAmplitude
-  const _waveFrequency = cfg.waveFrequency
-  const _baseScale = cfg.baseScale
-  const _twistAmount = cfg.twistAmount
-
-  function updateDots(
-    matArr: Float32Array, total: number,
-    posX: Float32Array, posY: Float32Array, dist: Float32Array,
-    dotScales: Float32Array, time: number,
-  ) {
-    for (let i = 0; i < total; i++) {
-      const d = dist[i]
-      const t = time * _waveSpeed - d / _propagation
-      const wave = roundedSquareWave(t, _waveSharpness + (0.2 * d) / 50, _waveAmplitude, _waveFrequency)
-      const scale = wave + _baseScale
-      const tw = wave * _twistAmount
-      const px = posX[i] * scale
-      const py = posY[i] * scale
-      const cosT = Math.cos(tw)
-      const sinT = Math.sin(tw)
-      const s = dotScales[i]
-      const o = i * 16
-      matArr[o]      = s
-      matArr[o + 5]  = s
-      matArr[o + 10] = s
-      matArr[o + 12] = px * cosT - py * sinT
-      matArr[o + 13] = px * sinT + py * cosT
-    }
   }
 
   const { Scene, OrthographicCamera, Color, SRGBColorSpace, WebGLRenderer, InstancedMesh, CircleGeometry, MeshBasicMaterial } = await import('three')
@@ -412,7 +294,12 @@ async function initFallback(
     const elapsed = (performance.now() - startTime - pauseAccum) / 1000
     const time = (cfg.wavePaused || prefersReduced) ? 0 : elapsed
     meshes.forEach((mesh, i) => {
-      updateDots(mesh.instanceMatrix.array as Float32Array, total, posX, posY, dist, dotScales, time - delays[i] * cmyDelay)
+      updateDots(
+        mesh.instanceMatrix.array as Float32Array, total,
+        posX, posY, dist, dotScales, time - delays[i] * cmyDelay,
+        cfg.waveSpeed, cfg.propagation, cfg.waveSharpness,
+        cfg.waveAmplitude, cfg.waveFrequency, cfg.baseScale, cfg.twistAmount,
+      )
       mesh.instanceMatrix.needsUpdate = true
     })
     renderer.render(scene, camera)

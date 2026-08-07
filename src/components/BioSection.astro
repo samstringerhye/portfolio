@@ -1,6 +1,5 @@
 ---
 import type { HeadingTag, TextTag, TypographyRole } from '../types/typography'
-import { animations } from '../data/tokens'
 
 interface Props {
   headline: string
@@ -9,23 +8,19 @@ interface Props {
   headlineRole?: TypographyRole
   bodyTag?: TextTag
   bodyRole?: TypographyRole
-  contentInset?: 'sm' | 'md' | 'lg'
 }
 
 const {
   headline, body,
   headlineTag = 'h2', headlineRole = 'display',
   bodyTag = 'p', bodyRole = 'subhead',
-  contentInset = 'md',
 } = Astro.props as Props
 const HeadlineTag = headlineTag as any
 const BodyTag = bodyTag as any
 
-const revealCfg = animations.textReveal
-const bioInitBlur = `${revealCfg.initialBlur}px`
 ---
 
-<section class="bio-section" aria-label="About" style={`--content-inset: var(--content-inset-${contentInset})`}>
+<section class="bio-section" aria-label="About">
   <div class="bio-inner" data-reveal-group>
     <div class="bio-left">
       <HeadlineTag class:list={["bio-headline", `typo-${headlineRole}`]} data-reveal>{headline}</HeadlineTag>
@@ -37,7 +32,7 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
   </div>
 </section>
 
-<style define:vars={{ bioInitBlur }}>
+<style>
   .bio-section {
     position: relative;
     z-index: 1;
@@ -54,13 +49,16 @@ const bioInitBlur = `${revealCfg.initialBlur}px`
     align-items: center;
     justify-content: center;
     padding: var(--content-inset-md);
+    min-width: 0;
   }
 
   .bio-headline {
     color: var(--color-text-primary);
     margin: 0;
-    opacity: 0;
-    filter: blur(var(--bioInitBlur));
+    width: 100%;
+    min-width: 0;
+    opacity: 1;
+    filter: none;
   }
 
   .bio-divider {

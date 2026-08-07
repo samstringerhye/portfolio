@@ -36,32 +36,32 @@ const { src, alt } = Astro.props
   /* Absolute stacking — immune to external img rules */
   .device-phone-inner > :global(img) {
     position: absolute;
-    background: transparent !important;
-    padding: 0 !important;
-    transition: none !important;
-    border-radius: 0 !important;
+    background: transparent;
+    padding: 0;
+    transition: none;
+    border-radius: 0;
   }
 
   .device-phone-inner > :global(img:hover) {
-    scale: 1 !important;
+    scale: 1;
   }
 
   /* Screen: inset slightly from frame edges */
   .device-phone-inner > :global(img.device-screen) {
     inset: 1.27% 3.33%;
-    width: 93.35% !important;
-    height: 97.45% !important;
-    border-radius: 9% !important;
-    object-fit: cover !important;
+    width: 93.35%;
+    height: 97.45%;
+    border-radius: 9%;
+    object-fit: cover;
     z-index: 1;
   }
 
   /* Frame: fills entire container */
   .device-frame {
     inset: 0;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: fill !important;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
     z-index: 2;
     pointer-events: none;
   }

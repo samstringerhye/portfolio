@@ -48,7 +48,7 @@ const blogPostLd = {
 ---
 
 <BaseLayout
-  title={`${entry.data.title} — Sam Stringer-Hye`}
+  title={`${entry.data.title} | Sam Stringer-Hye`}
   description={entry.data.description}
   jsonLd={blogPostLd}
 >
@@ -66,19 +66,24 @@ const blogPostLd = {
     </div>
 
     <nav class="blog-post-nav" aria-label="Blog post navigation">
-      <a href="/blog" class="blog-post-back typo-ui" data-astro-prefetch="hover">&larr; All posts</a>
-      <div class="blog-post-nav-links">
-        {prevSlug ? (
-          <a href={`/blog/${prevSlug}`} class="blog-post-nav-link typo-ui" data-astro-prefetch="hover">
-            &larr; {prevTitle}
-          </a>
-        ) : <span />}
-        {nextSlug ? (
-          <a href={`/blog/${nextSlug}`} class="blog-post-nav-link typo-ui" data-astro-prefetch="hover">
-            {nextTitle} &rarr;
-          </a>
-        ) : <span />}
-      </div>
+      {prevSlug ? (
+        <a href={`/blog/${prevSlug}`} class="blog-post-nav-link typo-ui" data-astro-prefetch="hover">
+          &larr; {prevTitle}
+        </a>
+      ) : (
+        <a href="/blog" class="blog-post-nav-link typo-ui" data-astro-prefetch="hover">
+          &larr; All posts
+        </a>
+      )}
+      {nextSlug ? (
+        <a href={`/blog/${nextSlug}`} class="blog-post-nav-link typo-ui" data-astro-prefetch="hover">
+          {nextTitle} &rarr;
+        </a>
+      ) : (
+        <a href="/blog" class="blog-post-nav-link typo-ui" data-astro-prefetch="hover">
+          All posts &rarr;
+        </a>
+      )}
     </nav>
   </article>
 </BaseLayout>
@@ -104,7 +109,7 @@ const blogPostLd = {
 
   .blog-post-title {
     color: var(--color-text-primary);
-    margin: 0 0 var(--space-2);
+    margin: 0 0 var(--space-3);
     text-wrap: balance;
   }
 
@@ -131,12 +136,12 @@ const blogPostLd = {
 
   .blog-post-body :global(h2) {
     margin-top: var(--space-5);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
   }
 
   .blog-post-body :global(h3) {
     margin-top: var(--space-5);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
   }
 
   .blog-post-body :global(p) {
@@ -202,27 +207,17 @@ const blogPostLd = {
 
   .blog-post-nav {
     grid-column: 4 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
     padding-block: var(--space-5);
   }
 
-  .blog-post-back {
-    display: inline-block;
-    color: var(--color-text-primary);
-    text-decoration: none;
-    margin-bottom: var(--space-3);
-  }
-
-  .blog-post-back:hover {
-    text-decoration: underline;
-  }
-
-  .blog-post-nav-links {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-3);
-  }
-
   .blog-post-nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     color: var(--color-text-primary);
     text-decoration: none;
   }

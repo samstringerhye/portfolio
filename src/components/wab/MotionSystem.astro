@@ -18,7 +18,7 @@ const durations = [
       <h4 class="motion-section-title">Duration</h4>
       <div class="duration-bars">
         {durations.map(d => (
-          <div class="duration-item" data-duration={d.ms}>
+          <div class="duration-item" data-duration={d.ms} tabindex="0" role="button">
             <div class="duration-bar-track">
               <div class="duration-bar-fill" style={`width: ${d.width};`} />
               <div class="duration-dot" aria-hidden="true" />
@@ -41,21 +41,21 @@ const durations = [
         <p class="easing-desc">Standard easing for all transitions.<br />Smooth acceleration and deceleration.</p>
         <div class="easing-demo">
           <svg class="easing-curve" viewBox="0 0 200 200" fill="none" aria-label="Cubic bezier curve: 0.42, 0, 0.58, 1">
-            <rect x="0" y="0" width="200" height="200" fill="none" stroke="#f4ebe1" stroke-width="1" rx="4" />
-            <line x1="0" y1="200" x2="200" y2="0" stroke="#f4ebe1" stroke-width="1" stroke-dasharray="4 4" />
+            <rect x="0" y="0" width="200" height="200" fill="none" stroke="var(--wab-border)" stroke-width="1" rx="4" />
+            <line x1="0" y1="200" x2="200" y2="0" stroke="var(--wab-border)" stroke-width="1" stroke-dasharray="4 4" />
             <!-- Control point lines -->
-            <line x1="0" y1="200" x2="84" y2="200" stroke="#ffd6ba" stroke-width="1" />
-            <line x1="200" y1="0" x2="116" y2="0" stroke="#ffd6ba" stroke-width="1" />
+            <line x1="0" y1="200" x2="84" y2="200" stroke="var(--wab-highlight)" stroke-width="1" />
+            <line x1="200" y1="0" x2="116" y2="0" stroke="var(--wab-highlight)" stroke-width="1" />
             <!-- Curve -->
-            <path class="easing-path" d="M 0 200 C 84 200, 116 0, 200 0" stroke="#fe7800" stroke-width="2.5" fill="none" />
+            <path class="easing-path" d="M 0 200 C 84 200, 116 0, 200 0" stroke="var(--wab-orange)" stroke-width="2.5" fill="none" />
             <!-- Control points -->
-            <circle cx="84" cy="200" r="4" fill="#fe7800" />
-            <circle cx="116" cy="0" r="4" fill="#fe7800" />
+            <circle cx="84" cy="200" r="4" fill="var(--wab-orange)" />
+            <circle cx="116" cy="0" r="4" fill="var(--wab-orange)" />
             <!-- Traveling dot -->
-            <circle class="easing-dot" cx="0" cy="200" r="6" fill="#472c19" opacity="0" />
+            <circle class="easing-dot" cx="0" cy="200" r="6" fill="var(--wab-brown)" opacity="0" />
             <!-- Labels -->
-            <text x="84" y="192" font-size="10" fill="#806c5b" text-anchor="middle">P1 (0.42, 0)</text>
-            <text x="116" y="16" font-size="10" fill="#806c5b" text-anchor="middle">P2 (0.58, 1)</text>
+            <text x="84" y="192" font-size="10" fill="var(--wab-muted)" text-anchor="middle">P1 (0.42, 0)</text>
+            <text x="116" y="16" font-size="10" fill="var(--wab-muted)" text-anchor="middle">P2 (0.58, 1)</text>
           </svg>
           <button class="easing-play" aria-label="Play easing animation" type="button">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -72,7 +72,17 @@ const durations = [
 
 <style>
   .motion-system {
-    background: #fdf8f4;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     border-radius: 0;
     border-top: var(--border-width-1) solid var(--color-text-primary);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
@@ -89,7 +99,7 @@ const durations = [
   .motion-section-title {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     margin: 0 0 1rem;
   }
 
@@ -108,7 +118,7 @@ const durations = [
 
   .duration-bar-track {
     height: 8px;
-    background: rgba(255, 214, 186, 0.3);
+    background: color-mix(in srgb, var(--wab-highlight) 30%, transparent);
     border-radius: 4px;
     overflow: hidden;
     position: relative;
@@ -116,7 +126,7 @@ const durations = [
 
   .duration-bar-fill {
     height: 100%;
-    background: #fe7800;
+    background: var(--wab-orange);
     border-radius: 4px;
   }
 
@@ -126,7 +136,7 @@ const durations = [
     left: 0;
     width: 12px;
     height: 12px;
-    background: #472c19;
+    background: var(--wab-brown);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
@@ -142,7 +152,7 @@ const durations = [
   .duration-name {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     text-transform: uppercase;
     letter-spacing: 0.04em;
   }
@@ -150,19 +160,19 @@ const durations = [
   .duration-ms {
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.78rem;
-    color: #806c5b;
+    color: var(--wab-muted);
   }
 
   .duration-usage {
     font-size: 0.72rem;
-    color: #948274;
+    color: var(--wab-muted-mid);
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
 
   .motion-hint {
     font-size: 0.68rem;
-    color: #a0846c;
+    color: var(--wab-muted-alt);
     margin: 0.75rem 0 0;
     font-style: italic;
   }
@@ -176,13 +186,13 @@ const durations = [
   .easing-label {
     font-size: 1rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     margin-bottom: 0.35rem;
   }
 
   .easing-desc {
     font-size: 0.78rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     margin: 0 0 1rem;
     line-height: 1.5;
   }
@@ -204,13 +214,13 @@ const durations = [
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    background: #fdf8f4;
-    border: 1px solid #f4ebe1;
+    background: var(--wab-bg);
+    border: 1px solid var(--wab-border);
     border-radius: 6px;
     padding: 0.4rem 0.65rem;
     font-size: 0.72rem;
     font-weight: 600;
-    color: #472c19;
+    color: var(--wab-brown);
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease;
     white-space: nowrap;
@@ -218,19 +228,25 @@ const durations = [
   }
 
   .easing-play:hover {
-    background: #f4ebe1;
-    border-color: #cdb9a7;
+    background: var(--wab-bg-alt);
+    border-color: var(--wab-tan);
   }
 
   .easing-play svg {
-    color: #fe7800;
+    color: var(--wab-orange);
   }
 
   .easing-code {
     display: block;
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.75rem;
-    color: #806c5b;
+    color: var(--wab-muted);
+  }
+
+  .duration-item:focus-visible,
+  .easing-play:focus-visible {
+    outline: 2px solid var(--wab-orange);
+    outline-offset: 2px;
   }
 
   @media (max-width: 768px) {
@@ -256,6 +272,8 @@ const durations = [
 </style>
 
 <script>
+  let ctx: { revert: () => void } | null = null
+
   async function initMotionSystem() {
     const container = document.querySelector('.motion-system') as HTMLElement | null
     if (!container || container.dataset.motionInit === 'true') return
@@ -264,6 +282,10 @@ const durations = [
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const { default: gsap } = await import('gsap')
+    const cleanups: (() => void)[] = []
+
+    ctx?.revert()
+    ctx = gsap.context(() => {
 
     // Duration bar hover demos — animated dot travels the bar width
     const items = container.querySelectorAll<HTMLElement>('.duration-item')
@@ -287,28 +309,44 @@ const durations = [
         })
       }
 
+      const handleKeydown = (event: KeyboardEvent) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          playDemo()
+        }
+      }
+
       item.addEventListener('mouseenter', playDemo)
       item.addEventListener('click', playDemo)
+      item.addEventListener('keydown', handleKeydown)
+      cleanups.push(() => {
+        item.removeEventListener('mouseenter', playDemo)
+        item.removeEventListener('click', playDemo)
+        item.removeEventListener('keydown', handleKeydown)
+        gsap.killTweensOf(dot)
+      })
     })
 
     // Easing curve play button — dot traces the bezier path
     const playBtn = container.querySelector<HTMLElement>('.easing-play')
     const easingDot = container.querySelector<SVGCircleElement>('.easing-dot')
-    const easingPath = container.querySelector<SVGPathElement>('.easing-path')
+      const easingPath = container.querySelector<SVGPathElement>('.easing-path')
 
-    if (playBtn && easingDot && easingPath) {
-      const playEasing = () => {
+      if (playBtn && easingDot && easingPath) {
+        let easingProgress: { t: number } | null = null
+
+        const playEasing = () => {
         const length = easingPath.getTotalLength()
         gsap.killTweensOf(easingDot)
         gsap.set(easingDot, { opacity: 1 })
 
-        const obj = { t: 0 }
-        gsap.to(obj, {
-          t: 1,
+          easingProgress = { t: 0 }
+          gsap.to(easingProgress, {
+            t: 1,
           duration: 1.2,
           ease: 'none',
           onUpdate() {
-            const point = easingPath.getPointAtLength(obj.t * length)
+              const point = easingPath.getPointAtLength((easingProgress?.t || 0) * length)
             easingDot.setAttribute('cx', String(point.x))
             easingDot.setAttribute('cy', String(point.y))
           },
@@ -318,8 +356,20 @@ const durations = [
         })
       }
 
-      playBtn.addEventListener('click', playEasing)
+        playBtn.addEventListener('click', playEasing)
+        cleanups.push(() => {
+          playBtn.removeEventListener('click', playEasing)
+          gsap.killTweensOf(easingDot)
+          if (easingProgress) gsap.killTweensOf(easingProgress)
+        })
     }
+    }, container)
+
+    document.addEventListener('astro:before-swap', () => {
+      cleanups.forEach(remove => remove())
+      ctx?.revert()
+      ctx = null
+    }, { once: true })
   }
 
   initMotionSystem()

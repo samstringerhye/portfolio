@@ -116,7 +116,17 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
 
 <style>
   .direction-exploration {
-    background: #fdf8f4;
+    --wab-bg: #fdf8f4;
+    --wab-bg-alt: #f4ebe1;
+    --wab-brown: #472c19;
+    --wab-muted: #806c5b;
+    --wab-muted-alt: #a0846c;
+    --wab-orange: #fe7800;
+    --wab-border: #f4ebe1;
+    --wab-highlight: #ffd6ba;
+    --wab-muted-mid: #948274;
+    --wab-tan: #cdb9a7;
+    background: var(--wab-bg);
     border-top: var(--border-width-1) solid var(--color-text-primary);
     border-bottom: var(--border-width-1) solid var(--color-text-primary);
     padding: 2rem;
@@ -126,19 +136,19 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
   .de-header {
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #f4ebe1;
+    border-bottom: 1px solid var(--wab-border);
   }
 
   .de-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     margin: 0 0 0.25rem;
   }
 
   .de-subtitle {
     font-size: 0.8rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     margin: 0;
     line-height: 1.5;
     max-width: 56ch;
@@ -152,7 +162,7 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
 
   .de-card {
     background: white;
-    border: 1px solid #f4ebe1;
+    border: 1px solid var(--wab-border);
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
@@ -163,7 +173,7 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
   .de-moodboard {
     margin: -1.25rem -1.25rem 0;
     overflow: hidden;
-    border-bottom: 1px solid #f4ebe1;
+    border-bottom: 1px solid var(--wab-border);
   }
 
   .de-card--merged .de-moodboard {
@@ -182,8 +192,8 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
   }
 
   .de-card--merged {
-    border-color: #fe7800;
-    box-shadow: 0 0 0 1px #fe7800;
+    border-color: var(--wab-orange);
+    box-shadow: 0 0 0 1px var(--wab-orange);
   }
 
   .de-card-top {
@@ -191,7 +201,7 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
     align-items: center;
     gap: 0.5rem;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid #f4ebe1;
+    border-bottom: 1px solid var(--wab-border);
   }
 
   .de-card--merged .de-card-top {
@@ -202,21 +212,21 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 0.7rem;
     font-weight: 700;
-    color: #a0846c;
-    background: #fdf8f4;
+    color: var(--wab-muted-alt);
+    background: var(--wab-bg);
     padding: 0.15rem 0.4rem;
     border-radius: 3px;
   }
 
   .de-card--merged .de-number {
-    color: #fe7800;
+    color: var(--wab-orange);
     background: rgba(254, 120, 0, 0.08);
   }
 
   .de-direction-name {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #472c19;
+    color: var(--wab-brown);
     margin: 0;
     flex: 1;
   }
@@ -235,7 +245,7 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
 
   .de-description {
     font-size: 0.78rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     line-height: 1.55;
     margin: 0;
   }
@@ -252,7 +262,7 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
 
   .de-traits li {
     font-size: 0.72rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     padding-left: 0.75rem;
     position: relative;
   }
@@ -261,18 +271,18 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
     content: '·';
     position: absolute;
     left: 0;
-    color: #cdb9a7;
+    color: var(--wab-tan);
     font-weight: 700;
   }
 
   .de-card--merged .de-traits li::before {
-    color: #fe7800;
+    color: var(--wab-orange);
   }
 
   .de-verdict {
     margin-top: auto;
     padding-top: 0.6rem;
-    border-top: 1px solid #f4ebe1;
+    border-top: 1px solid var(--wab-border);
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -286,28 +296,28 @@ import austinMoodboard from '../../assets/work/wab-2026/direction-austin-moodboa
   }
 
   .de-verdict--considered .de-verdict-label {
-    color: #a0846c;
+    color: var(--wab-muted-alt);
   }
 
   .de-verdict--merged {
     border-top-color: rgba(254, 120, 0, 0.2);
-    color: #fe7800;
+    color: var(--wab-orange);
   }
 
   .de-verdict--merged .de-verdict-label {
-    color: #fe7800;
+    color: var(--wab-orange);
   }
 
   .de-verdict--rejected .de-verdict-label {
-    color: #a0846c;
+    color: var(--wab-muted-alt);
   }
 
   .de-footnote {
     margin: 1.25rem 0 0;
     padding-top: 1rem;
-    border-top: 1px solid #f4ebe1;
+    border-top: 1px solid var(--wab-border);
     font-size: 0.78rem;
-    color: #806c5b;
+    color: var(--wab-muted);
     line-height: 1.55;
     font-style: italic;
   }

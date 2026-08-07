@@ -18,10 +18,18 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 ---
 
 <BaseLayout title={`${title} — Sam Stringer-Hye`} description={tagline} ogImage={ogImage} jsonLd={jsonLd} noindex={noindex}>
-  <div class="scroll-progress"></div>
+  <div class="scroll-progress" aria-hidden="true"></div>
   <article class="case-study-body">
     <slot />
   </article>
+
+  <section class="case-study-cta" aria-labelledby="case-study-cta-heading">
+    <hr class="section-rule" />
+    <div class="case-study-cta-content">
+      <h2 id="case-study-cta-heading" class="typo-headline-sm">Like what you see?</h2>
+      <a href="/contact" class="case-study-cta-link typo-body-lg">Get in touch</a>
+    </div>
+  </section>
 
   <CaseStudyNav
     prevSlug={prevSlug}
@@ -37,6 +45,32 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     display: grid;
     grid-template-columns: subgrid;
     row-gap: 0;
+  }
+
+  /* ── Contact CTA ── */
+  .case-study-cta {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .case-study-cta .section-rule {
+    grid-column: 1 / -1;
+  }
+
+  .case-study-cta-content {
+    grid-column: 2 / 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding-block: var(--space-6);
+  }
+
+  .case-study-cta-link {
+    text-decoration: underline;
+    text-decoration-thickness: var(--border-width-1);
+    text-underline-offset: 0.15em;
   }
 
   /* ── All children: full-width, no universal border ── */
@@ -142,7 +176,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     object-fit: cover;
   }
 
-  .case-study-body img {
+  .case-study-body img:not(.device-screen):not(.device-frame):not(.lightbox-img):not(.lightbox-phone-screen):not(.lightbox-phone-frame) {
     display: block;
     width: 100%;
     height: auto;
@@ -450,12 +484,12 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     border-right: none;
   }
 
-  /* ── Vertical rhythm: block padding on containers ── */
+  /* ── Vertical rhythm: tiered spacing by adjacency ── */
   .case-study-body .zigzag-section,
   .case-study-body .accent-band,
   .case-study-body .cs-figure,
   .case-study-body .prose-group {
-    padding-block: var(--space-7);
+    padding-block: var(--space-6);
   }
 
   .case-study-body .cs-figure--flush {
@@ -466,8 +500,30 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     padding-block: 0;
   }
 
+  /* Prose after prose: tighter grouping within a topic */
+  .case-study-body .prose-group + .prose-group {
+    padding-top: var(--space-3);
+  }
+
+  /* Visual after its prose intro: connected pair */
+  .case-study-body .prose-group + .cs-figure:not(.cs-figure--flush),
+  .case-study-body .prose-group + .image-pair {
+    padding-top: var(--space-4);
+  }
+
+  /* New prose section after a visual: topic shift */
+  .case-study-body :is(.cs-figure, .image-pair) + .prose-group {
+    padding-top: var(--space-7);
+  }
+
   /* ── Mobile ── */
   @media (--2x) {
+    .case-study-cta-content {
+      grid-column: 1 / -1;
+      padding-inline: var(--content-inset-sm);
+      padding-block: var(--space-5);
+    }
+
     .case-study-body > h1,
     .case-study-body > h2,
     .case-study-body > h3,
@@ -724,12 +780,14 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     position: fixed;
     top: var(--nav-height);
     left: 0;
-    width: 0%;
+    width: 100%;
     height: 2px;
     background: var(--color-accent-1);
     z-index: var(--z-nav, 100);
     pointer-events: none;
     transition: none;
+    transform: scaleX(0);
+    transform-origin: left;
   }
 
 </style>
@@ -764,6 +822,9 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
   sizeImagePairs()
   mobileQuery.addEventListener('change', sizeImagePairs)
   document.addEventListener('astro:page-load', sizeImagePairs)
+  document.addEventListener('astro:before-swap', () => {
+    mobileQuery.removeEventListener('change', sizeImagePairs)
+  }, { once: true })
 </script>
 
 <script>
@@ -772,25 +833,31 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     if (!body) return
 
     body.querySelectorAll<HTMLImageElement>('img').forEach(img => {
+      if (img.classList.contains('has-transparency') || img.dataset.transparencyChecked) return
+
       const check = () => {
         if (!img.naturalWidth) return
-        const canvas = document.createElement('canvas')
-        canvas.width = Math.min(img.naturalWidth, 100)
-        canvas.height = Math.min(img.naturalHeight, 100)
-        const ctx = canvas.getContext('2d')
-        if (!ctx) return
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
-        // Sample corner pixels for alpha < 255
-        const corners = [
-          3,                                          // top-left
-          (canvas.width - 1) * 4 + 3,               // top-right
-          (canvas.height - 1) * canvas.width * 4 + 3, // bottom-left
-          ((canvas.height - 1) * canvas.width + canvas.width - 1) * 4 + 3, // bottom-right
-        ]
-        const hasAlpha = corners.some(i => data[i] < 250)
-        if (hasAlpha) {
-          img.classList.add('has-transparency')
+        try {
+          const canvas = document.createElement('canvas')
+          canvas.width = Math.min(img.naturalWidth, 100)
+          canvas.height = Math.min(img.naturalHeight, 100)
+          const ctx = canvas.getContext('2d')
+          if (!ctx) return
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
+          // Sample corner pixels for alpha < 255
+          const corners = [
+            3,                                          // top-left
+            (canvas.width - 1) * 4 + 3,               // top-right
+            (canvas.height - 1) * canvas.width * 4 + 3, // bottom-left
+            ((canvas.height - 1) * canvas.width + canvas.width - 1) * 4 + 3, // bottom-right
+          ]
+          const hasAlpha = corners.some(i => data[i] < 250)
+          if (hasAlpha) {
+            img.classList.add('has-transparency')
+          }
+        } finally {
+          img.dataset.transparencyChecked = 'true'
         }
       }
       if (img.complete) check()
@@ -801,4 +868,3 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
   detectTransparentImages()
   document.addEventListener('astro:page-load', detectTransparentImages)
 </script>
-

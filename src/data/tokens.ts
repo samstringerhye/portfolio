@@ -26,11 +26,8 @@ export const sys = resolved.sys
 export const elementMap = resolved.elementMap
 
 // Backward-compat aliases
-export const primitives = ref
 export const semantic = sys
-export const roles = sys.typescale
 export const hover = sys.hover
-export const prose = sys.prose
 
 export const animations = resolveRefs(rawAnimations, resolved) as typeof rawAnimations
 

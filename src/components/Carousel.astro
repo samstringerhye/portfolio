@@ -90,7 +90,7 @@ const { label, fullBleed = false } = Astro.props
     height: var(--space-1);
     border-radius: var(--radius-full, 9999px);
     background: var(--color-text-primary);
-    opacity: 0.3;
+    opacity: 0.45;
     transition: width 0.3s ease, opacity 0.3s ease;
   }
 
@@ -101,9 +101,9 @@ const { label, fullBleed = false } = Astro.props
 
   .carousel--full-bleed .carousel-track :global(img) {
     border-radius: 0;
-    padding: 0 !important;
-    background: transparent !important;
-    object-fit: cover !important;
+    padding: 0;
+    background: transparent;
+    object-fit: cover;
   }
 
   @media (--2x) {
@@ -133,6 +133,8 @@ const { label, fullBleed = false } = Astro.props
 
 <script>
   import gsap from 'gsap'
+
+  const carouselObservers = new WeakMap<Element, ResizeObserver>()
 
   function initCarousels() {
     document.querySelectorAll('.carousel').forEach(carousel => {
@@ -366,7 +368,7 @@ const { label, fullBleed = false } = Astro.props
       })
 
       // Recalculate on resize
-      if ((carousel as any).__carouselRo) (carousel as any).__carouselRo.disconnect()
+      if (carouselObservers.has(carousel)) carouselObservers.get(carousel)?.disconnect()
       const ro = new ResizeObserver(() => {
         applyGridSizing()
         buildSnapPoints()
@@ -374,7 +376,7 @@ const { label, fullBleed = false } = Astro.props
         updateDots(Math.min(currentIndex, snapPoints.length - 1))
         gsap.set(track, { x: snapPoints[currentIndex] })
       })
-      ;(carousel as any).__carouselRo = ro
+      carouselObservers.set(carousel, ro)
       ro.observe(carousel)
     })
   }

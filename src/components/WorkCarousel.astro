@@ -10,14 +10,12 @@ interface Props {
   headingRole?: TypographyRole
   cardTitleTag?: HeadingTag
   cardTitleRole?: TypographyRole
-  contentInset?: 'sm' | 'md' | 'lg'
 }
 
 const {
   headline = 'Selected Work',
   headingTag = 'h2', headingRole = 'display',
   cardTitleTag = 'h3', cardTitleRole = 'ui',
-  contentInset = 'md',
 } = Astro.props as Props
 const SectionTag = headingTag as any
 const CardTitleTag = cardTitleTag as any
@@ -27,6 +25,7 @@ const featured = allWork
   .sort((a, b) => a.data.sortOrder - b.data.sortOrder)
   .map(w => ({
     title: w.data.title,
+    client: w.data.client,
     role: w.data.role,
     year: w.data.year,
     thumbnail: w.data.thumbnail,
@@ -34,7 +33,7 @@ const featured = allWork
   }))
 ---
 
-<section class="work-section" id="selected-work" aria-label="Selected work" style={`--content-inset: var(--content-inset-${contentInset})`}>
+<section class="work-section" id="selected-work" aria-label="Selected work">
   <div class="work-container">
     <div class="work-header">
       <SectionTag class={`work-label typo-${headingRole}`} data-reveal>{headline}</SectionTag>
@@ -63,7 +62,10 @@ const featured = allWork
               />
             </div>
             <div class="work-card-label">
-              <CardTitleTag class={`work-card-title typo-${cardTitleRole}`} data-card-title>{card.title}</CardTitleTag>
+              <div class="work-card-copy">
+                <p class="work-card-meta typo-ui-caps">{card.client} · {card.year}</p>
+                <CardTitleTag class={`work-card-title typo-${cardTitleRole}`} data-card-title>{card.title}</CardTitleTag>
+              </div>
               <Icon name="material-symbols:arrow-forward-sharp" class="work-card-arrow" />
             </div>
           </a>
@@ -271,6 +273,15 @@ const featured = allWork
     margin: 0;
   }
 
+  .work-card-copy {
+    min-width: 0;
+  }
+
+  .work-card-meta {
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-1);
+  }
+
   .work-card-arrow {
     width: 2rem;
     height: 2rem;
@@ -339,7 +350,7 @@ const featured = allWork
     height: var(--space-1);
     border-radius: var(--radius-full, 9999px);
     background: var(--color-text-primary);
-    opacity: 0.3;
+    opacity: 0.45;
     transition: width 0.3s ease, opacity 0.3s ease;
   }
 
@@ -378,6 +389,8 @@ const featured = allWork
   }
 
   function initWorkCarousel() {
+    const workObservers = new WeakMap<Element, ResizeObserver>()
+
     document.querySelectorAll<HTMLElement>('[data-work-carousel]').forEach(carousel => {
       if (carousel.dataset.carouselInit === 'true') return
       carousel.dataset.carouselInit = 'true'
@@ -604,7 +617,7 @@ const featured = allWork
       }
 
       // Recalculate on resize — disconnect previous observer to prevent leaks
-      if ((carousel as any).__workRo) (carousel as any).__workRo.disconnect()
+      if (workObservers.has(carousel)) workObservers.get(carousel)?.disconnect()
       const ro = new ResizeObserver(() => {
         applyGridSizing()
         buildSnapPoints()
@@ -615,7 +628,7 @@ const featured = allWork
           gsap.set(track, { x: snapPoints[safeIndex] })
         }
       })
-      ;(carousel as any).__workRo = ro
+      workObservers.set(carousel, ro)
       ro.observe(carousel)
     })
   }
@@ -630,7 +643,7 @@ const featured = allWork
     gsap = gsapMod.default
     ScrollTrigger = stMod.ScrollTrigger
     gsap.registerPlugin(ScrollTrigger)
-    CMY_COLORS = tokensMod.cmyRgba(1)
+    CMY_COLORS = tokensMod.accentRgba(1)
     tightenSingleLineHeadings = tightenMod.tightenSingleLineHeadings
 
     tightenSingleLineHeadings('.work-label, .work-card-title')

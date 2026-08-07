@@ -28,6 +28,20 @@ export const POST: APIRoute = async ({ request, locals }) => {
       return new Response(JSON.stringify({ error: 'Invalid email address.' }), { status: 400, headers })
     }
 
+    if (name.length > 200) {
+      return new Response(JSON.stringify({ error: 'Name must be 200 characters or fewer.' }), { status: 400, headers })
+    }
+
+    if (email.length > 254) {
+      return new Response(JSON.stringify({ error: 'Email must be 254 characters or fewer.' }), { status: 400, headers })
+    }
+
+    if (message.length > 10000) {
+      return new Response(JSON.stringify({ error: 'Message must be 10,000 characters or fewer.' }), { status: 400, headers })
+    }
+
+    const sanitizedName = name.replace(/[\r\n]/g, '')
+
     const env = locals.runtime?.env as Record<string, string> | undefined
     const apiKey = env?.RESEND_API_KEY
 
@@ -42,7 +56,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       body: JSON.stringify({
         from: 'Portfolio Contact <contact@samstringerhye.com>',
         to: env.CONTACT_EMAIL || 'sam@samstringerhye.com',
-        subject: `Contact from ${name}`,
+        subject: `Contact from ${sanitizedName}`,
         reply_to: email,
         text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
       }),

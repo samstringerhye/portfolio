@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import aboutGif from '../assets/about/kid-giving-thumbs-up-gif.gif'
+import ClientLogos from '../components/ClientLogos.astro'
 
 const aboutJsonLd = {
   "@context": "https://schema.org",
@@ -15,26 +15,64 @@ const aboutJsonLd = {
     "knowsAbout": ["UI/UX Design", "Design Systems", "Motion Design", "Interaction Prototyping"],
   },
 }
+
+const skills = [
+  { index: '01', title: 'Design Systems', desc: 'Component systems for Samsung.com across 12+ markets' },
+  { index: '02', title: 'Product Design', desc: 'Full-flow product design for CVS, Frontier, and Whataburger' },
+  { index: '03', title: 'Motion & Interaction', desc: 'GSAP animation systems and coded prototypes' },
+  { index: '04', title: 'Design Leadership', desc: 'Leading 3-5 designers on Samsung, CVS, and Frontier' },
+]
 ---
 
-<BaseLayout title="About — Sam Stringer-Hye" description="About Sam Stringer-Hye — Associate Design Director at Razorfish." jsonLd={aboutJsonLd}>
+<BaseLayout title="About | Sam Stringer-Hye" description="About Sam Stringer-Hye | Associate Design Director at Razorfish." jsonLd={aboutJsonLd}>
   <section class="about-page" aria-label="About">
-    <div class="about-body">
-      <img src={aboutGif.src} alt="Kid at computer giving thumbs up" class="about-gif" width={aboutGif.width} height={aboutGif.height} loading="lazy" />
+    <h1 class="about-heading typo-display-md">About</h1>
 
-      <h1 class="about-name typo-display-md">All that screen time actually led somewhere</h1>
+    <div class="about-row about-row--intro">
+      <div class="about-intro-left">
+        <h2 class="about-name typo-display-md">All that screen time actually led somewhere</h2>
+      </div>
+      <div class="about-intro-right">
+        <p class="about-bio typo-body-lg">
+          I got my first computer at seven and never really looked up. That turned into 13+ years designing products for Samsung, Frontier, and CVS at Razorfish. Design systems, interaction design, motion.
+        </p>
+        <p class="about-bio typo-body-lg">
+          I'm the person who notices when the spacing is off, when a transition feels wrong, or when a component system only works in the deck. That instinct is the whole job.
+        </p>
+      </div>
+    </div>
 
-      <p class="about-bio typo-body-lg">
-        I got my first computer at seven and never really looked up. That turned into 13+ years designing products for Samsung, Frontier, and CVS at Razorfish. Design systems, interaction design, motion.
-      </p>
+    <div class="about-row about-row--skills">
+      <h2 class="about-skills-heading typo-headline-lg">What I do</h2>
+      <ul class="skill-grid" role="list">
+        {skills.map(s => (
+          <li class="skill-cell">
+            <span class="skill-index typo-ui-caps">{s.index}</span>
+            <h3 class="skill-title typo-headline-sm">{s.title}</h3>
+            <p class="skill-desc typo-body-lg">{s.desc}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
 
-      <p class="about-bio typo-body-lg">
-        I'm the person who notices when the spacing is off, when a transition feels wrong, or when a component system only works in the deck. That instinct is the whole job.
-      </p>
+    <div class="about-row about-row--logos">
+      <div class="about-row-body">
+        <h2 class="about-section-label typo-headline-lg">Selected clients</h2>
+      </div>
+      <div class="about-logos-wrap">
+        <ClientLogos />
+      </div>
+    </div>
 
-      <nav class="about-links" aria-label="Contact and resume">
+    <div class="about-row about-row--links">
+      <nav class="about-row-body about-links" aria-label="Contact and resume">
+        <a href="/work" class="about-link typo-body-lg">
+          <span>View my work</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 15L15 5M15 5H8M15 5V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
         <a href="https://linkedin.com/in/samstringerhye" target="_blank" rel="noopener noreferrer" class="about-link typo-body-lg">
           <span>LinkedIn</span>
+          <span class="visually-hidden">(opens in new tab)</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 15L15 5M15 5H8M15 5V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a href="/resume" class="about-link typo-body-lg">
@@ -51,34 +89,152 @@ const aboutJsonLd = {
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    min-height: 75vh;
   }
 
-  .about-body {
-    grid-column: 4 / 10;
+  .about-heading {
+    grid-column: 1 / -1;
+    color: var(--color-text-primary);
+    margin: 0;
     padding-block: var(--space-6);
+    padding-inline: var(--content-inset-md);
+  }
+
+  .about-row {
+    position: relative;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .about-row::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleX(var(--border-draw, 1));
+    transform-origin: left;
+  }
+
+  /* ── Bio split ── */
+  .about-intro-left {
+    grid-column: 1 / 7;
+    display: flex;
+    align-items: center;
+    padding: var(--space-6) var(--content-inset-md);
   }
 
   .about-name {
-    margin: 0 0 var(--space-4);
+    margin: 0;
+  }
+
+  .about-intro-right {
+    grid-column: 7 / -1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--content-inset-md);
+  }
+
+  .about-intro-right::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleY(var(--border-draw, 1));
+    transform-origin: top;
   }
 
   .about-bio {
     color: var(--color-text-primary);
-    margin-bottom: var(--space-3);
+    margin: 0;
     max-width: var(--prose-measure);
   }
 
-  .about-bio:last-of-type {
-    margin-bottom: var(--space-8);
+  /* ── Skill grid ── */
+  .about-skills-heading {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: var(--space-5) var(--content-inset-md) var(--space-4);
   }
 
-  .about-gif {
-    width: 100%;
-    max-width: 280px;
-    height: auto;
-    border-radius: var(--radius-sm);
-    margin-bottom: var(--space-4);
+  .skill-grid {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .skill-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-rule);
+  }
+
+  .skill-cell {
+    position: relative;
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .skill-cell + .skill-cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleY(var(--border-draw, 1));
+    transform-origin: top;
+  }
+
+  .skill-index {
+    display: block;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-3);
+  }
+
+  .skill-title {
+    margin: 0 0 var(--space-3);
+  }
+
+  .skill-desc {
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  /* ── Shared ── */
+  .about-row-body {
+    grid-column: 1 / -1;
+    padding-block: var(--space-5);
+    padding-inline: var(--content-inset-md);
+  }
+
+  .about-section-label {
+    margin: 0 0 var(--space-4);
+  }
+
+  .about-logos-wrap {
+    grid-column: 1 / -1;
+    padding-bottom: var(--space-5);
+  }
+
+  .about-row--links .about-row-body {
+    grid-column: 1 / 7;
   }
 
   .about-links {
@@ -98,7 +254,7 @@ const aboutJsonLd = {
     transition: padding-left var(--duration-medium) ease;
   }
 
-  .about-link::before {
+  .about-link + .about-link::before {
     content: '';
     position: absolute;
     top: 0;
@@ -109,19 +265,6 @@ const aboutJsonLd = {
     transform: scaleX(var(--border-draw, 1));
     transform-origin: left;
   }
-
-  .about-link:last-child::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: var(--border-width-1);
-    background: var(--color-rule);
-    transform: scaleX(var(--border-draw, 1));
-    transform-origin: left;
-  }
-
 
   .about-link svg {
     flex-shrink: 0;
@@ -138,10 +281,54 @@ const aboutJsonLd = {
     }
   }
 
+  /* ── Mobile ── */
   @media (--2x) {
-    .about-body {
+    .about-heading {
       grid-column: 1 / -1;
       padding-inline: var(--page-margin);
+    }
+
+    .about-intro-left,
+    .about-intro-right {
+      grid-column: 1 / -1;
+      padding-inline: var(--page-margin);
+    }
+
+    .about-intro-right::before {
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: auto;
+      width: auto;
+      height: var(--border-width-1);
+      transform: scaleX(var(--border-draw, 1));
+      transform-origin: left;
+    }
+
+    .skill-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .skill-cell:nth-child(n+3) {
+      border-top: var(--border-width-1) solid var(--color-rule);
+    }
+
+    .skill-cell:nth-child(odd)::before {
+      display: none;
+    }
+
+    .skill-cell {
+      padding-inline: var(--page-margin);
+    }
+
+    .about-skills-heading {
+      padding-inline: var(--page-margin);
+    }
+
+    .about-row-body {
+      grid-column: 1 / -1;
+      padding-inline: var(--page-margin);
+      max-width: none;
     }
   }
 </style>

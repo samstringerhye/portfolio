@@ -3,6 +3,9 @@ import { defineMiddleware } from 'astro:middleware'
 const PROTECTED_PATH = '/work/wab-2026'
 const COOKIE_NAME = 'wab_auth'
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
+const RATE_LIMIT_MAX = 5
+const RATE_LIMIT_WINDOW = 5 * 60 * 1000 // 5 minutes
+const attempts = new Map<string, { count: number; resetAt: number }>()
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, request } = context
@@ -11,9 +14,22 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return next()
   }
 
-  // Already authenticated
-  if (context.cookies.get(COOKIE_NAME)?.value === 'authenticated') {
-    return next()
+  // Clean expired entries
+  const now = Date.now()
+  for (const [ip, data] of attempts) {
+    if (now > data.resetAt) attempts.delete(ip)
+  }
+
+  // Rate limit on POST. This in-memory limit resets on cold starts in serverless.
+  if (request.method === 'POST') {
+    const clientIp = getClientIp(request)
+    const entry = attempts.get(clientIp)
+    if (entry && entry.count >= RATE_LIMIT_MAX && now < entry.resetAt) {
+      return new Response(passwordPage(false, true), {
+        status: 429,
+        headers: { 'Content-Type': 'text/html; charset=utf-8', 'Retry-After': '300' },
+      })
+    }
   }
 
   // Get password from Cloudflare env (runtime) or Astro env (dev)
@@ -21,7 +37,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const envPassword = runtime?.env?.WAB_PASSWORD ?? import.meta.env.WAB_PASSWORD
 
   if (!envPassword) {
-    console.warn('WAB_PASSWORD not set — bypassing password gate')
+    console.error('WAB_PASSWORD not set')
+    return new Response(serviceUnavailablePage(), {
+      status: 503,
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    })
+  }
+
+  // Already authenticated
+  if (await isValidAuthCookie(context.cookies.get(COOKIE_NAME)?.value, envPassword)) {
     return next()
   }
 
@@ -31,8 +55,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
       const formData = await request.formData()
       const password = formData.get('password')
 
-      if (password === envPassword) {
-        context.cookies.set(COOKIE_NAME, 'authenticated', {
+      if (typeof password === 'string' && timingSafeEqual(password, envPassword)) {
+        const timestamp = String(Date.now())
+        context.cookies.set(COOKIE_NAME, await createAuthCookieValue(timestamp, envPassword), {
           path: PROTECTED_PATH,
           maxAge: COOKIE_MAX_AGE,
           httpOnly: true,
@@ -44,6 +69,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
     } catch {
       // Bad form data — fall through to show error
     }
+
+    const clientIp = getClientIp(request)
+    const entry = attempts.get(clientIp) ?? { count: 0, resetAt: now + RATE_LIMIT_WINDOW }
+    entry.count++
+    attempts.set(clientIp, entry)
 
     return new Response(passwordPage(true), {
       status: 401,
@@ -58,14 +88,79 @@ export const onRequest = defineMiddleware(async (context, next) => {
   })
 })
 
-function passwordPage(error: boolean): string {
+const textEncoder = new TextEncoder()
+
+function timingSafeEqual(left: string, right: string): boolean {
+  const leftBytes = textEncoder.encode(left)
+  const rightBytes = textEncoder.encode(right)
+  let difference = leftBytes.length ^ rightBytes.length
+  const maxLength = Math.max(leftBytes.length, rightBytes.length)
+
+  for (let index = 0; index < maxLength; index++) {
+    difference |= (leftBytes[index] ?? 0) ^ (rightBytes[index] ?? 0)
+  }
+
+  return difference === 0
+}
+
+async function createAuthCookieValue(timestamp: string, password: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    textEncoder.encode(password),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  )
+  const signature = await crypto.subtle.sign('HMAC', key, textEncoder.encode(timestamp))
+  const signatureHex = [...new Uint8Array(signature)]
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')
+
+  return `${timestamp}.${signatureHex}`
+}
+
+async function isValidAuthCookie(value: string | undefined, password: string): Promise<boolean> {
+  if (!value) return false
+
+  const [timestamp, signature, ...extraParts] = value.split('.')
+  const timestampNumber = Number(timestamp)
+  if (
+    extraParts.length > 0
+    || !/^\d+$/.test(timestamp)
+    || !/^[a-f0-9]{64}$/.test(signature)
+    || !Number.isSafeInteger(timestampNumber)
+    || timestampNumber > Date.now()
+    || Date.now() - timestampNumber > COOKIE_MAX_AGE * 1000
+  ) {
+    return false
+  }
+
+  const expectedValue = await createAuthCookieValue(timestamp, password)
+  return timingSafeEqual(value, expectedValue)
+}
+
+function getClientIp(request: Request): string {
+  return request.headers.get('cf-connecting-ip')
+    ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    ?? 'unknown'
+}
+
+function passwordPage(error: boolean, rateLimited = false): string {
+  const formContent = rateLimited
+    ? '<p class="error">Too many attempts. Try again in a few minutes.</p>'
+    : `<form method="POST">
+          <input id="password" type="password" name="password" aria-label="Password" placeholder="Password" required autofocus autocomplete="current-password" />
+          ${error ? '<p class="error">Incorrect password. Try again.</p>' : ''}
+          <button type="submit">View Case Study</button>
+        </form>`
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Password Required</title>
+  <title>Whataburger App Redesign — Password Required</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -76,11 +171,39 @@ function passwordPage(error: boolean): string {
       background: #EFF4F5;
       color: #0B0D1B;
       min-height: 100dvh;
+      padding: 2rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      min-height: calc(100dvh - 4rem);
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      align-items: center;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      color: #0B0D1B;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .brand-mark {
+      width: 0.65rem;
+      height: 0.65rem;
+      background: #0B0D1B;
+      border-radius: 50%;
+    }
+    main {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
-      -webkit-font-smoothing: antialiased;
     }
     .gate {
       width: 100%;
@@ -93,8 +216,16 @@ function passwordPage(error: boolean): string {
       margin: 0 auto 1.5rem;
       color: #4D5263;
     }
+    .project-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #4D5263;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
     h1 {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       font-weight: 700;
       margin-bottom: 0.4rem;
     }
@@ -143,9 +274,17 @@ function passwordPage(error: boolean): string {
     }
     button:hover { background: #1A1D2E; }
     button:active { background: #000; }
+    button:focus-visible, .back:focus-visible {
+      box-shadow: 0 0 0 2px #EFF4F5, 0 0 0 4px #0B0D1B;
+      outline: none;
+    }
+    button:disabled {
+      cursor: wait;
+      opacity: 0.8;
+    }
     .error {
       font-size: 0.78rem;
-      color: #FF3B4A;
+      color: #C5202F;
       margin-top: -0.25rem;
     }
     .back {
@@ -156,23 +295,61 @@ function passwordPage(error: boolean): string {
       text-decoration: none;
     }
     .back:hover { color: #0B0D1B; }
+    .access {
+      margin: 1.25rem 0 0;
+    }
+    .access a {
+      color: inherit;
+      text-decoration-color: #4D5263;
+      text-underline-offset: 0.15em;
+    }
+    .access a:hover { color: #0B0D1B; }
   </style>
 </head>
 <body>
-  <div class="gate">
-    <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-    </svg>
-    <h1>This case study is password-protected</h1>
-    <p class="subtitle">Enter the password to view this project.</p>
-    <form method="POST">
-      <input type="password" name="password" placeholder="Password" required autofocus autocomplete="current-password" />
-      ${error ? '<p class="error">Incorrect password. Try again.</p>' : ''}
-      <button type="submit">View Case Study</button>
-    </form>
-    <a href="/work" class="back">&larr; Back to work</a>
+  <div class="page">
+    <header>
+      <a class="brand" href="/" aria-label="Sam Stringer-Hye home"><span class="brand-mark" aria-hidden="true"></span>Sam Stringer-Hye</a>
+    </header>
+    <main>
+      <div class="gate">
+        <p class="project-name">Whataburger App Redesign</p>
+        <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <h1>This case study is password-protected</h1>
+        <p class="subtitle">This case study is under NDA. Enter the password to view.</p>
+        ${formContent}
+        <p class="subtitle access">Need access? Email <a href="mailto:sam@samstringerhye.com">sam@samstringerhye.com</a></p>
+        <a href="/work" class="back">&larr; Back to work</a>
+      </div>
+    </main>
   </div>
+  <script>
+    const form = document.querySelector('form')
+    const submitButton = form?.querySelector('button[type="submit"]')
+
+    window.addEventListener('pageshow', () => {
+      if (submitButton) {
+        submitButton.disabled = false
+        submitButton.textContent = 'View Case Study'
+      }
+    })
+
+    form?.addEventListener('submit', (event) => {
+      if (!submitButton || submitButton.disabled) {
+        event.preventDefault()
+        return
+      }
+      submitButton.disabled = true
+      submitButton.textContent = 'Checking...'
+    })
+  </script>
 </body>
 </html>`
+}
+
+function serviceUnavailablePage(): string {
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Service temporarily unavailable</title></head><body><h1>Service temporarily unavailable</h1></body></html>'
 }

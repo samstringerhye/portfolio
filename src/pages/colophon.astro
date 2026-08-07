@@ -2,24 +2,22 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 ---
 
-<BaseLayout title="Colophon — Sam Stringer-Hye" description="How this site was built.">
+<BaseLayout title="Colophon | Sam Stringer-Hye" description="How this site was built.">
   <section class="colophon-page" aria-label="Colophon">
-    <div class="colophon-header">
-      <p class="typo-ui-caps" style="color: var(--color-text-primary);">About this site</p>
-      <h1 class="typo-display-md">Colophon</h1>
-    </div>
-
+    <h1 class="colophon-heading typo-display-md">Colophon</h1>
+    <div class="colophon-row">
     <div class="colophon-body">
+
       <h2 class="typo-headline-lg">Tech Stack</h2>
       <p>
-        Built with <strong>Astro</strong> for static-first delivery with selective React hydration for interactive components.
+        Built with <strong>Astro</strong> for static-first delivery with vanilla TypeScript islands for interactive components.
         The hero runs on <strong>Three.js</strong>. Animations powered by <strong>GSAP</strong> (ScrollTrigger, SplitText).
         Smooth scrolling via <strong>Lenis</strong>. Deployed on <strong>Cloudflare Workers</strong>.
       </p>
 
       <h2 class="typo-headline-lg">Typography</h2>
       <p>
-        <strong>Perfectly Nineties</strong> is used for display and headline roles, paired with
+        <strong>Perfectly Nineties</strong> handles display and headline type, paired with
         <strong>Inter</strong> for body text, titles, labels, and UI elements.
         The serif/sans pairing creates a two-register type system: editorial for impact, geometric sans for readability.
         The 5×3 typescale grid (display, headline, title, body, label × lg/md/sm) follows M3 conventions.
@@ -27,8 +25,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
       <h2 class="typo-headline-lg">Design Language</h2>
       <p>
-        The prismatic/CMY (cyan, magenta, yellow) chromatic separation is used throughout as a unifying visual language.
-        It appears in scroll reveals, hover effects, the hero animation's temporal RGB split, and the carousel's velocity-driven shadows.
+        The prismatic CMY chromatic separation runs through scroll reveals, hover effects, the hero animation, and the carousel shadows.
         This references how white light splits through a prism into its component wavelengths.
       </p>
 
@@ -42,33 +39,65 @@ import BaseLayout from '../layouts/BaseLayout.astro'
         <a href="/work" class="typo-ui-caps">View work →</a>
       </p>
     </div>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
   .colophon-page {
-    grid-column: 4 / 10;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .colophon-heading {
+    grid-column: 1 / -1;
+    color: var(--color-text-primary);
+    margin: 0;
     padding-block: var(--space-6);
+    padding-inline: var(--content-inset-md);
+  }
+
+  .colophon-row {
+    position: relative;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .colophon-row::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--border-width-1);
+    background: var(--color-rule);
+    transform: scaleX(var(--border-draw, 1));
+    transform-origin: left;
+  }
+
+
+  .colophon-body {
+    grid-column: 4 / 10;
+    padding-block: var(--space-5);
   }
 
   @media (--2x) {
-    .colophon-page {
+    .colophon-heading {
+      grid-column: 1 / -1;
+      padding-inline: var(--page-margin);
+    }
+
+    .colophon-body {
       grid-column: 1 / -1;
       padding-inline: var(--page-margin);
     }
   }
 
-  .colophon-header {
-    margin-bottom: var(--space-4);
-  }
-
-  .colophon-header h1 {
-    margin-top: var(--space-1);
-  }
-
   .colophon-body h2 {
     margin-top: var(--space-5);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
   }
 
   .colophon-body h2:first-child {
@@ -77,6 +106,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 
   .colophon-body p {
     margin-bottom: var(--space-3);
+    max-width: var(--prose-measure);
   }
 
   .colophon-body strong {

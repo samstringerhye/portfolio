@@ -77,7 +77,7 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
   .hero-block {
     letter-spacing: var(--tracking-tight);
     color: var(--color-text-primary);
-    opacity: 0;
+    opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -117,6 +117,8 @@ const heroInitBlur = `${revealCfg.initialBlur}px`
       gsap.set(els, { opacity: 1, y: 0, filter: 'none', textShadow: 'none' })
       return
     }
+
+    gsap.set(els, { opacity: 0, y: 0, filter: 'none' })
 
     const cfg = animations.textReveal
     const startDelay = animations.hero.text.startDelay

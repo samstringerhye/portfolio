@@ -2,12 +2,6 @@
 import homeData from '../content/home.json'
 import type { HomeContent } from '../types/content'
 
-interface Props {
-  contentInset?: 'sm' | 'md' | 'lg'
-}
-
-const { contentInset = 'md' } = Astro.props as Props
-
 const home: HomeContent = homeData
 const {
   headline = 'Experience',
@@ -63,7 +57,7 @@ const jobsWithRows = jobsChronological.map((j, i) => {
 })
 ---
 
-<section class="experience-section" aria-label="Experience" style={`--content-inset: var(--content-inset-${contentInset})`}>
+<section class="experience-section" aria-label="Experience">
   <div class="experience-header">
     <HeadingTag class:list={["experience-heading", `typo-${headingRole}`]} data-reveal>{headline}</HeadingTag>
     <a href="/resume" class="experience-download" aria-label="View resume">
@@ -287,7 +281,7 @@ const jobsWithRows = jobsChronological.map((j, i) => {
 
   /* Highlights — starting at col 4 with gutter inset */
   .tl-job-highlights {
-    grid-column: 4 / 10;
+    grid-column: 4 / -1;
     grid-row: 1;
     padding-left: var(--grid-gutter);
     position: relative;
@@ -361,13 +355,13 @@ const jobsWithRows = jobsChronological.map((j, i) => {
 <script>
   import gsap from 'gsap'
   import { SplitText } from 'gsap/SplitText'
-  import { animations, cmyRgba } from '../data/tokens'
+  import { accentRgba, animations } from '../data/tokens'
   import { tightenSingleLineHeadings } from './tighten-headings'
 
   gsap.registerPlugin(SplitText)
 
   const h = animations.timeline.hover
-  const CMY_COLORS = cmyRgba(h.cmyOpacity)
+  const CMY_COLORS = accentRgba(h.cmyOpacity)
   let colorIndex = 0
 
   function initTimelineHover() {
@@ -490,4 +484,3 @@ const jobsWithRows = jobsChronological.map((j, i) => {
     initDownloadHover()
   })
 </script>
-
