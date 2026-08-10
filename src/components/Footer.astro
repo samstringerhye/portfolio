@@ -152,7 +152,13 @@ const year = new Date().getFullYear()
       align-items: stretch;
     }
 
-    /* Swatches divide the full bar height rather than sitting at a fixed square size */
+    /* Swatch column matches the wordmark row only, not the full bar.
+       The wordmark box is its font-size (line-height 1) plus its block padding. */
+    .footer-palette {
+      align-self: flex-start;
+      height: calc(var(--wordmark-size) + var(--space-4) * 2);
+    }
+
     .footer-palette span {
       flex: 1;
       height: auto;
