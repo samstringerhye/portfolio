@@ -325,7 +325,9 @@ const skills = [
       padding-inline: var(--content-inset-sm);
     }
 
-    .about-row-body {
+    .about-row-body,
+    /* Outranks the desktop `.about-row--links .about-row-body` column span */
+    .about-row--links .about-row-body {
       grid-column: 1 / -1;
       padding-inline: var(--content-inset-sm);
       max-width: none;
