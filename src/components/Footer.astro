@@ -152,11 +152,16 @@ const year = new Date().getFullYear()
       align-items: stretch;
     }
 
+    /* Swatches divide the full bar height rather than sitting at a fixed square size */
+    .footer-palette span {
+      flex: 1;
+      height: auto;
+    }
+
     .footer-bar-text {
       flex-direction: column;
       align-items: stretch;
       gap: 0;
-      padding-inline: var(--page-margin);
     }
 
     .footer-wordmark-text {
@@ -169,6 +174,9 @@ const year = new Date().getFullYear()
       gap: 0;
       border-top: var(--border-width-1) solid var(--color-rule);
       padding-block: var(--space-3);
+      /* Bleed past the text indent and the swatch column so the rule spans the whole bar */
+      margin-left: calc((var(--space-2) + var(--nav-height) / 6) * -1);
+      padding-left: var(--space-2);
     }
 
     .footer-link {
@@ -179,7 +187,7 @@ const year = new Date().getFullYear()
     }
 
     .footer-bottom {
-      padding: var(--space-3) var(--page-margin);
+      padding: var(--space-3);
     }
   }
 </style>
