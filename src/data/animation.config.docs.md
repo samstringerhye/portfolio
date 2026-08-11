@@ -79,5 +79,5 @@ Seven of these durations (all the `0.25` values) reference `semantic.motion.dura
 | `hero.canvas.*` | various | — | WebGL dot grid parameters (spiral geometry, wave motion, sizing) |
 | `hero.canvas.cmyStagger` | seconds | `0.15` | Delay between CMY color channels in the hero dot wave (independent from text reveal stagger) |
 | `interests.scrollDuration` | seconds | `480` | Total duration of the infinite scrolling interests marquee |
-| `smoothScroll.lerp` | 0–1 | `0.25` | Lenis smooth scroll interpolation (lower = smoother, higher = snappier) |
-| `smoothScroll.wheelMultiplier` | number | `1.4` | Mouse wheel scroll speed multiplier |
+| `smoothScroll.lerp` | 0–1 | `0.5` | Lenis smooth scroll interpolation (lower = smoother, higher = snappier) |
+| `smoothScroll.wheelMultiplier` | number | `1` | Mouse wheel scroll speed multiplier |

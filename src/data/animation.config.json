@@ -71,8 +71,8 @@
     "scrollDuration": 480
   },
   "smoothScroll": {
-    "lerp": 0.25,
-    "wheelMultiplier": 1.4
+    "lerp": 0.5,
+    "wheelMultiplier": 1
   },
   "pageTransition": {
     "duration": 0.25,
