@@ -91,11 +91,11 @@ As sole visual designer on the redesign, I ran two parallel tracks: rebuilding t
 
 I led with three pillars that guided every design decision.
 
-**Fun.** Confetti on completed orders. The mascot appearing in empty states. Color shifts between menu categories. Personality woven into moments where the app could have been forgettable.
+**Fun.** Confetti on completed orders. The mascot appearing in empty states. Color shifts between menu categories.
 
-**Smart.** Surfacing orders by purchase history. Nearest-location ordering. Recent order shortcuts on the home screen. The app uses context to reduce friction without feeling invasive.
+**Smart.** Surfacing orders by purchase history. Nearest-location ordering. Recent order shortcuts on the home screen.
 
-**Intuitive.** The old ordering flow took 14 taps to get from home to checkout. The redesign cut it to 6 taps. Clear labels at every step. Progressive disclosure means customization never feels overwhelming. Tap counts reduced, steps eliminated.
+**Intuitive.** The old ordering flow took 14 taps to get from home to checkout. The redesign cut it to 6 taps. Clear labels at every step, and progressive disclosure so customization never stacks up all at once.
 
 </ProseGroup>
 
@@ -144,7 +144,7 @@ The home screen now does more than welcome guests. It surfaces products, limited
 
 ### Menu and Customization
 
-This was the hardest flow to solve. Whataburger's customization depth (significantly more options than most QSR apps) meant the interface had to handle dense decision trees without feeling overwhelming. Branching paths (meal vs. a la carte, daypart-dependent categories, deep customization for every ingredient) demanded solutions that didn't exist in the category.
+This was the hardest flow to solve. Whataburger's customization depth (significantly more options than most QSR apps) meant the interface had to handle dense decision trees without feeling overwhelming. Branching paths (meal vs. a la carte, daypart-dependent categories, deep customization for every ingredient) meant no single pattern I found in the competitive audit covered the whole tree.
 
 Clearer menu and customization patterns make ordering easier. Each step in the flow (browse, customize, choose sides, review) uses progressive disclosure to surface only what's relevant at that moment.
 
@@ -213,7 +213,7 @@ Account settings are grouped into a simpler self-service hub. Personalized condi
 
 Before designing a single screen, I audited the existing token structure and found a system that could only describe what already existed, not what needed to be built. Primitive tokens named after the brand ("Whataburger Orange") rather than by function. No tokens for interaction states, motion, or elevation. No semantic layer. Every new screen meant inventing values from scratch.
 
-The rebuild, codenamed Pele, delivered 258 variables across three collections. The naming convention was the most consequential early decision. Every token reads like a path: `color/fg/primary`, `spacing/400`, `shadow/elevation/raised`. Designers get names that describe function. Engineers get names that map directly to component props without a translation layer.
+The rebuild, codenamed Pele, delivered 258 variables across three collections. Every token reads like a path: `color/fg/primary`, `spacing/400`, `shadow/elevation/raised`. Designers get names that describe function. Engineers get names that map directly to component props without a translation layer.
 
 </ProseGroup>
 
@@ -261,7 +261,7 @@ All spatial values follow a x100 naming convention built on a 4px base. The moti
 
 ### Components
 
-The component library organized into universal components (ready for cross-project reuse) and screen-specific components (with a migration plan to promote them after publishing). Over 90 icons, navigation, inputs, layout, and utility components. Naming conventions mapped directly to React component props so the dev team could consume the system without a translation layer.
+The component library organized into universal components (ready for cross-project reuse) and screen-specific components (with a migration plan to promote them after publishing). Over 90 icons, navigation, inputs, layout, and utility components. Naming conventions mapped directly to React component props, so the dev team could pull values straight from the system.
 
 </ProseGroup>
 
