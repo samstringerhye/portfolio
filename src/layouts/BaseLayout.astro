@@ -311,6 +311,7 @@ const typoCss = `:root {
         __siteAfterSwapHandler?: () => void
         __sitePageLoadHandler?: () => void
         __siteDestroyLenis?: () => void
+        __siteLenis?: { stop: () => void; start: () => void } | null
         __gsap?: typeof import('gsap').default
         __ScrollTrigger?: typeof import('gsap/ScrollTrigger').ScrollTrigger
       }
@@ -349,6 +350,7 @@ const typoCss = `:root {
           }
           lenis?.destroy()
           lenis = null
+          globalState.__siteLenis = null
         }
 
         function initLenis() {
@@ -361,6 +363,10 @@ const typoCss = `:root {
           lenisTicker = (time) => lenis?.raf(time * 1000)
           gsap.ticker.add(lenisTicker)
           gsap.ticker.lagSmoothing(0)
+          // Exposed so modal interactions can pause
+          // Lenis's own scroll loop — setting body { overflow: hidden } alone doesn't stop it,
+          // since Lenis drives scroll position itself rather than relying on native overflow.
+          globalState.__siteLenis = lenis
         }
 
         let scrollProgressTrigger: ScrollTrigger | null = null
@@ -389,9 +395,7 @@ const typoCss = `:root {
         async function initInteractions() {
           try {
             const { initScrollReveals } = await import('../components/scroll-reveals.ts')
-            const { initLightbox } = await import('../components/Lightbox.ts')
             await initScrollReveals()
-            initLightbox()
             initScrollProgress()
           } catch (e) {
             console.warn('Failed to init interactions', e)

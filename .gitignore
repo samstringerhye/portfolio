@@ -30,6 +30,10 @@ RETROSPECTIVE.md
 # Working/reference directories
 inputs/
 oldwbapp/
+output/
+bento-Inspiration/
+.playwright-cli/
+videos/
 
 # Editor / OS
 .DS_Store

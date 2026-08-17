@@ -35,6 +35,7 @@ const { label, fullBleed = false } = Astro.props
 
   .carousel-track {
     display: flex;
+    align-items: flex-start;
     padding: var(--space-4);
     will-change: transform;
     touch-action: pan-y pinch-zoom;
@@ -69,8 +70,8 @@ const { label, fullBleed = false } = Astro.props
     -webkit-user-drag: none;
   }
 
-  .carousel-track > :global(img),
-  .carousel-track > :global(.cs-figure) :global(img) {
+  .carousel-track > :global(img):not(.browser-screen),
+  .carousel-track > :global(.cs-figure) :global(img):not(.browser-screen) {
     display: block;
     width: auto;
     max-width: 100%;
@@ -105,7 +106,7 @@ const { label, fullBleed = false } = Astro.props
   .carousel--full-bleed .carousel-track :global(img) {
     width: 100%;
     height: 100%;
-    max-height: none;
+    max-height: 100vh;
     margin-inline: 0;
     border-radius: 0;
     padding: 0;
@@ -282,7 +283,7 @@ const { label, fullBleed = false } = Astro.props
       let lastTime = 0
       let velocityX = 0
 
-      // Suppress click after drag so lightbox doesn't open
+      // Suppress click after drag
       track.addEventListener('click', (e) => {
         if (didDrag) { e.stopPropagation(); e.preventDefault(); didDrag = false }
       }, true)

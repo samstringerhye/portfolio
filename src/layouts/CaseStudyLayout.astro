@@ -176,15 +176,16 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     object-fit: cover;
   }
 
-  .case-study-body img:not(.device-screen):not(.device-frame):not(.lightbox-img):not(.lightbox-phone-screen):not(.lightbox-phone-frame) {
+  .case-study-body img:where(:not(.device-screen)):where(:not(.device-frame)):where(:not(.browser-screen)):where(:not(.mosaic-media)) {
     display: block;
     width: 100%;
     height: auto;
+    max-height: 100vh;
     object-fit: contain;
     background: var(--color-bg-primary);
   }
 
-  .case-study-body img.has-transparency {
+  .case-study-body img.has-transparency:not(.mosaic-media) {
     background: var(--color-bg-primary);
     padding: var(--space-6);
     object-fit: contain;
@@ -422,9 +423,9 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     border: none;
   }
 
-  /* Flush figures: full-bleed, no height cap */
+  /* Flush figures: full-bleed width, capped to one viewport height via crop */
   .case-study-body .cs-figure--flush img {
-    max-height: none;
+    max-height: 100vh;
     object-fit: cover;
   }
 
@@ -433,6 +434,14 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     font-size: var(--text-100);
     color: var(--color-text-primary);
     line-height: var(--line-height-normal);
+  }
+
+  /* Bare, non-flush figures: the border wraps the whole box, so give the
+     caption its own divider instead of letting it sit flush against the image. */
+  .case-study-body > .cs-figure:not(.cs-figure--flush) figcaption {
+    border-top: var(--border-width-1) solid var(--color-text-primary);
+    padding-top: var(--space-3);
+    margin-top: var(--space-2);
   }
 
   /* ── Image grid: 2×2 (or n-column) layout ── */
@@ -462,6 +471,8 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
   .case-study-body .image-grid .cs-figure figcaption {
     background: var(--color-bg-primary);
+    border-top: var(--border-width-1) solid var(--color-text-primary);
+    padding: var(--space-3) 0 0;
   }
 
   /* ── Lottie grid: 4-col full-width with dividers ── */
@@ -633,150 +644,6 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
 
   }
 
-  /* ── Lightbox overlay ── */
-  .lightbox-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: var(--z-modal, 200);
-  }
-
-  .lightbox-overlay.is-open {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .lightbox-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(var(--modal-backdrop-blur));
-    -webkit-backdrop-filter: blur(var(--modal-backdrop-blur));
-  }
-
-  .lightbox-content {
-    position: relative;
-    z-index: 1;
-    max-width: 90vw;
-    max-height: 85vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .lightbox-img-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .lightbox-img-container img {
-    max-width: 90vw;
-    max-height: 85vh;
-    object-fit: contain;
-    border-radius: var(--radius-lg);
-    display: block;
-  }
-
-  /* Composite phone view in lightbox */
-  .lightbox-phone {
-    display: grid;
-    max-height: 75vh;
-    max-width: calc(75vh * 0.484);
-  }
-
-  .lightbox-phone > img {
-    grid-area: 1 / 1;
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    max-height: none;
-    border-radius: 0;
-  }
-
-  .lightbox-phone-screen {
-    place-self: center;
-    border-radius: 13% !important;
-    z-index: 1;
-    width: 97.5% !important;
-    height: 98.8% !important;
-    object-fit: cover !important;
-  }
-
-  .lightbox-phone-frame {
-    z-index: 2;
-    pointer-events: none;
-    object-fit: fill !important;
-  }
-
-  .lightbox-close {
-    position: absolute;
-    top: var(--space-3);
-    right: var(--space-3);
-    z-index: 2;
-    width: var(--touch-target);
-    height: var(--touch-target);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-bg-primary);
-    border: var(--border-width-1) solid var(--color-text-primary);
-    color: var(--color-text-primary);
-    cursor: pointer;
-    padding: 0;
-  }
-
-  .lightbox-close:hover {
-    background: var(--color-text-primary);
-    color: var(--color-bg-primary);
-  }
-
-  .lightbox-close:focus-visible,
-  .lightbox-nav:focus-visible {
-    box-shadow: var(--focus-ring);
-    outline: none;
-  }
-
-  .lightbox-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    width: var(--touch-target);
-    height: var(--touch-target);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-bg-primary);
-    border: var(--border-width-1) solid var(--color-text-primary);
-    color: var(--color-text-primary);
-    cursor: pointer;
-    padding: 0;
-  }
-
-  .lightbox-nav:hover {
-    background: var(--color-text-primary);
-    color: var(--color-bg-primary);
-  }
-
-  .lightbox-nav-prev { left: var(--space-3); }
-  .lightbox-nav-next { right: var(--space-3); }
-
-  .lightbox-counter {
-    position: absolute;
-    bottom: var(--space-3);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    font-size: var(--text-100);
-    color: var(--color-bg-primary);
-    background: rgba(0, 0, 0, 0.5);
-    padding: var(--space-1) var(--space-2);
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-  }
-
   /* ── Scroll progress bar ── */
   .scroll-progress {
     position: fixed;
@@ -835,7 +702,7 @@ const { title, tagline, ogImage, jsonLd, prevSlug, prevTitle, nextSlug, nextTitl
     if (!body) return
 
     body.querySelectorAll<HTMLImageElement>('img').forEach(img => {
-      if (img.classList.contains('has-transparency') || img.dataset.transparencyChecked) return
+      if (img.classList.contains('mosaic-media') || img.classList.contains('has-transparency') || img.dataset.transparencyChecked) return
 
       const check = () => {
         if (!img.naturalWidth) return

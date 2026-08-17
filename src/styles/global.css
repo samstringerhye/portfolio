@@ -197,11 +197,6 @@ ol {
   pointer-events: none;
 }
 
-.lightbox-overlay.is-open ~ .grid-overlay,
-body:has(.lightbox-overlay.is-open) .grid-overlay {
-  display: none;
-}
-
 .grid-overlay::before,
 .grid-overlay::after {
   content: '';
